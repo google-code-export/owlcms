@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+				%d{HH:mm:ss.SSS} %-5level %class{45}:%L %M - %msg%n
+			</Pattern>
+		</layout>
+	</appender>
+
+	<logger name="com" level="INFO" />
+	<logger name="net" level="INFO" />
+	<logger name="net.sf.ehcache.config.ConfigurationFactory" level="ERROR" />
+	<logger name="org" level="INFO" />
+	<logger name="org.hibernate" level="WARN" />
+	<logger name="org.hibernate.cache.EhCacheProvider" level="ERROR" />
+	
+	<logger name="org.concordiainternational.org" level="INFO" /> 
+    <logger name="org.concordiainternational.competition.nec" level="DEBUG" />
+
+
+    
+    <!--
+        <logger name="com.vaadin.event" level="DEBUG" />
+        <logger name="org.concordiainternational.competition.ui.AnnouncerView" level="TRACE" />
+        <logger name="org.concordiainternational.competition.ui.GroupData" level="TRACE" />
+        <logger name="org.concordiainternational.competition.data.LifterContainer" level="TRACE" />
+        <logger name="org.concordiainternational.competition.timer" level="DEBUG" />
+        <logger name="org.concordiainternational.competition.spreadsheet" level="TRACE" />
+
+        <logger name="org.concordiainternational.competition.ui.CurrentLifterView" level="DEBUG" />
+        <logger name="org.concordiainternational.competition.ui.LifterCardEditor" level="DEBUG" />
+        <logger name="tracing" level="INFO" /> 
+        <logger name="org.concordiainternational.competition.ui.LifterInfo" level="TRACE" />
+        <logger name="org.concordiainternational.competition.spreadsheet" level="TRACE" />
+        <logger name="org.concordiainternational.competition.ui.CompetitionApplication" level="DEBUG" />
+        <logger name="org.concordiainternational.competition.data.Lifter" level="TRACE" />
+        <logger name="org.concordiainternational.competition.ui.components.BrowserPanel" level="DEBUG" />
+    -->
+	
+	<root level="INFO">
+	  <appender-ref ref="STDOUT" />
+	</root>
+
+</configuration>
