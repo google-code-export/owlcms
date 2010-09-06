@@ -1,0 +1,330 @@
+package org.concordiainternational.competition.ui;
+
+import java.io.Serializable;
+import java.util.Set;
+
+import org.concordiainternational.competition.data.Category;
+import org.concordiainternational.competition.data.Group;
+import org.concordiainternational.competition.data.Platform;
+import org.hibernate.Session;
+
+import com.vaadin.Application;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.hbnutil.HbnContainer;
+import com.vaadin.data.hbnutil.HbnContainer.EntityItem;
+import com.vaadin.data.hbnutil.HbnContainer.SessionManager;
+import com.vaadin.event.Action;
+import com.vaadin.event.Action.Handler;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Table.ColumnGenerator;
+
+public class GroupListEditor extends VerticalLayout implements ClickListener, ValueChangeListener, SessionManager {
+
+	private static final long serialVersionUID = -3014859089271158928L;
+	private Application app = null;
+	private Table table = new Table();
+    private GroupEditor editor = null;
+    private Button addCompetitionGroupButton;
+    private Button toggleEditModeButton;
+
+    public GroupListEditor(Application app) {
+		super();
+		this.app = app;
+        buildView();
+        editor = new GroupEditor(app, this);
+	}
+    
+    /**
+     * This column generator transforms platform column to human readable
+     * form (instead of displaying the identifier of referenced entity)
+     */
+    private ColumnGenerator platformReadOnlyColumn = new ColumnGenerator() {
+		private static final long serialVersionUID = -8745962596310236819L;
+
+		public Component generateCell(Table source, Object itemId,
+                Object columnId) {
+            Label l = new Label();
+            Object id = table.getContainerProperty(itemId, "platform").getValue();
+            if (id == null) {
+                l.setValue(" - ");
+            } else {
+                Platform platform = (Platform) getSession().get(Platform.class,
+                        (Serializable) id);
+                l.setValue(platform.getName());
+            }
+            return l;
+        }
+    };
+    
+    /**
+     * This column generator transforms Categories column to human readable
+     * form (instead of displaying the identifier of referenced entity)
+     */
+    private ColumnGenerator categoriesReadOnlyColumn = new ColumnGenerator() {
+		private static final long serialVersionUID = -4668055689297584588L;
+
+		public Component generateCell(Table source, Object itemId,
+                Object columnId) {
+            Label l = new Label();
+            //Object id = table.getContainerProperty(itemId, "categories").getValue();
+            Group group = (Group)((HbnContainer<Group>.EntityItem)(table.getContainerDataSource().getItem(itemId))).getPojo();
+            if (group == null) {
+                l.setValue(" - ");
+            } else {
+            	Set<Category> categories = group.getCategories();
+            	if (categories == null) {
+            		l.setValue(" - ");
+            		return l;
+            	}
+            	StringBuilder sb = new StringBuilder();
+        		final String separator = ", ";
+        		boolean first = true;
+            	for (Category curCategory: categories){
+            		sb.append(curCategory.getName());
+					sb.append(separator);
+					first = false;
+            	}
+            	if (!first) {
+            		sb.setLength(sb.length()-separator.length()); // trim last comma
+            	}
+            	l.setValue(sb);
+            }
+            return l;
+        }
+    };    
+
+    public Session getSession() {
+		return ((SessionManager)app).getSession();
+	}
+
+
+	/**
+     * Builds a simple view for application with Table and a row of buttons
+     * below it.
+     */
+    private void buildView() {
+
+    	this.setSizeFull();
+        this.setMargin(false);
+
+        HorizontalLayout ol = new HorizontalLayout();
+
+        addCompetitionGroupButton = new Button("Add group", this);
+        ol.addComponent(addCompetitionGroupButton);
+        toggleEditModeButton = new Button("Toggle edit mode in table", this);
+        ol.addComponent(toggleEditModeButton);;
+        this.addComponent(ol);
+
+        populateAndConfigureTable();
+
+        this.addComponent(table);
+
+        // make table consume all extra space
+        this.setSizeFull();
+        this.setExpandRatio(table, 1);
+        table.setSizeFull();
+    }
+
+    @SuppressWarnings("serial")
+	protected void populateAndConfigureTable() {
+        table = new Table();
+
+        table.setWidth("100%");
+        table.setSelectable(true);
+        table.setImmediate(true);
+        table.setColumnCollapsingAllowed(true);
+//        table.setColumnWidth("date", 200);
+//        table.setColumnWidth("kilometers", 100);
+        table.addListener(this);
+        table.setTableFieldFactory(new GroupListFieldFactory((SessionManager)app));
+        
+        // add context menus for rows
+        table.addActionHandler(new Handler() {
+			Action add = new Action("Add new row to table");
+            Action remove = new Action("Delete this row");
+            Action edit = new Action("Edit this row");
+            Action[] actions = new Action[] { add, remove, edit };
+
+            public Action[] getActions(Object target, Object sender) {
+                return actions;
+            }
+
+            public void handleAction(Action action, Object sender, Object target) {
+                if (action == add) {
+                    newRow();
+                } else if (action == remove) {
+                    Group g = (Group) getSession().get(Group.class,(Serializable) target);
+                    deleteGroup(g);
+                } else if (action == edit) {
+                    editGroup((Long) target);
+                }
+            }
+        });
+
+        loadGroups();
+    }
+
+    /**
+     * Loads container to Table
+     */
+    protected void loadGroups() {
+        final HbnContainer<?> cont;
+        cont = new HbnContainer<Group>(Group.class, (SessionManager)app);
+        table.setContainerDataSource(cont);
+
+        // action buttons on each row
+        table.removeGeneratedColumn("actions");
+        table.addGeneratedColumn("actions", new ColumnGenerator() {
+        	private static final long serialVersionUID = 7397136740353981832L;
+
+        	public Component generateCell(Table source,
+        			final Object itemId, Object columnId) {
+        		HorizontalLayout actions = new HorizontalLayout();
+        		Button b = new Button("Edit");
+        		b.addListener(new ClickListener() {
+        			private static final long serialVersionUID = 3510857518206549922L;
+
+        			public void buttonClick(ClickEvent event) {
+        				editGroup((Long)itemId);
+        			}
+        		});
+        		actions.addComponent(b);
+        		Button del = new Button("Delete");
+        		del.addListener(new ClickListener() {
+        			private static final long serialVersionUID = 5204920602544644705L;
+
+        			@SuppressWarnings("unchecked")
+        			public void buttonClick(ClickEvent event) {
+        				deleteGroup((Group) ((EntityItem) cont
+        						.getItem(itemId)).getPojo());
+        			}
+        		});
+        		actions.addComponent(del);
+
+        		return actions;
+        	}
+        });
+
+        table.removeGeneratedColumn("platform");
+        table.addGeneratedColumn("platform", platformReadOnlyColumn);
+        table.removeGeneratedColumn("categories");
+        table.addGeneratedColumn("categories", categoriesReadOnlyColumn);
+        
+    }
+
+    /**
+     * Saves changes made to CompetitionGroup object to Hibernate Session. Note that run
+     * is most likely detached due session-per-request patterns so we'll use
+     * merge. Actual database update will happen by Vaadin's transaction
+     * listener in the end of request.
+     * 
+     * If one wanted to make sure that this operation will be successful a
+     * (Hibernate) transaction commit and error checking ought to be done.
+     * 
+     * @param group
+     */
+    public void persistGroup(Group group) {
+        getSession().merge(group);
+        table.setValue(null);
+    }
+
+    /**
+     * Delete given CompetitionGroup object from Table. Table will delegate deletion to
+     * its container.
+     * 
+     * @param group
+     */
+    public void deleteGroup(Group group) {
+        Long id = group.getId();
+        table.removeItem(id);
+    }
+
+    /**
+     * Adds new row to Table and selects new row. Table will delegate Item
+     * creation to its container.
+     */
+    private void newRow() {
+        Object newItemId = table.addItem();
+        // upen in editor window unless table is in content editable mode
+        if (!table.isEditable()) {
+            table.setValue(newItemId);
+        }
+    }
+
+    /**
+     * Loads given CompetitionGroup object to GroupEditor.
+     * 
+     * @param pojo
+     */
+    public void group(Group pojo) {
+        editor.loadGroup(pojo, 0L);
+    }
+
+    /**
+     * Loads CompetitionGroup with given id to GroupEditor.
+     * 
+     * @parma id
+     */
+    public void editGroup(Long id) {
+        if (id == null) {
+            if (editor.getParent() != null) {
+                ((Window) editor.getParent()).removeWindow(editor);
+            }
+        } else {
+            Group pojo = (Group) getSession().get(Group.class, id);
+            editGroup(pojo, id);
+        }
+    }
+
+    private void editGroup(Group pojo, Long id) {
+		editor.loadGroup(pojo, id);	
+	}
+
+	public void buttonClick(ClickEvent event) {
+        if (addCompetitionGroupButton == event.getButton()) {
+            newRow();
+        } else if (toggleEditModeButton == event.getButton()) {
+            table.setEditable(!table.isEditable());
+            // editable table shows select on platform property, readonly
+            // shows generated column
+            if (table.isEditable()) {
+                table.removeGeneratedColumn("platform");
+                table.removeGeneratedColumn("categories");
+            } else {
+                table.addGeneratedColumn("platform",platformReadOnlyColumn);
+                table.addGeneratedColumn("categories",categoriesReadOnlyColumn);
+            }
+        }
+    }
+
+    /**
+     * Value change listener for Table.
+     */
+    public void valueChange(ValueChangeEvent event) {
+        if (event.getProperty() == table) {
+            editGroup((Long) table.getValue());
+        } 
+        // else if (event.getProperty() == actionButtonMode) {
+//            actionButtonColumnMode = event.getProperty().getValue();
+//            // re-create table to reset column widths
+//            Table old = table;
+//            populateAndConfigureTable();
+//            loadCompetitionGroups();
+//            ((AbstractOrderedLayout) old.getParent()).replaceComponent(old,
+//                    table);
+//            mainLayout.setExpandRatio(table, 1);
+//            table.setSizeFull();
+//        }
+    }
+
+   
+}
