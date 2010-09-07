@@ -1,3 +1,10 @@
 
 syntax: regexp
 ^target/classes$
+
+syntax: glob
+owlcms-*
+syntax: regexp
+^target/\.generated$
+syntax: regexp
+^target/war$

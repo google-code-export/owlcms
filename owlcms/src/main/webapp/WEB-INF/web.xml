@@ -8,7 +8,7 @@
 	</context-param>
 	<context-param>
 		<param-name>dbPath</param-name>
-		<param-value>e:/dev/db/competition</param-value>
+		<param-value>e:/dev/db/competition2</param-value>
 	</context-param>
 	<context-param>
 		<param-name>comPort</param-name>

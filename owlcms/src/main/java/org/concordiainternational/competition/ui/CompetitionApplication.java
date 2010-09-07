@@ -511,7 +511,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
             @Override
             public void fragmentChanged(FragmentChangedEvent source) {
-                logger.warn("fragment {}",source.getUriFragmentUtility().getFragment());
+                //logger.warn("fragment {}",source.getUriFragmentUtility().getFragment());
                 String frag = source.getUriFragmentUtility().getFragment();
                 displayView(frag);
             }
