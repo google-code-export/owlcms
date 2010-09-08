@@ -74,7 +74,7 @@
           <stopPort>9966</stopPort>
           <stopKey>owlcms</stopKey>
           <!-- Redeploy every x seconds if changes are detected, 0 for no automatic redeployment -->
-          <scanIntervalSeconds>5</scanIntervalSeconds>
+          <scanIntervalSeconds>0</scanIntervalSeconds>
           <reload>manual</reload>
           <!-- make sure Jetty also finds the widgetset -->
           <webAppConfig>

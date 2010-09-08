@@ -10,3 +10,5 @@ syntax: regexp
 ^target/war$
 syntax: regexp
 ^src/main/webapp/VAADIN/themes/competition/Thumbs\.db$
+syntax: regexp
+^target/tomcat$
