@@ -157,15 +157,19 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
         } else {
             cnf.setProperty(Environment.SHOW_SQL, "false"); //$NON-NLS-1$
             cnf.setProperty(Environment.URL, "jdbc:h2:file:" + dbPath); //$NON-NLS-1$
-            String ddlMode;
-            final File file = new File(dbPath + ".data.db"); //$NON-NLS-1$
+            String ddlMode = "create";
+            File file = new File(dbPath + ".h2.db"); //$NON-NLS-1$
+            logger.warn("Using Hibernate (file {} exists={}", new Object[] { file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
             if (file.exists()) {
                 ddlMode = "update"; //$NON-NLS-1$
             } else {
-                ddlMode = "create"; //$NON-NLS-1$
+            	file = new File(dbPath + ".data.db"); //$NON-NLS-1$
+            	logger.warn("Using Hibernate (file {} exists={}", new Object[] { file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
+                if (file.exists()) {
+                    ddlMode = "update"; //$NON-NLS-1$
+                }
             }
-            logger
-                    .info(
+            logger.warn(
                         "Using Hibernate mode {} (file {} exists={}", new Object[] { ddlMode, file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
             cnf.setProperty(Environment.HBM2DDL_AUTO, ddlMode);
             // throw new
