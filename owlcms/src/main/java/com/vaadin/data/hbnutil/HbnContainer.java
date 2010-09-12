@@ -211,7 +211,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
                     for (int i = 0; i < propertyNames.length; i++) {
                         String name = propertyNames[i];
                         if (name.equals(propertyName)) {
-                            Object id = getClassMetadata().getIdentifier(pojo, EntityMode.POJO);
+                        	Object id = getClassMetadata().getIdentifier(pojo, EntityMode.POJO);
                             return idType.getPropertyValue(id, i, EntityMode.POJO);
                         }
                     }
