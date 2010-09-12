@@ -748,8 +748,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
     }
 
     public boolean removeAllItems() throws UnsupportedOperationException {
-        // TODO
-        return false;
+        throw new UnsupportedOperationException("removeAllItems");
+        //return false;
     }
 
     /* Remove a container property added with addContainerProperty() */
@@ -809,13 +809,13 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
     }
 
     public Object addItemAfter(Object previousItemId) throws UnsupportedOperationException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
+        //return null;
     }
 
     public Item addItemAfter(Object previousItemId, Object newItemId) throws UnsupportedOperationException {
-        // TODO Auto-generated method stub
-        return null;
+    	throw new UnsupportedOperationException();
+        //return null;
     }
 
     /**
