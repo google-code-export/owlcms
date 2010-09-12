@@ -41,7 +41,7 @@
 				);
 	}
 %>
-<title>Tableau des essais - Attempt Board</title>
+<title>Ordre de passage - Lifting Order</title>
 <link rel="stylesheet" type="text/css" href="result.css" />
 <style type="text/css">
 .requestedWeight {

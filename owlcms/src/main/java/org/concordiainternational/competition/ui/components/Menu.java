@@ -61,10 +61,10 @@ public class Menu extends MenuBar implements Serializable {
         createDisplayMenuItem(projectors, competitionApplication, locale);
         createSimpleDisplayMenuItem(projectors, competitionApplication, locale);
         projectors.addSeparator();
-        createAttemptMenuItem(projectors, competitionApplication, locale);
+        createSummaryLiftOrderMenuItem(projectors, competitionApplication, locale);
         createLiftOrderMenuItem(projectors, competitionApplication, locale);
         projectors.addSeparator();
-        createCurrentLifterDisplayMenuItem(projectors, competitionApplication, locale);
+        createAttemptBoardMenuItem(projectors, competitionApplication, locale);
         projectors.addSeparator();
         createCountdownDisplayMenuItem(projectors, competitionApplication, locale);
         
@@ -266,7 +266,25 @@ public class Menu extends MenuBar implements Serializable {
      * @param competitionApplication
      * @param locale
      */
-    private MenuItem createAttemptMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
+    private MenuItem createSummaryLiftOrderMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
+            final Locale locale) {
+        return projectors.addItem(Messages.getString("CompetitionApplication.SummaryLiftingOrder", locale), //$NON-NLS-1$
+            null, // new ThemeResource("icons/32/folder-add.png"),
+            new Command() {
+                private static final long serialVersionUID = 5658882232799685230L;
+
+                @Override
+                public void menuSelected(MenuItem selectedItem) {
+                    competitionApplication.doDisplay(CompetitionApplicationComponents.SUMMARY_LIFT_ORDER_VIEW);
+                }
+            });
+    }
+
+    /**
+     * @param competitionApplication
+     * @param locale
+     */
+    private MenuItem createAttemptBoardMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
             final Locale locale) {
         return projectors.addItem(Messages.getString("CompetitionApplication.AttemptBoard", locale), //$NON-NLS-1$
             null, // new ThemeResource("icons/32/folder-add.png"),
@@ -276,24 +294,6 @@ public class Menu extends MenuBar implements Serializable {
                 @Override
                 public void menuSelected(MenuItem selectedItem) {
                     competitionApplication.doDisplay(CompetitionApplicationComponents.ATTEMPT_BOARD_VIEW);
-                }
-            });
-    }
-
-    /**
-     * @param competitionApplication
-     * @param locale
-     */
-    private MenuItem createCurrentLifterDisplayMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
-            final Locale locale) {
-        return projectors.addItem(Messages.getString("CompetitionApplication.CurrentLifter", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/folder-add.png"),
-            new Command() {
-                private static final long serialVersionUID = 5658882232799685230L;
-
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.LIFTER_DISPLAY_VIEW);
                 }
             });
     }

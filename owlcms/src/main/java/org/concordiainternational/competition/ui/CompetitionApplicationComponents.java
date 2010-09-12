@@ -39,12 +39,12 @@ import com.vaadin.ui.Window;
 
 public class CompetitionApplicationComponents {
     public static final String ANNOUNCER_VIEW = "announcerView"; //$NON-NLS-1$
-    public static final String ATTEMPT_BOARD_VIEW = "attemptBoardView"; //$NON-NLS-1$
+    public static final String SUMMARY_LIFT_ORDER_VIEW = "summaryLiftOrderView"; //$NON-NLS-1$
     public static final String CATEGORY_LIST = "categoryList"; //$NON-NLS-1$
     public static final String CHANGES_VIEW = "changesView"; //$NON-NLS-1$
     public static final String COMPETITION_EDITOR = "competitionEditor"; //$NON-NLS-1$
     public static final String GROUP_LIST = "groupList"; //$NON-NLS-1$
-    public static final String LIFTER_DISPLAY_VIEW = "lifterDisplay"; //$NON-NLS-1$
+    public static final String ATTEMPT_BOARD_VIEW = "attemptBoard"; //$NON-NLS-1$
     public static final String LIFT_ORDER_VIEW = "liftOrderBoard"; //$NON-NLS-1$
     public static final String PLATFORM_LIST = "platformList"; //$NON-NLS-1$
     public static final String REGISTRATION_LIST = "registrationList"; //$NON-NLS-1$
@@ -79,7 +79,7 @@ public class CompetitionApplicationComponents {
         final CompetitionEditorComponent competitionEditorComponent = new CompetitionEditorComponent();
         urlFragmentToView.put(HOME, competitionEditorComponent);
         urlFragmentToView.put(ANNOUNCER_VIEW, new AnnouncerViewComponent());
-        urlFragmentToView.put(ATTEMPT_BOARD_VIEW, new AttemptBoardComponent());
+        urlFragmentToView.put(SUMMARY_LIFT_ORDER_VIEW, new SummaryLiftOrderViewComponent());
         urlFragmentToView.put(CATEGORY_LIST, new CategoryListComponent());
         urlFragmentToView.put(CHANGES_VIEW, new ChangesViewComponent());
         urlFragmentToView.put(COMPETITION_EDITOR, competitionEditorComponent);
@@ -87,7 +87,7 @@ public class CompetitionApplicationComponents {
         urlFragmentToView.put(DECISION_LIGHTS, new DecisionLightsComponent());
         urlFragmentToView.put(JURY_LIGHTS, new JuryLightsComponent());
         urlFragmentToView.put(GROUP_LIST, new GroupListComponent());
-        urlFragmentToView.put(LIFTER_DISPLAY_VIEW, new CurrentLifterDisplayComponent());
+        urlFragmentToView.put(ATTEMPT_BOARD_VIEW, new AttemptBoardComponent());
         urlFragmentToView.put(LIFT_ORDER_VIEW, new LifterBoardComponent());
         urlFragmentToView.put(PLATFORM_LIST, new PlatformListComponent());
         urlFragmentToView.put(REGISTRATION_LIST, new RegistrationListComponent());
@@ -342,27 +342,27 @@ public class CompetitionApplicationComponents {
     /**
      * Lazy builder for lift order board.
      */
-    private class AttemptBoardComponent implements CompetitionApplicationComponent {
-        private BrowserPanel attemptBoardView = null;
+    private class SummaryLiftOrderViewComponent implements CompetitionApplicationComponent {
+        private BrowserPanel summaryLifterView = null;
 
         public BrowserPanel get(boolean initFromFragment, String viewName) {
             try {
-                attemptBoardView = (new BrowserPanel(initFromFragment, viewName, "jsp/attemptBoard.jsp?platformName=")); //$NON-NLS-1$
+                summaryLifterView = (new BrowserPanel(initFromFragment, viewName, "jsp/liftingOrder.jsp?platformName=")); //$NON-NLS-1$
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
-            return attemptBoardView;
+            return summaryLifterView;
         }
     }
 
     /**
      * Lazy builder for current lifter information
      */
-    private class CurrentLifterDisplayComponent implements CompetitionApplicationComponent {
+    private class AttemptBoardComponent implements CompetitionApplicationComponent {
         // private BrowserPanel currentLifterPanel = null;
 
-        public CurrentLifterView get(boolean initFromFragment, String viewName) {
-            return new CurrentLifterView(initFromFragment, viewName);
+        public AttemptBoardView get(boolean initFromFragment, String viewName) {
+            return new AttemptBoardView(initFromFragment, viewName);
         }
     }
 

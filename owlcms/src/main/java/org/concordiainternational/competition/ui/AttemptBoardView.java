@@ -29,9 +29,9 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.ProgressIndicator;
 
-public class CurrentLifterView extends Panel implements ApplicationView, GroupData.UpdateEventListener {
+public class AttemptBoardView extends Panel implements ApplicationView, GroupData.UpdateEventListener {
 
-    Logger logger = LoggerFactory.getLogger(CurrentLifterView.class);
+    Logger logger = LoggerFactory.getLogger(AttemptBoardView.class);
 
     private static final long serialVersionUID = 2443396161202824072L;
     // private CompetitionApplication app;
@@ -50,7 +50,7 @@ public class CurrentLifterView extends Panel implements ApplicationView, GroupDa
 
     private static final boolean PUSHING = true;
 
-    public CurrentLifterView(boolean initFromFragment, String viewName) {
+    public AttemptBoardView(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
