@@ -61,8 +61,8 @@ public class Menu extends MenuBar implements Serializable {
         createDisplayMenuItem(projectors, competitionApplication, locale);
         createSimpleDisplayMenuItem(projectors, competitionApplication, locale);
         projectors.addSeparator();
-        createSummaryLiftOrderMenuItem(projectors, competitionApplication, locale);
         createLiftOrderMenuItem(projectors, competitionApplication, locale);
+        createSummaryLiftOrderMenuItem(projectors, competitionApplication, locale);
         projectors.addSeparator();
         createAttemptBoardMenuItem(projectors, competitionApplication, locale);
         projectors.addSeparator();
@@ -268,7 +268,7 @@ public class Menu extends MenuBar implements Serializable {
      */
     private MenuItem createSummaryLiftOrderMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
             final Locale locale) {
-        return projectors.addItem(Messages.getString("CompetitionApplication.SummaryLiftingOrder", locale), //$NON-NLS-1$
+        return projectors.addItem(Messages.getString("CompetitionApplication.SummaryLiftOrder", locale), //$NON-NLS-1$
             null, // new ThemeResource("icons/32/folder-add.png"),
             new Command() {
                 private static final long serialVersionUID = 5658882232799685230L;

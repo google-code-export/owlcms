@@ -35,7 +35,7 @@ public class Messages {
             // as it seems.
             return ResourceBundle.getBundle(BUNDLE_NAME, locale).getString(key);
         } catch (MissingResourceException e) {
-            return '«' + key + '»';
+            return 'Â«' + key + 'Â»';
         }
     }
 }
