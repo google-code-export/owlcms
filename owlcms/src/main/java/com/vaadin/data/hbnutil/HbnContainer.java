@@ -415,8 +415,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
                         }
                     } catch (Throwable ite) {
                         // System.err.println("Throwable "+ite.getClass()+" "+newValue.getClass());
-                        // FIXME: this is a crude patch for empty values passed
-                        // in for a double.
+                        // TODO: this is a crude patch for empty values passed in for a double.
                         if (getType().isAssignableFrom(Double.class) && newValue.toString().isEmpty()) {
                             value = constr.newInstance(new Object[] { "0" });
                             System.err.println("value " + value);
