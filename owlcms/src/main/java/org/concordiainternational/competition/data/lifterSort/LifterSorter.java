@@ -397,7 +397,6 @@ public class LifterSorter implements Serializable {
                 setPoints(curLifter, 0, rankingType);
             } else {
                 // if (curLifter.getTeamMember()) {
-                // // FIXME: probably obsolete.
                 // setTeamRank(curLifter, 0, rankingType);
                 // }
                 final double rankingTotal = getRankingTotal(curLifter, rankingType);
