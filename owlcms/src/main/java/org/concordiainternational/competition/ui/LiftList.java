@@ -47,18 +47,8 @@ import com.vaadin.ui.Button.ClickEvent;
  * @author jflamy
  * 
  */
-public class LiftList extends GenericBeanList<Lifter> implements Property.ValueChangeListener, // this
-                                                                                               // class
-                                                                                               // reacts
-                                                                                               // to
-                                                                                               // row
-                                                                                               // selection
-                                                                                               // events
-                                                                                               // in
-                                                                                               // the
-                                                                                               // table
-                                                                                               // it
-                                                                                               // displays
+public class LiftList extends GenericBeanList<Lifter> implements 
+		Property.ValueChangeListener, // change in table value = change in selected row
         EditableList {
 
     static final Logger logger = LoggerFactory.getLogger(LiftList.class);
