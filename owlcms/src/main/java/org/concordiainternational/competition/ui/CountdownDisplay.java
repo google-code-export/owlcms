@@ -70,12 +70,10 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
 
         display(platformName, masterData);
 
-        logger.warn("app = {}  masterApplication={}",app,masterData.getMasterApplication());
         if (app != masterData.getMasterApplication()) {
             // we are not the master application; hide the menu bar.
         	logger.warn("hiding menu");
             app.components.menu.setVisible(false);
-            if (pusher != null) pusher.push();
         }
     }
 
