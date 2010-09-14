@@ -1,0 +1,14 @@
+
+syntax: regexp
+^target/classes$
+
+syntax: glob
+owlcms-*
+syntax: regexp
+^target/\.generated$
+syntax: regexp
+^target/war$
+syntax: regexp
+^src/main/webapp/VAADIN/themes/competition/Thumbs\.db$
+syntax: regexp
+^target/tomcat$
