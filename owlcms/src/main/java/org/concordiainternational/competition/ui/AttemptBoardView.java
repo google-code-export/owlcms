@@ -34,7 +34,6 @@ public class AttemptBoardView extends Panel implements ApplicationView, GroupDat
     Logger logger = LoggerFactory.getLogger(AttemptBoardView.class);
 
     private static final long serialVersionUID = 2443396161202824072L;
-    // private CompetitionApplication app;
     private GroupData masterData;
     private LifterInfo announcerInfo;
     private Mode mode;
@@ -66,8 +65,12 @@ public class AttemptBoardView extends Panel implements ApplicationView, GroupDat
 
         CompetitionApplication app = CompetitionApplication.getCurrent();
         if (platformName == null) {
+        	// get the default platform name
             platformName = CompetitionApplicationComponents.initPlatformName();
+        } else if (app.getPlatform() == null) {
+        	app.setPlatformByName(platformName);
         }
+        
         masterData = app.getMasterData(platformName);
         if (app != masterData.getMasterApplication()) {
             // we are not the master application; hide the menu bar.

@@ -53,9 +53,14 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         } else {
             this.viewName = viewName;
         }
-        app = CompetitionApplication.getCurrent();
+        
+        this.app = CompetitionApplication.getCurrent();
+        
         if (platformName == null) {
+        	// get the default platform name
             platformName = CompetitionApplicationComponents.initPlatformName();
+        } else if (app.getPlatform() == null) {
+        	app.setPlatformByName(platformName);
         }
 
         create(app, platformName);
@@ -65,9 +70,12 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
 
         display(platformName, masterData);
 
+        logger.warn("app = {}  masterApplication={}",app,masterData.getMasterApplication());
         if (app != masterData.getMasterApplication()) {
             // we are not the master application; hide the menu bar.
+        	logger.warn("hiding menu");
             app.components.menu.setVisible(false);
+            if (pusher != null) pusher.push();
         }
     }
 

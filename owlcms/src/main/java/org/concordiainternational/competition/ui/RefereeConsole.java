@@ -72,9 +72,15 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
             this.viewName = viewName;
         }
         
+        this.app = CompetitionApplication.getCurrent();
+        
         if (platformName == null) {
+        	// get the default platform name
             platformName = CompetitionApplicationComponents.initPlatformName();
+        } else if (app.getPlatform() == null) {
+        	app.setPlatformByName(platformName);
         }
+        
         masterData = GroupData.getInstance(platformName);
         final DecisionController decisionController = masterData.getDecisionController();
         decisionController.addListener(this);

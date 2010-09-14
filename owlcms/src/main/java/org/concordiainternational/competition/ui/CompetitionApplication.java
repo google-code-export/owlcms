@@ -187,6 +187,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
     private ICEPush pusher;
 
+	private TransactionListener httpRequestListener;
+
     public void displayRefereeConsole(int refereeIndex) {
         final RefereeConsole view = (RefereeConsole) components
                 .getViewByName(CompetitionApplicationComponents.REFEREE_CONSOLE, false);
@@ -301,12 +303,14 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
 
     @Override
-    public void init() {
+    public void init() {    	
         // ignore the preference received from the browser.
         if (!USE_BROWSER_LANGUAGE) this.setLocale(getDefaultLocale());
 
         current.set(CompetitionApplication.this);
-        components = new CompetitionApplicationComponents(new Panel(), null, null);
+        if (components == null) {
+        	components = new CompetitionApplicationComponents(new Panel(), null, null);
+        }
 
         // set system message language if any are shown while "init" is running.
         LocalizedSystemMessages msg = (LocalizedSystemMessages) getSystemMessages();
@@ -314,7 +318,9 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
         // the following defines what will happen before and after each http
         // request.
-        attachHttpRequestListener();
+        if (httpRequestListener == null) {
+        	httpRequestListener = attachHttpRequestListener();
+        }
 
         // create the initial look.
         buildMainLayout();
@@ -467,8 +473,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * Vaadin "transaction" equals "http request". This method fires for all
      * servlets in the session.
      */
-    private void attachHttpRequestListener() {
-        getContext().addTransactionListener(new TransactionListener() {
+    private TransactionListener attachHttpRequestListener() {
+        TransactionListener listener = new TransactionListener() {
             private static final long serialVersionUID = -2365336986843262181L;
 
             public void transactionEnd(Application application, Object transactionData) {
@@ -489,7 +495,9 @@ public class CompetitionApplication extends Application implements HbnSessionMan
                 checkURI(request.getRequestURI());
                 request.getSession(true).setMaxInactiveInterval(3600);
             }
-        });
+        };
+		getContext().addTransactionListener(listener);
+		return listener;
     }
 
     /**

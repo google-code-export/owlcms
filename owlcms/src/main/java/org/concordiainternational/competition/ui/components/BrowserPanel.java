@@ -67,17 +67,23 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
     private String appUrlString;
 
     public BrowserPanel(boolean initFromFragment, String viewName, String urlString) throws MalformedURLException {
+
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
             this.viewName = viewName;
         }
+        
+        this.app = CompetitionApplication.getCurrent();
+        
         if (platformName == null) {
+        	// get the default platform name
             platformName = CompetitionApplicationComponents.initPlatformName();
+        } else if (app.getPlatform() == null) {
+        	app.setPlatformByName(platformName);
         }
         
         this.urlString = urlString;
-        app = CompetitionApplication.getCurrent();
         getAppUrlString();
 
         create(app);

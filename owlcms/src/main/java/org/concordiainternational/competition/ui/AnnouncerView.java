@@ -94,8 +94,13 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, GroupD
         this.mode = mode;
 
         if (platformName == null) {
+        	// get the default platform name
             platformName = CompetitionApplicationComponents.initPlatformName();
+        } else if (app.getPlatform() == null) {
+        	app.setPlatformByName(platformName);
         }
+
+        
         groupData = GroupData.getInstance(platformName);
         if (mode == Mode.ANNOUNCER) {
             final CompetitionSession currentGroup = groupData.getCurrentCompetitionSession();

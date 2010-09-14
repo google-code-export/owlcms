@@ -61,8 +61,14 @@ public class DecisionLights extends SplitPanel implements DecisionEventListener,
         } else {
             this.viewName = viewName;
         }
+        
+        this.app = CompetitionApplication.getCurrent();
+        
         if (platformName == null) {
+        	// get the default platform name
             platformName = CompetitionApplicationComponents.initPlatformName();
+        } else if (app.getPlatform() == null) {
+        	app.setPlatformByName(platformName);
         }
         this.juryMode = juryMode;
         
