@@ -92,10 +92,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
         // we cannot call push() at this point, pass false as parameter
         display(platformName, masterData, false);
 
-        if (app != masterData.getMasterApplication()) {
-            // we are not the master application; hide the menu bar.
-            app.components.menu.setVisible(false);
-        }
+
     }
 
     /**
@@ -206,10 +203,13 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
                 top.addComponent(weight, "weight"); //$NON-NLS-1$	
             }
         }
+        
         if (doPush && pusher != null) {
             pusher.push();
         }
     }
+
+
 
     /**
      * @param platformName
