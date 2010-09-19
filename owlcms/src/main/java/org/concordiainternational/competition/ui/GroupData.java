@@ -151,10 +151,11 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
     }
 
     /**
-     * This method reload the underlying data. Beware that only "master" views
+     * This method reloads the underlying data. Beware that only "master" views
      * are meant to do this, such as AnnouncerView when mode = ANNOUNCER, or the
-     * results view. "slave" views such as the MARSHAL, TIMEKEEPER views should
-     * never call this method.
+     * results view to edit results after a group is over.
+     * 
+     * "slave" views such as the MARSHAL, TIMEKEEPER views should never call this method.
      */
     void loadData() {
         currentGroup = this.getCurrentCompetitionSession();
