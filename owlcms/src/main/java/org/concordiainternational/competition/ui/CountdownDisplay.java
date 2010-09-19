@@ -26,6 +26,7 @@ import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.GroupData.UpdateEvent;
 import org.concordiainternational.competition.ui.components.ApplicationView;
+import org.concordiainternational.competition.ui.components.DecisionLightsWindow;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ import org.vaadin.artur.icepush.ICEPush;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 public class CountdownDisplay extends VerticalLayout implements ApplicationView, CountdownTimerListener, DecisionEventListener {
     public final static Logger logger = LoggerFactory.getLogger(CountdownDisplay.class);
@@ -48,6 +50,8 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
     private ICEPush pusher = null;
     private int lastTimeRemaining;
     private String viewName;
+	private Window popUp;
+	private DecisionLightsWindow content;
 
     public CountdownDisplay(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
@@ -236,6 +240,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
     @Override
     public void stop(int timeRemaining) {
     }
+    
 
     /* (non-Javadoc)
      * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()
@@ -286,9 +291,64 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         this.setExpandRatio(refresher, 0);
     }
 
-	@Override
-	public void updateEvent(DecisionEvent updateEvent) {
-		// TODO Auto-generated method stub
+    @Override
+    public void updateEvent(DecisionEvent updateEvent) {
+        synchronized (app) {
+            switch (updateEvent.getType()) {
+            case DOWN:
+            case WAITING:
+            case UPDATE:
+            case SHOW:
+                // if window is not up, show it.
+                showLights(updateEvent);
+                break;
+            case RESET:
+                logger.warn("received RESET event");
+                hideLights(updateEvent);
+                break;
+            }
+        }
+        if (pusher != null) {
+            pusher.push();
+        }
+    }
+
+    
+	/**
+	 * Make sure decision lights are shown, and relay the event to the display component.
+	 * @param updateEvent
+	 */
+	private void showLights(DecisionEvent updateEvent) {
+		// create window
+		if (popUp == null) {
+			Window mainWindow = app.getMainWindow();
+			content = new DecisionLightsWindow(false, false);
+			popUp = new Window(platformName, content);
+			mainWindow.addWindow(popUp);
+		}
+		popUp.setVisible(true);
+		
+		// relay the event
+		content.updateEvent(updateEvent);
 		
 	}
+	
+	/**
+	 * Hide the decision lights.
+	 * @param updateEvent
+	 */
+	private void hideLights(DecisionEvent updateEvent) {
+		// relay the event (just in case)
+		if (content != null) {
+			content.updateEvent(updateEvent);
+		}
+		
+		
+		// close window
+		if (popUp != null) {
+			popUp.setVisible(false);
+		}
+	}
+
+
 }
