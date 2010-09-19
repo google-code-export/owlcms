@@ -53,12 +53,7 @@ public class DecisionLightsWindow extends Window implements DecisionEventListene
 
 	private boolean publicFacing;
 
-    DecisionLightsWindow(boolean initFromFragment, String viewName, boolean juryMode, boolean publicFacing) {
-        if (initFromFragment) {
-            setParametersFromFragment();
-        } else {
-            this.viewName = viewName;
-        }
+    public DecisionLightsWindow(boolean juryMode, boolean publicFacing) {
         
         this.app = CompetitionApplication.getCurrent();
         this.publicFacing = publicFacing;
