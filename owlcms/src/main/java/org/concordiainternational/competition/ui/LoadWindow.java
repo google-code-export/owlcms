@@ -189,8 +189,6 @@ public class LoadWindow extends Window implements Property.ValueChangeListener, 
      * 
      * @param locale
      * @param expectedBarWeight
-     *            TODO
-     * @param app
      * @return
      */
     private Form createGrid(Locale locale, int expectedBarWeight) {

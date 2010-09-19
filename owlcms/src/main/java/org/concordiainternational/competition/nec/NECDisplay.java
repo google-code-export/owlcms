@@ -320,7 +320,6 @@ public class NECDisplay implements Serializable {
     }
 
     public Lifter getCurrentLifter() {
-        // TODO Auto-generated method stub
         return currentLifter;
     }
 

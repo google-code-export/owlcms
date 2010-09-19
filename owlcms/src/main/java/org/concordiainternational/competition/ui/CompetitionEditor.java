@@ -97,7 +97,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
     /**
      * Display the competition information.
      * 
-     * TODO: redo this using a form; this would enable us to use a
+     * REFACTOR: redo this using a form; this would enable us to use a
      * FormFieldFactory and deal more elegantly with the dual nature of the file
      * name field.
      * 

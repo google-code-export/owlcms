@@ -95,7 +95,6 @@ public class LifterCardSheet extends OutputSheet {
     /**
      * @param rownum
      * @param worksheet
-     *            TODO
      */
     private void createNewCard(int rownum, WorkSheetHandle worksheet) {
         int row = 0;

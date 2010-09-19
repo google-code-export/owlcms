@@ -34,8 +34,6 @@ import org.slf4j.LoggerFactory;
  * longer has an active editor, it should stop broadcasting events to the
  * listener.
  * 
- * TODO: this manager could manage several listeners.
- * 
  * @author jflamy
  * 
  * @param <Listener>

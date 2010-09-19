@@ -313,7 +313,6 @@ public class ResultView extends SplitPanel implements ApplicationView, GroupData
      */
     @Override
     public boolean needsMenu() {
-        // TODO Auto-generated method stub
         return true;
     }
     

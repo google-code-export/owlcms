@@ -20,6 +20,8 @@ import java.net.MalformedURLException;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.RuleViolationException;
+import org.concordiainternational.competition.decision.DecisionController.DecisionEventListener;
+import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.GroupData.UpdateEvent;
@@ -33,7 +35,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
 
-public class CountdownDisplay extends VerticalLayout implements ApplicationView, CountdownTimerListener {
+public class CountdownDisplay extends VerticalLayout implements ApplicationView, CountdownTimerListener, DecisionEventListener {
     public final static Logger logger = LoggerFactory.getLogger(CountdownDisplay.class);
     private static final long serialVersionUID = 1437157542240297372L;
     private static final boolean PUSHING = true;
@@ -283,4 +285,10 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         this.addComponent(refresher);
         this.setExpandRatio(refresher, 0);
     }
+
+	@Override
+	public void updateEvent(DecisionEvent updateEvent) {
+		// TODO Auto-generated method stub
+		
+	}
 }

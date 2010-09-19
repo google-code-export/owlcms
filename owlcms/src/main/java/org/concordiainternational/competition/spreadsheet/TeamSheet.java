@@ -117,12 +117,12 @@ public class TeamSheet extends ResultSheet {
 
     }
 
+
     /**
      * @param lifters
      * @param workSheet
      * @param rankingType
      * @param clubs
-     *            TODO
      * @param gender
      * @throws Exception
      */
