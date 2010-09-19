@@ -55,7 +55,7 @@ public class DecisionLights extends SplitPanel implements DecisionEventListener,
     private String platformName;
     private String viewName;
 
-    DecisionLights(boolean initFromFragment, String viewName, boolean juryMode) {
+    DecisionLights(boolean initFromFragment, String viewName, boolean juryMode, boolean publicFacing) {
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
@@ -72,7 +72,32 @@ public class DecisionLights extends SplitPanel implements DecisionEventListener,
         }
         this.juryMode = juryMode;
         
-        masterData = GroupData.getInstance(platformName);
+        createLights();
+
+        top.setMargin(true);
+        top.setSpacing(true);
+
+        this.setFirstComponent(top);
+        bottom = createDecisionButtons();
+        this.setSecondComponent(bottom);
+        setSplitPosition(650, UNITS_PIXELS);
+
+        if (PUSHING) {
+            pusher = app.ensurePusher();
+        } else {
+            setupPolling();
+        }
+        
+        resetLights();
+        resetBottom();
+
+    }
+
+	/**
+	 * 
+	 */
+	private void createLights() {
+		masterData = GroupData.getInstance(platformName);
         masterData.getDecisionController().addListener(this);
         top.setSizeFull();
 
@@ -83,35 +108,9 @@ public class DecisionLights extends SplitPanel implements DecisionEventListener,
             top.addComponent(decisionLights[i]);
             top.setExpandRatio(decisionLights[i], 100.0F / decisionLights.length);
         }
-        if (PUSHING) {
-            pusher = app.ensurePusher();
-        } else {
-            setupPolling();
-        }
-        top.setMargin(true);
-        top.setSpacing(true);
+	}
 
-        this.setFirstComponent(top);
-        bottom = createGrid();
-        this.setSecondComponent(bottom);
-        setSplitPosition(650, UNITS_PIXELS);
-
-        resetLights();
-        resetBottom();
-
-    }
-
-    /**
-     * 
-     */
-    private void setupPolling() {
-        final ProgressIndicator refresher = new ProgressIndicator();
-        refresher.setStyleName("invisible");
-        top.addComponent(refresher);
-        refresher.setPollingInterval(150);
-    }
-
-    private GridLayout createGrid() {
+    private GridLayout createDecisionButtons() {
         GridLayout bottom = new GridLayout(3, 3);
         bottom.setMargin(true);
         bottom.setSpacing(true);
@@ -328,5 +327,15 @@ public class DecisionLights extends SplitPanel implements DecisionEventListener,
         if (params.length >= 2) {
             platformName = params[1];
         }
+    }
+    
+    /**
+     * 
+     */
+    private void setupPolling() {
+        final ProgressIndicator refresher = new ProgressIndicator();
+        refresher.setStyleName("invisible");
+        top.addComponent(refresher);
+        refresher.setPollingInterval(150);
     }
 }

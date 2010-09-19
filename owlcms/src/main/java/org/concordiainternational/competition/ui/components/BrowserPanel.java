@@ -48,7 +48,8 @@ import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
 
 public class BrowserPanel extends VerticalLayout implements ApplicationView, CountdownTimerListener {
-    public final static Logger logger = LoggerFactory.getLogger(BrowserPanel.class);
+    private static final String ATTEMPT_WIDTH = "12em";
+	public final static Logger logger = LoggerFactory.getLogger(BrowserPanel.class);
     private static final long serialVersionUID = 1437157542240297372L;
     private static final boolean PUSHING = true;
 
@@ -194,7 +195,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
                 top.addComponent(name, "name"); //$NON-NLS-1$
                 attempt.setValue(""); //$NON-NLS-1$
                 top.addComponent(attempt, "attempt"); //$NON-NLS-1$
-                attempt.setWidth("12em"); //$NON-NLS-1$
+                attempt.setWidth(ATTEMPT_WIDTH); //$NON-NLS-1$
                 timeDisplay.setValue(""); //$NON-NLS-1$
                 timeDisplay.setWidth("4em");
                 top.addComponent(timeDisplay, "timeDisplay"); //$NON-NLS-1$
@@ -304,6 +305,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
                         : Messages.getString("Common.shortSnatch", locale))); //$NON-NLS-1$
             attempt.setValue(tryInfo);
         }
+        attempt.setWidth(ATTEMPT_WIDTH);
         top.addComponent(attempt, "attempt"); //$NON-NLS-1$
     }
 

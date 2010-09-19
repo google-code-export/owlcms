@@ -141,16 +141,17 @@
 
 .projectorTop td.weight {
 	color: aqua;
-	text-align: center;
+	text-align: right;
 }
 
 .projectorTop td.attempt {
 	text-align: right;
+	background-color: blue;
 }
 
 .projectorTop td.timeDisplay {
 	color: yellow;
-	text-align: left;
+	text-align: center;
 }
 
 .v-gridlayout input.v-textfield {

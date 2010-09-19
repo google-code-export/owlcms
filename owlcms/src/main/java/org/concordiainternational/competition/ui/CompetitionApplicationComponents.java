@@ -187,7 +187,7 @@ public class CompetitionApplicationComponents {
         private DecisionLights decisionLights = null;
 
         public ApplicationView get(boolean initFromFragment, String viewName) {
-            this.decisionLights = (new DecisionLights(initFromFragment, viewName, false));
+            this.decisionLights = (new DecisionLights(initFromFragment, viewName, false, false));
             return decisionLights;
         }
     }
@@ -199,7 +199,7 @@ public class CompetitionApplicationComponents {
         private DecisionLights decisionLights = null;
 
         public ApplicationView get(boolean initFromFragment, String viewName) {
-            this.decisionLights = (new DecisionLights(initFromFragment, viewName, true));
+            this.decisionLights = (new DecisionLights(initFromFragment, viewName, true, false));
             return decisionLights;
         }
     }
