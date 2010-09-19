@@ -413,6 +413,24 @@ button.yesButton {
 .largeCountdown {
 	font-size: 65ex;
 	font-weight: bold;
+	vertical-align: middle;
+}
+
+.decisionLightsWindow .v-window-outerheader {
+	display: none;
+}
+
+.decisionLightsWindow .v-window-footer {
+	display: none;
+}
+
+.decisionLightsWindow .v-window-closebox {
+	display: none;
+}
+
+.decisionLightsWindow .v-window-contents {
+	background-color: black;
+	color: white;
 }
 
 .v-panel-content .largeCountdownBackground {

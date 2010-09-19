@@ -50,7 +50,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
     private ICEPush pusher = null;
     private int lastTimeRemaining;
     private String viewName;
-	private Window popUp;
+	private Window popUp = null;
 	private DecisionLightsWindow content;
 
     public CountdownDisplay(boolean initFromFragment, String viewName) {
@@ -73,6 +73,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         masterData = app.getMasterData(platformName);
 
         registerAsGroupDataListener(platformName, masterData);
+        masterData.getDecisionController().addListener(this);
 
         display(platformName, masterData);
     }
@@ -296,16 +297,28 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         synchronized (app) {
             switch (updateEvent.getType()) {
             case DOWN:
-            case WAITING:
-            case UPDATE:
+            	logger.info("ignoring DOWN event");
+            	break;
             case SHOW:
                 // if window is not up, show it.
+            	logger.info("received SHOW event");
                 showLights(updateEvent);
                 break;
+                
             case RESET:
-                logger.warn("received RESET event");
+            	// we are done
+            	logger.info("received RESET event");
                 hideLights(updateEvent);
                 break;
+                
+                
+            case WAITING:
+            	logger.info("ignoring WAITING event");
+            	break;
+            case UPDATE:
+            	// do nothing, lifter should not see that referees are changing their minds.
+            	logger.info("ignoring UPDATE event");
+            	break;
             }
         }
         if (pusher != null) {
@@ -321,10 +334,14 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
 	private void showLights(DecisionEvent updateEvent) {
 		// create window
 		if (popUp == null) {
+			logger.warn("creating window");
 			Window mainWindow = app.getMainWindow();
 			content = new DecisionLightsWindow(false, false);
-			popUp = new Window(platformName, content);
+			popUp = new Window(platformName);
+			popUp.addStyleName("decisionLightsWindow");
+			popUp.setSizeFull();
 			mainWindow.addWindow(popUp);
+			popUp.setContent(content);
 		}
 		popUp.setVisible(true);
 		
