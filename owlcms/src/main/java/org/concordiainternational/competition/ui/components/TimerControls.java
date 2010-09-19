@@ -36,7 +36,9 @@ import com.vaadin.ui.Button.ClickEvent;
 
 public class TimerControls extends GridLayout {
 
-    private static final long serialVersionUID = 4075226732120553473L;
+    private static final String ANNOUNCER_BUTTON_WIDTH = "9em";
+	private static final String ANNOUNCER_SMALL_BUTTON_WIDTH = "4em";
+	private static final long serialVersionUID = 4075226732120553473L;
     static final Logger logger = LoggerFactory.getLogger(TimerControls.class);
     static final Logger timingLogger = LoggerFactory
             .getLogger("org.concordiainternational.competition.timer.TimingLogger"); //$NON-NLS-1$
@@ -49,6 +51,7 @@ public class TimerControls extends GridLayout {
      * want to register two successful or failed lifts.
      */
     protected static final long MIN_CLICK_DELAY = 1000;
+
 
     final public Button announce = new Button();
     final public Button changeWeight = new Button();
@@ -192,7 +195,7 @@ public class TimerControls extends GridLayout {
             }
         };
         failedLift.addListener(failedLiftListener);
-        failedLift.setWidth("8em"); //$NON-NLS-1$
+        failedLift.setWidth(ANNOUNCER_BUTTON_WIDTH); //$NON-NLS-1$
         failedLift.setCaption(Messages.getString("LifterInfo.Failed", locale)); //$NON-NLS-1$
     }
 
@@ -228,7 +231,7 @@ public class TimerControls extends GridLayout {
             }
         };
         okLift.addListener(okLiftListener);
-        okLift.setWidth("8em"); //$NON-NLS-1$
+        okLift.setWidth(ANNOUNCER_BUTTON_WIDTH); //$NON-NLS-1$
         okLift.setCaption(Messages.getString("LifterInfo.Successful", locale)); //$NON-NLS-1$
     }
 
@@ -263,7 +266,7 @@ public class TimerControls extends GridLayout {
             }
         };
         stopStart.addListener(stopStartListener);
-        stopStart.setWidth("8em"); //$NON-NLS-1$
+        stopStart.setWidth(ANNOUNCER_BUTTON_WIDTH); //$NON-NLS-1$
         stopStart.setCaption(Messages.getString("LifterInfo.StopStartTime", locale)); //$NON-NLS-1$
     }
 
@@ -294,6 +297,7 @@ public class TimerControls extends GridLayout {
             }
         };
         oneMinute.addListener(oneMinuteListener);
+        oneMinute.setWidth(ANNOUNCER_SMALL_BUTTON_WIDTH);
         oneMinute.setCaption(Messages.getString("LifterInfo.OneMinute", locale)); //$NON-NLS-1$
     }
 
@@ -324,6 +328,7 @@ public class TimerControls extends GridLayout {
             }
         };
         twoMinutes.addListener(twoMinutesListener);
+        twoMinutes.setWidth(ANNOUNCER_SMALL_BUTTON_WIDTH);
         twoMinutes.setCaption(Messages.getString("LifterInfo.TwoMinutes", locale)); //$NON-NLS-1$
     }
 
@@ -365,7 +370,7 @@ public class TimerControls extends GridLayout {
             }
         };
         changeWeight.addListener(changeWeightListener);
-        changeWeight.setWidth("8em"); //$NON-NLS-1$
+        changeWeight.setWidth(ANNOUNCER_BUTTON_WIDTH); 
         changeWeight.setCaption(Messages.getString("LifterInfo.WeightChange", locale)); //$NON-NLS-1$
     }
 
@@ -394,7 +399,7 @@ public class TimerControls extends GridLayout {
         };
 
         announce.addListener(announceListener);
-        announce.setWidth("8em"); //$NON-NLS-1$
+        announce.setWidth(ANNOUNCER_BUTTON_WIDTH); //$NON-NLS-1$
         announce.setCaption(Messages.getString("LifterInfo.Announce", locale)); //$NON-NLS-1$
     }
 
@@ -422,7 +427,7 @@ public class TimerControls extends GridLayout {
             }
         };
         stopTimeBottom.addListener(stopTimeBottomListener);
-        stopTimeBottom.setWidth("8em"); //$NON-NLS-1$
+        stopTimeBottom.setWidth(ANNOUNCER_BUTTON_WIDTH); //$NON-NLS-1$
         stopTimeBottom.setCaption(Messages.getString("LifterInfo.WeightChange", locale)); //$NON-NLS-1$
     }
 
