@@ -86,7 +86,7 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
             Decision[] decisions = updateEvent.getDecisions();
             switch (updateEvent.getType()) {
             case DOWN:
-                logger.warn("received DOWN event");
+                logger.debug("received DOWN event");
                 if (juryMode) {
                     showLights(decisions);
                 } else {
@@ -102,7 +102,7 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
                 }
                 break;
             case WAITING:
-                logger.warn("received WAITING event");
+                logger.debug("received WAITING event");
                 for (int i = 0; i < decisions.length; i++) {
                     if (decisions[i].accepted == null) {
                         // do nothing; maybe show in yellow in Jury Mode ?
@@ -110,20 +110,20 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
                 }
                 break;
             case UPDATE:
-                logger.warn("received UPDATE event");
+                logger.debug("received UPDATE event");
                 if (juryMode) {
                     showLights(decisions);
                     updateLights();
                 }
                 break;
             case SHOW:
-                logger.warn("received SHOW event");
+                logger.debug("received SHOW event");
                 showLights(decisions);
                 updateLights();
 
                 break;
             case RESET:
-                logger.warn("received RESET event");
+                logger.debug("received RESET event");
                 resetLights();
                 break;
             }
