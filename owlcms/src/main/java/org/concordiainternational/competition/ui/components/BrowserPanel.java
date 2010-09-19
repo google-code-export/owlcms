@@ -89,12 +89,10 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
         create(app);
         masterData = app.getMasterData(platformName);
         registerAsListener(platformName, masterData);
-        display(platformName, masterData);
+        // we cannot call push() at this point, pass false as parameter
+        display(platformName, masterData, false);
 
-        if (app != masterData.getMasterApplication()) {
-            // we are not the master application; hide the menu bar.
-            app.components.menu.setVisible(false);
-        }
+
     }
 
     /**
@@ -121,7 +119,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 
                 @Override
                 public void updateEvent(UpdateEvent updateEvent) {
-                    display(platformName, masterData);
+                    display(platformName, masterData,true);
                 }
 
             };
@@ -178,9 +176,10 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
     /**
      * @param platformName
      * @param masterData
+     * @param b 
      * @throws RuntimeException
      */
-    private void display(final String platformName, final GroupData masterData) throws RuntimeException {
+    private void display(final String platformName, final GroupData masterData, boolean doPush) throws RuntimeException {
         synchronized (app) {
             URL url = computeUrl(platformName);
             iframe.setSource(new ExternalResource(url));
@@ -204,10 +203,13 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
                 top.addComponent(weight, "weight"); //$NON-NLS-1$	
             }
         }
-        if (pusher != null) {
+        
+        if (doPush && pusher != null) {
             pusher.push();
         }
     }
+
+
 
     /**
      * @param platformName
@@ -247,7 +249,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 
     @Override
     public void refresh() {
-        display(platformName, masterData);
+        display(platformName, masterData,true);
     }
 
     public boolean fillLifterInfo(Lifter lifter) {

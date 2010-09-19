@@ -265,7 +265,7 @@ public class NECDisplay implements Serializable {
                     out.write(encode(string1, string2, string3));
                     out.flush();
                     logger
-                            .debug("\n" + string1 + "\n" + string2 + "\n" + string3 + "\n.........|.........| written on " + serialPort.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                            .warn("\n" + string1 + "\n" + string2 + "\n" + string3 + "\n.........|.........| written on " + serialPort.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {
