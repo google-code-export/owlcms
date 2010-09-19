@@ -69,14 +69,6 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         registerAsGroupDataListener(platformName, masterData);
 
         display(platformName, masterData);
-
-        logger.warn("app = {}  masterApplication={}",app,masterData.getMasterApplication());
-        if (app != masterData.getMasterApplication()) {
-            // we are not the master application; hide the menu bar.
-        	logger.warn("hiding menu");
-            app.components.menu.setVisible(false);
-            if (pusher != null) pusher.push();
-        }
     }
 
     private void registerAsGroupDataListener(final String platformName, final GroupData masterData) {
@@ -163,6 +155,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
                 timeDisplay.setValue(""); //$NON-NLS-1$
             }
         }
+
         if (pusher != null) pusher.push();
     }
 
@@ -260,7 +253,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
      */
     @Override
     public boolean needsMenu() {
-        return true;
+        return false;
     }
 
     /**

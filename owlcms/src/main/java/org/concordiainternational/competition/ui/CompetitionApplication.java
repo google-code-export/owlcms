@@ -76,7 +76,7 @@ import com.vaadin.ui.Window.Notification;
 public class CompetitionApplication extends Application implements HbnSessionManager, UserActions, Serializable  {
     private static final long serialVersionUID = -1774806616519381075L;
 
-    private static boolean USE_BROWSER_LANGUAGE = false; // ignore preferences
+    private static boolean USE_BROWSER_LANGUAGE = true; // ignore preferences
                                                          // received from
                                                          // browser
 
@@ -85,8 +85,16 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
     private static LocalizedSystemMessages localizedMessages;
     private static InheritableThreadLocal<CompetitionApplication> current = new InheritableThreadLocal<CompetitionApplication>();
+    
+    
 
-    /**
+    public CompetitionApplication() {
+		super();
+        current.set(this);
+        logger.warn("new application {}",this);
+	}
+    
+	/**
      * @return the current application.
      */
     public static CompetitionApplication getCurrent() {
@@ -307,7 +315,6 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         // ignore the preference received from the browser.
         if (!USE_BROWSER_LANGUAGE) this.setLocale(getDefaultLocale());
 
-        current.set(CompetitionApplication.this);
         if (components == null) {
         	components = new CompetitionApplicationComponents(new Panel(), null, null);
         }
@@ -360,7 +367,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
     public void setMainLayoutContent(ApplicationView c) {
         this.components.currentView = c;
-        this.components.menu.setVisible(c.needsMenu());
+        boolean needsMenu = c.needsMenu();
+		this.components.menu.setVisible(needsMenu);
         this.components.mainPanel.setContent(c);
     }
 
