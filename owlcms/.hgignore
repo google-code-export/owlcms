@@ -14,3 +14,7 @@ syntax: regexp
 ^target/tomcat$
 syntax: regexp
 ^src/main/webapp/VAADIN/widgetsets$
+syntax: regexp
+^target/HCompetition-1\.8\.1$
+syntax: regexp
+\.war$
