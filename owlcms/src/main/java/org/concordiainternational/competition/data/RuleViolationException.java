@@ -61,7 +61,6 @@ public class RuleViolationException extends InvalidValueException implements Loc
 
     @Override
     public Locale getLocale() {
-        // TODO Auto-generated method stub
         return this.locale;
     }
 

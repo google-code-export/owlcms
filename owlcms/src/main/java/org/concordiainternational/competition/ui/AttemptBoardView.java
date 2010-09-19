@@ -121,7 +121,6 @@ public class AttemptBoardView extends Panel implements ApplicationView, GroupDat
 
     @Override
     public void refresh() {
-        // TODO Auto-generated method stub
     }
 
     @Override

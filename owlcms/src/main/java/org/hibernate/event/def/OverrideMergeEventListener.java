@@ -79,7 +79,7 @@ public class OverrideMergeEventListener extends DefaultMergeEventListener {
             // lifter
             // who is currently lifting, there will be clones in the database.
 
-            // TODO: we should throw an exception if we really *know* for sure
+            // we should throw an exception if we really *know* for sure
             // that this is a detached instance, rather than just assuming
             throw new StaleObjectStateException(entityName, id);
 
@@ -143,9 +143,8 @@ public class OverrideMergeEventListener extends DefaultMergeEventListener {
         boolean changed = !persister.getVersionType().isSame(persister.getVersion(target, source.getEntityMode()),
             persister.getVersion(entity, source.getEntityMode()), source.getEntityMode());
 
-        // TODO : perhaps we should additionally require that the incoming
-        // entity
-        // version be equivalent to the defined unsaved-value?
+        // perhaps we should additionally require that the incoming
+        // entity version be equivalent to the defined unsaved-value?
         return changed && existsInDatabase(target, source, persister);
     }
 

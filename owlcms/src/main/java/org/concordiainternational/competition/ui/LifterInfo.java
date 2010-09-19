@@ -45,7 +45,7 @@ import com.vaadin.ui.VerticalLayout;
 /**
  * Display information regarding the current lifter
  * 
- * TODO Refactorize this class, as it is used in 6 different settings (3
+ * REFACTOR Refactorize this class, as it is used in 6 different settings (3
  * announcer views, the result editing page, the lifter display, the lifter card
  * editor).
  * 

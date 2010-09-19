@@ -60,10 +60,10 @@ import com.vaadin.service.ApplicationContext.TransactionListener;
  * Note, container caches size, firstId, lastId to be much faster with large
  * datasets.
  * 
- * TODO make this caching optional, actually should trust on Hibernates and DB
+ * VAADIN_TODO make this caching optional, actually should trust on Hibernates and DB
  * engines query caches.
  * 
- * TODO Better documentation
+ * VAADIN_TODO Better documentation
  * 
  * @author Matti Tahvonen (IT Mill)
  * @author Henri Sara (IT Mill)
@@ -148,7 +148,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
             }
 
             private boolean propertyInEmbeddedKey() {
-                // TODO a place for optimization
+                // VAADIN_VAADIN_TODO a place for optimization
                 Type idType = getClassMetadata().getIdentifierType();
                 if (idType.isComponentType()) {
                     ComponentType idComponent = (ComponentType) idType;
@@ -165,7 +165,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
             }
 
             public Class<?> getType() {
-                // TODO clean, optimize, review
+                // VAADIN_TODO clean, optimize, review
 
                 if (propertyInEmbeddedKey()) {
                     ComponentType idType = (ComponentType) getClassMetadata().getIdentifierType();
@@ -192,7 +192,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
                     Class<?> returnedClass = propertyType.getReturnedClass();
                     return returnedClass;
                 } else if (propertyType.isAssociationType()) {
-                    // TODO clean, optimize, review
+                    // VAADIN_TODO clean, optimize, review
                     ClassMetadata classMetadata2 = hbnSessionManager.getHbnSession().getSessionFactory()
                             .getClassMetadata(getClassMetadata().getPropertyType(propertyName).getReturnedClass());
                     return classMetadata2.getIdentifierType().getReturnedClass();
@@ -203,7 +203,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
             }
 
             public Object getValue() {
-                // TODO clean, optimize, review
+                // VAADIN_TODO clean, optimize, review
 
                 if (propertyInEmbeddedKey()) {
                     ComponentType idType = (ComponentType) getClassMetadata().getIdentifierType();
@@ -304,7 +304,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
                 // System.err.println("doSetValue newValue="+newValue+" value="+value);
                 value = computeValue(newValue, value);
 
-                // TODO clean, optimize, review
+                // VAADIN_TODO clean, optimize, review
                 if (propertyInEmbeddedKey()) {
                     ComponentType idType = (ComponentType) getClassMetadata().getIdentifierType();
                     String[] propertyNames = idType.getPropertyNames();
@@ -325,7 +325,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
                 } else {
                     Type propertyType = getClassMetadata().getPropertyType(propertyName);
                     if (propertyType.isCollectionType()) {
-                        // TODO how to fetch mapped type properly
+                        // VAADIN_TODO how to fetch mapped type properly
                         Field declaredField = type.getDeclaredField(propertyName);
                         java.lang.reflect.Type genericType = declaredField.getGenericType();
                         java.lang.reflect.Type[] actualTypeArguments = ((ParameterizedType) genericType)
@@ -415,7 +415,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
                         }
                     } catch (Throwable ite) {
                         // System.err.println("Throwable "+ite.getClass()+" "+newValue.getClass());
-                        // TODO: this is a crude patch for empty values passed in for a double.
+                        // VAADIN_TODO: this is a crude patch for empty values passed in for a double.
                         if (getType().isAssignableFrom(Double.class) && newValue.toString().isEmpty()) {
                             value = constr.newInstance(new Object[] { "0" });
                             System.err.println("value " + value);
@@ -1137,7 +1137,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
      * Note! Expects that getIdByIndex is called for this itemId. When used with
      * Table, this shouldn't be a problem.
      * 
-     * TODO make workaround for this. Too bad it is going to be a very slow
+     * VAADIN_TODO make workaround for this. Too bad it is going to be a very slow
      * operation.
      */
     public int indexOfId(Object itemId) {

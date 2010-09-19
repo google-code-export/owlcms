@@ -69,7 +69,6 @@ public class CommonFieldFactory extends DefaultFieldFactory {
     }
 
     private Field adjustDateField(DateField f) {
-        // TODO Auto-generated method stub
         f.setDateFormat("yyyy-MM-dd HH:mm"); //$NON-NLS-1$
         f.setResolution(DateField.RESOLUTION_MIN);
         return f;

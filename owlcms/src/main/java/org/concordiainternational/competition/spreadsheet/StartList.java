@@ -110,7 +110,7 @@ public class StartList extends OutputSheet {
     @Override
     void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup, int rownum)
             throws CellTypeMismatchException, CellNotFoundException {
-        // TODO Auto-generated method stub
+        // Intentionally empty
 
     }
 

@@ -30,9 +30,6 @@ import com.vaadin.data.util.BeanItemContainer;
  * uses the database to sort, so we have to create our own container as a
  * wrapper. The resulting BeanItemContainer is used to feed the table.
  * 
- * TODO: implement some mechanism through which this list can subscribe to
- * events when other components of the application update the underlying
- * database, potentially affecting the underlying container.
  * 
  * @author jflamy
  * @param <T>

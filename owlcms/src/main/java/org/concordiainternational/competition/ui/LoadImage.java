@@ -146,7 +146,6 @@ public class LoadImage extends HorDashLayout {
 
     @Override
     public void setCaption(String caption) {
-        // TODO Auto-generated method stub
         if (parentWindow == null) {
             super.setCaption(caption);
         } else {

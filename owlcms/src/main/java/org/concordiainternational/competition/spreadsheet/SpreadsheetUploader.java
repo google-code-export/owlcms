@@ -146,7 +146,6 @@ public class SpreadsheetUploader extends CustomComponent implements Upload.Succe
                 app.getHbnSession().save(curLifter);
             }
         } catch (Throwable t) {
-            // TODO Auto-generated catch block
             t.printStackTrace();
             throw new SystemError(t);
         }

@@ -131,7 +131,7 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
 
     public static GroupData getInstance(String platformName) {
         GroupData groupDataSingleton = platformToGroupData.get(platformName);
-        // TODO Auto-generated method stub
+
         if (groupDataSingleton == null) {
             groupDataSingleton = new GroupData(platformName);
             platformToGroupData.put(platformName, groupDataSingleton);
@@ -172,8 +172,6 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
     }
 
     /**
-     * @param liftList
-     *            TODO
      * @return the lifter who lifted most recently
      */
     public Lifter getPreviousLifter() {
@@ -299,8 +297,6 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
      */
     void publishLists() {
         // make results available to all (including JSPs)
-        // TODO: register one class per platformName instead of a set of
-        // attributes per platformName.
         final CompetitionApplication competitionApplication = (CompetitionApplication) app;
         final String platformName = app.getPlatformName();
         final CompetitionSession currentGroup = competitionApplication.getCurrentCompetitionSession();
@@ -519,11 +515,9 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
     CountdownTimer timer;
 
     public CountdownTimer getTimer() {
-        // TODO Auto-generated method stub
         if (timer == null) {
             timer = new CountdownTimer();
-        }
-        ;
+        };
         return timer;
     }
 
@@ -565,7 +559,6 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
      * @param forcedByTimekeeper
      *            the forcedByTimekeeper to set
      * @param timeRemaining
-     *            TODO
      */
     public void setForcedByTimekeeper(boolean forcedByTimekeeper, int timeRemaining) {
         getTimer().forceTimeRemaining(timeRemaining);
@@ -837,9 +830,7 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
      * removed is the top in the list.
      * 
      * @param lifter
-     *            TODO
      * @param editor
-     *            TODO
      * @param firstLifter
      */
     public void stopListeningTo(final Lifter lifter, Component editor) {
@@ -851,12 +842,7 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
      * Change who the lift list is listening to.
      * 
      * @param lifter
-     *            TODO
      * @param editor
-     *            TODO
-     * @param firstLifter
-     * @param liftList
-     *            TODO
      */
     public void listenToLifter(final Lifter lifter, Component editor) {
         if (lifter == null) return;
@@ -866,8 +852,7 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
     /**
      * Makes this class visible to other sessions so they can call addListener .
      * 
-     * @param liftList
-     *            TODO
+     * @param platformName
      */
     void registerAsMasterData(String platformName) {
         // make ourselves visible to other parts of the web application (e.g.
@@ -1021,7 +1006,6 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
      * @return
      */
     public boolean getStartTimeAutomatically() {
-        // TODO Auto-generated method stub
         return startTimeAutomatically;
     }
 

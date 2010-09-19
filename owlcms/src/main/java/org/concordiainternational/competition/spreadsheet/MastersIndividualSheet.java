@@ -231,10 +231,13 @@ public class MastersIndividualSheet extends IndividualSheet {
         rownum++;
     }
 
+
     /**
      * @param workSheet
+     * @param nbCols
+     * @param category
      * @param lifter
-     *            TODO
+     * @return
      * @throws CellNotFoundException
      * @throws RowNotFoundException
      */
