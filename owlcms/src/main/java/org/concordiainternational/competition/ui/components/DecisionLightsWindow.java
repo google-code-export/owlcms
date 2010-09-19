@@ -16,14 +16,11 @@
 
 package org.concordiainternational.competition.ui.components;
 
-import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.DecisionController.Decision;
 import org.concordiainternational.competition.decision.DecisionController.DecisionEventListener;
 import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
-import org.concordiainternational.competition.ui.GroupData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.artur.icepush.ICEPush;
@@ -31,25 +28,20 @@ import org.vaadin.artur.icepush.ICEPush;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressIndicator;
-import com.vaadin.ui.Window;
 
-public class DecisionLightsWindow extends Window implements DecisionEventListener, ApplicationView {
+public class DecisionLightsWindow extends HorizontalLayout implements DecisionEventListener {
 
     private static final boolean PUSHING = true;
 
     private static final long serialVersionUID = 1L;
 
-    HorizontalLayout lights = new HorizontalLayout();
     Label[] decisionLights = new Label[3];
-    GroupData masterData;
     CompetitionApplication app = CompetitionApplication.getCurrent();
 
     private Logger logger = LoggerFactory.getLogger(DecisionLightsWindow.class);
 
     private boolean juryMode = false;
     private ICEPush pusher;
-    private String platformName;
-    private String viewName;
 
 	private boolean publicFacing;
 
@@ -57,20 +49,12 @@ public class DecisionLightsWindow extends Window implements DecisionEventListene
         
         this.app = CompetitionApplication.getCurrent();
         this.publicFacing = publicFacing;
-        
-        if (platformName == null) {
-        	// get the default platform name
-            platformName = CompetitionApplicationComponents.initPlatformName();
-        } else if (app.getPlatform() == null) {
-        	app.setPlatformByName(platformName);
-        }
         this.juryMode = juryMode;
         
         createLights();
 
-        lights.setMargin(true);
-        lights.setSpacing(true);
-        this.addComponent(lights);
+        this.setMargin(true);
+        this.setSpacing(true);
 
         if (PUSHING) {
             pusher = app.ensurePusher();
@@ -85,16 +69,14 @@ public class DecisionLightsWindow extends Window implements DecisionEventListene
 	 * Create the red/white display rectangles for decisions.
 	 */
 	private void createLights() {
-		masterData = GroupData.getInstance(platformName);
-        masterData.getDecisionController().addListener(this);
-        lights.setSizeFull();
+        this.setSizeFull();
 
         for (int i = 0; i < decisionLights.length; i++) {
             decisionLights[i] = new Label();
             decisionLights[i].setSizeFull();
             decisionLights[i].setStyleName("decisionLight");
-            lights.addComponent(decisionLights[i]);
-            lights.setExpandRatio(decisionLights[i], 100.0F / decisionLights.length);
+            this.addComponent(decisionLights[i]);
+            this.setExpandRatio(decisionLights[i], 100.0F / decisionLights.length);
         }
 	}
 
@@ -143,7 +125,6 @@ public class DecisionLightsWindow extends Window implements DecisionEventListene
             case RESET:
                 logger.warn("received RESET event");
                 resetLights();
-                this.close();
                 break;
             }
         }
@@ -196,7 +177,7 @@ public class DecisionLightsWindow extends Window implements DecisionEventListene
             pusher.push();
         } else {
             synchronized (app) {
-                lights.requestRepaint();
+                this.requestRepaint();
             }
         }
     }
@@ -212,39 +193,7 @@ public class DecisionLightsWindow extends Window implements DecisionEventListene
             + (refereeIndex2 + 1);
     }
 
-    /* (non-Javadoc)
-     * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()
-     */
-    @Override
-    public boolean needsMenu() {
-        return false;
-    }
-
-
-    /* (non-Javadoc)
-     * @see org.concordiainternational.competition.ui.components.ApplicationView#getFragment()
-     */
-    public String getFragment() {
-        return viewName+"/"+platformName;
-    }
     
-
-    /* (non-Javadoc)
-     * @see org.concordiainternational.competition.ui.components.ApplicationView#setParametersFromFragment(java.lang.String)
-     */
-    @Override
-    public void setParametersFromFragment() {
-        String frag = CompetitionApplication.getCurrent().getUriFragmentUtility().getFragment();
-        String[] params = frag.split("/");
-        if (params.length >= 1) {
-            viewName = params[0];
-        } else {
-            throw new RuleViolationException("Error.ViewNameIsMissing"); 
-        }
-        if (params.length >= 2) {
-            platformName = params[1];
-        }
-    }
     
     /**
      * Obsolete now that we use pushing.
@@ -252,7 +201,7 @@ public class DecisionLightsWindow extends Window implements DecisionEventListene
     private void setupPolling() {
         final ProgressIndicator refresher = new ProgressIndicator();
         refresher.setStyleName("invisible");
-        lights.addComponent(refresher);
+        this.addComponent(refresher);
         refresher.setPollingInterval(150);
     }
 }
