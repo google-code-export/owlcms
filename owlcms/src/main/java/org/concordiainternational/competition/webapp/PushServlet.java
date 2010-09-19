@@ -53,8 +53,10 @@ public class PushServlet extends ApplicationServlet {
     protected void writeAjaxPageHtmlHeader(BufferedWriter page, String title, String themeUri) throws IOException {
         super.writeAjaxPageHtmlHeader(page, title, themeUri);
         
-        // mobile safari specific.
-        // TODO: detect browser.
+        // REFACTOR: detect browser
+        // the following is mobile safari specific (iPod).  does not harm other browsers.
+        // there is no easy way to make this conditional without overriding the whole 
+        // writeAjaxPage method, which is not worth it at this stage.
         page.write("<meta name='viewport' content='width=device-width' />");
         page.write("<meta name='apple-mobile-web-app-capable' content='yes' />");
     }
