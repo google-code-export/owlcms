@@ -95,11 +95,9 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
     private DecisionController decisionController = new DecisionController(this);
 
     boolean allowAll = false; // allow null group to mean all lifters.
-    private boolean timeKeepingInUse = Competition.isMasters(); // set to true
-                                                                // if the Time
-                                                                // keeping
-                                                                // button is
-                                                                // pressed.
+    // will be set to true if the Timekeeping button is pressed.
+    private boolean timeKeepingInUse = Competition.isMasters();
+    
     private Lifter priorLifter;
     private Integer priorRequest;
     private Integer priorRequestNum;
