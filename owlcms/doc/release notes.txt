@@ -1,0 +1,6 @@
+= Release Notes =
+
+== Release 1.8.1 ==
+* Change in source layout to run under Maven
+* Small fixes to run under Maven jetty:run plugin (ICEpush causes exception if called in class constructor)
+* Time display now shows referee decisions after 3 seconds.
