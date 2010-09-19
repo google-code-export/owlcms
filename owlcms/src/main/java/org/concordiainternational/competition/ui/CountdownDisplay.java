@@ -124,20 +124,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         return timeDisplay;
     }
 
-    /**
-     * Set up polling by browser.
-     */
-    private void setupPolling() {
-        // we need this because the client side won't refresh unless it
-        // initiates the poll.
-        refresher = new ProgressIndicator();
-        refresher.setIndeterminate(true);
-        refresher.setPollingInterval(1000);
-        refresher.addStyleName("hidden"); //$NON-NLS-1$
-        refresher.setHeight("0"); //$NON-NLS-1$
-        this.addComponent(refresher);
-        this.setExpandRatio(refresher, 0);
-    }
+
 
     /**
      * @param platformName
@@ -279,5 +266,21 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         if (params.length >= 2) {
             platformName = params[1];
         }
+    }
+    
+    /**
+     * Set up polling by browser.
+     * Obsolete now that we use pushing.
+     */
+    private void setupPolling() {
+        // we need this because the client side won't refresh unless it
+        // initiates the poll.
+        refresher = new ProgressIndicator();
+        refresher.setIndeterminate(true);
+        refresher.setPollingInterval(1000);
+        refresher.addStyleName("hidden"); //$NON-NLS-1$
+        refresher.setHeight("0"); //$NON-NLS-1$
+        this.addComponent(refresher);
+        this.setExpandRatio(refresher, 0);
     }
 }
