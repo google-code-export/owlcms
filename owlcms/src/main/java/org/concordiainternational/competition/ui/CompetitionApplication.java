@@ -270,21 +270,30 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         return components.getPlatformName();
     }
 
+    /**
+     * Try to load a resource, accounting for the wide variations between run-time environments.
+     * Accounts for Tomcat, Eclipse, Jetty.
+     * @param path
+     * @return
+     * @throws IOException
+     */
     public InputStream getResourceAsStream(String path) throws IOException {
-        final ServletContext servletContext = getServletContext();
         InputStream resourceAsStream;
-        resourceAsStream = this.getClass().getResourceAsStream("/templates" + path); //$NON-NLS-1$
+              
+        // first, search using class loader
+        resourceAsStream = this.getClass().getResourceAsStream("/" + path); //$NON-NLS-1$
+        if (resourceAsStream == null) {
+        	resourceAsStream = this.getClass().getResourceAsStream("/templates" + path); //$NON-NLS-1$
+        }
+        
+        // if not found, try using the servlet context
+        final ServletContext servletContext = getServletContext();
         if (resourceAsStream == null && servletContext != null) {
             resourceAsStream = servletContext.getResourceAsStream("/WEB-INF/classes/templates" + path); //$NON-NLS-1$
         }
         if (resourceAsStream == null && servletContext != null) {
             resourceAsStream = servletContext.getResourceAsStream("/WEB-INF/classes" + path); //$NON-NLS-1$
         }
-        // if (resourceAsStream == null && servletContext != null) {
-        // // eclipse puts them in a strange location when deploying
-        // resourceAsStream =
-        // servletContext.getResourceAsStream("/templates"+path);
-        // }
         if (resourceAsStream == null)
             throw new IOException(
                     Messages.getString("CompetitionApplication.ResourceNotFoundOnClassPath", getLocale()) + path); //$NON-NLS-1$
