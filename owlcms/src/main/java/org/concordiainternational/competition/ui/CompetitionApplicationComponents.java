@@ -105,7 +105,7 @@ public class CompetitionApplicationComponents {
      * 
      */
     private interface CompetitionApplicationComponent {
-        ApplicationView get(boolean initFromFragment, String viewName);
+        ApplicationView get(boolean initFromFragment, String viewName) ;
     }
 
     /**
@@ -366,7 +366,7 @@ public class CompetitionApplicationComponents {
         }
     }
 
-    public ApplicationView getViewByName(String fragment, boolean initFromFragment) {
+    public ApplicationView getViewByName(String fragment, boolean initFromFragment)  {
         int where = fragment.indexOf("/");
         String viewName = fragment;
         if (where != -1) {

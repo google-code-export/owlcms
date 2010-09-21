@@ -17,6 +17,7 @@
 package org.concordiainternational.competition.ui;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
@@ -29,16 +30,19 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.Property;
 import com.vaadin.data.Buffered.SourceException;
+import com.vaadin.data.Property;
 import com.vaadin.data.Property.ConversionException;
 import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.hbnutil.HbnContainer;
 import com.vaadin.data.util.FilesystemContainer;
 import com.vaadin.service.ApplicationContext;
+import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.DateField;
@@ -50,8 +54,6 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 
 public class CompetitionEditor extends VerticalLayout implements ApplicationView {
 
@@ -109,10 +111,11 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
      * @throws ConversionException
      * @throws SourceException
      * @throws InvalidValueException
+     * @throws FileNotFoundException 
      */
     private FormLayout createFormLayout(final FormLayout formLayout, final Locale locale,
             HbnContainer<Competition> cmp, final HbnContainer<Competition>.EntityItem<Competition> competitionItem)
-            throws ReadOnlyException, ConversionException, SourceException, InvalidValueException {
+            {
 
         addTextField(formLayout, locale, competitionItem, "competitionName", ""); //$NON-NLS-1$ //$NON-NLS-2$
         addDateField(formLayout, locale, competitionItem, "competitionDate", new Date()); //$NON-NLS-1$
@@ -136,25 +139,37 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         return formLayout;
     }
 
+
     /**
      * @param formLayout
      * @param locale
      * @param competitionItem
-     * @param string
-     * @param string2
+     * @param fieldName
+     * @param initialValue
+     * @return
+     * @throws FileNotFoundException 
      */
     private Select addFileSelector(FormLayout formLayout, Locale locale,
-            HbnContainer<Competition>.EntityItem<Competition> competitionItem, String fieldName, String initialValue) {
-        // File baseDirectory =
-        // getApplication().getContext().getBaseDirectory();
+            HbnContainer<Competition>.EntityItem<Competition> competitionItem, String fieldName, String initialValue)  {
+
         final ApplicationContext context = app.getContext();
-        File baseDirectory = context.getBaseDirectory();
+        WebApplicationContext wContext = (WebApplicationContext) context;
+
+        final Property itemProperty = competitionItem.getItemProperty(fieldName);;
         final HbnContainer<Competition>.EntityItem<Competition> ci = competitionItem;
         final Competition competition = (Competition) ci.getPojo();
+        
+        FilesystemContainer fsContainer;
+        String relativeLocation = "/WEB-INF/classes/templates";
+		String realPath = wContext.getHttpSession().getServletContext().getRealPath(relativeLocation);
 
-        final Property itemProperty = competitionItem.getItemProperty(fieldName);
-        FilesystemContainer fsContainer = new FilesystemContainer(
-                new File(baseDirectory, "/WEB-INF/classes/templates"), "xls", false);
+		File file = new File(realPath);
+		if (realPath != null && file.isDirectory()) {
+			fsContainer = new FilesystemContainer(file, "xls", false);
+		} else {
+			fsContainer = findTemplatesWhenRunningInPlace(wContext);
+		}
+        
         Select fileSelector = new Select(Messages.getString("Competition." + fieldName, locale), fsContainer);
 
         fileSelector.addListener(new Property.ValueChangeListener() {
@@ -163,14 +178,42 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
             @Override
             public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
                 itemProperty.setValue(event.getProperty());
-                logger.warn("property: {}, object field: {}.", itemProperty.getValue(), competition
-                        .getResultTemplateFileName());
+                logger.warn("property: {}, object field: {}.",
+                		itemProperty.getValue(),
+                		competition.getResultTemplateFileName());
             }
         });
         fileSelector.setImmediate(true);
         formLayout.addComponent(fileSelector);
         return fileSelector;
     }
+
+	/**
+	 * kludge when running in-place under jetty (development mode)
+	 * @param wContext
+	 * @param fsContainer
+	 * @return
+	 */
+	private FilesystemContainer findTemplatesWhenRunningInPlace(WebApplicationContext wContext) {
+		String realPath;
+		FilesystemContainer fsContainer;
+
+		String relativeLocationKludge = "/classes";
+		realPath = wContext.getHttpSession().getServletContext().getRealPath(relativeLocationKludge);
+		try {
+			// really ugly, no benefit whatsoever in cleaning this up.
+			File file1 = new File(realPath).getParentFile().getParentFile();
+			if (realPath != null && file1.isDirectory()) {
+				file1 = new File(file1,"classes/templates");
+				fsContainer = new FilesystemContainer(file1, "xls", false);
+			} else {
+				throw new RuntimeException("templates not found in WEB-INF or application root");
+			}
+		} catch (Throwable t) {
+			throw new RuntimeException("templates not found in WEB-INF or application root");
+		}
+		return fsContainer;
+	}
 
     /**
      * @param formLayout
