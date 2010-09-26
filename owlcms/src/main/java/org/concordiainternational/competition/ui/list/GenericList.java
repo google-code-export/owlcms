@@ -307,4 +307,21 @@ public abstract class GenericList<T> extends VerticalLayout {
         this.positionTable();
     }
 
+	/**
+	 * Guess expansion ratios.
+	 * Empirical; there is probably a better way.
+	 */
+	protected void setExpandRatios() {
+		Object[] visibleColumns = table.getVisibleColumns();
+		for (int i = 0; i < visibleColumns.length; i++) {
+	    	Object columnId = visibleColumns[i];
+	    	if (columnId.equals("lastName") ||columnId.equals("firstName")) {
+	    		table.setColumnExpandRatio(columnId, 2.6F);
+	    	} else {
+	    		table.setColumnExpandRatio(columnId, 0.9F);
+	    	}
+	    	
+	    }
+	}
+
 }

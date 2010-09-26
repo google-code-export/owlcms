@@ -83,19 +83,10 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
         table.addGeneratedColumn("teamMember", new CommonColumnGenerator(app)); //$NON-NLS-1$
         table.addGeneratedColumn("qualifyingTotal", new CommonColumnGenerator(app)); //$NON-NLS-1$
         
-        Object[] visibleColumns = table.getVisibleColumns();
-		for (int i = 0; i < visibleColumns.length; i++) {
-        	Object columnId = visibleColumns[i];
-        	if (columnId.equals("lastName") ||columnId.equals("firstName")) {
-        		table.setColumnExpandRatio(columnId, 2.6F);
-        	} else {
-        		table.setColumnExpandRatio(columnId, 0.9F);
-        	}
-        	
-        }
+        setExpandRatios();
     }
 
-    /**
+	/**
      * Load container content to Table
      */
     @Override
