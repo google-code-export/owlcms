@@ -250,8 +250,9 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         final Property itemProperty = competitionItem.getItemProperty(fieldName);
         DateField field = new DateField(Messages.getString("Competition." + fieldName, locale), itemProperty); //$NON-NLS-1$
         formLayout.addComponent(field);
-        if (itemProperty.getValue() == null) itemProperty.setValue(initialValue); //$NON-NLS-1$
+        if (itemProperty.getValue() == null) itemProperty.setValue(initialValue);
         field.setResolution(DateField.RESOLUTION_DAY);
+        field.setDateFormat("yyyy-MM-dd");
         return field;
     }
 

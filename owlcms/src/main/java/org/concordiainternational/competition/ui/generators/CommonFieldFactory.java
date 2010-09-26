@@ -16,14 +16,21 @@
 
 package org.concordiainternational.competition.ui.generators;
 
+import java.util.Date;
+
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.ui.components.FormattingDateField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.Application;
 import com.vaadin.data.Container;
+import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
 import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 import com.vaadin.data.validator.DoubleValidator;
 import com.vaadin.ui.AbstractField;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.DefaultFieldFactory;
@@ -34,6 +41,9 @@ import com.vaadin.ui.TextField;
 public class CommonFieldFactory extends DefaultFieldFactory {
 
     private static final long serialVersionUID = 8789528655171127108L;
+    
+    @SuppressWarnings("unused")
+	private static Logger logger = LoggerFactory.getLogger(CommonFieldFactory.class);
 
     private Application app;
 
@@ -43,8 +53,12 @@ public class CommonFieldFactory extends DefaultFieldFactory {
 
     @Override
     public Field createField(Container container, Object itemId, Object propertyId, Component uiContext) {
-
-        final Field f = super.createField(container, itemId, propertyId, uiContext);
+    	
+        Property containerProperty = container.getContainerProperty(itemId,
+                propertyId);
+        Class<?> type = containerProperty.getType();
+        Field f = createFieldByPropertyType(type);
+        f.setCaption(createCaptionByPropertyId(propertyId));
         ((AbstractField) f).setImmediate(true);
 
         final String propertyIdString = (String) propertyId;
@@ -57,18 +71,66 @@ public class CommonFieldFactory extends DefaultFieldFactory {
             return checkInteger(f);
         }
 
-        if (propertyIdString.contains("Time")) { //$NON-NLS-1$
+        if (propertyIdString.contains("Time") && (f instanceof DateField)) { //$NON-NLS-1$
+            return adjustHourField((DateField) f);
+        }
+        
+        if (propertyIdString.contains("Date") && (f instanceof DateField)) { //$NON-NLS-1$
             return adjustDateField((DateField) f);
         }
 
-        if (f instanceof TextField && (container instanceof Table)) {
-            ((TextField) f).setWidth("100%"); //$NON-NLS-1$
+        if (propertyIdString.contains("competition")) { //$NON-NLS-1$
+        	f.setWidth("25em");
+            return f;
+        }
+        
+        if (propertyIdString.contains("Name")) { //$NON-NLS-1$
+        	f.setWidth("15em");
+            return f;
+        }
+
+        if (f instanceof TextField && (uiContext instanceof Table)) {
+            ((TextField) f).setWidth("3em"); //$NON-NLS-1$
         }
         return f;
 
     }
+    
+    /**
+     * Override the default.
+     * @param type
+     * @return
+     */
+    public static Field createFieldByPropertyType(Class<?> type) {
+    	//logger.warn("creating {}",type);
+        // Null typed properties can not be edited
+        if (type == null) {
+            return null;
+        }
 
+        // Date field
+        if (Date.class.isAssignableFrom(type)) {
+            final DateField df = new FormattingDateField();
+            df.setResolution(DateField.RESOLUTION_DAY);
+            return df;
+        }
+
+        // Boolean field
+        if (Boolean.class.isAssignableFrom(type)) {
+            return new CheckBox();
+        }
+
+        return new TextField();
+    }
+
+    
     private Field adjustDateField(DateField f) {
+        f.setDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
+        f.setResolution(DateField.RESOLUTION_DAY);
+        return f;
+    }
+    
+    private Field adjustHourField(DateField f) {
         f.setDateFormat("yyyy-MM-dd HH:mm"); //$NON-NLS-1$
         f.setResolution(DateField.RESOLUTION_MIN);
         return f;

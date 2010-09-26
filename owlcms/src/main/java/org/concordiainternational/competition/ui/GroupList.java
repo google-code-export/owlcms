@@ -65,7 +65,8 @@ public class GroupList extends GenericHbnList<CompetitionSession> implements App
     @Override
     public String[] getColOrder() {
         if (NATURAL_COL_ORDER != null) return NATURAL_COL_ORDER;
-        NATURAL_COL_ORDER = new String[] { "name", //$NON-NLS-1$
+        NATURAL_COL_ORDER = new String[] { 
+        		"name", //$NON-NLS-1$
                 "weighInTime", //$NON-NLS-1$
                 "competitionTime", //$NON-NLS-1$
                 "platform", //$NON-NLS-1$
@@ -101,12 +102,18 @@ public class GroupList extends GenericHbnList<CompetitionSession> implements App
         super.addGeneratedColumns();
         table.removeGeneratedColumn("categories"); //$NON-NLS-1$
         table.addGeneratedColumn("categories", new CommonColumnGenerator(app)); //$NON-NLS-1$
-        table.removeGeneratedColumn("weighInTime"); //$NON-NLS-1$
-        table.addGeneratedColumn("weighInTime", new CommonColumnGenerator(app)); //$NON-NLS-1$
-        table.removeGeneratedColumn("competitionTime"); //$NON-NLS-1$
-        table.addGeneratedColumn("competitionTime", new CommonColumnGenerator(app)); //$NON-NLS-1$
+        //table.removeGeneratedColumn("weighInTime"); //$NON-NLS-1$
+        //table.addGeneratedColumn("weighInTime", new CommonColumnGenerator(app)); //$NON-NLS-1$
+//        table.removeGeneratedColumn("competitionTime"); //$NON-NLS-1$
+//        table.addGeneratedColumn("competitionTime", new CommonColumnGenerator(app)); //$NON-NLS-1$
         table.removeGeneratedColumn("platform"); //$NON-NLS-1$
         table.addGeneratedColumn("platform", new CommonColumnGenerator(app)); //$NON-NLS-1$
+        
+        Object[] visibleColumns = table.getVisibleColumns();
+		for (int i = 0; i < visibleColumns.length; i++) {
+        	Object columnId = visibleColumns[i];
+        	table.setColumnExpandRatio(columnId, 1.0F);
+        }
     }
 
     /**
