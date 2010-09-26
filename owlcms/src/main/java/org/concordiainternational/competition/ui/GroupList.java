@@ -109,11 +109,7 @@ public class GroupList extends GenericHbnList<CompetitionSession> implements App
         table.removeGeneratedColumn("platform"); //$NON-NLS-1$
         table.addGeneratedColumn("platform", new CommonColumnGenerator(app)); //$NON-NLS-1$
         
-        Object[] visibleColumns = table.getVisibleColumns();
-		for (int i = 0; i < visibleColumns.length; i++) {
-        	Object columnId = visibleColumns[i];
-        	table.setColumnExpandRatio(columnId, 1.0F);
-        }
+        setExpandRatios();
     }
 
     /**

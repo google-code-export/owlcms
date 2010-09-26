@@ -172,6 +172,8 @@ public class LiftList extends GenericBeanList<Lifter> implements
         table.addGeneratedColumn("cleanJerk3ActualLift", columnGenerator); //$NON-NLS-1$
         table.addGeneratedColumn("category", columnGenerator); //$NON-NLS-1$
         table.addGeneratedColumn("total", columnGenerator); //$NON-NLS-1$
+        
+        setExpandRatios();
     }
 
     @Override
