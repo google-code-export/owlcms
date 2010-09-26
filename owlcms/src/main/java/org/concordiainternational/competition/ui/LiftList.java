@@ -54,14 +54,14 @@ public class LiftList extends GenericBeanList<Lifter> implements
     static final Logger logger = LoggerFactory.getLogger(LiftList.class);
     private static final long serialVersionUID = 148461976217706535L;
     private EditingView parentView;
-    transient private GroupData data = null; // do not serialize
+    transient private SessionData data = null; // do not serialize
 
     private static String[] NATURAL_COL_ORDER = null;
     private static String[] COL_HEADERS = null;
 
     private Mode mode;
 
-    public LiftList(GroupData groupData, EditingView parentView, AnnouncerView.Mode mode) {
+    public LiftList(SessionData groupData, EditingView parentView, AnnouncerView.Mode mode) {
         super(CompetitionApplication.getCurrent(), Lifter.class, buildCaption(mode, groupData)); //$NON-NLS-1$
         logger.trace("new."); //$NON-NLS-1$
         this.parentView = parentView;
@@ -74,7 +74,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
      * @param mode
      * @return
      */
-    private static String buildCaption(AnnouncerView.Mode mode, GroupData groupData) {
+    private static String buildCaption(AnnouncerView.Mode mode, SessionData groupData) {
         final String role = Messages.getString(
             "LiftList." + mode.toString(), CompetitionApplication.getCurrent().getLocale()); //$NON-NLS-1$
         final String currentPlatformName = " " + CompetitionApplication.getCurrent().getPlatformName(); //$NON-NLS-1$
@@ -101,7 +101,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
     }
 
     @Override
-    public GroupData getGroupData() {
+    public SessionData getGroupData() {
         return data;
     }
 
@@ -124,7 +124,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
     }
 
     @Override
-    public void setGroupData(GroupData data) {
+    public void setGroupData(SessionData data) {
         this.data = data;
     }
 

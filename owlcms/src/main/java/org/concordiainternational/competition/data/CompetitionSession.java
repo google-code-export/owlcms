@@ -50,6 +50,13 @@ public class CompetitionSession implements Serializable {
     String name;
     Date weighInTime;
     Date competitionTime;
+    String announcer;
+    String timeKeeper;
+    String technicalController;
+    String referee1;
+    String referee2;
+    String referee3;
+    String jury;
 
     @ManyToOne
     Platform platform;

@@ -61,12 +61,12 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
     private static final long serialVersionUID = -6455130090728823622L;
     private Application app = CompetitionApplication.getCurrent();
     private EditingView parentView;
-    transient private GroupData data = null; // do not serialize
+    transient private SessionData data = null; // do not serialize
 
     private static String[] NATURAL_COL_ORDER = null;
     private static String[] COL_HEADERS = null;
 
-    public ResultList(GroupData groupData, EditingView parentView) {
+    public ResultList(SessionData groupData, EditingView parentView) {
         super(CompetitionApplication.getCurrent(), Lifter.class, Messages.getString(
             "ResultList.title", CompetitionApplication.getCurrentLocale())); //$NON-NLS-1$
         this.parentView = parentView;
@@ -95,7 +95,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
     }
 
     @Override
-    public GroupData getGroupData() {
+    public SessionData getGroupData() {
         return data;
     }
 
@@ -118,7 +118,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
         logger.debug("end refresh ResultList **************{}"); //$NON-NLS-1$
     }
 
-    public void setGroupData(GroupData data) {
+    public void setGroupData(SessionData data) {
         this.data = data;
     }
 

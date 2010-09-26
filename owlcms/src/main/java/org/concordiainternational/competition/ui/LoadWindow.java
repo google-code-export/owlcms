@@ -21,8 +21,8 @@ import java.util.Locale;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.i18n.Messages;
-import org.concordiainternational.competition.ui.GroupData.UpdateEvent;
-import org.concordiainternational.competition.ui.GroupData.UpdateEventListener;
+import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
+import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
 import org.concordiainternational.competition.ui.components.Menu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +64,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener, 
     boolean ignoreChanges;
     private Item item;
     private Platform platform;
-    private GroupData masterData;
+    private SessionData masterData;
     private LoadImage imageArea;
 
     private UpdateEventListener groupDataListener;
@@ -115,7 +115,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener, 
      * @param locale
      */
     private void registerAsListener(final Locale locale) {
-        groupDataListener = new GroupData.UpdateEventListener() {
+        groupDataListener = new SessionData.UpdateEventListener() {
             @Override
             public void updateEvent(UpdateEvent updateEvent) {
                 display(locale);

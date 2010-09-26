@@ -50,7 +50,7 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
     private HorizontalLayout top = new HorizontalLayout();
     private HorizontalLayout bottom = new HorizontalLayout();
     
-    private GroupData masterData;
+    private SessionData masterData;
     private CompetitionApplication app = CompetitionApplication.getCurrent();
 
     private Logger logger = LoggerFactory.getLogger(RefereeConsole.class);
@@ -81,7 +81,7 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
         	app.setPlatformByName(platformName);
         }
         
-        masterData = GroupData.getInstance(platformName);
+        masterData = SessionData.getInstance(platformName);
         final DecisionController decisionController = masterData.getDecisionController();
         decisionController.addListener(this);
         

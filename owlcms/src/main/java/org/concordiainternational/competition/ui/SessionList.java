@@ -29,6 +29,8 @@ import org.concordiainternational.competition.ui.generators.CommonColumnGenerato
 import org.concordiainternational.competition.ui.list.GenericHbnList;
 import org.concordiainternational.competition.utils.ItemAdapter;
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
@@ -38,13 +40,15 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Table.ColumnGenerator;
+import com.vaadin.ui.Window;
 
-public class GroupList extends GenericHbnList<CompetitionSession> implements ApplicationView {
+public class SessionList extends GenericHbnList<CompetitionSession> implements ApplicationView {
 
     private static final long serialVersionUID = -6455130090728823622L;
     private String viewName;
+    private static Logger logger = LoggerFactory.getLogger(SessionList.class);
 
-    public GroupList(boolean initFromFragment, String viewName) {
+    public SessionList(boolean initFromFragment, String viewName) {
         super(CompetitionApplication.getCurrent(), CompetitionSession.class, Messages.getString(
             "GroupList.Groups", CompetitionApplication.getCurrent().getLocale())); //$NON-NLS-1$
         if (initFromFragment) {
@@ -110,6 +114,9 @@ public class GroupList extends GenericHbnList<CompetitionSession> implements App
         table.addGeneratedColumn("platform", new CommonColumnGenerator(app)); //$NON-NLS-1$
         
         setExpandRatios();
+        table.setColumnExpandRatio("name", 0.3F);
+        table.setColumnExpandRatio("actions", 1.2F);
+        
     }
 
     /**
@@ -143,16 +150,30 @@ public class GroupList extends GenericHbnList<CompetitionSession> implements App
                         private static final long serialVersionUID = 5204920602544644705L;
 
                         public void buttonClick(ClickEvent event) {
-                            clearGroup((Long) itemId);
+                            clearCompetitionSession((Long) itemId);
                         }
                     });
                     actions.addComponent(clear);
+                    
+                    Button edit = new Button(Messages.getString("Common.edit", app.getLocale())); //$NON-NLS-1$
+                    edit.addListener(new ClickListener() {
+                        private static final long serialVersionUID = 5204920602544644705L;
+
+                        public void buttonClick(ClickEvent event) {
+                        	editCompetitionSession((Long) itemId);
+                        }
+                    });
+                    actions.addComponent(edit);
                     return actions;
                 }
             });
     }
 
-    private void clearGroup(Long itemId) {
+    /**
+     * Remove all lifters in the CompetitionSession
+     * @param itemId
+     */
+    private void clearCompetitionSession(Long itemId) {
         Item item = table.getContainerDataSource().getItem(itemId);
         CompetitionSession competitionSession = (CompetitionSession) ItemAdapter.getObject(item);
         int nbLifters = 0;
@@ -161,7 +182,23 @@ public class GroupList extends GenericHbnList<CompetitionSession> implements App
             nbLifters = lifters.size();
             competitionSession.deleteLifters((CompetitionApplication) app);
         }
-        app.getMainWindow().showNotification(MessageFormat.format("{0} leveurs effacés.", nbLifters)); //$NON-NLS-1$
+        Locale locale = CompetitionApplication.getCurrentLocale();
+        logger.warn("locale {}",locale);
+		String messageTemplate = Messages.getString("GroupList.erased", locale); //$NON-NLS-1$
+		app.getMainWindow().showNotification(MessageFormat.format(messageTemplate,nbLifters)); 
+    }
+    
+    /**
+     * @param itemId
+     */
+    private void editCompetitionSession(Long itemId) {
+        Item item = table.getContainerDataSource().getItem(itemId);
+        CompetitionSession competitionSession = (CompetitionSession) ItemAdapter.getObject(item);
+        SessionForm form = new SessionForm();
+        form.setItemDataSource(item);
+        Window editingWindow = new Window(competitionSession.getName());
+        editingWindow.getContent().addComponent(form);
+        app.getMainWindow().addWindow(editingWindow);
     }
 
     /* (non-Javadoc)

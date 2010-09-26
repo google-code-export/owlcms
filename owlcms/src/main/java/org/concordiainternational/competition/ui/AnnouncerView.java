@@ -56,7 +56,7 @@ import com.vaadin.ui.SplitPanel;
  * @author jflamy
  * 
  */
-public class AnnouncerView extends SplitPanel implements ApplicationView, GroupData.UpdateEventListener, EditingView {
+public class AnnouncerView extends SplitPanel implements ApplicationView, SessionData.UpdateEventListener, EditingView {
     private static final long serialVersionUID = 7881028819569705161L;
     private static final Logger logger = LoggerFactory.getLogger(AnnouncerView.class);
     public static final boolean PUSHING = true;
@@ -67,7 +67,7 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, GroupD
     private LifterCardEditor lifterCardEditor;
     private CompetitionApplication app;
     private boolean stickyEditor = false;
-    private GroupData groupData;
+    private SessionData groupData;
     Mode mode;
     private ICEPush pusher;
     private String platformName;
@@ -101,7 +101,7 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, GroupD
         }
 
         
-        groupData = GroupData.getInstance(platformName);
+        groupData = SessionData.getInstance(platformName);
         if (mode == Mode.ANNOUNCER) {
             final CompetitionSession currentGroup = groupData.getCurrentCompetitionSession();
             groupData.setAnnouncerView(this);
@@ -174,7 +174,7 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, GroupD
      * 
      * @param groupData
      */
-    public void loadFirstLifterInfo(GroupData groupData) {
+    public void loadFirstLifterInfo(SessionData groupData) {
         final Lifter firstLifter = liftList.getFirstLifter();
         logger.debug("*** first lifter = {}", firstLifter); //$NON-NLS-1$
         final Item firstLifterItem = liftList.getFirstLifterItem();
@@ -189,7 +189,7 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, GroupD
      * 
      * @param groupData
      */
-    public void loadFirstLifterInfo(GroupData groupData, boolean sticky) {
+    public void loadFirstLifterInfo(SessionData groupData, boolean sticky) {
         loadFirstLifterInfo(groupData);
         if (lifterCardEditor != null) {
             lifterCardEditor.setSticky(sticky);
@@ -202,7 +202,7 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, GroupD
      * 
      * @param groupData
      */
-    public void editFirstLifterInfo(GroupData groupData, boolean sticky) {
+    public void editFirstLifterInfo(SessionData groupData, boolean sticky) {
         final Lifter firstLifter = liftList.getFirstLifter();
         final Item firstLifterItem = liftList.getFirstLifterItem();
         updateLifterEditor(firstLifter, firstLifterItem);
@@ -311,10 +311,10 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, GroupD
      * Copied from interface. Lift order has changed. Update the lift list and
      * editor in the bottom part of the view.
      * 
-     * @see org.concordiainternational.competition.ui.GroupData.UpdateEventListener#updateEvent(org.concordiainternational.competition.ui.GroupData.UpdateEvent)
+     * @see org.concordiainternational.competition.ui.SessionData.UpdateEventListener#updateEvent(org.concordiainternational.competition.ui.SessionData.UpdateEvent)
      */
     @Override
-    public void updateEvent(GroupData.UpdateEvent updateEvent) {
+    public void updateEvent(SessionData.UpdateEvent updateEvent) {
         synchronized (app) {
             if (updateEvent.getForceRefresh()) {
                 logger.debug(
@@ -374,14 +374,14 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, GroupD
      * @param groupData
      *            the groupData to set
      */
-    public void setGroupData(GroupData groupData) {
+    public void setGroupData(SessionData groupData) {
         this.groupData = groupData;
     }
 
     /**
      * @return the groupData
      */
-    public GroupData getGroupData() {
+    public SessionData getGroupData() {
         return groupData;
     }
 

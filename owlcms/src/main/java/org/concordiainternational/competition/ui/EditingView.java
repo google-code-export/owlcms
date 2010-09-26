@@ -58,6 +58,6 @@ public interface EditingView extends Component {
      */
     public void setCurrentGroup(CompetitionSession newGroup);
 
-    public void setGroupData(GroupData newGroupData);
+    public void setGroupData(SessionData newGroupData);
 
 }

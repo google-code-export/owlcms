@@ -63,10 +63,10 @@ import com.vaadin.ui.Component;
  * 
  * @author jflamy
  */
-public class GroupData implements Lifter.UpdateEventListener, Serializable {
+public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
     private static final long serialVersionUID = -7621561459948739065L;
-    private static XLogger logger = XLoggerFactory.getXLogger(GroupData.class);
+    private static XLogger logger = XLoggerFactory.getXLogger(SessionData.class);
     public static final String MASTER_KEY = "GroupData_"; //$NON-NLS-1$
 
     public List<Lifter> lifters;
@@ -88,7 +88,7 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
     private List<Lifter> currentDisplayOrder;
     private List<Lifter> currentLiftingOrder;
 
-    private NotificationManager<GroupData, Lifter, Component> notificationManager;
+    private NotificationManager<SessionData, Lifter, Component> notificationManager;
     private int timeAllowed;
     private int liftsDone;
 
@@ -107,11 +107,11 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
         return liftsDone;
     }
 
-    GroupData(String string) {
+    SessionData(String string) {
         app = CompetitionApplication.getCurrent();
         lifters = new ArrayList<Lifter>();
         currentPlatformName = string;
-        notificationManager = new NotificationManager<GroupData, Lifter, Component>(this);
+        notificationManager = new NotificationManager<SessionData, Lifter, Component>(this);
         init();
     }
 
@@ -120,20 +120,20 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
      * 
      * @param lifters
      */
-    public GroupData(List<Lifter> lifters) {
+    public SessionData(List<Lifter> lifters) {
         app = CompetitionApplication.getCurrent();
         this.lifters = lifters;
-        notificationManager = new NotificationManager<GroupData, Lifter, Component>(this);
+        notificationManager = new NotificationManager<SessionData, Lifter, Component>(this);
         updateListsForLiftingOrderChange();
     }
 
-    static private final Map<String, GroupData> platformToGroupData = new HashMap<String, GroupData>();
+    static private final Map<String, SessionData> platformToGroupData = new HashMap<String, SessionData>();
 
-    public static GroupData getInstance(String platformName) {
-        GroupData groupDataSingleton = platformToGroupData.get(platformName);
+    public static SessionData getInstance(String platformName) {
+        SessionData groupDataSingleton = platformToGroupData.get(platformName);
 
         if (groupDataSingleton == null) {
-            groupDataSingleton = new GroupData(platformName);
+            groupDataSingleton = new SessionData(platformName);
             platformToGroupData.put(platformName, groupDataSingleton);
             groupDataSingleton.registerAsMasterData(platformName);
         }
@@ -211,7 +211,7 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
         try {
             ((HbnSessionManager) app).getHbnSession().merge(object);
         } catch (StaleObjectStateException e) {
-            throw new RuntimeException(Messages.getString("GroupData.UserHasBeenDeleted", CompetitionApplication
+            throw new RuntimeException(Messages.getString("SessionData.UserHasBeenDeleted", CompetitionApplication
                     .getCurrentLocale()));
         }
     }
@@ -638,7 +638,7 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
     }
 
     /**
-     * GroupData events all derive from this.
+     * SessionData events all derive from this.
      */
     public class UpdateEvent extends EventObject {
         private static final long serialVersionUID = -126644150054472005L;
@@ -653,12 +653,12 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
          * @param propertyIds
          *            that have been updated.
          */
-        public UpdateEvent(GroupData source, Lifter currentLifter) {
+        public UpdateEvent(SessionData source, Lifter currentLifter) {
             super(source);
             this.currentLifter = currentLifter;
         }
 
-        public UpdateEvent(GroupData source, boolean refreshRequest) {
+        public UpdateEvent(SessionData source, boolean refreshRequest) {
             super(source);
             this.refreshRequest = refreshRequest;
         }
@@ -674,17 +674,17 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
     }
 
     /**
-     * Listener interface for receiving <code>GroupData.UpdateEvent</code>s.
+     * Listener interface for receiving <code>SessionData.UpdateEvent</code>s.
      */
     public interface UpdateEventListener extends java.util.EventListener {
 
         /**
-         * This method will be invoked when a GroupData.UpdateEvent is fired.
+         * This method will be invoked when a SessionData.UpdateEvent is fired.
          * 
          * @param updateEvent
          *            the event that has occured.
          */
-        public void updateEvent(GroupData.UpdateEvent updateEvent);
+        public void updateEvent(SessionData.UpdateEvent updateEvent);
     }
 
     /**
@@ -701,14 +701,14 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
         "updateEvent"); // ... will be called with this method. //$NON-NLS-1$;
 
     /**
-     * Broadcast a GroupData.event to all registered listeners
+     * Broadcast a SessionData.event to all registered listeners
      * 
      * @param updateEvent
      *            contains the source (ourself) and the list of properties to be
      *            refreshed.
      */
     protected void fireEvent(UpdateEvent updateEvent) {
-        // logger.trace("GroupData: firing event from groupData"+System.identityHashCode(this)+" first="+updateEvent.getCurrentLifter()+" eventRouter="+System.identityHashCode(eventRouter));
+        // logger.trace("SessionData: firing event from groupData"+System.identityHashCode(this)+" first="+updateEvent.getCurrentLifter()+" eventRouter="+System.identityHashCode(eventRouter));
         // logger.trace("                        listeners"+eventRouter.dumpListeners(this));
         if (eventRouter != null) {
             eventRouter.fireEvent(updateEvent);
@@ -717,7 +717,7 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
     }
 
     /**
-     * Register a new GroupData.Listener object with a GroupData in order to be
+     * Register a new SessionData.Listener object with a SessionData in order to be
      * informed of updates.
      * 
      * @param listener
@@ -728,7 +728,7 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
     }
 
     /**
-     * Remove a specific GroupData.Listener object
+     * Remove a specific SessionData.Listener object
      * 
      * @param listener
      */
@@ -859,7 +859,7 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
         // JSP pages).
         final ServletContext servletContext = ((CompetitionApplication) app).getServletContext();
         if (servletContext != null) {
-            servletContext.setAttribute(GroupData.MASTER_KEY + platformName, this);
+            servletContext.setAttribute(SessionData.MASTER_KEY + platformName, this);
             logger.info("Master data registered for platform {}={}", platformName, this); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
@@ -1013,7 +1013,7 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
      * @param lifter
      * @param groupData
      */
-    public void manageTimerOwner(Lifter lifter, GroupData groupData, CountdownTimer timing) {
+    public void manageTimerOwner(Lifter lifter, SessionData groupData, CountdownTimer timing) {
         // first time we use the timekeeper button or that we announce
         // with the automatic start determines that
         // there is a timekeeper and that timekeeper runs clock.
@@ -1033,7 +1033,7 @@ public class GroupData implements Lifter.UpdateEventListener, Serializable {
      * @param lifter
      * @param groupData
      */
-    public void startTimer(Lifter lifter, GroupData groupData,CountdownTimer timing) {
+    public void startTimer(Lifter lifter, SessionData groupData,CountdownTimer timing) {
         manageTimerOwner(lifter,groupData, timing);
         timing.start();
     }

@@ -23,7 +23,7 @@ import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.ui.AnnouncerView;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.ui.GroupData;
+import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.LifterInfo;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
@@ -65,7 +65,7 @@ public class TimerControls extends GridLayout {
     private LifterInfo lifterInfo;
     private boolean timerVisible = false;
 
-    public TimerControls(final Lifter lifter, final GroupData groupData, boolean top, AnnouncerView.Mode mode,
+    public TimerControls(final Lifter lifter, final SessionData groupData, boolean top, AnnouncerView.Mode mode,
             LifterInfo lifterInfo, boolean timerVisible, CompetitionApplication app) {
         super(3, 3);
         this.mode = mode;
@@ -90,7 +90,7 @@ public class TimerControls extends GridLayout {
      * @throws OverlapsException
      * @throws OutOfBoundsException
      */
-    private void top(final Lifter lifter, final GroupData groupData, Locale locale) throws OverlapsException,
+    private void top(final Lifter lifter, final SessionData groupData, Locale locale) throws OverlapsException,
             OutOfBoundsException {
         if (mode == AnnouncerView.Mode.ANNOUNCER) {
             configureAnnounceButton(lifter, groupData, locale);
@@ -152,7 +152,7 @@ public class TimerControls extends GridLayout {
      * @param groupData
      * @param locale
      */
-    private void bottom(Lifter lifter, final GroupData groupData, Locale locale) {
+    private void bottom(Lifter lifter, final SessionData groupData, Locale locale) {
 
         addStopTimeBottomListener(lifter, groupData, locale);
 
@@ -169,7 +169,7 @@ public class TimerControls extends GridLayout {
      * @param groupData
      * @param locale
      */
-    private void configureFailedLift(final Lifter lifter, final GroupData groupData, Locale locale) {
+    private void configureFailedLift(final Lifter lifter, final SessionData groupData, Locale locale) {
 
         final Button.ClickListener failedLiftListener = new Button.ClickListener() {
             private static final long serialVersionUID = 5693610077500773431L;
@@ -204,7 +204,7 @@ public class TimerControls extends GridLayout {
      * @param groupData
      * @param locale
      */
-    private void configureOkLift(final Lifter lifter, final GroupData groupData, Locale locale) {
+    private void configureOkLift(final Lifter lifter, final SessionData groupData, Locale locale) {
         final Button.ClickListener okLiftListener = new Button.ClickListener() { //$NON-NLS-1$
             private static final long serialVersionUID = -2582860566509880474L;
 
@@ -240,7 +240,7 @@ public class TimerControls extends GridLayout {
      * @param groupData
      * @param locale
      */
-    private void configureStopStart(final Lifter lifter, final GroupData groupData, Locale locale) {
+    private void configureStopStart(final Lifter lifter, final SessionData groupData, Locale locale) {
         final Button.ClickListener stopStartListener = new Button.ClickListener() { //$NON-NLS-1$
             private static final long serialVersionUID = -2582860566509880474L;
 
@@ -275,7 +275,7 @@ public class TimerControls extends GridLayout {
      * @param groupData
      * @param locale
      */
-    private void configureOneMinute(final Lifter lifter, final GroupData groupData, Locale locale) {
+    private void configureOneMinute(final Lifter lifter, final SessionData groupData, Locale locale) {
 
         final Button.ClickListener oneMinuteListener = new Button.ClickListener() {
             private static final long serialVersionUID = 5693610077500773431L;
@@ -306,7 +306,7 @@ public class TimerControls extends GridLayout {
      * @param groupData
      * @param locale
      */
-    private void configureTwoMinutes(final Lifter lifter, final GroupData groupData, Locale locale) {
+    private void configureTwoMinutes(final Lifter lifter, final SessionData groupData, Locale locale) {
 
         final Button.ClickListener twoMinutesListener = new Button.ClickListener() {
             private static final long serialVersionUID = 5693610077500773431L;
@@ -337,7 +337,7 @@ public class TimerControls extends GridLayout {
      * @param groupData
      * @param locale
      */
-    private void configureWeightChangeButton(final Lifter lifter, final GroupData groupData, Locale locale) {
+    private void configureWeightChangeButton(final Lifter lifter, final SessionData groupData, Locale locale) {
         final Button.ClickListener changeWeightListener = new Button.ClickListener() { //$NON-NLS-1$
             private static final long serialVersionUID = -2582860566509880474L;
 
@@ -379,7 +379,7 @@ public class TimerControls extends GridLayout {
      * @param groupData
      * @param locale
      */
-    private void configureAnnounceButton(final Lifter lifter, final GroupData groupData, final Locale locale) {
+    private void configureAnnounceButton(final Lifter lifter, final SessionData groupData, final Locale locale) {
         final Button.ClickListener announceListener = new Button.ClickListener() { //$NON-NLS-1$
             private static final long serialVersionUID = -2582860566509880474L;
 
@@ -403,7 +403,7 @@ public class TimerControls extends GridLayout {
         announce.setCaption(Messages.getString("LifterInfo.Announce", locale)); //$NON-NLS-1$
     }
 
-    protected void checkDecisionHasBeenDisplayed(GroupData groupData, Locale locale) {
+    protected void checkDecisionHasBeenDisplayed(SessionData groupData, Locale locale) {
         if (!groupData.getAnnouncerEnabled()) {
             throw new RuntimeException(Messages.getString("LifterInfo.Busy", locale)); //$NON-NLS-1$
         }
@@ -414,7 +414,7 @@ public class TimerControls extends GridLayout {
      * @param groupData
      * @param locale
      */
-    private void addStopTimeBottomListener(final Lifter lifter, final GroupData groupData, Locale locale) {
+    private void addStopTimeBottomListener(final Lifter lifter, final SessionData groupData, Locale locale) {
         // we need a way to stop the timer if the current lifter requests a
         // change.
         final Button.ClickListener stopTimeBottomListener = new Button.ClickListener() { //$NON-NLS-1$

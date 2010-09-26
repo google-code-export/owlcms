@@ -61,7 +61,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
     public Locale locale;
 
     public String identifier;
-    private GroupData groupData;
+    private SessionData groupData;
     private Label timerDisplay;
     private CompetitionApplication app;
     private Mode mode;
@@ -81,7 +81,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
     private ICEPush pusher;
 
     @SuppressWarnings("serial")
-    public LifterInfo(String identifier, final GroupData groupData, AnnouncerView.Mode mode, Component parentView) {
+    public LifterInfo(String identifier, final SessionData groupData, AnnouncerView.Mode mode, Component parentView) {
         final CompetitionApplication currentApp = CompetitionApplication.getCurrent();
         this.app = currentApp;
         this.locale = currentApp.getLocale();
@@ -119,7 +119,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
      * @param lifter
      * @param groupData
      */
-    public void loadLifter(final Lifter lifter, final GroupData groupData) {
+    public void loadLifter(final Lifter lifter, final SessionData groupData) {
         logger.debug("LifterInfo.loadLifter() begin: newLifter = {} previousLifter = {}", lifter, prevLifter); //$NON-NLS-1$
 
         // make sure that groupData listens to changes relating to the lifter
@@ -183,7 +183,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
      * @param lifter
      * @param groupData
      */
-    private void updateDisplayBoard(final Lifter lifter, final GroupData groupData) {
+    private void updateDisplayBoard(final Lifter lifter, final SessionData groupData) {
         logger.trace("loadLifter prior to updateNEC {} {} {} ", new Object[] { identifier, parentView, mode }); //$NON-NLS-1$
         if (identifier.startsWith("top") && parentView == groupData.getAnnouncerView() && mode == Mode.ANNOUNCER) { //$NON-NLS-1$
             updateNECOnWeightChange(lifter, groupData);
@@ -199,7 +199,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
      * @param lifter
      * @param groupData
      */
-    private void updateNECOnWeightChange(final Lifter lifter, final GroupData groupData) {
+    private void updateNECOnWeightChange(final Lifter lifter, final SessionData groupData) {
         // top part of announcer view drives electronic display
         if (groupData.needToUpdateNEC) {
             if (WebApplicationConfiguration.NECShowsLifterImmediately) {
@@ -270,7 +270,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
      * @param lifter
      * @param groupData
      */
-    private void topDisplayOptions(final Lifter lifter, final GroupData groupData) {
+    private void topDisplayOptions(final Lifter lifter, final SessionData groupData) {
 
         createTimerDisplay(groupData);
 
@@ -288,7 +288,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
      * 
      * @param groupData
      */
-    private void bottomDisplayOptions(Lifter lifter, final GroupData groupData) {
+    private void bottomDisplayOptions(Lifter lifter, final SessionData groupData) {
     }
 
     /**
@@ -297,14 +297,14 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
      * @param lifter2
      * @param groupData2
      */
-    private void currentLifterDisplayOptions(Lifter lifter2, GroupData groupData2) {
+    private void currentLifterDisplayOptions(Lifter lifter2, SessionData groupData2) {
         createTimerDisplay(groupData2);
     }
 
     /**
      * @param groupData
      */
-    private void createTimerDisplay(final GroupData groupData) {
+    private void createTimerDisplay(final SessionData groupData) {
         timerDisplay = new Label();
 
         // we set the value to the time allowed for the current lifter as
@@ -358,7 +358,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
 
     @Override
     public void finalWarning(int remaining) {
-        GroupData masterData = app.getMasterData(app.getPlatformName());
+        SessionData masterData = app.getMasterData(app.getPlatformName());
         logger.warn("final warning, {}", isMasterConsole(masterData));
         if (timerDisplay == null) return;
         prevTimeRemaining = remaining;
@@ -400,7 +400,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
      * @param resource
      */
     private void playSound(final ClassResource resource) {
-        GroupData masterData = app.getMasterData(app.getPlatformName());
+        SessionData masterData = app.getMasterData(app.getPlatformName());
         if (isMasterConsole(masterData)) {
             // we are not the master application; do not play
             app.getBuzzer().play(resource);
@@ -415,7 +415,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
      * @param masterData
      * @return
      */
-    private boolean isMasterConsole(GroupData masterData) {
+    private boolean isMasterConsole(SessionData masterData) {
         return app == masterData.getMasterApplication();
     }
 

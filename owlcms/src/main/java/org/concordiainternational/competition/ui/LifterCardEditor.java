@@ -308,7 +308,7 @@ public class LifterCardEditor extends Panel implements Property.ValueChangeListe
         logger.debug("announcerView={} loading {} previousLifter {}", //$NON-NLS-1$
             new Object[] { parentView, lifter, this.lifter }); //$NON-NLS-1$
         // LoggerUtils.logException(logger, new Exception("whoCalls"));
-        final GroupData groupData = liftList.getGroupData();
+        final SessionData groupData = liftList.getGroupData();
         if (lifter == null) {
             logger.debug("case 1, lifter = null"); //$NON-NLS-1$
             // we leave the current lifter as is

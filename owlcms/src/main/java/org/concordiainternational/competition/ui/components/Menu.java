@@ -26,7 +26,7 @@ import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
-import org.concordiainternational.competition.ui.GroupData;
+import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.LoadWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -465,7 +465,7 @@ public class Menu extends MenuBar implements Serializable {
                         Menu.this.setComponentError(null); // erase error
                                                            // marker;
                         competitionApplication.setPlatformByName(name);
-                        GroupData masterData = competitionApplication.getMasterData(name);
+                        SessionData masterData = competitionApplication.getMasterData(name);
                         logger.debug("new platform={}, new group = {}", name, masterData.getCurrentCompetitionSession()); //$NON-NLS-1$
                         competitionApplication.setCurrentCompetitionSession(masterData.getCurrentCompetitionSession());
                     }

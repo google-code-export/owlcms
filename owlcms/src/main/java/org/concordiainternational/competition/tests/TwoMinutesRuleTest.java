@@ -28,7 +28,7 @@ import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
-import org.concordiainternational.competition.ui.GroupData;
+import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.junit.After;
 import org.junit.Before;
@@ -45,7 +45,7 @@ public class TwoMinutesRuleTest {
     HbnSessionManager hbnSessionManager = AllTests.getSessionManager();
     HbnContainer<Lifter> hbnLifters = null;
     List<Lifter> lifters = null;
-    GroupData groupData;
+    SessionData groupData;
 
     @Before
     public void setupTest() {
@@ -93,7 +93,7 @@ public class TwoMinutesRuleTest {
     @Test
     public void liftTimeOrder() {
         LifterSorter.assignLotNumbers(lifters);
-        groupData = new GroupData(lifters);
+        groupData = new SessionData(lifters);
 
         final Lifter schneiderF = lifters.get(0);
         final Lifter simpsonR = lifters.get(1);
@@ -214,7 +214,7 @@ public class TwoMinutesRuleTest {
         final int size = lifters.size();
         for (int i = 2; i < size; i++)
             lifters.remove(2);
-        groupData = new GroupData(lifters);
+        groupData = new SessionData(lifters);
 
         // competition start
         assertEquals(60000, groupData.timeAllowed(schneiderF));
@@ -311,7 +311,7 @@ public class TwoMinutesRuleTest {
         final int size = lifters.size();
         for (int i = 2; i < size; i++)
             lifters.remove(2);
-        groupData = new GroupData(lifters);
+        groupData = new SessionData(lifters);
 
         // competition start
         assertEquals(60000, groupData.timeAllowed(schneiderF));
