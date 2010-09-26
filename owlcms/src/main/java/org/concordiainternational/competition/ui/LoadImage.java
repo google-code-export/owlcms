@@ -41,7 +41,7 @@ public class LoadImage extends HorDashLayout {
         this.parentWindow = parentWindow;
     }
 
-    public void computeImageArea(GroupData masterData, Platform platform) {
+    public void computeImageArea(SessionData masterData, Platform platform) {
         final Lifter currentLifter = masterData.getCurrentLifter();
         final Integer barWeight = computeBarWeight(masterData, platform);
         if (currentLifter == null) {
@@ -123,7 +123,7 @@ public class LoadImage extends HorDashLayout {
         return subtractedWeight;
     }
 
-    private Integer computeBarWeight(GroupData masterData, Platform platform) {
+    private Integer computeBarWeight(SessionData masterData, Platform platform) {
         if (platform.getLightBar() > 0) {
             return platform.getLightBar();
         } else {
@@ -134,7 +134,7 @@ public class LoadImage extends HorDashLayout {
     /**
      * @return
      */
-    private Integer computeOfficialBarWeight(GroupData masterData, Platform platform) {
+    private Integer computeOfficialBarWeight(SessionData masterData, Platform platform) {
         final Lifter currentLifter = masterData.getCurrentLifter();
         String gender = "M";
         if (currentLifter != null) {

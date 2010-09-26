@@ -32,9 +32,9 @@ import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
-import org.concordiainternational.competition.ui.GroupData;
+import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.UserActions;
-import org.concordiainternational.competition.ui.GroupData.UpdateEvent;
+import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
     public String urlString;
     private ProgressIndicator refresher;
     private String platformName;
-    private GroupData masterData;
+    private SessionData masterData;
     private CustomLayout top;
     private CompetitionApplication app;
     private Label name = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
@@ -110,13 +110,13 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
         // System.err.println("appUrlString with slash="+appUrlString);
     }
 
-    private void registerAsListener(final String platformName, final GroupData masterData) {
+    private void registerAsListener(final String platformName, final SessionData masterData) {
         // locate the current group data for the platformName
         if (masterData != null) {
             logger.debug(urlString + "{} listening to: {}", platformName, masterData); //$NON-NLS-1$	
-            //masterData.addListener(GroupData.UpdateEvent.class, this, "update"); //$NON-NLS-1$
+            //masterData.addListener(SessionData.UpdateEvent.class, this, "update"); //$NON-NLS-1$
 
-            GroupData.UpdateEventListener listener = new GroupData.UpdateEventListener() {
+            SessionData.UpdateEventListener listener = new SessionData.UpdateEventListener() {
 
                 @Override
                 public void updateEvent(UpdateEvent updateEvent) {
@@ -180,7 +180,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
      * @param b 
      * @throws RuntimeException
      */
-    private void display(final String platformName, final GroupData masterData, boolean doPush) throws RuntimeException {
+    private void display(final String platformName, final SessionData masterData, boolean doPush) throws RuntimeException {
         synchronized (app) {
             URL url = computeUrl(platformName);
             iframe.setSource(new ExternalResource(url));
@@ -329,7 +329,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
     /**
      * @param groupData
      */
-    private void updateTime(final GroupData groupData) {
+    private void updateTime(final SessionData groupData) {
         // we set the value to the time allowed for the current lifter as
         // computed by groupData
         int timeAllowed = groupData.getTimeAllowed();

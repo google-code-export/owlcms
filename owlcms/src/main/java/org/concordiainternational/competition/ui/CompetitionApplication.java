@@ -252,8 +252,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @param platformName
      * @return
      */
-    public GroupData getMasterData(String platformName) {
-        GroupData masterData = GroupData.getInstance(platformName);
+    public SessionData getMasterData(String platformName) {
+        SessionData masterData = SessionData.getInstance(platformName);
         if (masterData != null) {
             return masterData;
         } else {

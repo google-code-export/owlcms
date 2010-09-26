@@ -21,7 +21,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.concordiainternational.competition.timer.CountdownTimerListener;
-import org.concordiainternational.competition.ui.GroupData;
+import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.utils.EventHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,9 +47,9 @@ public class DecisionController implements CountdownTimerListener {
 
     Decision[] refereeDecisions = new Decision[3];
 
-    private GroupData groupData;
+    private SessionData groupData;
 
-    public DecisionController(GroupData groupData) {
+    public DecisionController(SessionData groupData) {
         this.groupData = groupData;
         for (int i = 0; i < refereeDecisions.length; i++) {
             refereeDecisions[i] = new Decision();
@@ -164,12 +164,12 @@ public class DecisionController implements CountdownTimerListener {
     }
 
     /**
-     * Listener interface for receiving <code>GroupData.DecisionEvent</code>s.
+     * Listener interface for receiving <code>SessionData.DecisionEvent</code>s.
      */
     public interface DecisionEventListener extends java.util.EventListener {
 
         /**
-         * This method will be invoked when a GroupData.DecisionEvent is fired.
+         * This method will be invoked when a SessionData.DecisionEvent is fired.
          * 
          * @param updateEvent
          *            the event that has occured.
@@ -191,14 +191,14 @@ public class DecisionController implements CountdownTimerListener {
         "updateEvent"); // ... will be called with this method. //$NON-NLS-1$;
 
     /**
-     * Broadcast a GroupData.event to all registered listeners
+     * Broadcast a SessionData.event to all registered listeners
      * 
      * @param updateEvent
      *            contains the source (ourself) and the list of properties to be
      *            refreshed.
      */
     protected void fireEvent(DecisionEvent updateEvent) {
-        // logger.trace("GroupData: firing event from groupData"+System.identityHashCode(this)+" first="+updateEvent.getCurrentLifter()+" eventRouter="+System.identityHashCode(eventRouter));
+        // logger.trace("SessionData: firing event from groupData"+System.identityHashCode(this)+" first="+updateEvent.getCurrentLifter()+" eventRouter="+System.identityHashCode(eventRouter));
         // logger.trace("                        listeners"+eventRouter.dumpListeners(this));
         if (eventRouter != null) {
             eventRouter.fireEvent(updateEvent);
@@ -207,7 +207,7 @@ public class DecisionController implements CountdownTimerListener {
     }
 
     /**
-     * Register a new GroupData.Listener object with a GroupData in order to be
+     * Register a new SessionData.Listener object with a SessionData in order to be
      * informed of updates.
      * 
      * @param listener
@@ -218,7 +218,7 @@ public class DecisionController implements CountdownTimerListener {
     }
 
     /**
-     * Remove a specific GroupData.Listener object
+     * Remove a specific SessionData.Listener object
      * 
      * @param listener
      */

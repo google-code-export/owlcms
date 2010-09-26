@@ -148,10 +148,10 @@ public class CompetitionApplicationComponents {
      * Lazy builder for group list.
      */
     private class GroupListComponent implements CompetitionApplicationComponent {
-        private GroupList groupList = null;
+        private SessionList groupList = null;
 
-        public GroupList get(boolean initFromFragment, String viewName) {
-            this.groupList = (new GroupList(initFromFragment, viewName));
+        public SessionList get(boolean initFromFragment, String viewName) {
+            this.groupList = (new SessionList(initFromFragment, viewName));
             return groupList;
         }
     }
@@ -403,7 +403,7 @@ public class CompetitionApplicationComponents {
         final Platform platform = Platform.getByName(platformName);
         if (platform != null) {
             final CompetitionApplication app = CompetitionApplication.getCurrent();
-            GroupData masterData = app.getMasterData(platformName);
+            SessionData masterData = app.getMasterData(platformName);
             final CompetitionSession currentGroup = masterData.getCurrentCompetitionSession();
             logger.debug("new current group {}", currentGroup); //$NON-NLS-1$
             setPlatform(platform);
@@ -476,7 +476,7 @@ public class CompetitionApplicationComponents {
 //	 * @param masterData
 //	 * @param doPush
 //	 */
-//	public void forceMenuIfMasterApplication(final GroupData masterData) {
+//	public void forceMenuIfMasterApplication(final SessionData masterData) {
 //		CompetitionApplication masterApplication = masterData.getMasterApplication();
 //		CompetitionApplication app = CompetitionApplication.getCurrent();
 //		boolean isMaster = (app  == masterApplication);

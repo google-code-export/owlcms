@@ -26,9 +26,9 @@ public interface EditableList {
 
     public Item getFirstLifterItem();
 
-    public GroupData getGroupData();
+    public SessionData getGroupData();
 
-    public void setGroupData(GroupData data);
+    public void setGroupData(SessionData data);
 
     public void clearSelection();
 

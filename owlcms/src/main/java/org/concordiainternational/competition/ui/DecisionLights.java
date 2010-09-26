@@ -45,7 +45,7 @@ public class DecisionLights extends SplitPanel implements DecisionEventListener,
     HorizontalLayout top = new HorizontalLayout();
     Label[] decisionLights = new Label[3];
     GridLayout bottom;
-    GroupData masterData;
+    SessionData masterData;
     CompetitionApplication app = CompetitionApplication.getCurrent();
 
     private Logger logger = LoggerFactory.getLogger(DecisionLights.class);
@@ -97,7 +97,7 @@ public class DecisionLights extends SplitPanel implements DecisionEventListener,
 	 * 
 	 */
 	private void createLights() {
-		masterData = GroupData.getInstance(platformName);
+		masterData = SessionData.getInstance(platformName);
         masterData.getDecisionController().addListener(this);
         top.setSizeFull();
 

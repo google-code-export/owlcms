@@ -24,7 +24,7 @@ import org.concordiainternational.competition.decision.DecisionController.Decisi
 import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
-import org.concordiainternational.competition.ui.GroupData.UpdateEvent;
+import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.DecisionLightsWindow;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
@@ -44,7 +44,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
 
     private ProgressIndicator refresher;
     private String platformName;
-    private GroupData masterData;
+    private SessionData masterData;
     private CompetitionApplication app;
     private Label timeDisplay = new Label();
     private ICEPush pusher = null;
@@ -78,13 +78,13 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         display(platformName, masterData);
     }
 
-    private void registerAsGroupDataListener(final String platformName, final GroupData masterData) {
+    private void registerAsGroupDataListener(final String platformName, final SessionData masterData) {
         // locate the current group data for the platformName
         if (masterData != null) {
             logger.debug("{} listening to: {}", platformName, masterData); //$NON-NLS-1$	
-            //masterData.addListener(GroupData.UpdateEvent.class, this, "update"); //$NON-NLS-1$
+            //masterData.addListener(SessionData.UpdateEvent.class, this, "update"); //$NON-NLS-1$
 
-            GroupData.UpdateEventListener listener = new GroupData.UpdateEventListener() {
+            SessionData.UpdateEventListener listener = new SessionData.UpdateEventListener() {
 
                 @Override
                 public void updateEvent(UpdateEvent updateEvent) {
@@ -138,7 +138,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
      * @param masterData
      * @throws RuntimeException
      */
-    private void display(final String platformName, final GroupData masterData) throws RuntimeException {
+    private void display(final String platformName, final SessionData masterData) throws RuntimeException {
         synchronized (app) {
             final Lifter currentLifter = masterData.getCurrentLifter();
             if (currentLifter != null) {
@@ -169,7 +169,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
     /**
      * @param groupData
      */
-    private void updateTime(final GroupData groupData) {
+    private void updateTime(final SessionData groupData) {
         // we set the value to the time allowed for the current lifter as
         // computed by groupData
         int timeAllowed = groupData.getTimeAllowed();

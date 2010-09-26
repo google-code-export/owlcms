@@ -29,12 +29,12 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.ProgressIndicator;
 
-public class AttemptBoardView extends Panel implements ApplicationView, GroupData.UpdateEventListener {
+public class AttemptBoardView extends Panel implements ApplicationView, SessionData.UpdateEventListener {
 
     Logger logger = LoggerFactory.getLogger(AttemptBoardView.class);
 
     private static final long serialVersionUID = 2443396161202824072L;
-    private GroupData masterData;
+    private SessionData masterData;
     private LifterInfo announcerInfo;
     private Mode mode;
     private Platform platform;
@@ -124,7 +124,7 @@ public class AttemptBoardView extends Panel implements ApplicationView, GroupDat
     }
 
     @Override
-    public void updateEvent(GroupData.UpdateEvent updateEvent) {
+    public void updateEvent(SessionData.UpdateEvent updateEvent) {
         synchronized (CompetitionApplication.getCurrent()) {
             logger.debug("loading {} ", updateEvent.getCurrentLifter()); //$NON-NLS-1$
             announcerInfo.loadLifter(masterData.getCurrentLifter(), masterData);

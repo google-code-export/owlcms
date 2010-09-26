@@ -156,7 +156,7 @@ public class CountdownTimer implements Serializable {
     }
 
     /**
-     * Set the remaining time explicitly. Meant to be called only by GroupData()
+     * Set the remaining time explicitly. Meant to be called only by SessionData()
      * so that the time is reset correctly.
      */
     public void forceTimeRemaining(int remainingTime) {

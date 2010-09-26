@@ -16,7 +16,7 @@
 
 package org.concordiainternational.competition.decision;
 
-import org.concordiainternational.competition.ui.GroupData;
+import org.concordiainternational.competition.ui.SessionData;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public class DecisionTester implements DecisionController.DecisionEventListener 
 
     @Test
     public void runTest() {
-        DecisionController decisionController = new DecisionController(new GroupData(null));
+        DecisionController decisionController = new DecisionController(new SessionData(null));
         decisionController.addListener(this);
         decisionController.reset();
         try {
