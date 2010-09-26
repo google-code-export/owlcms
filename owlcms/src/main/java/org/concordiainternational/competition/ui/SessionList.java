@@ -34,11 +34,11 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.Window;
 
@@ -46,7 +46,8 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
 
     private static final long serialVersionUID = -6455130090728823622L;
     private String viewName;
-    private static Logger logger = LoggerFactory.getLogger(SessionList.class);
+    @SuppressWarnings("unused")
+	private static Logger logger = LoggerFactory.getLogger(SessionList.class);
 
     public SessionList(boolean initFromFragment, String viewName) {
         super(CompetitionApplication.getCurrent(), CompetitionSession.class, Messages.getString(
@@ -183,7 +184,6 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
             competitionSession.deleteLifters((CompetitionApplication) app);
         }
         Locale locale = CompetitionApplication.getCurrentLocale();
-        logger.warn("locale {}",locale);
 		String messageTemplate = Messages.getString("GroupList.erased", locale); //$NON-NLS-1$
 		app.getMainWindow().showNotification(MessageFormat.format(messageTemplate,nbLifters)); 
     }
@@ -196,9 +196,13 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
         CompetitionSession competitionSession = (CompetitionSession) ItemAdapter.getObject(item);
         SessionForm form = new SessionForm();
         form.setItemDataSource(item);
+        form.setReadOnly(false);
+
         Window editingWindow = new Window(competitionSession.getName());
         editingWindow.getContent().addComponent(form);
         app.getMainWindow().addWindow(editingWindow);
+        editingWindow.setWidth("40em");
+        editingWindow.center();
     }
 
     /* (non-Javadoc)

@@ -38,4 +38,8 @@ public class Messages {
             return '«' + key + '»';
         }
     }
+    
+    public static String getStringWithException(String key, Locale locale) throws MissingResourceException {
+    	return ResourceBundle.getBundle(BUNDLE_NAME, locale).getString(key);
+    }
 }

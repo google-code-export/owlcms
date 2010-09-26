@@ -17,14 +17,17 @@
 package org.concordiainternational.competition.ui.generators;
 
 import java.util.Date;
+import java.util.MissingResourceException;
 
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.components.FormattingDateField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.Application;
 import com.vaadin.data.Container;
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
 import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
@@ -35,6 +38,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.Form;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 
@@ -42,7 +46,6 @@ public class CommonFieldFactory extends DefaultFieldFactory {
 
     private static final long serialVersionUID = 8789528655171127108L;
     
-    @SuppressWarnings("unused")
 	private static Logger logger = LoggerFactory.getLogger(CommonFieldFactory.class);
 
     private Application app;
@@ -51,14 +54,48 @@ public class CommonFieldFactory extends DefaultFieldFactory {
         this.app = (Application) app;
     }
 
+
+    
+    /* (non-Javadoc)
+     * @see com.vaadin.ui.DefaultFieldFactory#createField(com.vaadin.data.Item, java.lang.Object, com.vaadin.ui.Component)
+     */
     @Override
-    public Field createField(Container container, Object itemId, Object propertyId, Component uiContext) {
-    	
-        Property containerProperty = container.getContainerProperty(itemId,
-                propertyId);
+	public Field createField(Item item, Object propertyId, Component uiContext) {
+        Class<?> type = item.getItemProperty(propertyId).getType();
+        Field field = createFieldByPropertyType(type);
+        
+        return adjustField(propertyId, uiContext, field);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see com.vaadin.ui.DefaultFieldFactory#createField(com.vaadin.data.Container, java.lang.Object, java.lang.Object, com.vaadin.ui.Component)
+	 */
+	@Override
+    public Field createField(Container container, Object itemId, Object propertyId, Component uiContext) { 	
+        Property containerProperty = container.getContainerProperty(itemId, propertyId);
         Class<?> type = containerProperty.getType();
-        Field f = createFieldByPropertyType(type);
-        f.setCaption(createCaptionByPropertyId(propertyId));
+        Field field = createFieldByPropertyType(type);
+        
+        return adjustField(propertyId, uiContext, field);
+    }
+
+	/**
+	 * @param propertyId
+	 * @param uiContext
+	 * @param f
+	 * @return
+	 */
+	private Field adjustField(Object propertyId, Component uiContext, Field f) {
+		try {
+        	logger.warn("looking up {}", "FieldName." + propertyId);
+			String caption = Messages.getStringWithException("FieldName." + propertyId,
+					CompetitionApplication.getCurrentLocale());
+			f.setCaption(caption);
+		} catch (MissingResourceException e) {
+			f.setCaption(createCaptionByPropertyId(propertyId));
+		}
+		
         ((AbstractField) f).setImmediate(true);
 
         final String propertyIdString = (String) propertyId;
@@ -88,13 +125,17 @@ public class CommonFieldFactory extends DefaultFieldFactory {
         	f.setWidth("15em");
             return f;
         }
+        
+        if (f instanceof TextField && (uiContext instanceof Form)) {
+            ((TextField) f).setWidth("25em"); //$NON-NLS-1$
+        }
 
         if (f instanceof TextField && (uiContext instanceof Table)) {
             ((TextField) f).setWidth("3em"); //$NON-NLS-1$
         }
+           
         return f;
-
-    }
+	}
     
     /**
      * Override the default.
