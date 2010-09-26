@@ -21,6 +21,7 @@ import java.util.Iterator;
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.generators.CommonFieldFactory;
+import org.concordiainternational.competition.ui.generators.FieldTable;
 
 import com.vaadin.Application;
 import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
@@ -123,9 +124,13 @@ public abstract class GenericList<T> extends VerticalLayout {
         return tableToolbar;
     }
 
+    /**
+     * 
+     */
     protected void populateAndConfigureTable() {
 
-        table = new Table();
+        // FieldTable always generates fields to ensure consistent formatting.
+    	table = new FieldTable();
 
         table.setWidth("100%"); //$NON-NLS-1$
         table.setSelectable(true);
@@ -151,7 +156,7 @@ public abstract class GenericList<T> extends VerticalLayout {
                 table.removeGeneratedColumn("actions"); //$NON-NLS-1$
             }
             table.setPageLength(30);
-            table.setCacheRate(1.0);
+            table.setCacheRate(2.0);
         } else {
             table.setVisibleColumns(new Object[] {});
         }

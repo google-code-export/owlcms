@@ -87,9 +87,11 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
         } else if (propertyIdString.equals("total")) { //$NON-NLS-1$
             Lifter lifter = getLifter(item);
             return new Label(WeightFormatter.formatWeight((lifter.getTotal())));
-        } else if (propertyIdString.contains("Time")) { //$NON-NLS-1$
-            return generateTimeCell(prop);
-        } else if (propertyIdString.equals("platform")) { //$NON-NLS-1$
+        } 
+//        else if (propertyIdString.contains("Time")) { //$NON-NLS-1$
+//            return generateTimeCell(prop);
+//        }
+        else if (propertyIdString.equals("platform")) { //$NON-NLS-1$
             return generatePlatformCell(table, itemId, uiProp, prop);
         } else if (propertyIdString.equals("competitionSession")) { //$NON-NLS-1$
             return generateGroupCell(table, itemId, uiProp, prop);
@@ -243,10 +245,12 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
     }
 
     /**
+     * No longer CommonFieldFactory handles this.
      * @param prop
      * @return
      */
-    private Component generateTimeCell(final Property prop) {
+    @SuppressWarnings("unused")
+	private Component generateTimeCell(final Property prop) {
         DateField timeField = new DateField();
         timeField.setPropertyDataSource(prop);
         return adjustDateField(timeField);

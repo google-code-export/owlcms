@@ -162,6 +162,12 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
             table.addGeneratedColumn("category", columnGenerator); //$NON-NLS-1$
         }
         table.addGeneratedColumn("total", columnGenerator); //$NON-NLS-1$
+        
+        Object[] visibleColumns = table.getVisibleColumns();
+		for (int i = 0; i < visibleColumns.length; i++) {
+        	Object columnId = visibleColumns[i];
+        	table.setColumnExpandRatio(columnId, 1.0F);
+        }
     }
 
     @Override
