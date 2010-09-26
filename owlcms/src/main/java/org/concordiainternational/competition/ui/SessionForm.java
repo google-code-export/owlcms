@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.ui.generators.CommonFieldFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
@@ -24,6 +25,8 @@ public class SessionForm extends Form  {
 
 	public SessionForm() {
 		super();
+		this.setFormFieldFactory(new CommonFieldFactory(CompetitionApplication.getCurrent()));
+		
         setWriteThrough(false);
         
         HorizontalLayout footer = new HorizontalLayout();
@@ -42,7 +45,7 @@ public class SessionForm extends Form  {
 		}
 	});
 	
-	Button cancel = new Button(Messages.getString("Common.Cancel", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	
+	Button cancel = new Button(Messages.getString("Common.cancel", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	
 		@Override
 		public void buttonClick(ClickEvent event) {
 			discard();
@@ -55,7 +58,7 @@ public class SessionForm extends Form  {
             List<Object> orderedProperties = new ArrayList<Object>();
             orderedProperties.add("name");
             orderedProperties.add("weighInTime");
-            orderedProperties.add("weighInTime");
+            orderedProperties.add("competitionTime");
             orderedProperties.add("platform");
             orderedProperties.add("categories");
             orderedProperties.add("announcer");
