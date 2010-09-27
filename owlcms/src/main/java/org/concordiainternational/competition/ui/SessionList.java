@@ -199,6 +199,8 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
         form.setReadOnly(false);
 
         Window editingWindow = new Window(competitionSession.getName());
+        form.setWindow(editingWindow);
+        form.setParentList(this);
         editingWindow.getContent().addComponent(form);
         app.getMainWindow().addWindow(editingWindow);
         editingWindow.setWidth("40em");

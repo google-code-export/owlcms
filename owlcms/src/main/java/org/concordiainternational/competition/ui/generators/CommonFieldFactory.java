@@ -19,9 +19,13 @@ package org.concordiainternational.competition.ui.generators;
 import java.util.Date;
 import java.util.MissingResourceException;
 
+import org.concordiainternational.competition.data.Category;
+import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.ui.components.CategorySelect;
 import org.concordiainternational.competition.ui.components.FormattingDateField;
+import org.concordiainternational.competition.ui.components.PlatformSelect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,7 +92,7 @@ public class CommonFieldFactory extends DefaultFieldFactory {
 	 */
 	private Field adjustField(Object propertyId, Component uiContext, Field f) {
 		try {
-        	logger.warn("looking up {}", "FieldName." + propertyId);
+
 			String caption = Messages.getStringWithException("FieldName." + propertyId,
 					CompetitionApplication.getCurrentLocale());
 			f.setCaption(caption);
@@ -114,6 +118,30 @@ public class CommonFieldFactory extends DefaultFieldFactory {
         
         if (propertyIdString.contains("Date") && (f instanceof DateField)) { //$NON-NLS-1$
             return adjustDateField((DateField) f);
+        }
+        
+        if (propertyIdString.equals("categories")) { //$NON-NLS-1$
+        	String caption = f.getCaption();
+        	f = new CategorySelect();
+        	f.setCaption(caption);
+        	((CategorySelect) f).setMultiSelect(true);
+        	return f;
+        }
+        
+        if (propertyIdString.equals("category")) { //$NON-NLS-1$
+        	String caption = f.getCaption();
+        	f = new CategorySelect();
+        	f.setCaption(caption);
+        	((CategorySelect) f).setMultiSelect(false);
+        	return f;
+        }
+        
+        if (propertyIdString.equals("platform")) { //$NON-NLS-1$
+        	String caption = f.getCaption();
+        	f = new PlatformSelect();
+        	f.setCaption(caption);
+        	((PlatformSelect) f).setMultiSelect(false);
+        	return f;
         }
 
         if (propertyIdString.contains("competition")) { //$NON-NLS-1$
@@ -159,6 +187,14 @@ public class CommonFieldFactory extends DefaultFieldFactory {
         // Boolean field
         if (Boolean.class.isAssignableFrom(type)) {
             return new CheckBox();
+        }
+               
+        if (Category.class.isAssignableFrom(type)) {
+        	return new CategorySelect();
+        }
+        
+        if (Platform.class.isAssignableFrom(type)) {
+        	return new PlatformSelect();
         }
 
         return new TextField();

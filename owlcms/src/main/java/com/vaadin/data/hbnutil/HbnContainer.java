@@ -347,9 +347,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
                         PropertyDescriptor pd = propertyDescriptors.get(propertyName);
                         pd.getWriteMethod().invoke(pojo, objectset);
 
-                        // getClassMetadata().setPropertyValue(pojo,
-                        // propertyName, objectset,
-                        // EntityMode.POJO);
+                        // getClassMetadata().setPropertyValue(pojo, propertyName, objectset, EntityMode.POJO);
 
                     } else if (propertyType.isAssociationType()) {
                         Class<?> referencedType = getClassMetadata().getPropertyType(propertyName).getReturnedClass();
@@ -359,21 +357,26 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
                             object = hbnSessionManager.getHbnSession().get(referencedType, (Serializable) value);
                         }
 
-                        // getClassMetadata().setPropertyValue(pojo,
-                        // propertyName, object, EntityMode.POJO);
+                        // getClassMetadata().setPropertyValue(pojo,propertyName, object, EntityMode.POJO);
                         // call the setter method.
                         PropertyDescriptor pd = propertyDescriptors.get(propertyName);
+
+                        if (object != null) {
+                        	object = hbnSessionManager.getHbnSession().merge(object);
+                        }
                         pd.getWriteMethod().invoke(pojo, object);
 
-                        if (object != null) hbnSessionManager.getHbnSession().merge(object);
-                        hbnSessionManager.getHbnSession().saveOrUpdate(pojo);
+                        //hbnSessionManager.getHbnSession().saveOrUpdate(pojo);
 
                     } else {
                         // call the setter method.
                         PropertyDescriptor pd = propertyDescriptors.get(propertyName);
-                        pd.getWriteMethod().invoke(pojo, value);
-                        // getClassMetadata().setPropertyValue(pojo,
-                        // propertyName, value, EntityMode.POJO);
+                        if (pd == null) {
+                        	throw new RuntimeException("getter/setter not defined for "+propertyName);
+                        }
+                        Method writeMethod = pd.getWriteMethod();
+						writeMethod.invoke(pojo, value);
+                        // getClassMetadata().setPropertyValue(pojo,propertyName, value, EntityMode.POJO);
                     }
                 }
             }
