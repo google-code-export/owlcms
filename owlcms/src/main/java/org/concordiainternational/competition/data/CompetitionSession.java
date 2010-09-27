@@ -64,7 +64,9 @@ public class CompetitionSession implements Serializable {
     @ManyToMany
     Set<Category> categories;
 
-    // group is the property in Lifter that is the opposite of CompetitionSession.lifters
+
+
+	// group is the property in Lifter that is the opposite of CompetitionSession.lifters
     @OneToMany(mappedBy = "competitionSession")
     Set<Lifter> lifters;
 
@@ -154,6 +156,62 @@ public class CompetitionSession implements Serializable {
         this.platform = platform;
     }
 
+    public String getAnnouncer() {
+		return announcer;
+	}
+
+	public void setAnnouncer(String announcer) {
+		this.announcer = announcer;
+	}
+
+	public String getTimeKeeper() {
+		return timeKeeper;
+	}
+
+	public void setTimeKeeper(String timeKeeper) {
+		this.timeKeeper = timeKeeper;
+	}
+
+	public String getTechnicalController() {
+		return technicalController;
+	}
+
+	public void setTechnicalController(String technicalController) {
+		this.technicalController = technicalController;
+	}
+
+	public String getReferee1() {
+		return referee1;
+	}
+
+	public void setReferee1(String referee1) {
+		this.referee1 = referee1;
+	}
+
+	public String getReferee2() {
+		return referee2;
+	}
+
+	public void setReferee2(String referee2) {
+		this.referee2 = referee2;
+	}
+
+	public String getReferee3() {
+		return referee3;
+	}
+
+	public void setReferee3(String referee3) {
+		this.referee3 = referee3;
+	}
+
+	public String getJury() {
+		return jury;
+	}
+
+	public void setJury(String jury) {
+		this.jury = jury;
+	}
+	
     /**
      * @param w
      *            the weigh-in time to set
