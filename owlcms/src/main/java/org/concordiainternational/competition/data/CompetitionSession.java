@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,6 +35,8 @@ import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.hibernate.Session;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
@@ -42,6 +45,7 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 public class CompetitionSession implements Serializable {
 
     private static final long serialVersionUID = -7744027515867237334L;
+    private static final Logger logger = LoggerFactory.getLogger(CompetitionSession.class);
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -61,7 +65,7 @@ public class CompetitionSession implements Serializable {
     @ManyToOne
     Platform platform;
 
-    @ManyToMany
+    @ManyToMany(fetch=FetchType.EAGER)
     Set<Category> categories;
 
 
@@ -201,6 +205,7 @@ public class CompetitionSession implements Serializable {
 	}
 
 	public void setReferee3(String referee3) {
+		logger.warn("session: {} {}",this,referee3);
 		this.referee3 = referee3;
 	}
 
