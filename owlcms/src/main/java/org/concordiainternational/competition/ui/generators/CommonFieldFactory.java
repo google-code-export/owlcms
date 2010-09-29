@@ -50,6 +50,7 @@ public class CommonFieldFactory extends DefaultFieldFactory {
 
     private static final long serialVersionUID = 8789528655171127108L;
     
+	@SuppressWarnings("unused")
 	private static Logger logger = LoggerFactory.getLogger(CommonFieldFactory.class);
 
     private Application app;

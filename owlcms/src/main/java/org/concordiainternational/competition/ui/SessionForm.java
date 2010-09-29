@@ -10,6 +10,8 @@ import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.generators.CommonFieldFactory;
 import org.concordiainternational.competition.ui.list.GenericList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
@@ -25,6 +27,9 @@ import com.vaadin.ui.Window;
  */
 @SuppressWarnings({ "serial" })
 public class SessionForm extends Form  {
+	
+	@SuppressWarnings("unused")
+	final private static Logger logger = LoggerFactory.getLogger(SessionForm.class);
 	
 	Window window = null;
 	GenericList<CompetitionSession> parentList = null;
@@ -60,6 +65,7 @@ public class SessionForm extends Form  {
 			closeWindow();
 		}
 	});
+
 	
     @Override
     public void setItemDataSource(Item newDataSource) {
