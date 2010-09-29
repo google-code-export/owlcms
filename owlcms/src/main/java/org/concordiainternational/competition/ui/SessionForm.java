@@ -10,6 +10,8 @@ import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.generators.CommonFieldFactory;
 import org.concordiainternational.competition.ui.list.GenericList;
+import org.concordiainternational.competition.utils.ItemAdapter;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +35,7 @@ public class SessionForm extends Form  {
 	
 	Window window = null;
 	GenericList<CompetitionSession> parentList = null;
-
+	private Item item;
 
 	public SessionForm() {
 		super();
@@ -54,6 +56,11 @@ public class SessionForm extends Form  {
 		@Override
 		public void buttonClick(ClickEvent event) {
 			commit();
+			Object object = ItemAdapter.getObject(item);
+			logger.warn("before merge : {} {}", System.identityHashCode(object), ((CompetitionSession)object).getReferee3());
+			Session hbnSession = CompetitionApplication.getCurrent().getHbnSession();
+			Object merged = hbnSession.merge(object);
+			logger.warn("after merge : {} {}", System.identityHashCode(merged),((CompetitionSession)merged).getReferee3());
 			closeWindow();
 		}
 	});
@@ -66,9 +73,12 @@ public class SessionForm extends Form  {
 		}
 	});
 
+
+
 	
     @Override
     public void setItemDataSource(Item newDataSource) {
+    	item = newDataSource;
         if (newDataSource != null) {
             List<Object> orderedProperties = new ArrayList<Object>();
             orderedProperties.add("name");

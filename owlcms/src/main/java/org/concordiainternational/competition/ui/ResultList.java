@@ -22,17 +22,19 @@ import java.util.List;
 import java.util.Locale;
 
 import org.concordiainternational.competition.data.Competition;
+import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.lifterSort.WinningOrderComparator;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.spreadsheet.CompetitionBook;
 import org.concordiainternational.competition.spreadsheet.MastersGroupResults;
 import org.concordiainternational.competition.spreadsheet.OutputSheetStreamSource;
 import org.concordiainternational.competition.spreadsheet.ResultSheet;
-import org.concordiainternational.competition.spreadsheet.CompetitionBook;
 import org.concordiainternational.competition.ui.components.GroupSelect;
 import org.concordiainternational.competition.ui.generators.CommonColumnGenerator;
 import org.concordiainternational.competition.ui.generators.LiftCellStyleGenerator;
 import org.concordiainternational.competition.ui.list.GenericBeanList;
+import org.concordiainternational.competition.utils.ItemAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,13 +42,16 @@ import com.vaadin.Application;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.hbnutil.HbnContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.terminal.SystemError;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 
 /**
  * This class displays the winning order for lifters.
@@ -170,7 +175,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
     protected void createToolbarButtons(HorizontalLayout tableToolbar) {
         // we do not call super because the default buttons are inappropriate.
         final Locale locale = app.getLocale();
-        GroupSelect groupSelect = new GroupSelect((CompetitionApplication) app, locale);
+        final GroupSelect groupSelect = new GroupSelect((CompetitionApplication) app, locale);
         tableToolbar.addComponent(groupSelect);
 
         // result spreadsheet
@@ -267,6 +272,17 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
         };
         refreshButton.addListener(refreshClickListener);
         tableToolbar.addComponent(refreshButton);
+        
+        final Button editButton = new Button(Messages.getString("ResultList.edit", locale)); //$NON-NLS-1$
+        final Button.ClickListener editClickListener = new Button.ClickListener() { //$NON-NLS-1$
+            private static final long serialVersionUID = 7744958942977063130L;
+
+            public void buttonClick(ClickEvent event) {
+            	editCompetitionSession(groupSelect.getSelectedId());
+            }
+        };
+        editButton.addListener(editClickListener);
+        tableToolbar.addComponent(editButton);
     }
 
     /**
@@ -384,6 +400,33 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
         // final Item firstLifterItem = getFirstLifterItem();
         // table.select(firstLifterItem); // so we change it.
         // this.clearSelection();
+    }
+    
+    private void editCompetitionSession(Object itemId) {
+    	if (itemId == null) {
+    		CompetitionApplication.getCurrent().getMainWindow().showNotification(
+    			Messages.getString("ResultList.sessionNotSelected", CompetitionApplication.getCurrentLocale()),
+    			Notification.TYPE_ERROR_MESSAGE);
+    		return;
+    	}
+        SessionForm form = new SessionForm();
+        
+        // get the item anew because we are using an old drop down
+        final HbnContainer<CompetitionSession> dbGroupDataSource = new HbnContainer<CompetitionSession>(CompetitionSession.class, CompetitionApplication.getCurrent());
+        Item freshItem = dbGroupDataSource.getItem(itemId);
+        
+        form.setItemDataSource(freshItem);
+        form.setReadOnly(false);
+
+        CompetitionSession competitionSession = (CompetitionSession) ItemAdapter.getObject(freshItem);
+        logger.warn("retrieved session {} {}",System.identityHashCode(competitionSession), competitionSession.getReferee3());
+		Window editingWindow = new Window(competitionSession.getName());
+        form.setWindow(editingWindow);
+        form.setParentList(null);
+        editingWindow.getContent().addComponent(form);
+        app.getMainWindow().addWindow(editingWindow);
+        editingWindow.setWidth("40em");
+        editingWindow.center();
     }
 
 }

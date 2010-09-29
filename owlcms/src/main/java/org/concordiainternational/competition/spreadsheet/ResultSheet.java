@@ -100,4 +100,30 @@ public class ResultSheet extends OutputSheet {
         LifterSorter.assignMedals(resultsOrderCopy);
         return resultsOrderCopy;
     }
+
+	@Override
+	protected void writeHeader(WorkSheetHandle workSheet)
+			throws CellTypeMismatchException, CellNotFoundException {
+		
+		super.writeHeader(workSheet);
+		
+		if (competitionSession != null) {
+			logger.warn("writeHeader {} {}",System.identityHashCode(competitionSession),competitionSession.getReferee3());
+			String announcer = competitionSession.getAnnouncer();
+			workSheet.getCell("C10").setVal(announcer != null ? announcer : ""); //$NON-NLS-1$
+			String timeKeeper = competitionSession.getTimeKeeper();
+			workSheet.getCell("I10").setVal(timeKeeper != null ? timeKeeper : ""); //$NON-NLS-1$
+			String technicalController = competitionSession.getTechnicalController();
+			workSheet.getCell("Q10").setVal(technicalController != null ? technicalController : ""); //$NON-NLS-1$
+			String referee1 = competitionSession.getReferee1();
+			workSheet.getCell("C13").setVal(referee1 != null ? referee1 : ""); //$NON-NLS-1$
+			String referee2 = competitionSession.getReferee2();
+			workSheet.getCell("I13").setVal(referee2 != null ? referee2 : ""); //$NON-NLS-1$
+			String referee3 = competitionSession.getReferee3();
+			workSheet.getCell("Q13").setVal(referee3 != null ? referee3 : ""); //$NON-NLS-1$
+			writeGroup(workSheet);
+		}
+	}
+    
+    
 }

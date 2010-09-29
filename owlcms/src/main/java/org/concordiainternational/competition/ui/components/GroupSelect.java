@@ -23,6 +23,8 @@ import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.utils.ItemAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -36,8 +38,15 @@ import com.vaadin.ui.Select;
 public class GroupSelect extends HorizontalLayout implements Serializable {
 
     private static final long serialVersionUID = -5471881649385421098L;
+    private static final Logger logger = LoggerFactory.getLogger(GroupSelect.class);
+    
+    CompetitionSession value = null;
+    Item selectedItem = null;
+    Serializable selectedId = null;
 
-    /**
+
+
+	/**
      * @param competitionApplication
      * @param locale
      * @return
@@ -61,10 +70,12 @@ public class GroupSelect extends HorizontalLayout implements Serializable {
             @Override
             public void valueChange(ValueChangeEvent event) {
                 final Serializable selectedValue = (Serializable) event.getProperty().getValue();
-                CompetitionSession value = null;
+
                 if (selectedValue != null) {
-                    Item selectedItem = dbGroupDataSource.getItem(selectedValue);
+                	selectedId = selectedValue;
+                    selectedItem = dbGroupDataSource.getItem(selectedValue);
                     value = (CompetitionSession) ItemAdapter.getObject(selectedItem);
+                    logger.warn("session selected: {}", value);
                 }
                 competitionApplication.setCurrentCompetitionSession(value);
             }
@@ -78,4 +89,16 @@ public class GroupSelect extends HorizontalLayout implements Serializable {
         this.setComponentAlignment(groupLabel, Alignment.MIDDLE_LEFT);
         this.setSpacing(true);
     }
+    
+    public Item getSelectedItem() {
+		return selectedItem;
+	}
+
+	public CompetitionSession getValue() {
+		return value;
+	}
+
+	public Serializable getSelectedId() {
+		return selectedId;
+	}
 }
