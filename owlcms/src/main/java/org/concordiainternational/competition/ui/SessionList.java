@@ -100,15 +100,15 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
     }
 
     /**
-     * By default, add an action column with "delete" button.
+     * Computed columnts
      */
     @Override
     protected void addGeneratedColumns() {
         super.addGeneratedColumns();
         table.removeGeneratedColumn("categories"); //$NON-NLS-1$
         table.addGeneratedColumn("categories", new CommonColumnGenerator(app)); //$NON-NLS-1$
-        //table.removeGeneratedColumn("weighInTime"); //$NON-NLS-1$
-        //table.addGeneratedColumn("weighInTime", new CommonColumnGenerator(app)); //$NON-NLS-1$
+//        table.removeGeneratedColumn("weighInTime"); //$NON-NLS-1$
+//        table.addGeneratedColumn("weighInTime", new CommonColumnGenerator(app)); //$NON-NLS-1$
 //        table.removeGeneratedColumn("competitionTime"); //$NON-NLS-1$
 //        table.addGeneratedColumn("competitionTime", new CommonColumnGenerator(app)); //$NON-NLS-1$
         table.removeGeneratedColumn("platform"); //$NON-NLS-1$
@@ -121,7 +121,7 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
     }
 
     /**
-     * Default actions: delete.
+     * Default actions: delete lifters, edit.
      */
     @Override
     protected void addDefaultActions() {
@@ -161,7 +161,7 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
                         private static final long serialVersionUID = 5204920602544644705L;
 
                         public void buttonClick(ClickEvent event) {
-                        	editCompetitionSession((Long) itemId);
+                        	editCompetitionSession((Long) itemId, table.getItem(itemId));
                         }
                     });
                     actions.addComponent(edit);
@@ -190,12 +190,12 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
     
     /**
      * @param itemId
+     * @param item2 
      */
-    private void editCompetitionSession(Long itemId) {
-        Item item = table.getContainerDataSource().getItem(itemId);
-        CompetitionSession competitionSession = (CompetitionSession) ItemAdapter.getObject(item);
+    private void editCompetitionSession(Long itemId, Item item2) {
+        CompetitionSession competitionSession = (CompetitionSession) ItemAdapter.getObject(item2);
         SessionForm form = new SessionForm();
-        form.setItemDataSource(item);
+        form.setItemDataSource(item2);
         form.setReadOnly(false);
 
         Window editingWindow = new Window(competitionSession.getName());
