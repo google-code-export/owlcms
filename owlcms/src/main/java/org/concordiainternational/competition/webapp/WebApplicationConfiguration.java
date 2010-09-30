@@ -98,7 +98,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
             try {
                 cnf = new AnnotationConfiguration();       
                 h2Setup(testMode, dbPath, cnf);
-//                cnf.setProperty(Environment.USER, "sa"); //$NON-NLS-1$
+                cnf.setProperty(Environment.USER, "sa"); //$NON-NLS-1$
                 cnf.setProperty(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread"); //$NON-NLS-1$
                 
                 // the classes we store in the database.
@@ -110,9 +110,9 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
                 cnf.addAnnotatedClass(CompetitionSession.class);
                 
 //                cnf.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.EhCacheProvider"); //$NON-NLS-1$
-//                cnf.setProperty("hibernate.cache.region.factory_class", "net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory");
-//                cnf.setProperty("hibernate.cache.use_second_level_cache", "true");
-//                cnf.setProperty("hibernate.cache.use_query_cache", "true");
+                cnf.setProperty("hibernate.cache.region.factory_class", "net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory");
+                cnf.setProperty("hibernate.cache.use_second_level_cache", "true");
+                cnf.setProperty("hibernate.cache.use_query_cache", "true");
                 // cnf.setProperty(Environment.CACHE_PROVIDER,"org.hibernate.cache.HashtableCacheProvider");
 
                 // the following line is necessary because the Lifter class uses
