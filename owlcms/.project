@@ -26,4 +26,16 @@
 		<nature>org.maven.ide.eclipse.maven2Nature</nature>
 		<nature>org.eclipse.wst.common.project.facet.core.nature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src/test/resources/i18n</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/src/main/resources/i18n</locationURI>
+		</link>
+		<link>
+			<name>src/test/resources/templates</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/src/main/resources/templates</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
