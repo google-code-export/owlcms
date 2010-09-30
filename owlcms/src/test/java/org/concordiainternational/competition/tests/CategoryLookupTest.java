@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import org.concordiainternational.competition.data.Category;
+import org.concordiainternational.competition.data.CategoryContainer;
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CategoryLookupByName;
 import org.concordiainternational.competition.data.Gender;
@@ -48,7 +49,7 @@ public class CategoryLookupTest {
         Assert.assertNotNull(hbnSessionManager);
         Assert.assertNotNull(hbnSessionManager.getHbnSession());
         hbnSessionManager.getHbnSession().beginTransaction();
-        categories = new HbnContainer<Category>(Category.class, hbnSessionManager);
+        categories = new CategoryContainer(hbnSessionManager,true);
         categoryLookup = new CategoryLookup(hbnSessionManager);
         categoryLookupByName = new CategoryLookupByName(hbnSessionManager);
     }
