@@ -20,3 +20,7 @@ syntax: regexp
 \.war$
 syntax: regexp
 ^target/surefire-reports$
+syntax: regexp
+^target/test-classes$
+syntax: regexp
+^target/test-classes$
