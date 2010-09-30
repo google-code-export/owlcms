@@ -35,10 +35,10 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Select;
 
-public class GroupSelect extends HorizontalLayout implements Serializable {
+public class SessionSelect extends HorizontalLayout implements Serializable {
 
     private static final long serialVersionUID = -5471881649385421098L;
-    private static final Logger logger = LoggerFactory.getLogger(GroupSelect.class);
+    private static final Logger logger = LoggerFactory.getLogger(SessionSelect.class);
     
     CompetitionSession value = null;
     Item selectedItem = null;
@@ -51,7 +51,7 @@ public class GroupSelect extends HorizontalLayout implements Serializable {
      * @param locale
      * @return
      */
-    public GroupSelect(final CompetitionApplication competitionApplication, final Locale locale) {
+    public SessionSelect(final CompetitionApplication competitionApplication, final Locale locale) {
         final Label groupLabel = new Label(Messages.getString("CompetitionApplication.CurrentGroup", locale)); //$NON-NLS-1$
         groupLabel.setSizeUndefined();
 

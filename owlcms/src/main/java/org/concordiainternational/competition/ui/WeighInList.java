@@ -33,7 +33,7 @@ import org.concordiainternational.competition.spreadsheet.OutputSheetStreamSourc
 import org.concordiainternational.competition.spreadsheet.StartList;
 import org.concordiainternational.competition.spreadsheet.WeighInSheet;
 import org.concordiainternational.competition.ui.components.ApplicationView;
-import org.concordiainternational.competition.ui.components.GroupSelect;
+import org.concordiainternational.competition.ui.components.SessionSelect;
 import org.concordiainternational.competition.ui.generators.CommonColumnGenerator;
 import org.concordiainternational.competition.ui.generators.LiftCellStyleGenerator;
 import org.concordiainternational.competition.ui.list.LifterHbnList;
@@ -106,7 +106,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
     @Override
     protected void createToolbarButtons(HorizontalLayout tableToolbar) {
 
-        GroupSelect groupSelect = new GroupSelect((CompetitionApplication) app, app.getLocale());
+        SessionSelect groupSelect = new SessionSelect((CompetitionApplication) app, app.getLocale());
         tableToolbar.addComponent(groupSelect);
         super.createToolbarButtons(tableToolbar);
 
