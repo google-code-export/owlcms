@@ -49,13 +49,11 @@ public class NECDisplay implements Serializable {
     final static String charsetName = "US-ASCII"; //$NON-NLS-1$
     transient private SerialPort serialPort; // do not serialize
     private String comPortName;
-    private boolean opened = false;
+
+
+	private boolean opened = false;
     private Lifter currentLifter;
 
-    public NECDisplay(String comPortName) throws NoSuchPortException, PortInUseException, IOException,
-            UnsupportedCommOperationException {
-        this.comPortName = comPortName;
-    }
 
     public NECDisplay() throws NoSuchPortException, PortInUseException, IOException, UnsupportedCommOperationException {
     }
@@ -384,5 +382,14 @@ public class NECDisplay implements Serializable {
         }
 
     }
+    
+    public String getComPortName() {
+		return comPortName;
+	}
+
+	public void setComPortName(String comPortName) throws NoSuchPortException, PortInUseException, IOException, UnsupportedCommOperationException {
+		this.comPortName = comPortName;
+		init(comPortName);
+	}
 
 }
