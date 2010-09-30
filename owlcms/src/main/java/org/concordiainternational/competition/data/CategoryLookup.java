@@ -20,9 +20,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.concordiainternational.competition.tests.AllTests;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,18 +132,20 @@ public class CategoryLookup {
     public void reload() {
         // LoggerUtils.logException(logger, new
         // Exception("reloading categories"));
-        HbnContainer<Category> categoriesFromDb;
+        HbnContainer<Category> activeCategoriesFromDb;
 
         HbnSessionManager sessMgr = hbnSessionManager;
         if (sessMgr == null) {
             sessMgr = CompetitionApplication.getCurrent();
+            // patch for junit.
+            if (sessMgr == null) {
+            	sessMgr = AllTests.getSessionManager();
+            }
         }
-        categoriesFromDb = new HbnContainer<Category>(Category.class, sessMgr);
-        
-        Criteria criteria = sessMgr.getHbnSession().createCriteria(Category.class);
-        categoriesFromDb.addSearchCriteria(criteria.add(Restrictions.eq("active", Boolean.TRUE)));
-        categories = categoriesFromDb.getAllPojos();
+        activeCategoriesFromDb = new CategoryContainer(sessMgr,true); // only active categories
+        categories = activeCategoriesFromDb.getAllPojos();
         Collections.sort(categories, sortComparator);
+        logger.warn("categories={}",categories);
     }
 
     public Category lookup(String gender, Double bodyWeight) {

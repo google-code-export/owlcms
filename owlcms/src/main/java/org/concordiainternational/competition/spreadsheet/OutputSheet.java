@@ -71,8 +71,9 @@ public abstract class OutputSheet {
         this.categoryLookup = categoryLookup;
         this.app = app;
         this.competitionSession = competitionSession;
-        competitionSession = (CompetitionSession) app.getHbnSession().merge(competitionSession);
-        logger.warn("resultSheet session = {} {}",System.identityHashCode(competitionSession), competitionSession.getReferee3());
+        if (competitionSession != null){
+            logger.warn("resultSheet session = {} {}",System.identityHashCode(competitionSession), competitionSession.getReferee3());
+        }
     }
 
     public void writeLifters(List<Lifter> lifters, OutputStream out) throws CellTypeMismatchException,

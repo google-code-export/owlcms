@@ -195,4 +195,11 @@ public class Category implements Serializable {
     static public List<Category> getAll() {
         return CompetitionApplication.getCurrent().getHbnSession().createCriteria(Category.class).list();
     }
+
+	@Override
+	public String toString() {
+		return name+"_"+hashCode()+"_"+active;
+	}
+    
+    
 }
