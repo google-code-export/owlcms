@@ -18,3 +18,5 @@ syntax: regexp
 ^target/HCompetition-1\.8\.1$
 syntax: regexp
 \.war$
+syntax: regexp
+^target/surefire-reports$

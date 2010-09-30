@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.concordiainternational.competition.data.Category;
+import org.concordiainternational.competition.data.CategoryContainer;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.Platform;
@@ -28,8 +29,6 @@ import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.AnnouncerView;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.utils.ItemAdapter;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 import org.vaadin.artur.icepush.ICEPush;
 
 import com.vaadin.Application;
@@ -58,13 +57,13 @@ import com.vaadin.ui.TextField;
 public class CommonColumnGenerator implements Table.ColumnGenerator {
     private static final long serialVersionUID = 6573562545694966025L;
 
-    private HbnContainer<Category> categories;
+    private CategoryContainer activeCategories;
     private HbnContainer<Platform> platforms;
     private HbnContainer<CompetitionSession> competitionSessions;
     private Application app;
 
     public CommonColumnGenerator(Application app) {
-        categories = new HbnContainer<Category>(Category.class, (HbnSessionManager) app);
+        activeCategories = new CategoryContainer((HbnSessionManager) app, true);
         platforms = new HbnContainer<Platform>(Platform.class, (HbnSessionManager) app);
         competitionSessions = new HbnContainer<CompetitionSession>(CompetitionSession.class, (HbnSessionManager) app);
         this.app = (Application) app;
@@ -335,7 +334,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
             if (value instanceof Category) {
                 curCategory = (Category) value;
             } else {
-                curCategory = (Category) ItemAdapter.getObject(categories.getItem(value));
+                curCategory = (Category) ItemAdapter.getObject(activeCategories.getItem(value));
             }
         }
         return (curCategory != null ? curCategory.getName() : Messages
@@ -400,7 +399,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
         }
         if (list == null) {
             list = new ListSelect();
-            setupCategorySelection(list, categories, firstMultiSelect);
+            setupCategorySelection(list, activeCategories, firstMultiSelect);
             if (firstMultiSelect) {
                 firstMultiSelect = false;
             }
@@ -427,7 +426,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
         }
         if (categoryListSelect == null) {
             categoryListSelect = new ListSelect();
-            setupCategorySelection(categoryListSelect, categories, firstCategoryComboBox);
+            setupCategorySelection(categoryListSelect, activeCategories, firstCategoryComboBox);
             if (firstCategoryComboBox) {
                 firstCategoryComboBox = false;
             }
@@ -435,7 +434,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 
             categoryListSelect.setMultiSelect(true);
             categoryListSelect.setNullSelectionAllowed(true);
-            categoryListSelect.setRows(categories.size() + nbRowsForNullValue(categoryListSelect));
+            categoryListSelect.setRows(activeCategories.size() + nbRowsForNullValue(categoryListSelect));
             lifterIdToCategorySelect.put(itemId, categoryListSelect);
         }
         categoryListSelect.setPropertyDataSource(prop);
@@ -479,10 +478,8 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
      * @param categories
      * @param first
      */
-    private void setupCategorySelection(AbstractSelect categorySelect, HbnContainer<Category> categories, boolean first) {
+    private void setupCategorySelection(AbstractSelect categorySelect, CategoryContainer categories, boolean first) {
         if (first) {
-            Criteria criteria = CompetitionApplication.getCurrent().getHbnSession().createCriteria(Category.class);
-            categories.addSearchCriteria(criteria.add(Restrictions.eq("active", Boolean.TRUE)));
             first = false;
         }
         categorySelect.setWriteThrough(true);
@@ -599,7 +596,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
         final String separator = Messages.getString("CommonFieldFactory.listSeparator", app.getLocale()); //$NON-NLS-1$
         for (Long curCategoryId : categoryIds) {
             // Item s = (categories.getItem(curCategoryId));
-            Category curCategory = (Category) ItemAdapter.getObject(categories.getItem(curCategoryId));
+            Category curCategory = (Category) ItemAdapter.getObject(activeCategories.getItem(curCategoryId));
             sb.append(curCategory.getName());
             sb.append(separator); //$NON-NLS-1$
         }
@@ -720,7 +717,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
         }
         if (categorySelect == null) {
             categorySelect = new ListSelect();
-            setupCategorySelection(categorySelect, categories, firstCategoryComboBox);
+            setupCategorySelection(categorySelect, activeCategories, firstCategoryComboBox);
             if (firstCategoryComboBox) {
                 firstCategoryComboBox = false;
             }
@@ -749,13 +746,13 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
         }
         if (categorySelect == null) {
             categorySelect = new ListSelect();
-            setupCategorySelection(categorySelect, categories, firstCategoryComboBox);
+            setupCategorySelection(categorySelect, activeCategories, firstCategoryComboBox);
             if (firstCategoryComboBox) {
                 firstCategoryComboBox = false;
             }
             categorySelect.setRequiredError(Messages.getString(
                 "CommonFieldFactory.youMustSelectACategory", app.getLocale())); //$NON-NLS-1$
-            categorySelect.setRows(categories.size() + nbRowsForNullValue(categorySelect));
+            categorySelect.setRows(activeCategories.size() + nbRowsForNullValue(categorySelect));
             lifterIdToCategorySelect.put(itemId, categorySelect);
         }
         categorySelect.setPropertyDataSource(prop);

@@ -96,23 +96,11 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
     public static SessionFactory getSessionFactory(boolean testMode, String dbPath) {
         if (sessionFactory == null) {
             try {
-                cnf = new AnnotationConfiguration();
+                cnf = new AnnotationConfiguration();       
                 h2Setup(testMode, dbPath, cnf);
-                cnf.setProperty(Environment.USER, "sa"); //$NON-NLS-1$
+//                cnf.setProperty(Environment.USER, "sa"); //$NON-NLS-1$
                 cnf.setProperty(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread"); //$NON-NLS-1$
-                cnf.setProperty(Environment.CACHE_PROVIDER, "org.hibernate.cache.EhCacheProvider"); //$NON-NLS-1$
-                // cnf.setProperty(Environment.CACHE_PROVIDER,
-                // "org.hibernate.cache.HashtableCacheProvider");
-
-                // the following line is necessary because the Lifter class uses
-                // the Lift class
-                // several times (one for each lift), which would normally force
-                // us to override
-                // the column names to ensure they are unique. Hibernate
-                // supports this with an
-                // extension.
-                // cnf.setNamingStrategy(DefaultComponentSafeNamingStrategy.INSTANCE);
-
+                
                 // the classes we store in the database.
                 cnf.addAnnotatedClass(Lifter.class);
                 cnf.addAnnotatedClass(CompetitionSession.class);
@@ -120,6 +108,18 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
                 cnf.addAnnotatedClass(Category.class);
                 cnf.addAnnotatedClass(Competition.class);
                 cnf.addAnnotatedClass(CompetitionSession.class);
+                
+//                cnf.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.EhCacheProvider"); //$NON-NLS-1$
+//                cnf.setProperty("hibernate.cache.region.factory_class", "net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory");
+//                cnf.setProperty("hibernate.cache.use_second_level_cache", "true");
+//                cnf.setProperty("hibernate.cache.use_query_cache", "true");
+                // cnf.setProperty(Environment.CACHE_PROVIDER,"org.hibernate.cache.HashtableCacheProvider");
+
+                // the following line is necessary because the Lifter class uses
+                // the Lift class several times (one for each lift), which would normally force
+                // us to override the column names to ensure they are unique. Hibernate
+                // supports this with an extension.
+                // cnf.setNamingStrategy(DefaultComponentSafeNamingStrategy.INSTANCE);
 
                 // listeners
                 cnf.setListener("merge", new OverrideMergeEventListener());
@@ -334,11 +334,13 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
      */
     public static void getNecDisplay(final String comPortName) throws RuntimeException {
         try {
-            necDisplay = new NECDisplay(comPortName);
+            necDisplay = new NECDisplay();
+            necDisplay.setComPortName(comPortName);
         } catch (Exception e) {
             // comPortName is likely a USB port which has been disconnected.
             try {
-                necDisplay = new NECDisplay("COM1"); //$NON-NLS-1$
+                necDisplay = new NECDisplay(); //$NON-NLS-1$
+                necDisplay.setComPortName("COM1");
             } catch (Exception e1) {
                 throw new RuntimeException(e);
             }
