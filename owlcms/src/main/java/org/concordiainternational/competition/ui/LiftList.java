@@ -23,7 +23,7 @@ import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
-import org.concordiainternational.competition.ui.components.GroupSelect;
+import org.concordiainternational.competition.ui.components.SessionSelect;
 import org.concordiainternational.competition.ui.generators.CommonColumnGenerator;
 import org.concordiainternational.competition.ui.generators.LiftCellStyleGenerator;
 import org.concordiainternational.competition.ui.list.GenericBeanList;
@@ -180,7 +180,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
     protected void createToolbarButtons(HorizontalLayout tableToolbar) {
         // we do not call super() because the default buttons are inappropriate.
         if (mode == AnnouncerView.Mode.ANNOUNCER) {
-            GroupSelect groupSelect = new GroupSelect((CompetitionApplication) app, app.getLocale());
+            SessionSelect groupSelect = new SessionSelect((CompetitionApplication) app, app.getLocale());
             tableToolbar.addComponent(groupSelect);
 
             final Button refreshButton = new Button(Messages.getString("ResultList.Refresh", app.getLocale())); //$NON-NLS-1$

@@ -30,7 +30,7 @@ import org.concordiainternational.competition.spreadsheet.CompetitionBook;
 import org.concordiainternational.competition.spreadsheet.MastersGroupResults;
 import org.concordiainternational.competition.spreadsheet.OutputSheetStreamSource;
 import org.concordiainternational.competition.spreadsheet.ResultSheet;
-import org.concordiainternational.competition.ui.components.GroupSelect;
+import org.concordiainternational.competition.ui.components.SessionSelect;
 import org.concordiainternational.competition.ui.generators.CommonColumnGenerator;
 import org.concordiainternational.competition.ui.generators.LiftCellStyleGenerator;
 import org.concordiainternational.competition.ui.list.GenericBeanList;
@@ -175,7 +175,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
     protected void createToolbarButtons(HorizontalLayout tableToolbar) {
         // we do not call super because the default buttons are inappropriate.
         final Locale locale = app.getLocale();
-        final GroupSelect groupSelect = new GroupSelect((CompetitionApplication) app, locale);
+        final SessionSelect groupSelect = new SessionSelect((CompetitionApplication) app, locale);
         tableToolbar.addComponent(groupSelect);
 
         // result spreadsheet
