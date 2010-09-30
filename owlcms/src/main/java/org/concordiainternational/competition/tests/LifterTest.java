@@ -151,7 +151,7 @@ public class LifterTest {
         lifter.setBirthDate(thisYear - 86);
         assertEquals(80, (long) lifter.getAgeGroup());
         lifter.setGender("F"); //$NON-NLS-1$
-        assertEquals(70, (long) lifter.getAgeGroup());
+        assertEquals(65, (long) lifter.getAgeGroup());
         lifter.setBirthDate(null);
         assertEquals(null, lifter.getAgeGroup());
         lifter.setGender(""); //$NON-NLS-1$
