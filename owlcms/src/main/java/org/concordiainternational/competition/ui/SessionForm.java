@@ -6,7 +6,6 @@ package org.concordiainternational.competition.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.generators.CommonFieldFactory;
 import org.concordiainternational.competition.ui.list.GenericList;
@@ -30,11 +29,10 @@ import com.vaadin.ui.Window;
 @SuppressWarnings({ "serial" })
 public class SessionForm extends Form  {
 	
-	@SuppressWarnings("unused")
 	final private static Logger logger = LoggerFactory.getLogger(SessionForm.class);
 	
 	Window window = null;
-	GenericList<CompetitionSession> parentList = null;
+	GenericList<?> parentList = null;
 	private Item item;
 
 	public SessionForm() {
@@ -112,12 +110,12 @@ public class SessionForm extends Form  {
 	}
 
 
-	public GenericList<CompetitionSession> getParentList() {
+	public GenericList<?> getParentList() {
 		return parentList;
 	}
 
 
-	public void setParentList(GenericList<CompetitionSession> parentList) {
+	public void setParentList(GenericList<?> parentList) {
 		this.parentList = parentList;
 	}
 
@@ -126,6 +124,7 @@ public class SessionForm extends Form  {
 	 * 
 	 */
 	private void closeWindow() {
+		logger.warn("closeWindow {}",parentList);
 
 		if (window != null) {
 			Window parent = window.getParent();

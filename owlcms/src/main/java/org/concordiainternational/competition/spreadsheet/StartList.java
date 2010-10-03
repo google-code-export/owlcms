@@ -37,8 +37,15 @@ import com.extentech.formats.XLS.CellNotFoundException;
 import com.extentech.formats.XLS.CellTypeMismatchException;
 import com.extentech.formats.XLS.RowNotFoundException;
 import com.extentech.formats.XLS.WorkSheetNotFoundException;
+import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 public class StartList extends OutputSheet {
+	
+	private HbnSessionManager hbnSessionManager;
+	
+	public StartList(HbnSessionManager hbnSessionManager) {
+		this.hbnSessionManager = hbnSessionManager;
+	}
 
     protected static final String TEMPLATE_XLS = "/StartSheetTemplate.xls"; //$NON-NLS-1$
 
@@ -65,7 +72,7 @@ public class StartList extends OutputSheet {
             // Create the start list.
             try {
                 workSheet = workBookHandle.getWorkSheet(0);
-                new StartSheet().writeStartSheet(lifters, workSheet);
+                new StartSheet(hbnSessionManager).writeStartSheet(lifters, workSheet);
             } catch (WorkSheetNotFoundException wnf) {
                 LoggerUtils.logException(logger, wnf);
             } catch (Exception e) {

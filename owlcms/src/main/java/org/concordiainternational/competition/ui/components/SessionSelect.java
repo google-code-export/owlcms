@@ -38,14 +38,13 @@ import com.vaadin.ui.Select;
 public class SessionSelect extends HorizontalLayout implements Serializable {
 
     private static final long serialVersionUID = -5471881649385421098L;
-    @SuppressWarnings("unused")
-	private static final Logger logger = LoggerFactory.getLogger(SessionSelect.class);
+    private static final Logger logger = LoggerFactory.getLogger(SessionSelect.class);
     
     CompetitionSession value = null;
     Item selectedItem = null;
     Serializable selectedId = null;
 	private Select sessionSelect;
-	private boolean refreshing = false;
+	private ValueChangeListener listener;
 
 
 	/**
@@ -58,13 +57,13 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
         groupLabel.setSizeUndefined();
 
         sessionSelect = new Select();
-        final HbnContainer<CompetitionSession> dbGroupDataSource = loadData(competitionApplication, sessionSelect);
+        final HbnContainer<CompetitionSession> sessionDataSource = loadData(competitionApplication, sessionSelect);
         sessionSelect.setImmediate(true);
         sessionSelect.setNullSelectionAllowed(true);
         sessionSelect.setNullSelectionItemId(null);
         final CompetitionSession currentGroup = competitionApplication.getCurrentCompetitionSession();
         sessionSelect.select((currentGroup != null ? currentGroup.getId() : null));
-        final ValueChangeListener listener = new ValueChangeListener() {
+        listener = new ValueChangeListener() {
             private static final long serialVersionUID = -4650521592205383913L;
 
 
@@ -72,9 +71,9 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
             public void valueChange(ValueChangeEvent event) {
                 final Serializable selectedValue = (Serializable) event.getProperty().getValue();
 
-                if (selectedValue != null  && ! refreshing) {
+                if (selectedValue != null) {
                 	selectedId = selectedValue;
-                    selectedItem = dbGroupDataSource.getItem(selectedValue);
+                    selectedItem = sessionDataSource.getItem(selectedValue);
                     value = (CompetitionSession) ItemAdapter.getObject(selectedItem);
                 }
                 competitionApplication.setCurrentCompetitionSession(value);
@@ -91,6 +90,7 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
     }
 
 	/**
+	 * Force a reload of the names in the dropdown.
 	 * @param competitionApplication
 	 * @param sessionSelect
 	 * @return
@@ -98,17 +98,18 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
 	private HbnContainer<CompetitionSession> loadData(
 			final CompetitionApplication competitionApplication,
 			final Select sessionSelect) {
-		final HbnContainer<CompetitionSession> dbGroupDataSource = new HbnContainer<CompetitionSession>(CompetitionSession.class, competitionApplication);
-        sessionSelect.setContainerDataSource(dbGroupDataSource);
+		final HbnContainer<CompetitionSession> sessionDataSource = new HbnContainer<CompetitionSession>(CompetitionSession.class, competitionApplication);
+        sessionSelect.setContainerDataSource(sessionDataSource);
         sessionSelect.setItemCaptionPropertyId("name"); //$NON-NLS-1$
-		return dbGroupDataSource;
+		return sessionDataSource;
 	}
 	
 	public void refresh() {
-		refreshing = true;
+		sessionSelect.removeListener(listener);
 		loadData(CompetitionApplication.getCurrent(), sessionSelect);
 		sessionSelect.setValue(selectedId);
-		refreshing = false;
+		logger.warn("selected {}",selectedId);
+		sessionSelect.addListener(listener);
 	}
     
     public Item getSelectedItem() {

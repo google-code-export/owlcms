@@ -29,6 +29,7 @@ import org.concordiainternational.competition.ui.CompetitionApplication;
 import com.extentech.ExtenXLS.WorkSheetHandle;
 import com.extentech.formats.XLS.CellNotFoundException;
 import com.extentech.formats.XLS.CellTypeMismatchException;
+import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 /**
  * @author jflamy
@@ -36,7 +37,11 @@ import com.extentech.formats.XLS.CellTypeMismatchException;
  */
 public class TeamSheet extends ResultSheet {
 
-    private int lifterRankWithinTeam;
+    public TeamSheet(HbnSessionManager hbnSessionManager) {
+		super(hbnSessionManager);
+	}
+
+	private int lifterRankWithinTeam;
 
     private String previousClub;
 

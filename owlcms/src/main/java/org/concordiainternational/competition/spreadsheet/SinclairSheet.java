@@ -32,6 +32,7 @@ import com.extentech.ExtenXLS.WorkSheetHandle;
 import com.extentech.formats.XLS.CellNotFoundException;
 import com.extentech.formats.XLS.CellTypeMismatchException;
 import com.extentech.formats.XLS.RowNotFoundException;
+import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 /**
  * @author jflamy
@@ -39,7 +40,11 @@ import com.extentech.formats.XLS.RowNotFoundException;
  */
 public class SinclairSheet extends ResultSheet {
 
-    private int rownum = 0;
+    public SinclairSheet(HbnSessionManager hbnSessionManager) {
+		super(hbnSessionManager);
+	}
+
+	private int rownum = 0;
 
     private void writeSinclairLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup)
             throws CellTypeMismatchException, CellNotFoundException {
@@ -120,7 +125,7 @@ public class SinclairSheet extends ResultSheet {
         setFooterLeft(workSheet);
 
         // process data sheet
-        rownum = LifterReader.START_ROW;
+        rownum = InputSheetHelper.START_ROW;
         int i = 0;
         for (Lifter curLifter : lifters) {
             if (gender == null || gender.equals(curLifter.getGender())) {
@@ -130,7 +135,7 @@ public class SinclairSheet extends ResultSheet {
         }
         removeLastRowIfInserting(workSheet, rownum);
 
-        setPrintArea(workSheet, LifterReader.START_ROW - 2, 0, rownum - 1, 20);
+        setPrintArea(workSheet, InputSheetHelper.START_ROW - 2, 0, rownum - 1, 20);
     }
 
     @Override

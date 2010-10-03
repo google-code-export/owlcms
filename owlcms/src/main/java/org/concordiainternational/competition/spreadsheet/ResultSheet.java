@@ -33,28 +33,49 @@ import org.slf4j.LoggerFactory;
 import com.extentech.ExtenXLS.WorkSheetHandle;
 import com.extentech.formats.XLS.CellNotFoundException;
 import com.extentech.formats.XLS.CellTypeMismatchException;
+import com.extentech.formats.XLS.WorkSheetNotFoundException;
+import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 /**
  * 
  * @author jflamy
  * 
  */
-public class ResultSheet extends OutputSheet {
+public class ResultSheet extends OutputSheet implements InputSheet, LifterReader {
 
     protected static final String TEMPLATE_XLS = "/ResultSheetTemplate.xls"; //$NON-NLS-1$
     Logger logger = LoggerFactory.getLogger(ResultSheet.class);
+    private InputSheetHelper lifterReaderHelper;
 
+    /**
+     * Create a sheet.
+     * If this constructor is used, or newInstance is called, then 
+     * {@link #init(CategoryLookup, CompetitionApplication, CompetitionSession)} must also be called.
+     */
     public ResultSheet() {
+    }
+    
+    public ResultSheet(HbnSessionManager hbnSessionManager) {
+    	createInputSheetHelper(hbnSessionManager);
     }
 
     public ResultSheet(CategoryLookup categoryLookup, CompetitionApplication app, CompetitionSession competitionSession) {
         super(categoryLookup, app, competitionSession);
+        createInputSheetHelper(app);
     }
+      
 
     @Override
+	public void init(CategoryLookup categoryLookup, CompetitionApplication app,
+			CompetitionSession competitionSession) {
+		super.init(categoryLookup, app, competitionSession);
+		createInputSheetHelper(app);
+	}
+
+	@Override
     public void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup, int rownum)
             throws CellTypeMismatchException, CellNotFoundException {
-        rownum = rownum + LifterReader.START_ROW;
+        rownum = rownum + InputSheetHelper.START_ROW;
         workSheet.insertRow(rownum, true); // insérer une nouvelle ligne.
 
         workSheet.getCell(rownum, 0).setVal(lifter.getMembership());
@@ -62,6 +83,7 @@ public class ResultSheet extends OutputSheet {
         workSheet.getCell(rownum, 2).setVal(lifter.getLastName());
         workSheet.getCell(rownum, 3).setVal(lifter.getFirstName());
         final String gender = lifter.getGender();
+        logger.warn("lifter {} gender <{}>",lifter,gender);
         workSheet.getCell(rownum, 4).setVal((gender != null ? gender.toString() : null));
         workSheet.getCell(rownum, 5).setVal(lifter.getDisplayCategory());
         workSheet.getCell(rownum, 6).setVal(lifter.getBodyWeight());
@@ -80,11 +102,65 @@ public class ResultSheet extends OutputSheet {
         workSheet.getCell(rownum, 18).setVal(SheetUtils.fixRank(lifter.getRank()));
         workSheet.getCell(rownum, 20).setVal(lifter.getSinclair());
         workSheet.getCell(rownum, 21).setVal(lifter.getCategorySinclair());
-        // final Group group = lifter.getGroup();
-        // workSheet.getCell(rownum,22).setVal((group != null ? group.getName()
-        // : null));
+
+        final CompetitionSession group = lifter.getCompetitionSession();
+        workSheet.getCell(rownum,22).setVal((group != null ? group.getName(): null));
     }
 
+
+    /**
+     * Fill in a lifter record from a row in the spreadsheet.
+     * 
+     * @param lifterNumber
+     *            index of the lifter, starting at 0
+     * @throws CellNotFoundException
+     */
+    public Lifter readLifter(WorkSheetHandle sheet, int lifterNumber) {
+        int row = lifterNumber + InputSheetHelper.START_ROW;
+        Lifter lifter = new Lifter();
+        // read in values; getInt returns null if the cell is empty as opposed
+        // to a number or -
+
+        try {
+            lifter.setMembership(lifterReaderHelper.getString(sheet, row, 0));
+            lifter.setLotNumber(lifterReaderHelper.getInt(sheet, row, 1));
+            final String lastName = lifterReaderHelper.getString(sheet, row, 2);
+            final String firstName = lifterReaderHelper.getString(sheet, row, 3);
+            if (lastName.isEmpty() && firstName.isEmpty()) {
+                return null; // no data on this row.
+            }
+            lifter.setLastName(lastName);
+            lifter.setFirstName(firstName);
+            lifter.setGender(lifterReaderHelper.getGender(sheet, row, InputSheetHelper.GENDER_COLUMN));
+            lifter.setRegistrationCategory(lifterReaderHelper.getCategory(sheet, row, 5));
+            lifter.setBodyWeight(lifterReaderHelper.getDouble(sheet, row, InputSheetHelper.BODY_WEIGHT_COLUMN));
+            lifter.setClub(lifterReaderHelper.getString(sheet, row, 7));
+            lifter.setBirthDate(lifterReaderHelper.getInt(sheet, row, 8));
+
+            lifter.setSnatch1ActualLift(lifterReaderHelper.getString(sheet, row, 9));
+            lifter.setSnatch2ActualLift(lifterReaderHelper.getString(sheet, row, 10));
+            lifter.setSnatch3ActualLift(lifterReaderHelper.getString(sheet, row, 11));
+
+            lifter.setCleanJerk1ActualLift(lifterReaderHelper.getString(sheet, row, 13));
+            lifter.setCleanJerk2ActualLift(lifterReaderHelper.getString(sheet, row, 14));
+            lifter.setCleanJerk3ActualLift(lifterReaderHelper.getString(sheet, row, 15	));
+            try {
+            	lifter.setCompetitionSession(lifterReaderHelper.getCompetitionSession(sheet, row, 22));
+            } catch (CellNotFoundException e) {
+            }
+            try {
+            	lifter.setQualifyingTotal(lifterReaderHelper.getInt(sheet, row, 24));
+            } catch (CellNotFoundException e) {
+            }
+            logger.debug(InputSheetHelper.toString(lifter, false));
+            return lifter;
+        } catch (CellNotFoundException c) {
+            logger.debug(c.toString());
+            return null;
+        }
+
+    }
+    
     @Override
     public InputStream getTemplate() throws IOException {
         final InputStream resourceAsStream = app.getResourceAsStream(TEMPLATE_XLS);
@@ -123,6 +199,26 @@ public class ResultSheet extends OutputSheet {
 			workSheet.getCell("Q13").setVal(referee3 != null ? referee3 : ""); //$NON-NLS-1$
 			writeGroup(workSheet);
 		}
+	}
+
+	@Override
+	public List<Lifter> getAllLifters(InputStream is, HbnSessionManager session)
+			throws CellNotFoundException, IOException,
+			WorkSheetNotFoundException, InterruptedException, Throwable {
+		return lifterReaderHelper.getAllLifters(is, session);
+	}
+
+	@Override
+	public List<Lifter> getGroupLifters(InputStream is, String aGroup,
+			HbnSessionManager session) throws CellNotFoundException,
+			IOException, WorkSheetNotFoundException, InterruptedException,
+			Throwable {
+		return lifterReaderHelper.getGroupLifters(is, aGroup, session);
+	}
+
+	@Override
+	public void createInputSheetHelper(HbnSessionManager hbnSessionManager) {
+		lifterReaderHelper = new InputSheetHelper(hbnSessionManager,this);
 	}
     
     

@@ -28,10 +28,6 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 public interface InputSheet {
 
-    public abstract String getGroup();
-
-    public abstract void setGroup(String group);
-
     public abstract List<Lifter> getAllLifters(InputStream is, HbnSessionManager session) throws CellNotFoundException,
             IOException, WorkSheetNotFoundException, InterruptedException, Throwable;
 

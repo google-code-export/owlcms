@@ -39,6 +39,7 @@ import com.extentech.formats.XLS.CellPositionConflictException;
 import com.extentech.formats.XLS.CellTypeMismatchException;
 import com.extentech.formats.XLS.ColumnNotFoundException;
 import com.extentech.formats.XLS.RowNotFoundException;
+import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 /**
  * @author jflamy
@@ -46,7 +47,11 @@ import com.extentech.formats.XLS.RowNotFoundException;
  */
 public class StartSheet extends ResultSheet {
 
-    /**
+    public StartSheet(HbnSessionManager hbnSessionManager) {
+		super(hbnSessionManager);
+	}
+
+	/**
 	 * 
 	 */
     private static final int CATEGORY_BACKGROUND = FormatHandle.COLOR_GRAY50;
@@ -143,7 +148,7 @@ public class StartSheet extends ResultSheet {
         // setRepeatedLinesFormat(workSheet);
 
         // process data sheet
-        rownum = LifterReader.START_ROW;
+        rownum = InputSheetHelper.START_ROW;
         int i = 0;
         for (Lifter curLifter : lifters) {
             writeLifter(curLifter, workSheet, categoryLookup);
@@ -151,7 +156,7 @@ public class StartSheet extends ResultSheet {
         }
         removeLastRowIfInserting(workSheet, rownum);
 
-        setPrintArea(workSheet, 0, // LifterReader.START_ROW-2,
+        setPrintArea(workSheet, 0, // InputSheetHelper.START_ROW-2,
             0, rownum - 1, INDIVIDUAL_COLS - 1);
 
         if (!Competition.isMasters()) {

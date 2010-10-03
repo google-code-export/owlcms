@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.nec.NECDisplay;
-import org.concordiainternational.competition.spreadsheet.LifterReader;
+import org.concordiainternational.competition.spreadsheet.InputSheetHelper;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.hibernate.Session;
 import org.junit.runner.RunWith;
@@ -90,7 +90,7 @@ public class AllTests implements HbnSessionManager {
     public static String longDump(List<Lifter> lifterList) {
         StringBuffer sb = new StringBuffer();
         for (Lifter lifter : lifterList) {
-            sb.append(LifterReader.toString(lifter));
+            sb.append(InputSheetHelper.toString(lifter));
             sb.append(AllTests.lineSeparator);
         }
         return sb.toString();
@@ -103,7 +103,7 @@ public class AllTests implements HbnSessionManager {
     static String longDump(List<Lifter> lifterList, boolean includeTimeStamp) {
         StringBuffer sb = new StringBuffer();
         for (Lifter lifter : lifterList) {
-            sb.append(LifterReader.toString(lifter, includeTimeStamp));
+            sb.append(InputSheetHelper.toString(lifter, includeTimeStamp));
             sb.append(AllTests.lineSeparator);
         }
         return sb.toString();

@@ -24,9 +24,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.Competition;
-import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
@@ -43,6 +41,7 @@ import com.extentech.formats.XLS.CellNotFoundException;
 import com.extentech.formats.XLS.CellTypeMismatchException;
 import com.extentech.formats.XLS.RowNotFoundException;
 import com.extentech.formats.XLS.WorkSheetNotFoundException;
+import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 /**
  * Result sheet, with team rankings
@@ -52,16 +51,15 @@ import com.extentech.formats.XLS.WorkSheetNotFoundException;
  */
 public class CompetitionBook extends ResultSheet {
 
-    protected static String templateXls = "/TeamResultSheetTemplate_Standard.xls"; //$NON-NLS-1$
+    public CompetitionBook(HbnSessionManager hbnSessionManager) {
+		super(hbnSessionManager);
+	}
+
+	protected static String templateXls = "/TeamResultSheetTemplate_Standard.xls"; //$NON-NLS-1$
     private Logger logger = LoggerFactory.getLogger(CompetitionBook.class);
     Competition competition;
+	private HbnSessionManager hbnSessionManager;
 
-    public CompetitionBook() {
-    }
-
-    public CompetitionBook(CategoryLookup categoryLookup, CompetitionApplication app, CompetitionSession competitionSession) {
-        super(categoryLookup, app, competitionSession);
-    }
 
     @Override
     public void writeLifters(List<Lifter> lifters, OutputStream out) throws CellTypeMismatchException,
@@ -114,9 +112,9 @@ public class CompetitionBook extends ResultSheet {
             try {
                 workSheet = workBookHandle.getWorkSheet("Hommes 6 essais");
                 if (Competition.isMasters()) {
-                    new MastersIndividualSheet().writeIndividualSheet(lifters, workSheet, "M");
+                    new MastersIndividualSheet(hbnSessionManager).writeIndividualSheet(lifters, workSheet, "M");
                 } else {
-                    new IndividualSheet().writeIndividualSheet(lifters, workSheet, "M");
+                    new IndividualSheet(hbnSessionManager).writeIndividualSheet(lifters, workSheet, "M");
                 }
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
@@ -127,9 +125,9 @@ public class CompetitionBook extends ResultSheet {
             try {
                 workSheet = workBookHandle.getWorkSheet("Femmes 6 essais");
                 if (Competition.isMasters()) {
-                    new MastersIndividualSheet().writeIndividualSheet(lifters, workSheet, "F");
+                    new MastersIndividualSheet(hbnSessionManager).writeIndividualSheet(lifters, workSheet, "F");
                 } else {
-                    new IndividualSheet().writeIndividualSheet(lifters, workSheet, "F");
+                    new IndividualSheet(hbnSessionManager).writeIndividualSheet(lifters, workSheet, "F");
                 }
 
             } catch (WorkSheetNotFoundException wnf) {
@@ -140,7 +138,7 @@ public class CompetitionBook extends ResultSheet {
             // Sinclair sheet, men
             try {
                 workSheet = workBookHandle.getWorkSheet("Hommes Sinclair");
-                new SinclairSheet().writeSinclairSheet(sinclairLifters, workSheet, "M");
+                new SinclairSheet(hbnSessionManager).writeSinclairSheet(sinclairLifters, workSheet, "M");
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
                 LoggerUtils.logException(logger, e);
@@ -149,7 +147,7 @@ public class CompetitionBook extends ResultSheet {
             // Sinclair sheet, women
             try {
                 workSheet = workBookHandle.getWorkSheet("Femmes Sinclair");
-                new SinclairSheet().writeSinclairSheet(sinclairLifters, workSheet, "F");
+                new SinclairSheet(hbnSessionManager).writeSinclairSheet(sinclairLifters, workSheet, "F");
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
                 LoggerUtils.logException(logger, e);
@@ -158,7 +156,7 @@ public class CompetitionBook extends ResultSheet {
             // Men Total ranking
             try {
                 workSheet = workBookHandle.getWorkSheet("Hommes équipes");
-                new TeamSheet().writeTeamSheet(teamRankingLifters, workSheet, Ranking.TOTAL, clubs, "M");
+                new TeamSheet(hbnSessionManager).writeTeamSheet(teamRankingLifters, workSheet, Ranking.TOTAL, clubs, "M");
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
                 LoggerUtils.logException(logger, e);
@@ -167,7 +165,7 @@ public class CompetitionBook extends ResultSheet {
             // Women total ranking
             try {
                 workSheet = workBookHandle.getWorkSheet("Femmes équipes");
-                new TeamSheet().writeTeamSheet(teamRankingLifters, workSheet, Ranking.TOTAL, clubs, "F");
+                new TeamSheet(hbnSessionManager).writeTeamSheet(teamRankingLifters, workSheet, Ranking.TOTAL, clubs, "F");
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
                 LoggerUtils.logException(logger, e);
@@ -176,7 +174,7 @@ public class CompetitionBook extends ResultSheet {
             // Team Total ranking
             try {
                 workSheet = workBookHandle.getWorkSheet("Mixte équipes");
-                new TeamSheet().writeTeamSheet(teamRankingLifters, workSheet, Ranking.TOTAL, clubs, null);
+                new TeamSheet(hbnSessionManager).writeTeamSheet(teamRankingLifters, workSheet, Ranking.TOTAL, clubs, null);
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
                 LoggerUtils.logException(logger, e);
