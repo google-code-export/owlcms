@@ -38,6 +38,7 @@ import com.extentech.ExtenXLS.WorkSheetHandle;
 import com.extentech.formats.XLS.CellNotFoundException;
 import com.extentech.formats.XLS.CellTypeMismatchException;
 import com.extentech.formats.XLS.RowNotFoundException;
+import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 /**
  * @author jflamy
@@ -45,7 +46,11 @@ import com.extentech.formats.XLS.RowNotFoundException;
  */
 public class IndividualSheet extends ResultSheet {
 
-    /**
+    public IndividualSheet(HbnSessionManager hbnSessionManager) {
+		super(hbnSessionManager);
+	}
+
+	/**
 	 * 
 	 */
     private static final int CATEGORY_BACKGROUND = FormatHandle.COLOR_GRAY50;
@@ -136,7 +141,7 @@ public class IndividualSheet extends ResultSheet {
         // setRepeatedLinesFormat(workSheet);
 
         // process data sheet
-        rownum = LifterReader.START_ROW;
+        rownum = InputSheetHelper.START_ROW;
         int i = 0;
         for (Lifter curLifter : lifters) {
             if (gender == null || gender.equals(curLifter.getGender())) {
@@ -146,7 +151,7 @@ public class IndividualSheet extends ResultSheet {
         }
         removeLastRowIfInserting(workSheet, rownum);
 
-        setPrintArea(workSheet, LifterReader.START_ROW - 2, 0, rownum - 1, INDIVIDUAL_COLS - 1);
+        setPrintArea(workSheet, InputSheetHelper.START_ROW - 2, 0, rownum - 1, INDIVIDUAL_COLS - 1);
     }
 
     /**

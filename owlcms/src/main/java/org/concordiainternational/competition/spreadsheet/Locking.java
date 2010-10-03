@@ -41,7 +41,7 @@ public class Locking {
      * @throws IOException
      */
     private String path = "C:\\Documents and Settings\\jflamy\\Mes documents\\Halt�ro\\Comp�tition\\Current\\Masters.xls";
-    private List<LifterReader> allLifters;
+    private List<InputSheetHelper> allLifters;
 
     @SuppressWarnings("unused")
     private FileLock lockSheet() throws FileNotFoundException, IOException {
@@ -82,7 +82,7 @@ public class Locking {
      * @return
      */
     @SuppressWarnings("unused")
-    private List<LifterReader> checkIfRecentlyRead() {
+    private List<InputSheetHelper> checkIfRecentlyRead() {
         // old method
         long delaySinceLastRead = System.currentTimeMillis() - lastReadTimeStamp;
         if (delaySinceLastRead < refreshInterval && allLifters != null) {

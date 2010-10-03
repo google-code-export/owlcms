@@ -100,7 +100,7 @@ public abstract class OutputSheet {
             for (Lifter curLifter : lifters) {
                 writeLifter(curLifter, workSheet, categoryLookup, i++);
             }
-            removeLastRowIfInserting(workSheet, i + LifterReader.START_ROW);
+            removeLastRowIfInserting(workSheet, i + InputSheetHelper.START_ROW);
 
             // write out
             writeWorkBook(workBookHandle, out);

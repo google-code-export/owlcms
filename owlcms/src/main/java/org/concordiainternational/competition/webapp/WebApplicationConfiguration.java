@@ -245,7 +245,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
             p.setFirstName(fnames[r.nextInt(fnames.length)]);
             p.setLastName(lnames[r.nextInt(lnames.length)]);
             sess.save(p);
-            // System.err.println("group A - "+LifterReader.toString(p));
+            // System.err.println("group A - "+InputSheetHelper.toString(p));
         }
         for (int i = 0; i < liftersToLoad; i++) {
             Lifter p = new Lifter();
@@ -253,7 +253,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
             p.setFirstName(fnames[r.nextInt(fnames.length)]);
             p.setLastName(lnames[r.nextInt(lnames.length)]);
             sess.save(p);
-            // System.err.println("group B - "+LifterReader.toString(p));
+            // System.err.println("group B - "+InputSheetHelper.toString(p));
         }
         sess.flush();
     }

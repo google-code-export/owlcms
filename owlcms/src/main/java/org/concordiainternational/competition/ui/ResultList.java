@@ -419,7 +419,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
         logger.warn("retrieved session {} {}",System.identityHashCode(competitionSession), competitionSession.getReferee3());
 		Window editingWindow = new Window(competitionSession.getName());
         form.setWindow(editingWindow);
-        form.setParentList(null);
+        form.setParentList(this);
         editingWindow.getContent().addComponent(form);
         app.getMainWindow().addWindow(editingWindow);
         editingWindow.setWidth("40em");

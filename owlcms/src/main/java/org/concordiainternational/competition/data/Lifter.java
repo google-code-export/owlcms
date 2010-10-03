@@ -1920,7 +1920,7 @@ public class Lifter implements MethodEventSource, Notifier {
             // lifter is not taking try; always ok no matter what was declared.
             return;
         }
-        if (declaredChanges == 0) {
+        if (declaredChanges == 0 && iAutomaticProgression > 0) {
             // assume data entry is being done without reference to
             // declarations, check if > progression
             if (Math.abs(liftedWeight) >= iAutomaticProgression) {
@@ -1936,6 +1936,8 @@ public class Lifter implements MethodEventSource, Notifier {
             if (liftedWeightOk && declaredChangesOk) {
                 return;
             } else {
+            	if (declaredChanges == 0)
+            		return;
                 if (!declaredChangesOk)
                     throw RuleViolation.declaredChangesNotOk(curLift, declaredChanges, iAutomaticProgression,
                         iAutomaticProgression + 1);
@@ -1985,8 +1987,9 @@ public class Lifter implements MethodEventSource, Notifier {
         // of
         // field.
         int newVal = zeroIfInvalid(declaration);
-        int prevVal = zeroIfInvalid(automaticProgression);
-        if (newVal < prevVal) throw RuleViolation.declarationValueTooSmall(curLift, newVal, prevVal);
+        int iAutomaticProgression = zeroIfInvalid(automaticProgression);
+        // allow null declaration for reloading old results.
+        if (iAutomaticProgression > 0 && newVal < iAutomaticProgression) throw RuleViolation.declarationValueTooSmall(curLift, newVal, iAutomaticProgression);
     }
 
     /**

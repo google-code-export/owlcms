@@ -141,7 +141,7 @@ public class SpreadsheetUploader extends CustomComponent implements Upload.Succe
         final FileResource fileResource = new FileResource(file, getApplication());
         DownloadStream ds = fileResource.getStream();
         try {
-            List<Lifter> lifters = new WeighInSheet().getAllLifters(ds.getStream(), app);
+            List<Lifter> lifters = new WeighInSheet(app).getAllLifters(ds.getStream(), app);
             for (Lifter curLifter : lifters) {
                 app.getHbnSession().save(curLifter);
             }

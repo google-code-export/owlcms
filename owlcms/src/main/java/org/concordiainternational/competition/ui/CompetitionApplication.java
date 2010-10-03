@@ -279,9 +279,10 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      */
     public InputStream getResourceAsStream(String path) throws IOException {
         InputStream resourceAsStream;
+        logger.warn("classpath: {}",System.getProperty("java.class.path"));
               
         // first, search using class loader
-        resourceAsStream = this.getClass().getResourceAsStream("/" + path); //$NON-NLS-1$
+        resourceAsStream = this.getClass().getResourceAsStream(path); //$NON-NLS-1$
         if (resourceAsStream == null) {
         	resourceAsStream = this.getClass().getResourceAsStream("/templates" + path); //$NON-NLS-1$
         }

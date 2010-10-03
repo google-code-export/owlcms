@@ -23,21 +23,20 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.List;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.spreadsheet.InputSheet;
+import org.concordiainternational.competition.spreadsheet.ResultSheet;
 import org.concordiainternational.competition.spreadsheet.WeighInSheet;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
@@ -48,7 +47,7 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 public class SpreadsheetTest {
 
     HbnSessionManager hbnSessionManager = AllTests.getSessionManager();
-    Logger logger = getLogger();
+    Logger logger = LoggerFactory.getLogger(SpreadsheetTest.class);
     static private String loadResults;
     static private File tempFile;
     static private List<Lifter> lifters;
@@ -72,8 +71,7 @@ public class SpreadsheetTest {
     @Test
     public void getAllLifters() throws Throwable {
         InputStream is = AllTests.class.getResourceAsStream("/testData/roundTripInputSheet.xls"); //$NON-NLS-1$
-        InputSheet results = new WeighInSheet();
-        results.setGroup("A"); //$NON-NLS-1$
+        InputSheet results = new WeighInSheet(AllTests.getSessionManager());
         lifters = results.getAllLifters(is, hbnSessionManager);
         loadResults = AllTests.longDump(lifters, false);
     }
@@ -81,30 +79,21 @@ public class SpreadsheetTest {
     @Test
     public void writeAllLifters() throws Throwable {
         tempFile = File.createTempFile("myApp", ".xls"); //$NON-NLS-1$ //$NON-NLS-2$
-        tempFile.deleteOnExit();
-        // System.out.println("temporary file is set to "+tempFile.getAbsolutePath());
+        //tempFile.deleteOnExit();
+        logger.warn("temporary file is set to "+tempFile.getAbsolutePath());
         FileOutputStream os = new FileOutputStream(tempFile);
-        new WeighInSheet(new CategoryLookup(hbnSessionManager), new CompetitionApplication(), (CompetitionSession) null)
+        new ResultSheet(new CategoryLookup(hbnSessionManager), new CompetitionApplication(), (CompetitionSession) null)
                 .writeLifters(lifters, os);
     }
 
     @Test
     public void reloadFromOutput() throws Throwable {
         InputStream is = new FileInputStream(tempFile);
-        InputSheet readAgain = new WeighInSheet();
-        readAgain.setGroup("A"); //$NON-NLS-1$
+        ResultSheet readAgain = new ResultSheet(AllTests.getSessionManager());
         lifters = readAgain.getAllLifters(is, hbnSessionManager);
         String loadAgainResults = AllTests.longDump(lifters, false);
         assertEquals("roundtrip failed", loadResults, loadAgainResults); //$NON-NLS-1$
     }
 
-    private static Logger getLogger() {
-        Logger logger = Logger.getLogger(SpreadsheetTest.class.getName());
-        logger.setLevel(Level.FINE);
-        Handler consoleHandler = new ConsoleHandler();
-        consoleHandler.setLevel(Level.INFO);
-        logger.addHandler(consoleHandler);
-        return logger;
-    }
 
 }

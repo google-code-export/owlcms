@@ -18,8 +18,6 @@ package org.concordiainternational.competition.spreadsheet;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.concordiainternational.competition.data.CategoryLookup;
@@ -30,8 +28,9 @@ import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.extentech.ExtenXLS.WorkBookHandle;
 import com.extentech.ExtenXLS.WorkSheetHandle;
 import com.extentech.formats.XLS.CellNotFoundException;
 import com.extentech.formats.XLS.CellTypeMismatchException;
@@ -45,35 +44,57 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
  * @author jflamy
  * 
  */
-public class WeighInSheet extends OutputSheet implements InputSheet {
+public class WeighInSheet extends OutputSheet implements InputSheet, LifterReader {
 
     protected static final String TEMPLATE_XLS = "/WeighInSheetTemplate.xls"; //$NON-NLS-1$
+    private static final Logger logger = LoggerFactory.getLogger(WeighInSheet.class);
+    private InputSheetHelper lifterReaderHelper;
 
+    
+    /**
+     * Create a sheet.
+     * If this constructor is used, or newInstance is called, then 
+     * {@link #init(CategoryLookup, CompetitionApplication, CompetitionSession)} must also be called.
+     */
     public WeighInSheet() {
+    }
+    
+    public WeighInSheet(HbnSessionManager hbnSessionManager) {
+    	createInputSheetHelper(hbnSessionManager);
     }
 
     public WeighInSheet(CategoryLookup categoryLookup, CompetitionApplication app, CompetitionSession competitionSession) {
         super(categoryLookup, app, competitionSession);
+        createInputSheetHelper(app);
     }
 
+    @Override
+	public void init(CategoryLookup categoryLookup, CompetitionApplication app,
+			CompetitionSession competitionSession) {
+		super.init(categoryLookup, app, competitionSession);
+		createInputSheetHelper(app);
+	}
+    
     /**
      * @see org.concordiainternational.competition.spreadsheet.OutputSheet#writeLifter(org.concordiainternational.competition.data.Lifter,
      *      com.extentech.ExtenXLS.WorkSheetHandle,
      *      org.concordiainternational.competition.data.CategoryLookup, int)
      * 
      *      IMPORTANT: the columns in this routine must match those in
-     *      {@link LifterReader#readLifter(WorkSheetHandle, int)}
+     *      {@link InputSheetHelper#readLifter(WorkSheetHandle, int)}
      */
     @Override
     public void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup, int rownum)
             throws CellTypeMismatchException, CellNotFoundException {
-        rownum = rownum + LifterReader.START_ROW;
+        rownum = rownum + InputSheetHelper.START_ROW;
         workSheet.insertRow(rownum, true); // insérer une nouvelle ligne
 
         workSheet.getCell(rownum, 0).setVal(lifter.getMembership());
         workSheet.getCell(rownum, 1).setVal(lifter.getLotNumber());
         workSheet.getCell(rownum, 2).setVal(lifter.getLastName());
         workSheet.getCell(rownum, 3).setVal(lifter.getFirstName());
+        final String gender = lifter.getGender();
+        workSheet.getCell(rownum, 4).setVal((gender != null ? gender.toString() : null));
         if (Competition.isMasters()) {
             workSheet.getCell(rownum, 5).setVal(lifter.getMastersLongCategory());
         } else {
@@ -97,6 +118,55 @@ public class WeighInSheet extends OutputSheet implements InputSheet {
         final CompetitionSession competitionSession = lifter.getCompetitionSession();
         workSheet.getCell(rownum, 22).setVal((competitionSession != null ? competitionSession.getName() : null));
     }
+    
+    /**
+     * Fill in a lifter record from a row in the spreadsheet.
+     * 
+     * @param lifterNumber
+     *            index of the lifter, starting at 0
+     * @throws CellNotFoundException
+     */
+    public Lifter readLifter(WorkSheetHandle sheet, int lifterNumber) {
+        int row = lifterNumber + InputSheetHelper.START_ROW;
+        Lifter lifter = new Lifter();
+        // read in values; getInt returns null if the cell is empty as opposed
+        // to a number or -
+
+        try {
+            lifter.setMembership(lifterReaderHelper.getString(sheet, row, 0));
+            lifter.setLotNumber(lifterReaderHelper.getInt(sheet, row, 1));
+            final String lastName = lifterReaderHelper.getString(sheet, row, 2);
+            final String firstName = lifterReaderHelper.getString(sheet, row, 3);
+            if (lastName.isEmpty() && firstName.isEmpty()) {
+                return null; // no data on this row.
+            }
+            lifter.setLastName(lastName);
+            lifter.setFirstName(firstName);
+            lifter.setGender(lifterReaderHelper.getGender(sheet, row, InputSheetHelper.GENDER_COLUMN));
+            lifter.setRegistrationCategory(lifterReaderHelper.getCategory(sheet, row, 5));
+            lifter.setBodyWeight(lifterReaderHelper.getDouble(sheet, row, InputSheetHelper.BODY_WEIGHT_COLUMN));
+            lifter.setClub(lifterReaderHelper.getString(sheet, row, 7));
+            lifter.setBirthDate(lifterReaderHelper.getInt(sheet, row, 8));
+            lifter.setSnatch1Declaration(lifterReaderHelper.getString(sheet, row, 9)); 
+            lifter.setSnatch1ActualLift(lifterReaderHelper.getString(sheet, row, 10));
+            lifter.setSnatch2ActualLift(lifterReaderHelper.getString(sheet, row, 11));
+            lifter.setSnatch3ActualLift(lifterReaderHelper.getString(sheet, row, 12));
+            lifter.setCleanJerk1Declaration(lifterReaderHelper.getString(sheet, row, 14)); 
+            lifter.setCleanJerk1ActualLift(lifterReaderHelper.getString(sheet, row, 15));
+            lifter.setCleanJerk2ActualLift(lifterReaderHelper.getString(sheet, row, 16));
+            lifter.setCleanJerk3ActualLift(lifterReaderHelper.getString(sheet, row, 17));
+            lifter.setCompetitionSession(lifterReaderHelper.getCompetitionSession(sheet, row, 22));
+            try {
+                lifter.setQualifyingTotal(lifterReaderHelper.getInt(sheet, row, 24));
+            } catch (CellNotFoundException e) {
+            }
+            logger.debug(InputSheetHelper.toString(lifter, false));
+            return lifter;
+        } catch (CellNotFoundException c) {
+            logger.debug(c.toString());
+            return null;
+        }
+    }
 
     @Override
     public InputStream getTemplate() throws IOException {
@@ -111,66 +181,6 @@ public class WeighInSheet extends OutputSheet implements InputSheet {
         return LifterSorter.displayOrderCopy(new LifterContainer(app, excludeNotWeighed).getAllPojos());
     }
 
-    private String group;
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.concordia_international.reader.ResultSheet#getGroup()
-     */
-    public String getGroup() {
-        return this.group;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.concordia_international.reader.ResultSheet#setGroup(java.lang.String)
-     */
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.concordia_international.reader.ResultSheet#getAllLifters()
-     */
-    public synchronized List<Lifter> getAllLifters(InputStream is, HbnSessionManager sessionMgr) throws IOException,
-            CellNotFoundException, WorkSheetNotFoundException {
-        WorkBookHandle workBookHandle = null;
-
-        LinkedList<Lifter> allLifters;
-        try {
-            // get the data sheet
-            workBookHandle = new WorkBookHandle(is);
-            final WorkSheetHandle workSheet = workBookHandle.getWorkSheet(0);
-
-            // process data sheet
-            allLifters = new LinkedList<Lifter>();
-            LifterReader lifterReader = new LifterReader(sessionMgr);
-            for (int i = 0; true; i++) {
-                final Lifter lifter = lifterReader.readLifter(workSheet, i);
-                if (lifter != null) {
-                    allLifters.add(lifter);
-                    // System.err.println("added lifter " +
-                    // LifterReader.toString(lifter));
-                } else {
-                    break;
-                }
-            }
-
-            // readHeader(workSheet,sessionMgr.getHbnSession());
-
-        } finally {
-            // close workbook file and remove lock
-            if (workBookHandle != null) workBookHandle.close();
-            if (is != null) is.close();
-
-        }
-        return allLifters;
-    }
 
     @SuppressWarnings( { "unchecked", "unused" })
     private void readHeader(WorkSheetHandle workSheet, Session hbnSession) throws CellNotFoundException {
@@ -193,21 +203,26 @@ public class WeighInSheet extends OutputSheet implements InputSheet {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.concordia_international.reader.ResultSheet#getGroup(java.lang.String)
-     */
-    public List<Lifter> getGroupLifters(InputStream is, String aGroup, HbnSessionManager session) throws IOException,
-            CellNotFoundException, WorkSheetNotFoundException {
-        List<Lifter> groupLifters = new ArrayList<Lifter>();
-        for (Lifter curLifter : getAllLifters(is, session)) {
-            if (aGroup.equals(curLifter.getCompetitionSession())) {
-                groupLifters.add(curLifter);
-            }
-        }
-        return groupLifters;
-    }
+	@Override
+	public List<Lifter> getAllLifters(InputStream is, HbnSessionManager session)
+			throws CellNotFoundException, IOException,
+			WorkSheetNotFoundException, InterruptedException, Throwable {
+		return lifterReaderHelper.getAllLifters(is, session);
+	}
+
+	@Override
+	public List<Lifter> getGroupLifters(InputStream is, String aGroup,
+			HbnSessionManager session) throws CellNotFoundException,
+			IOException, WorkSheetNotFoundException, InterruptedException,
+			Throwable {
+		return lifterReaderHelper.getGroupLifters(is, aGroup, session);
+	}
+
+	@Override
+	public void createInputSheetHelper(HbnSessionManager hbnSessionManager) {
+		lifterReaderHelper = new InputSheetHelper(hbnSessionManager,this);		
+	}
+
+
 
 }

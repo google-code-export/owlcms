@@ -23,9 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.Competition;
-import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
@@ -42,6 +40,7 @@ import com.extentech.formats.XLS.CellNotFoundException;
 import com.extentech.formats.XLS.CellTypeMismatchException;
 import com.extentech.formats.XLS.RowNotFoundException;
 import com.extentech.formats.XLS.WorkSheetNotFoundException;
+import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 /**
  * Result sheet, with team rankings
@@ -51,16 +50,16 @@ import com.extentech.formats.XLS.WorkSheetNotFoundException;
  */
 public class MastersGroupResults extends ResultSheet {
 
-    protected static String templateXls = "/ResultSheetTemplate_Masters.xls"; //$NON-NLS-1$
+    public MastersGroupResults(HbnSessionManager hbnSessionManager) {
+		super(hbnSessionManager);
+		this.hbnSessionManager = hbnSessionManager;
+	}
+
+	protected static String templateXls = "/ResultSheetTemplate_Masters.xls"; //$NON-NLS-1$
     private Logger logger = LoggerFactory.getLogger(MastersGroupResults.class);
     Competition competition;
+	private HbnSessionManager hbnSessionManager;
 
-    public MastersGroupResults() {
-    }
-
-    public MastersGroupResults(CategoryLookup categoryLookup, CompetitionApplication app, CompetitionSession competitionSession) {
-        super(categoryLookup, app, competitionSession);
-    }
 
     @Override
     public void writeLifters(List<Lifter> lifters, OutputStream out) throws CellTypeMismatchException,
@@ -102,7 +101,7 @@ public class MastersGroupResults extends ResultSheet {
             // Result sheet, panam
             try {
                 workSheet = workBookHandle.getWorkSheet("Results");
-                new MastersIndividualSheet().writeIndividualSheet(lifters, workSheet, null);
+                new MastersIndividualSheet(hbnSessionManager).writeIndividualSheet(lifters, workSheet, null);
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
                 LoggerUtils.logException(logger, e);
@@ -111,7 +110,7 @@ public class MastersGroupResults extends ResultSheet {
             // Result sheet, canada
             try {
                 workSheet = workBookHandle.getWorkSheet("Canada");
-                new MastersIndividualSheet().writeIndividualSheet(canadaLifters, workSheet, null);
+                new MastersIndividualSheet(hbnSessionManager).writeIndividualSheet(canadaLifters, workSheet, null);
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
                 LoggerUtils.logException(logger, e);
