@@ -14,7 +14,7 @@
 	pageContext.setAttribute("platform", platform);
 	
 	ServletContext sCtx = this.getServletContext();
-	GroupData groupData = (GroupData)sCtx.getAttribute(GroupData.MASTER_KEY+platform);
+	SessionData groupData = (SessionData)sCtx.getAttribute(SessionData.MASTER_KEY+platform);
 	if (groupData == null) return;
 
 	java.util.List<Lifter> lifters = groupData.getCurrentLiftingOrder();
@@ -26,7 +26,7 @@
 	pageContext.setAttribute("lifters", lifters);
 	pageContext.setAttribute("isMasters", Competition.isMasters());
 	
-	CompetitionSession group = groupData.getCurrentCompetitionSession();
+	CompetitionSession group = groupData.getCurrentSession();
 	if (group == null) {
 		pageContext.removeAttribute("groupName");
 		pageContext.setAttribute("useGroupName", false);
