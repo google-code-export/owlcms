@@ -189,7 +189,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
 
                 public void buttonClick(ClickEvent event) {
                     logger.debug("reloading"); //$NON-NLS-1$
-                    data.setCurrentGroup(data.getCurrentCompetitionSession());
+                    data.setCurrentSession(data.getCurrentSession());
                 }
             };
             refreshButton.addListener(refreshClickListener);
