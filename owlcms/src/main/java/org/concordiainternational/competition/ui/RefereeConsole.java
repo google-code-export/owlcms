@@ -81,7 +81,7 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
         	app.setPlatformByName(platformName);
         }
         
-        masterData = SessionData.getInstance(platformName);
+        masterData = app.getMasterData(platformName);
         final DecisionController decisionController = masterData.getDecisionController();
         decisionController.addListener(this);
         

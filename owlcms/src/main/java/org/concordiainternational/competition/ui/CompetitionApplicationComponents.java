@@ -404,7 +404,7 @@ public class CompetitionApplicationComponents {
         if (platform != null) {
             final CompetitionApplication app = CompetitionApplication.getCurrent();
             SessionData masterData = app.getMasterData(platformName);
-            final CompetitionSession currentGroup = masterData.getCurrentCompetitionSession();
+            final CompetitionSession currentGroup = masterData.getCurrentSession();
             logger.debug("new current group {}", currentGroup); //$NON-NLS-1$
             setPlatform(platform);
             if (currentView instanceof EditingView) {
