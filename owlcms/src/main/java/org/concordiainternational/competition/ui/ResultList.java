@@ -42,7 +42,6 @@ import com.vaadin.Application;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.hbnutil.HbnContainer;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.terminal.SystemError;
@@ -67,6 +66,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
     private Application app = CompetitionApplication.getCurrent();
     private EditingView parentView;
     transient private SessionData data = null; // do not serialize
+	private SessionSelect sessionSelect;
 
     private static String[] NATURAL_COL_ORDER = null;
     private static String[] COL_HEADERS = null;
@@ -106,7 +106,8 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
 
     @Override
     public void refresh() {
-        logger.debug("start refresh ResultList**************{}"); //$NON-NLS-1$
+        logger.debug("start refresh ResultList**************{}"); //$NON-NLS-1$`
+        sessionSelect.refresh();
         Table oldTable = table;
 
         // listeners to oldTable should listen no more (these listeners are
@@ -175,8 +176,8 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
     protected void createToolbarButtons(HorizontalLayout tableToolbar) {
         // we do not call super because the default buttons are inappropriate.
         final Locale locale = app.getLocale();
-        final SessionSelect groupSelect = new SessionSelect((CompetitionApplication) app, locale);
-        tableToolbar.addComponent(groupSelect);
+        sessionSelect = new SessionSelect((CompetitionApplication) app, locale);
+        tableToolbar.addComponent(sessionSelect);
 
         // result spreadsheet
 
@@ -267,7 +268,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
 
             public void buttonClick(ClickEvent event) {
                 logger.debug("reloading"); //$NON-NLS-1$
-                data.setCurrentGroup(data.getCurrentCompetitionSession());
+                data.setCurrentSession(data.getCurrentSession());
             }
         };
         refreshButton.addListener(refreshClickListener);
@@ -278,7 +279,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
             private static final long serialVersionUID = 7744958942977063130L;
 
             public void buttonClick(ClickEvent event) {
-            	editCompetitionSession(groupSelect.getSelectedId());
+            	editCompetitionSession(sessionSelect.getSelectedId(),sessionSelect.getSelectedItem());
             }
         };
         editButton.addListener(editClickListener);
@@ -402,7 +403,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
         // this.clearSelection();
     }
     
-    private void editCompetitionSession(Object itemId) {
+    private void editCompetitionSession(Object itemId, Item item) {
     	if (itemId == null) {
     		CompetitionApplication.getCurrent().getMainWindow().showNotification(
     			Messages.getString("ResultList.sessionNotSelected", CompetitionApplication.getCurrentLocale()),
@@ -411,14 +412,10 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
     	}
         SessionForm form = new SessionForm();
         
-        // get the item anew because we are using an old drop down
-        final HbnContainer<CompetitionSession> dbGroupDataSource = new HbnContainer<CompetitionSession>(CompetitionSession.class, CompetitionApplication.getCurrent());
-        Item freshItem = dbGroupDataSource.getItem(itemId);
-        
-        form.setItemDataSource(freshItem);
+        form.setItemDataSource(item);
         form.setReadOnly(false);
 
-        CompetitionSession competitionSession = (CompetitionSession) ItemAdapter.getObject(freshItem);
+        CompetitionSession competitionSession = (CompetitionSession) ItemAdapter.getObject(item);
         logger.warn("retrieved session {} {}",System.identityHashCode(competitionSession), competitionSession.getReferee3());
 		Window editingWindow = new Window(competitionSession.getName());
         form.setWindow(editingWindow);

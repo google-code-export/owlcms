@@ -81,7 +81,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     private List<Lifter> resultOrder;
     private CompetitionApplication app;
     private String currentPlatformName;
-    private CompetitionSession currentGroup;
+    private CompetitionSession currentSession;
     private Lifter currentLifter;
     public boolean needToUpdateNEC;
 
@@ -107,10 +107,10 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         return liftsDone;
     }
 
-    SessionData(String string) {
+    private SessionData(String platformName) {
         app = CompetitionApplication.getCurrent();
         lifters = new ArrayList<Lifter>();
-        currentPlatformName = string;
+        currentPlatformName = platformName;
         notificationManager = new NotificationManager<SessionData, Lifter, Component>(this);
         init();
     }
@@ -127,18 +127,27 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         updateListsForLiftingOrderChange();
     }
 
-    static private final Map<String, SessionData> platformToGroupData = new HashMap<String, SessionData>();
+    static private final Map<String, SessionData> platformToSessionData = new HashMap<String, SessionData>();
 
-    public static SessionData getInstance(String platformName) {
-        SessionData groupDataSingleton = platformToGroupData.get(platformName);
+    public static SessionData getSingletonForPlatform(String platformName) {
+        SessionData groupDataSingleton = platformToSessionData.get(platformName);
 
         if (groupDataSingleton == null) {
             groupDataSingleton = new SessionData(platformName);
-            platformToGroupData.put(platformName, groupDataSingleton);
+            platformToSessionData.put(platformName, groupDataSingleton);
             groupDataSingleton.registerAsMasterData(platformName);
         }
         logger.debug("groupData = {}", groupDataSingleton); //$NON-NLS-1$
         return groupDataSingleton;
+    }
+    
+    /**
+     * @return information about a session, not connected to a platform.
+     */
+    public static SessionData getIndependentInstance() {
+        SessionData independentData = new SessionData("");
+        logger.debug("independentData = {}", independentData); //$NON-NLS-1$
+        return independentData;
     }
 
     /**
@@ -158,13 +167,13 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      * "slave" views such as the MARSHAL, TIMEKEEPER views should never call this method.
      */
     void loadData() {
-        currentGroup = this.getCurrentCompetitionSession();
-        if (currentGroup == null && !allowAll) {
+        currentSession = this.getCurrentSession();
+        if (currentSession == null && !allowAll) {
             // make it so we have to select a group
             lifters = new ArrayList<Lifter>();
             logger.debug("current group is empty"); //$NON-NLS-1$
         } else {
-            logger.debug("loading data for group {}", currentGroup); //$NON-NLS-1$
+            logger.debug("loading data for group {}", currentSession); //$NON-NLS-1$
             final LifterContainer hbnCont = new LifterContainer(app);
             // hbnCont will filter automatically to application.getCurrentGroup
             lifters = hbnCont.getAllPojos();
@@ -522,19 +531,19 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     }
 
     /**
-     * @param newCurrentGroup
-     *            the currentGroup to set
+     * @param newCurrentSession
+     *            the currentSession to set
      */
-    void setCurrentGroup(CompetitionSession newCurrentGroup) {
-        logger.debug("{} setting group to {}", this, newCurrentGroup); //$NON-NLS-1$
-        if (app.getCurrentCompetitionSession() != newCurrentGroup) {
+    void setCurrentSession(CompetitionSession newCurrentSession) {
+        logger.debug("{} setting group to {}", this, newCurrentSession); //$NON-NLS-1$
+        if (app.getCurrentCompetitionSession() != newCurrentSession) {
             // we are not always called from the application, but we must remain
             // in sync.
-            // we cannot systematically call app.setCurrentGroup else we get
+            // we cannot systematically call app.setCurrentSession else we get
             // infinite loop.
-            app.setCurrentCompetitionSession(newCurrentGroup);
+            app.setCurrentCompetitionSession(newCurrentSession);
         }
-        this.currentGroup = newCurrentGroup;
+        this.currentSession = newCurrentSession;
         loadData();
         sortLists();
         publishLists();
@@ -545,10 +554,10 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     }
 
     /**
-     * @return the currentGroup
+     * @return the currentSession
      */
-    public CompetitionSession getCurrentCompetitionSession() {
-        return currentGroup;
+    public CompetitionSession getCurrentSession() {
+        return currentSession;
     }
 
     public String getCurrentPlatformName() {

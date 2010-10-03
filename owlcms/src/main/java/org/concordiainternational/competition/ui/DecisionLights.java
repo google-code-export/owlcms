@@ -97,7 +97,7 @@ public class DecisionLights extends SplitPanel implements DecisionEventListener,
 	 * 
 	 */
 	private void createLights() {
-		masterData = SessionData.getInstance(platformName);
+		masterData = app.getMasterData(platformName);
         masterData.getDecisionController().addListener(this);
         top.setSizeFull();
 

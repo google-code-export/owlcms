@@ -38,12 +38,14 @@ import com.vaadin.ui.Select;
 public class SessionSelect extends HorizontalLayout implements Serializable {
 
     private static final long serialVersionUID = -5471881649385421098L;
-    private static final Logger logger = LoggerFactory.getLogger(SessionSelect.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = LoggerFactory.getLogger(SessionSelect.class);
     
     CompetitionSession value = null;
     Item selectedItem = null;
     Serializable selectedId = null;
-
+	private Select sessionSelect;
+	private boolean refreshing = false;
 
 
 	/**
@@ -55,40 +57,59 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
         final Label groupLabel = new Label(Messages.getString("CompetitionApplication.CurrentGroup", locale)); //$NON-NLS-1$
         groupLabel.setSizeUndefined();
 
-        final Select groupSelect = new Select();
-        final HbnContainer<CompetitionSession> dbGroupDataSource = new HbnContainer<CompetitionSession>(CompetitionSession.class, competitionApplication);
-        groupSelect.setContainerDataSource(dbGroupDataSource);
-        groupSelect.setItemCaptionPropertyId("name"); //$NON-NLS-1$
-        groupSelect.setImmediate(true);
-        groupSelect.setNullSelectionAllowed(true);
-        groupSelect.setNullSelectionItemId(null);
+        sessionSelect = new Select();
+        final HbnContainer<CompetitionSession> dbGroupDataSource = loadData(competitionApplication, sessionSelect);
+        sessionSelect.setImmediate(true);
+        sessionSelect.setNullSelectionAllowed(true);
+        sessionSelect.setNullSelectionItemId(null);
         final CompetitionSession currentGroup = competitionApplication.getCurrentCompetitionSession();
-        groupSelect.select((currentGroup != null ? currentGroup.getId() : null));
+        sessionSelect.select((currentGroup != null ? currentGroup.getId() : null));
         final ValueChangeListener listener = new ValueChangeListener() {
             private static final long serialVersionUID = -4650521592205383913L;
+
 
             @Override
             public void valueChange(ValueChangeEvent event) {
                 final Serializable selectedValue = (Serializable) event.getProperty().getValue();
 
-                if (selectedValue != null) {
+                if (selectedValue != null  && ! refreshing) {
                 	selectedId = selectedValue;
                     selectedItem = dbGroupDataSource.getItem(selectedValue);
                     value = (CompetitionSession) ItemAdapter.getObject(selectedItem);
-                    logger.warn("session selected: {}", value);
                 }
                 competitionApplication.setCurrentCompetitionSession(value);
             }
 
         };
-        groupSelect.addListener(listener);
+        sessionSelect.addListener(listener);
 
         this.addComponent(groupLabel);
         this.setComponentAlignment(groupLabel, Alignment.MIDDLE_LEFT);
-        this.addComponent(groupSelect);
+        this.addComponent(sessionSelect);
         this.setComponentAlignment(groupLabel, Alignment.MIDDLE_LEFT);
         this.setSpacing(true);
     }
+
+	/**
+	 * @param competitionApplication
+	 * @param sessionSelect
+	 * @return
+	 */
+	private HbnContainer<CompetitionSession> loadData(
+			final CompetitionApplication competitionApplication,
+			final Select sessionSelect) {
+		final HbnContainer<CompetitionSession> dbGroupDataSource = new HbnContainer<CompetitionSession>(CompetitionSession.class, competitionApplication);
+        sessionSelect.setContainerDataSource(dbGroupDataSource);
+        sessionSelect.setItemCaptionPropertyId("name"); //$NON-NLS-1$
+		return dbGroupDataSource;
+	}
+	
+	public void refresh() {
+		refreshing = true;
+		loadData(CompetitionApplication.getCurrent(), sessionSelect);
+		sessionSelect.setValue(selectedId);
+		refreshing = false;
+	}
     
     public Item getSelectedItem() {
 		return selectedItem;

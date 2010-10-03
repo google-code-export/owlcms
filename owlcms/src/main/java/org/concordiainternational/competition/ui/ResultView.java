@@ -79,9 +79,9 @@ public class ResultView extends SplitPanel implements ApplicationView, SessionDa
             this.viewName = viewName;
         }
         
+        
         this.app = CompetitionApplication.getCurrent();
-        final String platformName = CompetitionApplicationComponents.firstPlatformName();
-        groupData = new SessionData(platformName);
+        groupData = SessionData.getIndependentInstance();
 
         // left side is the lifting order, as well as the menu to switch groups.
         resultList = new ResultList(groupData, this);
@@ -285,7 +285,8 @@ public class ResultView extends SplitPanel implements ApplicationView, SessionDa
      */
     private void switchGroup(final CompetitionSession dataCurrentGroup) {
         logger.debug("===============ResultView switching to group {}", dataCurrentGroup); //$NON-NLS-1$
-        groupData.setCurrentGroup(dataCurrentGroup);
+        groupData.setCurrentSession(dataCurrentGroup);
+        CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
     }
 
     public void setCurrentGroup(CompetitionSession competitionSession) {

@@ -145,7 +145,7 @@ public class CategoryLookup {
         activeCategoriesFromDb = new CategoryContainer(sessMgr,true); // only active categories
         categories = activeCategoriesFromDb.getAllPojos();
         Collections.sort(categories, sortComparator);
-        logger.warn("categories={}",categories);
+        //logger.warn("categories={}",categories);
     }
 
     public Category lookup(String gender, Double bodyWeight) {

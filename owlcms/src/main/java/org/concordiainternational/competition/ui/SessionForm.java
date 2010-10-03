@@ -57,10 +57,11 @@ public class SessionForm extends Form  {
 		public void buttonClick(ClickEvent event) {
 			commit();
 			Object object = ItemAdapter.getObject(item);
-			logger.warn("before merge : {} {}", System.identityHashCode(object), ((CompetitionSession)object).getReferee3());
+//			logger.warn("before merge : {} {}", System.identityHashCode(object), ((CompetitionSession)object).getReferee3());
 			Session hbnSession = CompetitionApplication.getCurrent().getHbnSession();
-			Object merged = hbnSession.merge(object);
-			logger.warn("after merge : {} {}", System.identityHashCode(merged),((CompetitionSession)merged).getReferee3());
+			hbnSession.merge(object);
+			hbnSession.flush();
+//			logger.warn("after merge : {} {}", System.identityHashCode(merged),((CompetitionSession)merged).getReferee3());
 			closeWindow();
 		}
 	});
@@ -125,13 +126,19 @@ public class SessionForm extends Form  {
 	 * 
 	 */
 	private void closeWindow() {
+
 		if (window != null) {
 			Window parent = window.getParent();
 			parent.removeWindow(window);
 		}
 		if (parentList != null) {
-			parentList.toggleEditable();
-			parentList.toggleEditable();
+			// this could be improved, but little gain.
+			if (parentList instanceof SessionList) {
+				parentList.toggleEditable();
+				parentList.toggleEditable();
+			} else {
+				parentList.refresh();
+			}
 		}
 	}
 

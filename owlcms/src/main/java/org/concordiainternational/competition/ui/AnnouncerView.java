@@ -67,7 +67,7 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
     private LifterCardEditor lifterCardEditor;
     private CompetitionApplication app;
     private boolean stickyEditor = false;
-    private SessionData groupData;
+    private SessionData masterData;
     Mode mode;
     private ICEPush pusher;
     private String platformName;
@@ -101,11 +101,11 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
         }
 
         
-        groupData = SessionData.getInstance(platformName);
+        masterData = app.getMasterData(platformName);
         if (mode == Mode.ANNOUNCER) {
-            final CompetitionSession currentGroup = groupData.getCurrentCompetitionSession();
-            groupData.setAnnouncerView(this);
-            groupData.setMasterApplication(this.app);
+            final CompetitionSession currentGroup = masterData.getCurrentSession();
+            masterData.setAnnouncerView(this);
+            masterData.setMasterApplication(this.app);
             if (currentGroup == null && groupName != null && groupName.length() > 0) {
                 switchGroup(new CompetitionSessionLookup(app).lookup(groupName));
             } else {
@@ -115,13 +115,13 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
         }
 
         // right hand side shows information that the announcer reads aloud
-        announcerInfo = new LifterInfo("topPart", groupData, mode, this); //$NON-NLS-1$
+        announcerInfo = new LifterInfo("topPart", masterData, mode, this); //$NON-NLS-1$
         announcerInfo.addStyleName("currentLifterSummary"); //$NON-NLS-1$
         announcerInfo.setWidth(7.0F, Sizeable.UNITS_CM); //$NON-NLS-1$
         announcerInfo.setMargin(true);
 
         // left side is the lifting order, as well as the menu to switch groups.
-        liftList = new LiftList(groupData, this, mode);
+        liftList = new LiftList(masterData, this, mode);
         liftList.table.setPageLength(15);
         liftList.table.setSizeFull();
         liftList.setSizeFull();
@@ -139,18 +139,18 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
         topPart.setExpandRatio(liftList, 100.0F);
 
         this.setFirstComponent(topPart);
-        loadFirstLifterInfo(groupData, WebApplicationConfiguration.DEFAULT_STICKINESS);
+        loadFirstLifterInfo(masterData, WebApplicationConfiguration.DEFAULT_STICKINESS);
 
         adjustSplitBarLocation();
 
         // we are now fully initialized
-        groupData.setAllowAll(false);
-        groupData.addListener(this);
-        if (groupData.lifters.isEmpty()) {
-            logger.debug("switching groupData.lifters {}", groupData.lifters); //$NON-NLS-1$
+        masterData.setAllowAll(false);
+        masterData.addListener(this);
+        if (masterData.lifters.isEmpty()) {
+            logger.debug("switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
             switchGroup(app.getCurrentCompetitionSession());
         } else {
-            logger.debug("not switching groupData.lifters {}", groupData.lifters); //$NON-NLS-1$
+            logger.debug("not switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
         }
         
         CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
@@ -172,7 +172,7 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
      * Update the lifter editor and the information panels with the first
      * lifter.
      * 
-     * @param groupData
+     * @param masterData
      */
     public void loadFirstLifterInfo(SessionData groupData) {
         final Lifter firstLifter = liftList.getFirstLifter();
@@ -187,7 +187,7 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
      * Update the lifter editor and the information panels with the first
      * lifter.
      * 
-     * @param groupData
+     * @param masterData
      */
     public void loadFirstLifterInfo(SessionData groupData, boolean sticky) {
         loadFirstLifterInfo(groupData);
@@ -200,7 +200,7 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
      * Update the lifter editor and the information panels with the first
      * lifter.
      * 
-     * @param groupData
+     * @param masterData
      */
     public void editFirstLifterInfo(SessionData groupData, boolean sticky) {
         final Lifter firstLifter = liftList.getFirstLifter();
@@ -233,7 +233,7 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
             // no current lifter, remove bottom part if present.
             if (lifterCardEditor != null) {
                 setSecondComponent(new Label("")); //$NON-NLS-1$
-                groupData.getTimer().removeAllListeners(lifterCardEditor.lifterCardIdentification);
+                masterData.getTimer().removeAllListeners(lifterCardEditor.lifterCardIdentification);
                 lifterCardEditor = null;
             }
         }
@@ -250,7 +250,7 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
         CategoryLookup.getSharedInstance().reload();
         liftList.refresh();
         setStickyEditor(false, false);
-        loadFirstLifterInfo(groupData);
+        loadFirstLifterInfo(masterData);
         logger.debug("end refresh ----------{}", mode); //$NON-NLS-1$
     }
 
@@ -303,7 +303,7 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
         boolean wasSticky = this.stickyEditor;
         this.stickyEditor = freezeLifterCardEditor;
         // was sticky, no longer is
-        if (reloadLifterInfo && wasSticky && !freezeLifterCardEditor) loadFirstLifterInfo(groupData, false);
+        if (reloadLifterInfo && wasSticky && !freezeLifterCardEditor) loadFirstLifterInfo(masterData, false);
         if (lifterCardEditor != null) lifterCardEditor.setSticky(freezeLifterCardEditor);
     }
 
@@ -325,7 +325,7 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
                     "updateEvent() received in {} view  first is now: {}", this, updateEvent.getCurrentLifter()); //$NON-NLS-1$
 
                 liftList.updateTable();
-                loadFirstLifterInfo(groupData, WebApplicationConfiguration.DEFAULT_STICKINESS);
+                loadFirstLifterInfo(masterData, WebApplicationConfiguration.DEFAULT_STICKINESS);
 
                 // update the info on the left side of the bottom part. This
                 // depends on the liftList info
@@ -353,9 +353,9 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
     private void switchGroup(final CompetitionSession dataCurrentGroup) {
         if (mode == Mode.ANNOUNCER) {
             logger.debug("==============={} switching to group {}", mode, dataCurrentGroup); //$NON-NLS-1$
-            logger.debug("==============={} modifying group data {}", groupData); //$NON-NLS-1$
-            groupData.setCurrentGroup(dataCurrentGroup);
-            CompetitionSession currentCompetitionSession = groupData.getCurrentCompetitionSession();
+            logger.debug("==============={} modifying group data {}", masterData); //$NON-NLS-1$
+            masterData.setCurrentSession(dataCurrentGroup);
+            CompetitionSession currentCompetitionSession = masterData.getCurrentSession();
             if (currentCompetitionSession != null) {
                 groupName = currentCompetitionSession.getName();
             } else {
@@ -371,18 +371,18 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
     }
 
     /**
-     * @param groupData
-     *            the groupData to set
+     * @param masterData
+     *            the masterData to set
      */
     public void setGroupData(SessionData groupData) {
-        this.groupData = groupData;
+        this.masterData = groupData;
     }
 
     /**
-     * @return the groupData
+     * @return the masterData
      */
     public SessionData getGroupData() {
-        return groupData;
+        return masterData;
     }
 
     public void selectFirstLifter() {
