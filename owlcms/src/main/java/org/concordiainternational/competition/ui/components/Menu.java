@@ -466,8 +466,8 @@ public class Menu extends MenuBar implements Serializable {
                                                            // marker;
                         competitionApplication.setPlatformByName(name);
                         SessionData masterData = competitionApplication.getMasterData(name);
-                        logger.debug("new platform={}, new group = {}", name, masterData.getCurrentCompetitionSession()); //$NON-NLS-1$
-                        competitionApplication.setCurrentCompetitionSession(masterData.getCurrentCompetitionSession());
+                        logger.debug("new platform={}, new group = {}", name, masterData.getCurrentSession()); //$NON-NLS-1$
+                        competitionApplication.setCurrentCompetitionSession(masterData.getCurrentSession());
                     }
                 });
         }
