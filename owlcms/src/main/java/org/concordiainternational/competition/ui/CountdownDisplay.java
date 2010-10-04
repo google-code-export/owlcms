@@ -297,7 +297,8 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         synchronized (app) {
             switch (updateEvent.getType()) {
             case DOWN:
-            	logger.info("ignoring DOWN event");
+            	logger.info("received DOWN event");
+            	showLights(updateEvent);
             	break;
             case SHOW:
                 // if window is not up, show it.

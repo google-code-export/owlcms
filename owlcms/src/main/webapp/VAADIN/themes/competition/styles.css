@@ -432,6 +432,21 @@ button.yesButton {
 	color: white;
 }
 
+.decisionLightsWindow .undecided.down {
+	background-color: black;
+	background-image: url("images/down.png");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size:contain;
+}
+
+
+.decisionLightsWindow .undecided {
+	border-style: none;
+	background-color: black;
+	background-image: none;
+}
+
 .v-panel-content .largeCountdownBackground {
 	background-color: black;
 	color: white;
