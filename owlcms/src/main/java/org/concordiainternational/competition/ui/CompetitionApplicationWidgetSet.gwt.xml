@@ -1,0 +1,17 @@
+<module>
+	<!-- Inherit super widgetset -->
+	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
+    <inherits name="org.miller.gwt.Sound" />
+	
+
+    <inherits name="com.vaadin.incubator.dashlayout.DashLayoutWidgetSet" />
+
+    <inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
+    <inherits name="org.icepush.gwt.ICEpush" />
+
+    <!-- adding support for icepush -->
+    <script src="icepush.js"></script>
+    
+
+    <inherits name="org.vaadin.soundplayer.widgetset.SoundplayerWidgetset" />
+</module>
