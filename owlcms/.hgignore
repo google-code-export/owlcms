@@ -24,3 +24,5 @@ syntax: regexp
 ^target/test-classes$
 syntax: regexp
 ^target/test-classes$
+syntax: regexp
+^target$
