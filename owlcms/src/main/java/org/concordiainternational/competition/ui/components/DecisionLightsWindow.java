@@ -93,6 +93,7 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
                     decisionLights[1].setStyleName("decisionLight");
                     decisionLights[1].addStyleName("undecided");    
                 }
+                this.addStyleName("down");
                 decisionLights[1].addStyleName("down");
 
                 for (int i = 0; i < decisions.length; i++) {
@@ -111,6 +112,7 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
                 break;
             case UPDATE:
                 logger.debug("received UPDATE event");
+                this.removeStyleName("down");
                 if (juryMode) {
                     showLights(decisions);
                     updateLights();
@@ -118,12 +120,14 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
                 break;
             case SHOW:
                 logger.debug("received SHOW event");
+                this.removeStyleName("down");
                 showLights(decisions);
                 updateLights();
 
                 break;
             case RESET:
                 logger.debug("received RESET event");
+                this.removeStyleName("down");
                 resetLights();
                 break;
             }
