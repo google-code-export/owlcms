@@ -1,5 +1,10 @@
 = Release Notes =
 
+== Release 1.8.2 ==
+* Editing of the officials for a competition session
+* Can again reload competition data from old spreadsheets.
+* Further Maven changes to follow testing conventions
+
 == Release 1.8.1 ==
 * Change in source layout to run under Maven
 * Small fixes to run under Maven jetty:run plugin (ICEpush causes exception if called in class constructor)
