@@ -1,7 +1,8 @@
 = Release Notes =
 
 == Release 1.8.2 ==
-* Editing of the officials for a competition session
+* Show officials on result sheet.
+* Editing competition session information, officials in particular
 * Can again reload competition data from old spreadsheets.
 * Further Maven changes to follow testing conventions
 
