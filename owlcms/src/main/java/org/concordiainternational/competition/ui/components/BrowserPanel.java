@@ -28,13 +28,17 @@ import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent;
+import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener;
+import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent;
+import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent.MessageTimerListener;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
 import org.concordiainternational.competition.ui.SessionData;
-import org.concordiainternational.competition.ui.UserActions;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
+import org.concordiainternational.competition.ui.UserActions;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +51,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
 
-public class BrowserPanel extends VerticalLayout implements ApplicationView, CountdownTimerListener {
+public class BrowserPanel extends VerticalLayout implements ApplicationView, CountdownTimerListener, MessageDisplayListener, MessageTimerListener {
     private static final String ATTEMPT_WIDTH = "12em";
 	public final static Logger logger = LoggerFactory.getLogger(BrowserPanel.class);
     private static final long serialVersionUID = 1437157542240297372L;
@@ -89,7 +93,14 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 
         create(app);
         masterData = app.getMasterData(platformName);
+        // listen to changes in the competition data
         registerAsListener(platformName, masterData);
+        
+        // listen to public address events
+        if (viewName.contains("resultBoard")) {
+        	masterData.addBlackBoardListener(this);
+        }
+        
         // we cannot call push() at this point, pass false as parameter
         display(platformName, masterData, false);
 
@@ -425,4 +436,26 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
             platformName = params[1];
         }
     }
+
+	@Override
+	public void messageUpdate(PublicAddressMessageEvent event) {
+		if (viewName.contains("resultBoard")) {
+			displayMessage(event.getTitle(),event.getMessage());
+		}
+	}
+
+	private void displayMessage(String title, String message) {
+		// TODO create PublicAddressOverlay (if needed) and display the message
+		logger.warn("displayMessage {} {}",title,message);
+		//pusher.push();
+	}
+
+	@Override
+	public void timerUpdate(PublicAddressTimerEvent event) {
+		// TODO change time in overlay; move this code to PublicAddressOverlay listener
+		logger.warn("timerUpdate {}",TimeFormatter.formatAsSeconds(event.getRemainingMilliseconds()));
+		//pusher.push();
+	}
+	
+	//TODO make sure that close removes this instance as PublicAddress listener.
 }

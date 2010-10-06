@@ -16,12 +16,14 @@
 
 package org.concordiainternational.competition.ui;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.publicAddress.PublicAddressForm;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.ui.components.SessionSelect;
 import org.concordiainternational.competition.ui.generators.CommonColumnGenerator;
@@ -35,10 +37,13 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Window;
 
 /**
  * This class displays the lifting order for lifters for the announcer,
@@ -194,10 +199,47 @@ public class LiftList extends GenericBeanList<Lifter> implements
             };
             refreshButton.addListener(refreshClickListener);
             tableToolbar.addComponent(refreshButton);
+            
+            final Button publicAddressButton = new Button(Messages.getString("LiftList.publicAddress", app.getLocale())); //$NON-NLS-1$
+            final Button.ClickListener publicAddressClickListener = new Button.ClickListener() { //$NON-NLS-1$
+                private static final long serialVersionUID = 7744958942977063130L;
+
+                public void buttonClick(ClickEvent event) {
+                	CompetitionApplication current = CompetitionApplication.getCurrent();
+                	SessionData masterData = current.getMasterData(current.getPlatformName());
+					editPublicAddress(masterData);
+                }
+            };
+            publicAddressButton.addListener(publicAddressClickListener);
+            tableToolbar.addComponent(publicAddressButton);
         }
     }
 
-    /**
+    protected void editPublicAddress(SessionData masterData) {
+    	 /* Create an empty "Message" item */
+    	 if (masterData.getPublicAddressItem() == null) {
+        	 PropertysetItem item = new PropertysetItem();
+        	 item.addItemProperty("title", new ObjectProperty("", String.class));
+        	 item.addItemProperty("message", new ObjectProperty("", String.class));
+        	 item.addItemProperty("endHour", new ObjectProperty(null, Date.class));
+        	 item.addItemProperty("delay", new ObjectProperty(null, Integer.class));
+        	 masterData.setPublicAddressItem(item);
+    	 }
+
+
+         PublicAddressForm form = new PublicAddressForm(masterData);
+         form.setReadOnly(false);
+
+         Window editingWindow = new Window(Messages.getString("FieldName.message", app.getLocale()));
+         form.setWindow(editingWindow);
+         form.setParentList(this);
+         editingWindow.getContent().addComponent(form);
+         app.getMainWindow().addWindow(editingWindow);
+         editingWindow.setWidth("40em");
+         editingWindow.center();
+	}
+
+	/**
      * @return Localized captions for properties in same order as in
      *         {@link #getColOrder()}
      */

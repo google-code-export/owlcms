@@ -40,6 +40,11 @@ import org.concordiainternational.competition.decision.DecisionController;
 import org.concordiainternational.competition.decision.DecisionController.Decision;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.nec.NECDisplay;
+import org.concordiainternational.competition.publicAddress.PublicAddressCountdownTimer;
+import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent;
+import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener;
+import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent;
+import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent.MessageTimerListener;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.utils.EventHelper;
 import org.concordiainternational.competition.utils.IdentitySet;
@@ -50,6 +55,10 @@ import org.hibernate.StaleObjectStateException;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 
+import com.github.wolfie.blackboard.Blackboard;
+import com.github.wolfie.blackboard.Event;
+import com.github.wolfie.blackboard.Listener;
+import com.vaadin.data.Item;
 import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 import com.vaadin.event.EventRouter;
 import com.vaadin.ui.Component;
@@ -102,6 +111,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     private Integer priorRequest;
     private Integer priorRequestNum;
     private boolean needToAnnounce = true;
+	Blackboard blackBoardEventRouter = new Blackboard();
 
     public int getLiftsDone() {
         return liftsDone;
@@ -125,6 +135,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         this.lifters = lifters;
         notificationManager = new NotificationManager<SessionData, Lifter, Component>(this);
         updateListsForLiftingOrderChange();
+        init();
     }
 
     static private final Map<String, SessionData> platformToSessionData = new HashMap<String, SessionData>();
@@ -154,6 +165,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      * @return
      */
     private void init() {
+    	blackBoardEventRouter.register(MessageDisplayListener.class, PublicAddressMessageEvent.class);
+    	blackBoardEventRouter.register(MessageTimerListener.class, PublicAddressTimerEvent.class);
         // logger.entry();
         // loadData();
         // logger.exit();
@@ -641,8 +654,11 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     private AnnouncerView announcerView;
     private CompetitionApplication masterApplication;
     private boolean announcerEnabled = true;
+	public Item publicAddressItem;
+	private PublicAddressCountdownTimer publicAddressTimer = new PublicAddressCountdownTimer(this);
 
-    public boolean getAnnouncerEnabled() {
+
+	public boolean getAnnouncerEnabled() {
         return announcerEnabled;
     }
 
@@ -1046,4 +1062,71 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         manageTimerOwner(lifter,groupData, timing);
         timing.start();
     }
+    
+    public Item getPublicAddressItem() {
+		return publicAddressItem;
+	}
+
+	public void setPublicAddressItem(Item publicAddressItem) {
+		this.publicAddressItem = publicAddressItem;
+	}
+	
+
+
+	public void clearPublicAddressDisplay() {
+		PublicAddressMessageEvent event = new PublicAddressMessageEvent();
+		stopPublicAddressTimer();
+		event.setRemove(true);
+		fireBlackBoardEvent(event);
+	}
+
+
+	public void displayPublicAddress() {
+		// request the registered projector displays to pop-up the message area
+		PublicAddressMessageEvent messageEvent = new PublicAddressMessageEvent();
+		messageEvent.setRemove(false);
+		messageEvent.setTitle((String) publicAddressItem.getItemProperty("title").getValue());
+		messageEvent.setMessage((String) publicAddressItem.getItemProperty("message").getValue());
+		Integer value = (Integer) publicAddressItem.getItemProperty("delay").getValue();
+		Integer remainingMilliseconds= 0;
+		if (value != null) {
+			remainingMilliseconds = value * 60 /*seconds*/ * 1000 /* milliseconds*/;
+		}
+		messageEvent.setRemainingMilliseconds(remainingMilliseconds);
+		fireBlackBoardEvent(messageEvent);
+		
+		// tell the message areas to display the initial time and get the timer going.
+		PublicAddressTimerEvent timerEvent = new PublicAddressTimerEvent();
+		timerEvent.setRemainingMilliseconds(remainingMilliseconds);
+		startPublicAddressTimer(remainingMilliseconds);
+		fireBlackBoardEvent(timerEvent);
+	}
+
+	/**
+	 * @param event
+	 */
+	public void fireBlackBoardEvent(Event event) {
+		blackBoardEventRouter.fire(event);
+	}
+	
+	public void addBlackBoardListener(Listener listener) {
+		blackBoardEventRouter.addListener(listener);
+	}
+
+	public void removeBlackBoardListener(Listener listener) {
+		blackBoardEventRouter.removeListener(listener);
+	}
+	
+	private void startPublicAddressTimer(int remainingMilliseconds) {
+		publicAddressTimer.forceTimeRemaining(remainingMilliseconds);
+		publicAddressTimer.start();
+	}
+	
+
+	private void stopPublicAddressTimer() {
+		publicAddressTimer.start();	
+	}
+
+
+
 }
