@@ -43,6 +43,7 @@ import com.vaadin.ui.DateField;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Form;
+import com.vaadin.ui.InlineDateField;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 
@@ -86,6 +87,7 @@ public class CommonFieldFactory extends DefaultFieldFactory {
     }
 
 	/**
+	 * Adjust formatting and caption for the field.
 	 * @param propertyId
 	 * @param uiContext
 	 * @param f
@@ -93,7 +95,6 @@ public class CommonFieldFactory extends DefaultFieldFactory {
 	 */
 	private Field adjustField(Object propertyId, Component uiContext, Field f) {
 		try {
-
 			String caption = Messages.getStringWithException("FieldName." + propertyId,
 					CompetitionApplication.getCurrentLocale());
 			f.setCaption(caption);
@@ -114,7 +115,12 @@ public class CommonFieldFactory extends DefaultFieldFactory {
         }
 
         if (propertyIdString.contains("Time") && (f instanceof DateField)) { //$NON-NLS-1$
-            return adjustHourField((DateField) f);
+            return adjustDateHourField((DateField) f);
+        }
+        
+        if (propertyIdString.contains("Hour") && (f instanceof DateField)) { //$NON-NLS-1$
+            Field adjustedHourField = adjustDateHourField((DateField) f);
+			return adjustedHourField;
         }
         
         if (propertyIdString.contains("Date") && (f instanceof DateField)) { //$NON-NLS-1$
@@ -208,10 +214,20 @@ public class CommonFieldFactory extends DefaultFieldFactory {
         return f;
     }
     
-    private Field adjustHourField(DateField f) {
+    private Field adjustDateHourField(DateField f) {
         f.setDateFormat("yyyy-MM-dd HH:mm"); //$NON-NLS-1$
         f.setResolution(DateField.RESOLUTION_MIN);
         return f;
+    }
+    
+    @SuppressWarnings("unused")
+	private InlineDateField adjustHourField(DateField f) {
+    	String caption = f.getCaption();
+    	f = new InlineDateField();
+    	f.setCaption(caption);
+        f.setDateFormat("HH:mm"); //$NON-NLS-1$
+        f.setResolution(DateField.RESOLUTION_MIN);
+        return (InlineDateField) f;
     }
 
     /**

@@ -1,16 +1,16 @@
 /**
  * 
  */
-package org.concordiainternational.competition.ui;
+package org.concordiainternational.competition.publicAddress;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.generators.CommonFieldFactory;
 import org.concordiainternational.competition.ui.list.GenericList;
-import org.concordiainternational.competition.utils.ItemAdapter;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,23 +22,25 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Window;
 
 /**
- * Editing of Competition Session (aka Group) information.
+ * Editing of group information.
  * 
  * @author jflamy
  */
 @SuppressWarnings({ "serial" })
-public class SessionForm extends Form  {
+public class PublicAddressForm extends Form  {
 	
-	final private static Logger logger = LoggerFactory.getLogger(SessionForm.class);
+	final private static Logger logger = LoggerFactory.getLogger(PublicAddressForm.class);
 	
 	Window window = null;
 	GenericList<?> parentList = null;
-	private Item item;
 
-	public SessionForm() {
+	private SessionData masterData;
+
+	public PublicAddressForm(SessionData masterData) {
 		super();
 		this.setFormFieldFactory(new CommonFieldFactory(CompetitionApplication.getCurrent()));
-		
+		this.masterData = masterData;
+		setItemDataSource(masterData.getPublicAddressItem());
         setWriteThrough(true);
         
         HorizontalLayout footer = new HorizontalLayout();
@@ -50,14 +52,27 @@ public class SessionForm extends Form  {
         setFooter(footer);
 	}
 	
+	Button display = new Button(Messages.getString("PublicAddress.display", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	
+		@Override
+		public void buttonClick(ClickEvent event) {
+			commit();
+			display();
+		}
+	});
+	
+	Button clear = new Button(Messages.getString("PublicAddress.clear", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	
+		@Override
+		public void buttonClick(ClickEvent event) {
+			commit();
+			clearDisplay();
+		}
+	});
+	
 	Button ok = new Button(Messages.getString("Common.OK", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	
 		@Override
 		public void buttonClick(ClickEvent event) {
 			commit();
-			Object object = ItemAdapter.getObject(item);
-			Session hbnSession = CompetitionApplication.getCurrent().getHbnSession();
-			hbnSession.merge(object);
-			hbnSession.flush();
+			display();
 			closeWindow();
 		}
 	});
@@ -70,33 +85,32 @@ public class SessionForm extends Form  {
 		}
 	});
 
-
-
 	
     @Override
-    public void setItemDataSource(Item newDataSource) {
-    	item = newDataSource;
-        if (newDataSource != null) {
+    public void setItemDataSource(Item itemDataSource) {
+        if (itemDataSource != null) {
             List<Object> orderedProperties = new ArrayList<Object>();
-            orderedProperties.add("name");
-            orderedProperties.add("weighInTime");
-            orderedProperties.add("competitionTime");
-            orderedProperties.add("platform");
-            orderedProperties.add("categories");
-            orderedProperties.add("announcer");
-            orderedProperties.add("timeKeeper");
-            orderedProperties.add("technicalController");
-            orderedProperties.add("referee1");
-            orderedProperties.add("referee2");
-            orderedProperties.add("referee3");
-            orderedProperties.add("jury");
-            super.setItemDataSource(newDataSource, orderedProperties);
+            orderedProperties.add("title");
+            orderedProperties.add("message");
+            orderedProperties.add("endHour");
+            orderedProperties.add("delay");
+            super.setItemDataSource(itemDataSource, orderedProperties);
             getFooter().setVisible(true);
         } else {
             super.setItemDataSource(null);
             getFooter().setVisible(false);
         }
     }
+
+
+	protected void clearDisplay() {
+		masterData.clearPublicAddressDisplay();
+	}
+
+
+	protected void display() {
+		masterData.displayPublicAddress();
+	}
 
 
 	public Window getWindow() {
@@ -128,17 +142,9 @@ public class SessionForm extends Form  {
 			Window parent = window.getParent();
 			parent.removeWindow(window);
 		}
-		if (parentList != null) {
-			// this could be improved, but little gain as this function is called once per competition session only.
-			if (parentList instanceof SessionList) {
-				// kludge to force update of editable table;
-				// need to investigate why this is happening even though we are passing the table item.
-				parentList.toggleEditable();
-				parentList.toggleEditable();
-			} else {
-				parentList.refresh();
-			}
-		}
+//		if (parentList != null) {
+//			// nothing to do in this case
+//		}
 	}
 
 }
