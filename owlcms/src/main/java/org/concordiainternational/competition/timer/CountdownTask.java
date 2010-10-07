@@ -60,15 +60,15 @@ class CountdownTask extends TimerTask implements Serializable {
         this.countdownTimer = countdownTimer;
         this.startTime = countdownFrom;
         // round up to decrement interval (100ms)
-        this.ticks = (countdownFrom > 0 ? (((countdownFrom / decrement) * decrement) + decrement) : 0);
+        this.ticks = roundUpCountdown(countdownFrom, decrement);
         this.decrement = decrement;
 
-        // int anticipationTicks = ANTICIPATION_CONSTANT *decrement;
-        this.firstWarningTick = firstWarning * 1000; // + anticipationTicks;
-        this.finalWarningTick = lastWarning * 1000; // + anticipationTicks;
-        this.noTimeLeftTicks = 0; // +anticipationTicks;
 
-        int adjustedCountdown = countdownFrom;// + anticipationTicks;
+        this.firstWarningTick = firstWarning * 1000;
+        this.finalWarningTick = lastWarning * 1000;
+        this.noTimeLeftTicks = 0;
+
+        int adjustedCountdown = countdownFrom;
         if (adjustedCountdown < firstWarningTick) {
             logger.debug("already beyond first: {} <= {}", adjustedCountdown, firstWarningTick);
             setFirstWarningSignaled(true);
@@ -82,6 +82,23 @@ class CountdownTask extends TimerTask implements Serializable {
             setNoTimeLeftSignaled(true);
         }
     }
+    
+	/**
+	 * Round up to decrement interval (1000ms)
+	 * @param countdownFrom
+	 * @param decrement
+	 * @return
+	 */
+	private int roundUpCountdown(int countdownFrom, int decrement) {
+		if (countdownFrom <= 0) {
+			return 0;
+		} else if (countdownFrom % decrement == 0) {
+			return countdownFrom;
+		} else {
+			return ((countdownFrom / decrement) * decrement) + decrement;
+		}
+		
+	}
 
     /**
      * @return best available estimation of the time elapsed.

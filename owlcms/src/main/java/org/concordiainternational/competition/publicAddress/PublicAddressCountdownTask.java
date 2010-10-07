@@ -55,7 +55,7 @@ class PublicAddressCountdownTask extends TimerTask implements Serializable {
         this.countdownTimer = countdownTimer;
         
         // round up to decrement interval (1000ms)
-        this.ticks = (countdownFrom > 0 ? (((countdownFrom / decrement) * decrement) + decrement) : 0);
+        this.ticks = roundUpCountdown(countdownFrom, decrement);
         this.decrement = decrement;
 
         this.noTimeLeftTicks = 0;
@@ -66,6 +66,23 @@ class PublicAddressCountdownTask extends TimerTask implements Serializable {
             setNoTimeLeftSignaled(true);
         }
     }
+
+	/**
+	 * Round up to decrement interval (1000ms)
+	 * @param countdownFrom
+	 * @param decrement
+	 * @return
+	 */
+	private int roundUpCountdown(int countdownFrom, int decrement) {
+		if (countdownFrom <= 0) {
+			return 0;
+		} else if (countdownFrom % decrement == 0) {
+			return countdownFrom;
+		} else {
+			return ((countdownFrom / decrement) * decrement) + decrement;
+		}
+		
+	}
     
     /**
      * @return best available estimation of the time elapsed.
