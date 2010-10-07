@@ -69,7 +69,6 @@ public class PublicAddressCountdownTimer implements Serializable {
         countdownTask = new PublicAddressCountdownTask(timer, startTime, DECREMENT, masterData);
         timer.scheduleAtFixedRate(countdownTask, 0, // start right away
             DECREMENT);
-        logger.warn("start: {}", startTime); //$NON-NLS-1$  
     }
 
     /**
@@ -92,7 +91,6 @@ public class PublicAddressCountdownTimer implements Serializable {
             startTime = (int) countdownTask.getBestTimeRemaining();
             countdownTask = null;
         }
-        logger.warn("pause: {}", startTime); //$NON-NLS-1$
     }
 
     /**
@@ -102,7 +100,6 @@ public class PublicAddressCountdownTimer implements Serializable {
     public void stop() {
         logger.debug("enter stop {} {}", getTimeRemaining()); //$NON-NLS-1$
         pause();
-        logger.warn("stop: {}", startTime); //$NON-NLS-1$
     }
 
     /**
@@ -117,7 +114,7 @@ public class PublicAddressCountdownTimer implements Serializable {
             countdownTask = null;
         }
         this.startTime = remainingTime;
-        logger.warn("forceTimeRemaining: {}", getTimeRemaining()); //$NON-NLS-1$
+        logger.debug("forceTimeRemaining: {}", getTimeRemaining()); //$NON-NLS-1$
     }
 
     /**

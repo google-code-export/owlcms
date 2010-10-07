@@ -43,7 +43,8 @@ public class TimeFormatter {
         double dSecs = (remaining / 1000.0D);
         long roundedSecs = Math.round(dSecs);
         int iSecs;
-        if (Math.abs(dSecs - roundedSecs) < 0.001) {
+        double delta = dSecs - roundedSecs;
+		if (Math.abs(delta) < 0.001) {
             // 4.0009 is 4, not 5, for our purposes. We do not ever want 2:01
             // because of rounding errors
             iSecs = Math.round((float) dSecs);

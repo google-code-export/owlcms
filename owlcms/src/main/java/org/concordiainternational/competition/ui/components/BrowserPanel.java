@@ -30,8 +30,7 @@ import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent;
 import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener;
-import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent;
-import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent.MessageTimerListener;
+import org.concordiainternational.competition.publicAddress.PublicAddressOverlay;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
@@ -50,8 +49,9 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
-public class BrowserPanel extends VerticalLayout implements ApplicationView, CountdownTimerListener, MessageDisplayListener, MessageTimerListener {
+public class BrowserPanel extends VerticalLayout implements ApplicationView, CountdownTimerListener, MessageDisplayListener {
     private static final String ATTEMPT_WIDTH = "12em";
 	public final static Logger logger = LoggerFactory.getLogger(BrowserPanel.class);
     private static final long serialVersionUID = 1437157542240297372L;
@@ -371,6 +371,8 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 
     int previousTimeRemaining = 0;
     private String viewName;
+	private PublicAddressOverlay overlayContent;
+	private Window overlay;
 
     @Override
     public void normalTick(int timeRemaining) {
@@ -437,25 +439,67 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
         }
     }
 
+	/* Listen to public address notifications.
+	 * We only deal with creating and destroying the overlay that hides the normal display.
+	 * @see org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener#messageUpdate(org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent)
+	 */
 	@Override
 	public void messageUpdate(PublicAddressMessageEvent event) {
-		if (viewName.contains("resultBoard")) {
-			displayMessage(event.getTitle(),event.getMessage());
+		synchronized(app) {
+			if (viewName.contains("resultBoard")) {
+				if (event.getRemove()) {
+					removeMessage();
+				} else if (overlay == null) {				
+					displayMessage(event.getTitle(),event.getMessage(),event.getRemainingMilliseconds());
+				}  else {
+					// nothing to do: overlayContent listens to the events on its own
+				}
+			}
 		}
+		pusher.push();
+
 	}
 
-	private void displayMessage(String title, String message) {
-		// TODO create PublicAddressOverlay (if needed) and display the message
+	/**
+	 * Remove the currently displayed message, if any.
+	 */
+	private void removeMessage() {
+		if (overlayContent != null) masterData.removeBlackBoardListener(overlayContent);
+		overlayContent = null;
+		if (overlay != null) app.getMainWindow().removeWindow(overlay);
+		overlay = null;
+	}
+
+	/**
+	 * Display a new public address message
+	 * Hide the current display with a popup.
+	 * @param title
+	 * @param message
+	 * @param remainingMilliseconds
+	 */
+	private void displayMessage(String title, String message, Integer remainingMilliseconds) {
+		// create content formatting
 		logger.warn("displayMessage {} {}",title,message);
-		//pusher.push();
+		if (overlayContent == null) {
+			overlayContent = new PublicAddressOverlay(title,message,remainingMilliseconds);
+			// overlayContent listens to message updates and timer updates
+			masterData.addBlackBoardListener(overlayContent);
+		}
+		// create window
+		if (overlay == null) {
+			logger.debug("creating window");
+			Window mainWindow = app.getMainWindow();;
+			overlay = new Window(platformName);
+			overlay.addStyleName("decisionLightsWindow");
+			overlay.setSizeFull();
+			mainWindow.addWindow(overlay);
+			overlay.center();
+			overlay.setContent(overlayContent);
+			overlay.setVisible(true);
+		}
+		pusher.push();
 	}
 
-	@Override
-	public void timerUpdate(PublicAddressTimerEvent event) {
-		// TODO change time in overlay; move this code to PublicAddressOverlay listener
-		logger.warn("timerUpdate {}",TimeFormatter.formatAsSeconds(event.getRemainingMilliseconds()));
-		//pusher.push();
-	}
 	
 	//TODO make sure that close removes this instance as PublicAddress listener.
 }
