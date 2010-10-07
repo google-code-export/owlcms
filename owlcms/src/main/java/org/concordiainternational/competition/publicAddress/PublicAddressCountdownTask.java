@@ -49,10 +49,13 @@ class PublicAddressCountdownTask extends TimerTask implements Serializable {
 
 	private SessionData masterData;
 
+	private PublicAddressTimerEvent timerEvent;
+
     PublicAddressCountdownTask(Timer countdownTimer, int countdownFrom, int decrement, SessionData masterData) {
     	this.masterData = masterData;
     	this.startTime = countdownFrom;
         this.countdownTimer = countdownTimer;
+        this.timerEvent = new PublicAddressTimerEvent();
         
         // round up to decrement interval (1000ms)
         this.ticks = roundUpCountdown(countdownFrom, decrement);
@@ -121,14 +124,12 @@ class PublicAddressCountdownTask extends TimerTask implements Serializable {
     
     private void normalTick() {
         logger.trace("normalTick: " + ticks / 1000 + " " + (System.currentTimeMillis() - startMillis)); //$NON-NLS-1$ //$NON-NLS-2$
-        PublicAddressTimerEvent timerEvent = new PublicAddressTimerEvent();
         timerEvent.setRemainingMilliseconds(ticks);
 		masterData.fireBlackBoardEvent(timerEvent);
     }
 
     private void noTimeLeft() {
         logger.warn("time over: " + ticks / 1000 + " " + (System.currentTimeMillis() - startMillis)); //$NON-NLS-1$ //$NON-NLS-2$
-        PublicAddressTimerEvent timerEvent = new PublicAddressTimerEvent();
         timerEvent.setNoTimeLeft(true);
 		masterData.fireBlackBoardEvent(timerEvent);
     }
