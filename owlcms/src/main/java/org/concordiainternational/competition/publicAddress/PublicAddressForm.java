@@ -19,6 +19,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Form;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 
 /**
@@ -42,6 +43,10 @@ public class PublicAddressForm extends Form  {
 		this.masterData = masterData;
 		setItemDataSource(masterData.getPublicAddressItem());
         setWriteThrough(true);
+        
+		TextField messageField = (TextField)this.getField("message");
+		messageField.setRows(5);
+		messageField.addStyleName("fixedFont");
         
         HorizontalLayout footer = new HorizontalLayout();
         footer.setSpacing(true);

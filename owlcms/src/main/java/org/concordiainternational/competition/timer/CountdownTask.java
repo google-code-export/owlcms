@@ -116,17 +116,6 @@ class CountdownTask extends TimerTask implements Serializable {
 
     @Override
     public void run() {
-        // ANTICIPATION_CONSTANT is used because we need to fire the sound
-        // playing events
-        // prior to the browser refresh so the sound starts on cue when the
-        // browser refreshes
-        // and displays the number.
-
-        // logger.trace("ticks={} firstWarningTick={}/{} lastWarningTick={}/{} noTimeLeftTicks={}/{}",
-        // new Object[]{ticks,
-        // firstWarningTick,getFirstWarningSignaled(),
-        // finalWarningTick,getFinalWarningSignaled(),
-        // noTimeLeftTicks,getNoTimeLeftSignaled()});
         if (ticks <= firstWarningTick && !getFirstWarningSignaled()) {
             initialWarning();
             setFirstWarningSignaled(true);

@@ -313,7 +313,11 @@ public class Blackboard {
       return;
     }
 
-    for (final Listener listener : listenersForClass) {
+    // copy listenersForClass, so that if the invoked method adds or removes listeners
+    // the list being iterated on is not affected. the newly added/removed listeners will
+    // be taken into account when the next event fires.
+    HashSet<Listener> iterationListeners = new HashSet<Listener>(listenersForClass);
+    for (final Listener listener : iterationListeners) {
       try {
         Log.log("  triggering " + listener);
 

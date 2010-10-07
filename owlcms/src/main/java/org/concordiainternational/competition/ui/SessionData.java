@@ -1082,24 +1082,27 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
 
 	public void displayPublicAddress() {
-		// request the registered projector displays to pop-up the message area
-		PublicAddressMessageEvent messageEvent = new PublicAddressMessageEvent();
-		messageEvent.setRemove(false);
-		messageEvent.setTitle((String) publicAddressItem.getItemProperty("title").getValue());
-		messageEvent.setMessage((String) publicAddressItem.getItemProperty("message").getValue());
 		Integer value = (Integer) publicAddressItem.getItemProperty("delay").getValue();
 		Integer remainingMilliseconds= 0;
 		if (value != null) {
 			remainingMilliseconds = value * 60 /*seconds*/ * 1000 /* milliseconds*/;
 		}
+		
+		// request the registered projector displays to pop-up the message area
+		PublicAddressMessageEvent messageEvent = new PublicAddressMessageEvent();
+		messageEvent.setRemove(false);
+		messageEvent.setTitle((String) publicAddressItem.getItemProperty("title").getValue());
+		messageEvent.setMessage((String) publicAddressItem.getItemProperty("message").getValue());
 		messageEvent.setRemainingMilliseconds(remainingMilliseconds);
 		fireBlackBoardEvent(messageEvent);
 		
 		// tell the message areas to display the initial time and get the timer going.
 		PublicAddressTimerEvent timerEvent = new PublicAddressTimerEvent();
 		timerEvent.setRemainingMilliseconds(remainingMilliseconds);
-		startPublicAddressTimer(remainingMilliseconds);
 		fireBlackBoardEvent(timerEvent);
+	
+		startPublicAddressTimer(remainingMilliseconds);
+
 	}
 
 	/**
@@ -1124,7 +1127,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 	
 
 	private void stopPublicAddressTimer() {
-		publicAddressTimer.start();	
+		publicAddressTimer.stop();	
 	}
 
 

@@ -129,7 +129,7 @@ class PublicAddressCountdownTask extends TimerTask implements Serializable {
     }
 
     private void noTimeLeft() {
-        logger.warn("time over: " + ticks / 1000 + " " + (System.currentTimeMillis() - startMillis)); //$NON-NLS-1$ //$NON-NLS-2$
+        logger.trace("time over: " + ticks / 1000 + " " + (System.currentTimeMillis() - startMillis)); //$NON-NLS-1$ //$NON-NLS-2$
         timerEvent.setNoTimeLeft(true);
 		masterData.fireBlackBoardEvent(timerEvent);
     }

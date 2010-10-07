@@ -335,7 +335,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
 	private void showLights(DecisionEvent updateEvent) {
 		// create window
 		if (popUp == null) {
-			logger.warn("creating window");
+			logger.debug("creating window");
 			Window mainWindow = app.getMainWindow();
 			content = new DecisionLightsWindow(false, false);
 			popUp = new Window(platformName);
