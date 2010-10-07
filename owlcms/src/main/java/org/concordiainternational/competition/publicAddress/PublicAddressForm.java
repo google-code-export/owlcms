@@ -47,6 +47,8 @@ public class PublicAddressForm extends Form  {
         footer.setSpacing(true);
         footer.addComponent(ok);
         footer.addComponent(cancel);
+        footer.addComponent(display);
+        footer.addComponent(clear);
         footer.setVisible(true);
         
         setFooter(footer);
