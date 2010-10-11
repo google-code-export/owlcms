@@ -13,14 +13,15 @@
 
 	<logger name="com" level="INFO" />
 	<logger name="net" level="INFO" />
-	<logger name="net.sf.ehcache.config.ConfigurationFactory" level="ERROR" />
+	<logger name="net.sf.ehcache.config" level="ERROR" />
+	<logger name="net.sf.ehcache.hibernate" level="ERROR" />	
 	<logger name="org" level="INFO" />
 	<logger name="org.hibernate" level="WARN" />
 	<logger name="org.hibernate.cache.EhCacheProvider" level="ERROR" />
-
-	<logger name="org.concordiainternational.org" level="INFO" />
-	<logger name="org.concordiainternational.competition.nec" level="DEBUG" />
-	<logger name="org.concordiainternational.competition.spreadsheet" level="TRACE" />
+	
+	<logger name="org.concordiainternational.org" level="INFO" /> 
+    <logger name="org.concordiainternational.competition.nec" level="DEBUG" />
+	<logger name="org.concordiainternational.competition.publicAddress" level="DEBUG" />
 
     
     <!--
