@@ -110,9 +110,9 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
                 cnf.addAnnotatedClass(CompetitionSession.class);
                 
 //                cnf.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.EhCacheProvider"); //$NON-NLS-1$
-                cnf.setProperty("hibernate.cache.region.factory_class", "net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory");
-                cnf.setProperty("hibernate.cache.use_second_level_cache", "true");
-                cnf.setProperty("hibernate.cache.use_query_cache", "true");
+                cnf.setProperty("hibernate.cache.region.factory_class", "net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory"); //$NON-NLS-1$ //$NON-NLS-2$
+                cnf.setProperty("hibernate.cache.use_second_level_cache", "true"); //$NON-NLS-1$ //$NON-NLS-2$
+                cnf.setProperty("hibernate.cache.use_query_cache", "true"); //$NON-NLS-1$ //$NON-NLS-2$
                 // cnf.setProperty(Environment.CACHE_PROVIDER,"org.hibernate.cache.HashtableCacheProvider");
 
                 // the following line is necessary because the Lifter class uses
@@ -122,7 +122,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
                 // cnf.setNamingStrategy(DefaultComponentSafeNamingStrategy.INSTANCE);
 
                 // listeners
-                cnf.setListener("merge", new OverrideMergeEventListener());
+                cnf.setListener("merge", new OverrideMergeEventListener()); //$NON-NLS-1$
 
                 sessionFactory = cnf.buildSessionFactory();
                 // create the standard categories, etc.
@@ -157,7 +157,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
         } else {
             cnf.setProperty(Environment.SHOW_SQL, "false"); //$NON-NLS-1$
             cnf.setProperty(Environment.URL, "jdbc:h2:file:" + dbPath); //$NON-NLS-1$
-            String ddlMode = "create";
+            String ddlMode = "create"; //$NON-NLS-1$
             File file = new File(dbPath + ".h2.db"); //$NON-NLS-1$
             logger.warn("Using Hibernate (file {} exists={}", new Object[] { file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
             if (file.exists()) {
@@ -290,7 +290,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
         Connection connection = null;
         try {
             connection = cnf.buildSettings().getConnectionProvider().getConnection();
-            connection.createStatement().execute("SHUTDOWN");
+            connection.createStatement().execute("SHUTDOWN"); //$NON-NLS-1$
             // logger.warn("orderly shutdown done.");
         } catch (HibernateException e) {
             LoggerUtils.logException(logger, e);
@@ -324,7 +324,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
         final String comPortName = sCtx.getInitParameter("comPort"); //$NON-NLS-1$
         getNecDisplay(comPortName);
         Locale.setDefault(Locale.CANADA_FRENCH);
-        logger.info("Default locale: {}", Locale.getDefault());
+        logger.info("Default locale: {}", Locale.getDefault()); //$NON-NLS-1$
         logger.debug("contextInitialized() done"); //$NON-NLS-1$
     }
 
@@ -340,9 +340,9 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
             // comPortName is likely a USB port which has been disconnected.
             try {
                 necDisplay = new NECDisplay(); //$NON-NLS-1$
-                necDisplay.setComPortName("COM1");
+                necDisplay.setComPortName("COM1"); //$NON-NLS-1$
             } catch (Exception e1) {
-                throw new RuntimeException(e);
+                logger.warn("could not open port {} {}","COM1",e.getMessage());
             }
         }
     }
