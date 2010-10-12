@@ -30,23 +30,25 @@
 	font-family: Arial, sans-serif;
 	line-height: 1.25em;
 }
+/*
 
-/* hide date popup buttons in grid layouts (systematically, even when editing */
-.v-gridlayout .v-datefield-popupcalendar .v-datefield-textfield {
+ hide date popup buttons in lifterGrid (systematically, even when editing)
+.lifterGrid .v-datefield-popupcalendar .v-datefield-textfield {
 	border-style: none;
 	border-width: 0;
 }
 
-.v-gridlayout td .v-datefield-popupcalendar .v-datefield-textfield {
+.lifterGrid td .v-datefield-popupcalendar .v-datefield-textfield {
 	border-style: none;
 	border-width: 0;
 }
 
-.v-gridlayout .v-datefield-button {
+.lifterGrid .v-datefield-button {
 	display: none;
 }
 
-/* hide date popup buttons in form layouts, when read-only */
+ hide date popup buttons in form layouts, when read-only 
+*/
 .v-formlayout .v-readonly .v-datefield-button {
 	display: none;
 }
@@ -485,4 +487,30 @@ button.yesButton {
 	font-weight: bold;
 	text-align: center;
 	display: table-cell; vertical-align: middle;
+}
+
+.publicAddressOverlay tr td .v-label {
+	font-size: xx-large;
+	font-weight: bold;
+}
+
+.publicAddressOverlay tr td.message .v-label{
+	font-size: 6ex;
+	line-height: 3ex;
+	font-weight: bold;
+	font-family: monospace;
+}
+
+.publicAddressOverlay tr td.remainingTime .v-label {
+	font-size: xx-large;
+	font-weight: bold;
+	color: yellow;
+}
+
+.publicAddressOverlay img{
+	height: 50%;
+}
+
+textarea.v-textarea-fixedFont {
+	font-family: monospace;
 }

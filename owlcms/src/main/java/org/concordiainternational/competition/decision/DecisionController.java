@@ -224,7 +224,7 @@ public class DecisionController implements CountdownTimerListener {
      */
     public void removeListener(DecisionEventListener listener) {
         if (eventRouter != null) {
-            logger.debug("remove listener {}", listener); //$NON-NLS-1$
+            logger.debug("hide listener {}", listener); //$NON-NLS-1$
             eventRouter.removeListener(DecisionEvent.class, listener, DECISION_EVENT_METHOD);
         }
     }

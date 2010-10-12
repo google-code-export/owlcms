@@ -100,7 +100,7 @@ public class TwoMinutesRuleTest {
         final Lifter allisonR = lifters.get(2);
         final Lifter verneU = lifters.get(3);
 
-        // remove non-lifters
+        // hide non-lifters
         LifterSorter.liftingOrder(lifters);
         final int size = lifters.size();
         for (int i = 4; i < size; i++)
@@ -209,7 +209,7 @@ public class TwoMinutesRuleTest {
         schneiderF.setCleanJerk1Declaration(Integer.toString(80));
         simpsonR.setCleanJerk1Declaration(Integer.toString(82));
 
-        // remove non-lifters
+        // hide non-lifters
         LifterSorter.liftingOrder(lifters);
         final int size = lifters.size();
         for (int i = 2; i < size; i++)
@@ -306,7 +306,7 @@ public class TwoMinutesRuleTest {
         schneiderF.setCleanJerk1Declaration(Integer.toString(80));
         simpsonR.setCleanJerk1Declaration(Integer.toString(85));
 
-        // remove non-lifters
+        // hide non-lifters
         LifterSorter.liftingOrder(lifters);
         final int size = lifters.size();
         for (int i = 2; i < size; i++)

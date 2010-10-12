@@ -100,7 +100,7 @@ public class LifterSorterTest {
         // check initial lift order -- this checks the "lot number" rule
         LifterSorter.liftingOrder(lifters);
         assertEqualsToReferenceFile("/seq1_lift0.txt", AllTests.shortDump(lifters)); //$NON-NLS-1$
-        // remove non-lifters
+        // hide non-lifters
         final int size = lifters.size();
         for (int i = 4; i < size; i++)
             lifters.remove(4);
@@ -220,7 +220,7 @@ public class LifterSorterTest {
         final Lifter schneiderF = lifters.get(0);
         final Lifter simpsonR = lifters.get(1);
 
-        // remove non-lifters
+        // hide non-lifters
         final int size = lifters.size();
         for (int i = 2; i < size; i++)
             lifters.remove(2);

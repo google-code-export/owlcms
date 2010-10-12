@@ -16,14 +16,14 @@ public class PublicAddressTimerEvent implements Event {
 		public void timerUpdate(final PublicAddressTimerEvent event);
 	}
 	
-	Integer remainingMilliseconds = 0;
+	Integer remainingMilliseconds = null;
 	Boolean noTimeLeft = false;
 	
 	public Integer getRemainingMilliseconds() {
 		return remainingMilliseconds;
 	}
-	public void setRemainingMilliseconds(Integer remainingSeconds) {
-		this.remainingMilliseconds = remainingSeconds;
+	public void setRemainingMilliseconds(Integer remainingMilliseconds) {
+		this.remainingMilliseconds = remainingMilliseconds;
 	}
 	public Boolean getNoTimeLeft() {
 		return noTimeLeft;

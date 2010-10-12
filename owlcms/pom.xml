@@ -182,15 +182,22 @@
 			<artifactId>dashlayout</artifactId>
 			<version>0.1.5-beta</version>
 		</dependency>
+		<!-- 
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>blackboard</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+		 -->
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>customfield</artifactId>
+			<version>0.7.3</version>
+		</dependency>
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
 			<artifactId>icepush</artifactId>
 			<version>0.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.vaadin.addons</groupId>
-			<artifactId>customfield</artifactId>
-			<version>0.7.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.icepush</groupId>
@@ -228,6 +235,11 @@
 			<type>jar</type>
 		</dependency>
 		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
 			<groupId>apache-taglibs</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.1.2</version>
@@ -243,7 +255,54 @@
 			<version>1.1.116</version>
 		</dependency>
 
+		<!-- This is also used by gwt-maven-plugin to deduce GWT version number. -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>2.0.4</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
 
+
+
+		<!-- the dependency on the hibernate-core module (see above) -->
+		<dependency>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.6.0.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>[2.0.0,)</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>3.4.0.ga</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate</artifactId>
+			<version>3.3.2.ga</version>
+			<type>pom</type>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		
 		<!-- added to local repository -->
 		<dependency>
 			<groupId>com.extentech</groupId>
@@ -273,69 +332,6 @@
 			<artifactId>jta</artifactId>
 			<version>1.0.1B</version>
 		</dependency>
-
-
-
-		<!-- This is also used by gwt-maven-plugin to deduce GWT version number. -->
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<version>2.0.4</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-
-
-
-		<!-- the dependency on the hibernate-core module (see above) -->
-		<dependency>
-			<groupId>javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>3.6.0.GA</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sf.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-			<version>[2.0.0,]</version>
-			<type>pom</type>
-		</dependency>
-
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-annotations</artifactId>
-			<version>3.4.0.ga</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate</artifactId>
-			<version>3.3.2.ga</version>
-			<type>pom</type>
-			<exclusions>
-				<exclusion>
-					<artifactId>commons-logging</artifactId>
-					<groupId>commons-logging</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>1.6.1</version>
-		</dependency>
-		<!-- 
-		<dependency>
-			<groupId>org.vaadin.addons</groupId>
-			<artifactId>blackboard</artifactId>
-			<version>2.0.1</version>
-		</dependency>
-		 -->
 	</dependencies>
 
 </project>

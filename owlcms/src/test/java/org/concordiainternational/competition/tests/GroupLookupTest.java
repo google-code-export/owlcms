@@ -62,7 +62,7 @@ public class GroupLookupTest {
     public void testReload() {
         int initialSize = competitionSessionLookup.getGroups().size();
         assertEquals(initialSize, 3);
-        // groups.removeItem(2L); // remove group B -- won't work because we
+        // groups.removeItem(2L); // hide group B -- won't work because we
         // have lifters connected.
         competitionSessionLookup.reload();
         int finalSize = competitionSessionLookup.getGroups().size();

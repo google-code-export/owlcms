@@ -85,7 +85,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
      * editor once it has loaded the right lifter.
      */
     public void clearSelection() {
-        table.select(null); // remove selection from table.
+        table.select(null); // hide selection from table.
     }
 
     @SuppressWarnings("unchecked")

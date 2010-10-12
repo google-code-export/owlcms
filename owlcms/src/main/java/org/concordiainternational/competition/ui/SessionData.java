@@ -759,7 +759,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      */
     public void removeListener(UpdateEventListener listener) {
         if (eventRouter != null) {
-            logger.debug("group data : remove listener {}", listener); //$NON-NLS-1$
+            logger.debug("group data : hide listener {}", listener); //$NON-NLS-1$
             eventRouter.removeListener(UpdateEvent.class, listener, LIFTER_EVENT_METHOD);
         }
     }
@@ -1072,36 +1072,31 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 	}
 	
 
-
 	public void clearPublicAddressDisplay() {
 		PublicAddressMessageEvent event = new PublicAddressMessageEvent();
-		stopPublicAddressTimer();
-		event.setRemove(true);
+		// more intuitive if hiding the display does not stop the timer.
+		// publicAddressTimer.stop();
+		event.setHide(true);
 		fireBlackBoardEvent(event);
 	}
 
 
 	public void displayPublicAddress() {
-		Integer value = (Integer) publicAddressItem.getItemProperty("delay").getValue();
-		Integer remainingMilliseconds= 0;
-		if (value != null) {
-			remainingMilliseconds = value * 60 /*seconds*/ * 1000 /* milliseconds*/;
-		}
+		PublicAddressCountdownTimer timer = (PublicAddressCountdownTimer) publicAddressItem.getItemProperty("remainingSeconds").getValue();
+		int remainingMilliseconds = timer.getRemainingMilliseconds();
 		
-		// request the registered projector displays to pop-up the message area
+		// tell the registered browsers to pop-up the message area
 		PublicAddressMessageEvent messageEvent = new PublicAddressMessageEvent();
-		messageEvent.setRemove(false);
+		messageEvent.setHide(false);
 		messageEvent.setTitle((String) publicAddressItem.getItemProperty("title").getValue());
 		messageEvent.setMessage((String) publicAddressItem.getItemProperty("message").getValue());
 		messageEvent.setRemainingMilliseconds(remainingMilliseconds);
 		fireBlackBoardEvent(messageEvent);
 		
-		// tell the message areas to display the initial time and get the timer going.
+		// tell the message areas to display the initial time
 		PublicAddressTimerEvent timerEvent = new PublicAddressTimerEvent();
 		timerEvent.setRemainingMilliseconds(remainingMilliseconds);
 		fireBlackBoardEvent(timerEvent);
-	
-		startPublicAddressTimer(remainingMilliseconds);
 
 	}
 
@@ -1119,17 +1114,14 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 	public void removeBlackBoardListener(Listener listener) {
 		blackBoardEventRouter.removeListener(listener);
 	}
-	
-	private void startPublicAddressTimer(int remainingMilliseconds) {
-		publicAddressTimer.forceTimeRemaining(remainingMilliseconds);
-		publicAddressTimer.start();
-	}
-	
 
-	private void stopPublicAddressTimer() {
-		publicAddressTimer.stop();	
+
+	public PublicAddressCountdownTimer getPublicAddressTimer() {
+		return publicAddressTimer;
 	}
 
-
+//	public void setPublicAddressTimer(PublicAddressCountdownTimer publicAddressTimer) {
+//		this.publicAddressTimer = publicAddressTimer;
+//	}
 
 }

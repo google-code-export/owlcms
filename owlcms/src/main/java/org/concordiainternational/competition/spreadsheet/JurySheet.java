@@ -123,7 +123,7 @@ public class JurySheet extends OutputSheet {
 
     @Override
     protected void removeLastRowIfInserting(WorkSheetHandle workSheet, int i) throws RowNotFoundException {
-        // Do nothing; we do not insert rows, so we don't have to remove an
+        // Do nothing; we do not insert rows, so we don't have to hide an
         // extra one inserted prior to writing data
     }
 

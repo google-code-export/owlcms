@@ -16,13 +16,13 @@
 
 package org.concordiainternational.competition.ui;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.publicAddress.PublicAddressCountdownTimer;
 import org.concordiainternational.competition.publicAddress.PublicAddressForm;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.ui.components.SessionSelect;
@@ -91,7 +91,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
      * editor once it has loaded the right lifter.
      */
     public void clearSelection() {
-        table.select(null); // remove selection from table.
+        table.select(null); // hide selection from table.
     }
 
     @SuppressWarnings("unchecked")
@@ -221,8 +221,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
         	 PropertysetItem item = new PropertysetItem();
         	 item.addItemProperty("title", new ObjectProperty("", String.class));
         	 item.addItemProperty("message", new ObjectProperty("", String.class));
-        	 item.addItemProperty("endHour", new ObjectProperty(null, Date.class));
-        	 item.addItemProperty("delay", new ObjectProperty(null, Integer.class));
+        	 item.addItemProperty("remainingSeconds", new ObjectProperty(null, PublicAddressCountdownTimer.class));
         	 masterData.setPublicAddressItem(item);
     	 }
 
@@ -235,7 +234,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
          form.setParentList(this);
          editingWindow.getContent().addComponent(form);
          app.getMainWindow().addWindow(editingWindow);
-         editingWindow.setWidth("40em");
+         editingWindow.setWidth("60em");
          editingWindow.center();
 	}
 

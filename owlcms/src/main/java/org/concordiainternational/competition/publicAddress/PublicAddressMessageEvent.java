@@ -18,7 +18,7 @@ public class PublicAddressMessageEvent implements Event {
 	
 	String title;
 	String message;
-	Boolean remove = false;
+	Boolean hide = false;
 	Integer remainingMilliseconds;
 	
 	public String getTitle() {
@@ -33,11 +33,11 @@ public class PublicAddressMessageEvent implements Event {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	public Boolean getRemove() {
-		return remove;
+	public Boolean setHide() {
+		return hide;
 	}
-	public void setRemove(Boolean remove) {
-		this.remove = remove;
+	public void setHide(Boolean remove) {
+		this.hide = remove;
 	}
 	public Integer getRemainingMilliseconds() {
 		return remainingMilliseconds;

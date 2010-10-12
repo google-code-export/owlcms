@@ -37,6 +37,7 @@ import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
+import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
 import org.concordiainternational.competition.ui.UserActions;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
@@ -50,8 +51,9 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.CloseEvent;
 
-public class BrowserPanel extends VerticalLayout implements ApplicationView, CountdownTimerListener, MessageDisplayListener {
+public class BrowserPanel extends VerticalLayout implements ApplicationView, CountdownTimerListener, MessageDisplayListener, Window.CloseListener{
     private static final String ATTEMPT_WIDTH = "12em";
 	public final static Logger logger = LoggerFactory.getLogger(BrowserPanel.class);
     private static final long serialVersionUID = 1437157542240297372L;
@@ -70,6 +72,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
     private Label weight = new Label();
     private ICEPush pusher = null;
     private String appUrlString;
+	private UpdateEventListener updateListener;
 
     public BrowserPanel(boolean initFromFragment, String viewName, String urlString) throws MalformedURLException {
 
@@ -94,7 +97,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
         create(app);
         masterData = app.getMasterData(platformName);
         // listen to changes in the competition data
-        registerAsListener(platformName, masterData);
+        updateListener = registerAsListener(platformName, masterData);
         
         // listen to public address events
         if (viewName.contains("resultBoard")) {
@@ -104,6 +107,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
         // we cannot call push() at this point, pass false as parameter
         display(platformName, masterData, false);
 
+        app.getMainWindow().addListener(this);
 
     }
 
@@ -121,7 +125,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
         // System.err.println("appUrlString with slash="+appUrlString);
     }
 
-    private void registerAsListener(final String platformName, final SessionData masterData) {
+    private UpdateEventListener registerAsListener(final String platformName, final SessionData masterData) {
         // locate the current group data for the platformName
         if (masterData != null) {
             logger.debug(urlString + "{} listening to: {}", platformName, masterData); //$NON-NLS-1$	
@@ -136,9 +140,11 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 
             };
             masterData.addListener(listener); //$NON-NLS-1$		
+            return listener;
 
         } else {
             logger.debug(urlString + "{} NOT listening to:  = {}", platformName, masterData); //$NON-NLS-1$	
+            return null;
         }
     }
 
@@ -447,7 +453,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 	public void messageUpdate(PublicAddressMessageEvent event) {
 		synchronized(app) {
 			if (viewName.contains("resultBoard")) {
-				if (event.getRemove()) {
+				if (event.setHide()) {
 					removeMessage();
 				} else if (overlay == null) {				
 					displayMessage(event.getTitle(),event.getMessage(),event.getRemainingMilliseconds());
@@ -500,6 +506,22 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 		pusher.push();
 	}
 
+	@Override
+	public void windowClose(CloseEvent e) {
+        // stop listening to changes in the competition data
+		if (updateListener != null) {
+			masterData.removeListener(updateListener);
+			logger.warn("stopped listening to UpdateEvents");
+		}
+        
+        // stop listening to public address events
+		removeMessage();
+        if (viewName.contains("resultBoard")) {
+        	masterData.removeBlackBoardListener(this);
+        	logger.warn("stopped listening to PublicAddress TimerEvents");
+        }
+	}
+
 	
-	//TODO make sure that close removes this instance as PublicAddress listener.
+
 }
