@@ -18,8 +18,9 @@ package org.concordiainternational.competition.ui.generators;
 
 public class TimeFormatter {
 
-    public static String formatAsSeconds(int remaining) {
-        int iSecs = getSeconds(remaining);
+    public static String formatAsSeconds(Integer remainingMilliseconds) {
+    	if (remainingMilliseconds == null) return "";
+        int iSecs = getSeconds(remainingMilliseconds);
         int iMins = (iSecs / 60);
         int rSecs = (iSecs % 60);
         // if (true || iMins > 0) {
@@ -36,11 +37,11 @@ public class TimeFormatter {
      * shows 2:00, 1:30, 0:30 and 0:00 for the first time that is the exact time
      * left. If the time left is 0:30.4, we want the clock to say 0:31, not 0:30.
      * 
-     * @param remaining
+     * @param remainingMilliseconds
      * @return the number of seconds, making sure that zero means "time is up".
      */
-    public static int getSeconds(int remaining) {
-        double dSecs = (remaining / 1000.0D);
+    public static int getSeconds(int remainingMilliseconds) {
+        double dSecs = (remainingMilliseconds / 1000.0D);
         long roundedSecs = Math.round(dSecs);
         int iSecs;
         double delta = dSecs - roundedSecs;

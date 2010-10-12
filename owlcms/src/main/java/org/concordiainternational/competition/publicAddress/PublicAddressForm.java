@@ -17,21 +17,56 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.Form;
+import com.vaadin.ui.FormFieldFactory;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.CloseEvent;
 
 /**
  * Editing of group information.
  * 
  * @author jflamy
  */
-@SuppressWarnings({ "serial" })
-public class PublicAddressForm extends Form  {
+@SuppressWarnings({ "serial", "unchecked" })
+public class PublicAddressForm extends Form implements Window.CloseListener {
+	private CountdownField countdownField;
 	
+	public class PublicAddressFormFieldFactory implements FormFieldFactory {
+
+		@Override
+		public Field createField(Item item, Object propertyId, Component uiContext) {
+			if (propertyId.equals("remainingSeconds")) {
+				countdownField = new CountdownField();
+				countdownField.setCaption(Messages.getString("Field.CountdownField.caption", CompetitionApplication.getCurrentLocale()));
+				masterData.addBlackBoardListener(countdownField);
+				return countdownField;
+			} else if (propertyId.equals("title")) {
+				TextField titleField = new TextField();
+				titleField.setCaption(Messages.getString("FieldName.title", CompetitionApplication.getCurrentLocale()));
+				titleField.setColumns(20);
+				return titleField;
+			} else if (propertyId.equals("message")) {
+				TextField messageField = new TextField();
+				messageField.setCaption(Messages.getString("FieldName.message", CompetitionApplication.getCurrentLocale()));
+				messageField.setRows(5);
+				messageField.setColumns(20);  // yields about 30 chars monospaced.
+				messageField.addStyleName("fixedFont"); //$NON-NLS-1$
+				return messageField;
+			} else {
+				return null;
+			}
+
+		}
+
+	}
+
+
 	final private static Logger logger = LoggerFactory.getLogger(PublicAddressForm.class);
-	
+	CommonFieldFactory commonFactory = new CommonFieldFactory(CompetitionApplication.getCurrent());
 	Window window = null;
 	GenericList<?> parentList = null;
 
@@ -39,15 +74,15 @@ public class PublicAddressForm extends Form  {
 
 	public PublicAddressForm(SessionData masterData) {
 		super();
-		this.setFormFieldFactory(new CommonFieldFactory(CompetitionApplication.getCurrent()));
+		this.setFormFieldFactory(new PublicAddressFormFieldFactory());
 		this.masterData = masterData;
 		setItemDataSource(masterData.getPublicAddressItem());
+		
+		setImmediate(true);
         setWriteThrough(true);
         
-		TextField messageField = (TextField)this.getField("message");
-		messageField.setRows(5);
-		messageField.addStyleName("fixedFont");
-        
+
+		        
         HorizontalLayout footer = new HorizontalLayout();
         footer.setSpacing(true);
         footer.addComponent(ok);
@@ -59,7 +94,7 @@ public class PublicAddressForm extends Form  {
         setFooter(footer);
 	}
 	
-	Button display = new Button(Messages.getString("PublicAddress.display", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	
+	Button display = new Button(Messages.getString("PublicAddress.display", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	 //$NON-NLS-1$
 		@Override
 		public void buttonClick(ClickEvent event) {
 			commit();
@@ -67,7 +102,7 @@ public class PublicAddressForm extends Form  {
 		}
 	});
 	
-	Button clear = new Button(Messages.getString("PublicAddress.clear", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	
+	Button clear = new Button(Messages.getString("PublicAddress.clear", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	 //$NON-NLS-1$
 		@Override
 		public void buttonClick(ClickEvent event) {
 			commit();
@@ -75,7 +110,7 @@ public class PublicAddressForm extends Form  {
 		}
 	});
 	
-	Button ok = new Button(Messages.getString("Common.OK", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	
+	Button ok = new Button(Messages.getString("Common.OK", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	 //$NON-NLS-1$
 		@Override
 		public void buttonClick(ClickEvent event) {
 			commit();
@@ -84,7 +119,7 @@ public class PublicAddressForm extends Form  {
 		}
 	});
 	
-	Button cancel = new Button(Messages.getString("Common.cancel", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	
+	Button cancel = new Button(Messages.getString("Common.cancel", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	 //$NON-NLS-1$
 		@Override
 		public void buttonClick(ClickEvent event) {
 			discard();
@@ -97,10 +132,9 @@ public class PublicAddressForm extends Form  {
     public void setItemDataSource(Item itemDataSource) {
         if (itemDataSource != null) {
             List<Object> orderedProperties = new ArrayList<Object>();
-            orderedProperties.add("title");
-            orderedProperties.add("message");
-            orderedProperties.add("endHour");
-            orderedProperties.add("delay");
+            orderedProperties.add("title"); //$NON-NLS-1$
+            orderedProperties.add("message"); //$NON-NLS-1$
+            orderedProperties.add("remainingSeconds"); //$NON-NLS-1$
             super.setItemDataSource(itemDataSource, orderedProperties);
             getFooter().setVisible(true);
         } else {
@@ -126,6 +160,7 @@ public class PublicAddressForm extends Form  {
 
 	public void setWindow(Window window) {
 		this.window = window;
+		window.addListener(this);
 	}
 
 
@@ -143,8 +178,9 @@ public class PublicAddressForm extends Form  {
 	 * 
 	 */
 	private void closeWindow() {
-		logger.warn("closeWindow {}",parentList);
-
+		logger.warn("closeWindow {}",parentList); //$NON-NLS-1$
+		masterData.removeBlackBoardListener(countdownField);
+		
 		if (window != null) {
 			Window parent = window.getParent();
 			parent.removeWindow(window);
@@ -152,6 +188,13 @@ public class PublicAddressForm extends Form  {
 //		if (parentList != null) {
 //			// nothing to do in this case
 //		}
+	}
+
+
+	@Override
+	public void windowClose(CloseEvent e) {
+		logger.warn("windowClose {}",parentList); //$NON-NLS-1$
+		masterData.removeBlackBoardListener(countdownField);
 	}
 
 }

@@ -230,7 +230,7 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
             lifterCardEditor.setSticky(WebApplicationConfiguration.DEFAULT_STICKINESS); // make
                                                                                         // sticky
         } else {
-            // no current lifter, remove bottom part if present.
+            // no current lifter, hide bottom part if present.
             if (lifterCardEditor != null) {
                 setSecondComponent(new Label("")); //$NON-NLS-1$
                 masterData.getTimer().removeAllListeners(lifterCardEditor.lifterCardIdentification);

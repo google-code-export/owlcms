@@ -248,6 +248,15 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         return currentSession;
     }
 
+    
+    /**
+     * @param platformName
+     * @return
+     */
+    public SessionData getMasterData() {
+    	return getMasterData(getPlatformName());
+    }
+    
     /**
      * @param platformName
      * @return

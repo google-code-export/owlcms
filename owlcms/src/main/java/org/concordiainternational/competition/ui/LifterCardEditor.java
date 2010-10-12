@@ -49,13 +49,9 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Button.ClickEvent;
 
-public class LifterCardEditor extends Panel implements Property.ValueChangeListener, // listen
-                                                                                     // to
-                                                                                     // changes
-                                                                                     // within
-                                                                                     // the
-                                                                                     // editor.
-        Handler // handle keyboard shortcuts
+public class LifterCardEditor extends Panel implements 
+	Property.ValueChangeListener, // listen to changes within the editor
+	Handler // handle keyboard shortcuts
 {
 
     private static final long serialVersionUID = -216488484306113727L;
@@ -225,6 +221,7 @@ public class LifterCardEditor extends Panel implements Property.ValueChangeListe
         populateEmptyGrid(locale);
         liftGrid.setWriteThrough(true);
         grid.setSpacing(false);
+        grid.setStyleName("lifterGrid");
         return liftGrid;
     }
 

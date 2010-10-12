@@ -24,7 +24,7 @@ import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.components.CategorySelect;
-import org.concordiainternational.competition.ui.components.FormattingDateField;
+import org.concordiainternational.competition.ui.components.ISO8601DateField;
 import org.concordiainternational.competition.ui.components.PlatformSelect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,7 +186,7 @@ public class CommonFieldFactory extends DefaultFieldFactory {
 
         // Date field
         if (Date.class.isAssignableFrom(type)) {
-            final DateField df = new FormattingDateField();
+            final DateField df = new ISO8601DateField();
             df.setResolution(DateField.RESOLUTION_DAY);
             return df;
         }

@@ -66,7 +66,7 @@ public class PlatformSelect extends Select implements Serializable {
         if (sb.length() == 0) {
             return Messages.getString("Common.emptyList", app.getLocale()); //$NON-NLS-1$
         } else {
-            return sb.substring(0, sb.length() - separator.length()); // remove last comma
+            return sb.substring(0, sb.length() - separator.length()); // hide last comma
         }
 	}
     

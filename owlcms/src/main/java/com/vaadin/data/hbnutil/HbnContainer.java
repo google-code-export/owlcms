@@ -72,7 +72,7 @@ import com.vaadin.service.ApplicationContext.TransactionListener;
  * @author jflamy (use of setters, integration of search criteria as suggested
  *         in forum, some type safety, use of valueOf() for dealing with
  *         enumerated types, clearCache, allow linking to a null object to
- *         remove association)
+ *         hide association)
  */
 public class HbnContainer<T> implements Container.Indexed, Container.Sortable, Container.ItemSetChangeNotifier,
         Container.Filterable {
@@ -766,7 +766,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
 
     public boolean removeItem(Object itemId) throws UnsupportedOperationException {
         Object p = hbnSessionManager.getHbnSession().load(type, (Serializable) itemId);
-        // remove row from db
+        // hide row from db
         hbnSessionManager.getHbnSession().delete(p);
         clearInternalCache();
         fireItemSetChange();

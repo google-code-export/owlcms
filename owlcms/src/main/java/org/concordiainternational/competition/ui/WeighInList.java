@@ -134,7 +134,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
                                                                            // =
                                                                            // do
                                                                            // not
-                                                                           // remove
+                                                                           // hide
                                                                            // unweighed
                                                                            // lifters
             tableToolbar.addComponent(startListButton);
@@ -144,7 +144,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
                                                                                // =
                                                                                // do
                                                                                // not
-                                                                               // remove
+                                                                               // hide
                                                                                // unweighed
                                                                                // lifters
             tableToolbar.addComponent(lifterCardsButton);

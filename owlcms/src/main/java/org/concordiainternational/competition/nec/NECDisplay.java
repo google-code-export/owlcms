@@ -336,7 +336,7 @@ public class NECDisplay implements Serializable {
     private String fixAccents(String accentedString) {
         // convert characters with accents into letter-accent pairs
         String separateAccents = java.text.Normalizer.normalize(accentedString, java.text.Normalizer.Form.NFD);
-        // remove the non-ascii characters (the accents)
+        // hide the non-ascii characters (the accents)
         return separateAccents.replaceAll("[^\\p{ASCII}]", ""); //$NON-NLS-1$ //$NON-NLS-2$
     }
 

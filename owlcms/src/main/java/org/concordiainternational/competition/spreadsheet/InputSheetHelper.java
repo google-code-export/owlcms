@@ -91,7 +91,7 @@ public class InputSheetHelper implements InputSheet {
             // readHeader(workSheet,sessionMgr.getHbnSession());
 
         } finally {
-            // close workbook file and remove lock
+            // close workbook file and hide lock
             if (workBookHandle != null) workBookHandle.close();
             if (is != null) is.close();
 

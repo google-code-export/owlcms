@@ -28,7 +28,8 @@ public class PublicAddressOverlay extends CustomLayout implements MessageTimerLi
 			addComponent(title,"title");
 			message = new Label(message2,Label.CONTENT_PREFORMATTED);
 			addComponent(message,"message");
-			remainingTime = new Label(TimeFormatter.formatAsSeconds(remainingMilliseconds));
+			String formatAsSeconds = TimeFormatter.formatAsSeconds(remainingMilliseconds);
+			remainingTime = new Label(formatAsSeconds != null ? formatAsSeconds : "");
 			addComponent(remainingTime,"remainingTime");
 		}
 	}
@@ -36,18 +37,24 @@ public class PublicAddressOverlay extends CustomLayout implements MessageTimerLi
 	@Override
 	public void timerUpdate(PublicAddressTimerEvent event) {
 		synchronized(app) {
-			remainingTime.setValue(TimeFormatter.formatAsSeconds(event.getRemainingMilliseconds()));
+			Integer remainingMilliseconds = event.getRemainingMilliseconds();
+			if (remainingMilliseconds != null) {
+				remainingTime.setValue(TimeFormatter.formatAsSeconds(remainingMilliseconds));
+			}
 		}
 		pusher.push();
 	}
 
 	@Override
 	public void messageUpdate(PublicAddressMessageEvent event) {
-		if (!event.getRemove()) {
+		if (!event.setHide()) {
 			synchronized(app) {
 				title.setValue(event.getTitle());
 				message.setValue(event.getMessage());
-				remainingTime.setValue(TimeFormatter.formatAsSeconds(event.getRemainingMilliseconds()));
+				Integer remainingMilliseconds = event.getRemainingMilliseconds();
+				if (remainingMilliseconds != null) {
+					remainingTime.setValue(TimeFormatter.formatAsSeconds(remainingMilliseconds));
+				}
 			}
 			pusher.push();
 		}
