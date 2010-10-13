@@ -329,6 +329,12 @@
 			<artifactId>jta</artifactId>
 			<version>1.0.1B</version>
 		</dependency>
+		<dependency>
+			<groupId>net.cloudhopper</groupId>
+			<artifactId>rxtx</artifactId>
+			<version>2.2</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
-
 </project>
