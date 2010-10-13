@@ -100,6 +100,14 @@
 						</systemProperty>
 					</systemProperties>
 				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>net.cloudhopper</groupId>
+						<artifactId>rxtx</artifactId>
+						<version>2.2</version>
+						<type>jar</type>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
@@ -182,13 +190,8 @@
 			<artifactId>dashlayout</artifactId>
 			<version>0.1.5-beta</version>
 		</dependency>
-		<!-- 
-		<dependency>
-			<groupId>org.vaadin.addons</groupId>
-			<artifactId>blackboard</artifactId>
-			<version>2.0.1</version>
-		</dependency>
-		 -->
+		<!-- <dependency> <groupId>org.vaadin.addons</groupId> <artifactId>blackboard</artifactId> 
+			<version>2.0.1</version> </dependency> -->
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
 			<artifactId>customfield</artifactId>
@@ -301,19 +304,13 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
-		
+
+
 		<!-- added to local repository -->
 		<dependency>
 			<groupId>com.extentech</groupId>
 			<artifactId>openxls</artifactId>
 			<version>6.0.6</version>
-		</dependency>
-		<dependency>
-			<groupId>net.cloudhopper</groupId>
-			<artifactId>rxtx</artifactId>
-			<version>2.2</version>
-			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.miller</groupId>
