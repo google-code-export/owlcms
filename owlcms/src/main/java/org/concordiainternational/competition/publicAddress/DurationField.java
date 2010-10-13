@@ -4,6 +4,7 @@ package org.concordiainternational.competition.publicAddress;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
@@ -13,11 +14,15 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.FieldWrapper;
 import com.vaadin.ui.VerticalLayout;
 
+/**
+ * Wrap an Integer such that it is displayed and read as a time duration (mm:ss).
+ * @author jflamy
+ *
+ */
 @SuppressWarnings("serial")
 public class DurationField extends FieldWrapper<Integer>{
 
 	private Logger logger = LoggerFactory.getLogger(DurationField.class);
-
 
 	protected DurationField(Field wrappedField, Class<? extends Integer> propertyType) {
 		super(wrappedField, propertyType);
@@ -28,6 +33,9 @@ public class DurationField extends FieldWrapper<Integer>{
 	}
 	
 
+    /* Format the integer as a duration.
+     * @see com.vaadin.ui.FieldWrapper#format(java.lang.Object)
+     */
     @Override
     protected Object format(Integer value) {
         // Format milliseconds as a text field
@@ -35,6 +43,9 @@ public class DurationField extends FieldWrapper<Integer>{
     	return TimeFormatter.formatAsSeconds(value*1000);
     }
 
+    /* Parse the duration as a number of seconds.
+     * @see com.vaadin.ui.FieldWrapper#parse(java.lang.Object)
+     */
     @Override
     protected Integer parse(Object formattedValue) throws ConversionException {
     	//LoggerUtils.logException(logger, new Exception("trace"));
@@ -44,16 +55,21 @@ public class DurationField extends FieldWrapper<Integer>{
     	Date parsedDate;
 
     	SimpleDateFormat minSecs = new SimpleDateFormat("mm:ss");
+    	TimeZone gmt = TimeZone.getTimeZone("GMT");
+		minSecs.setTimeZone(gmt);
     	minSecs.setLenient(false);
 		String stringValue = (String) formattedValue;
 		try {
 			if (stringValue.length() <= 5 ){
 				parsedDate = minSecs.parse(stringValue);
+				// date parsing 
 				long parsedTime = parsedDate.getTime();
-				parsedValue = (int) (parsedTime)/1000 - 18000;
+				new Date(0);
+				parsedValue = (int) (parsedTime)/1000;
 				logger.debug("formatted value1 date={} millis={}",parsedDate,parsedValue*1000);
 			} else {
 				SimpleDateFormat hrMinSecs = new SimpleDateFormat("HH:mm:ss");
+				hrMinSecs.setTimeZone(gmt);
 				hrMinSecs.setLenient(false);
 				parsedDate = hrMinSecs.parse(stringValue);
 				long parsedTime = parsedDate.getTime();
