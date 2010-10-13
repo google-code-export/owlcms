@@ -20,14 +20,15 @@ public class TimeFormatter {
 
     public static String formatAsSeconds(Integer remainingMilliseconds) {
     	if (remainingMilliseconds == null) return "";
+    	if (remainingMilliseconds < 0){
+    		remainingMilliseconds = 0;
+    	}
         int iSecs = getSeconds(remainingMilliseconds);
         int iMins = (iSecs / 60);
         int rSecs = (iSecs % 60);
-        // if (true || iMins > 0) {
+
         return String.format("%1$d:%2$02d", iMins, rSecs); //$NON-NLS-1$
-        // } else {
-        //			return "  "+ Integer.toString(rSecs); //$NON-NLS-1$
-        // }
+
 
     }
 
