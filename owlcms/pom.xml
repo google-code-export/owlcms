@@ -5,7 +5,7 @@
 	<groupId>org.concordiainternational</groupId>
 	<artifactId>owlcms</artifactId>
 	<packaging>war</packaging>
-	<version>1.8.2</version>
+	<version>1.8.3</version>
 	<name>Olympic Weightlifting Competition Management System</name>
 
 	<properties>
