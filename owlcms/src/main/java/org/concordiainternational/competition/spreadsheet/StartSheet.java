@@ -108,6 +108,7 @@ public class StartSheet extends ResultSheet {
      * @return
      */
     private String endOfGroup(final Integer ageGroup, String gender) {
+    	if (ageGroup == null) return "";
         if ("m".equalsIgnoreCase(gender)) {
             if (ageGroup == 80) {
                 return "+";
@@ -240,7 +241,7 @@ public class StartSheet extends ResultSheet {
         String groupCode = competitionSession.getName();
         cell.setVal(groupCode);
 
-        int[] rangeCoords = new int[] { rownum, 0, rownum, 3 };
+        int[] rangeCoords = new int[] { rownum, 0, rownum, 2 };
         try {
             CellRange cellRange = new CellRange(workSheet, rangeCoords);
             cellRange.mergeCells(true);
@@ -252,10 +253,11 @@ public class StartSheet extends ResultSheet {
         // cell = workSheet.getCell(rownum, nbCols);
         // cell.setFormatHandle(groupFormatRight);
 
-        cell = workSheet.getCell(rownum, 4);
+        
+        cell = workSheet.getCell(rownum, 3);
         cell.setVal("Weigh-in/Pesée: " + formatDate(competitionSession.getWeighInTime()) + "   " + "Start/Début: "
             + formatDate(competitionSession.getCompetitionTime()));
-        rangeCoords = new int[] { rownum, 4, rownum, nbCols };
+        rangeCoords = new int[] { rownum, 3, rownum, nbCols };
         try {
             CellRange cellRange = new CellRange(workSheet, rangeCoords);
             cellRange.mergeCells(true);

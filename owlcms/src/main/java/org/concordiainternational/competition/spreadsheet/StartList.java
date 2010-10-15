@@ -22,6 +22,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import org.concordiainternational.competition.data.CategoryLookup;
+import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
@@ -42,6 +43,15 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 public class StartList extends OutputSheet {
 	
 	private HbnSessionManager hbnSessionManager;
+	
+    /**
+     * Create a sheet.
+     * If this constructor is used, or newInstance is called, then 
+     * {@link #init(CategoryLookup, CompetitionApplication, CompetitionSession)} must also be called.
+     */
+    public StartList() {
+    	this.hbnSessionManager = CompetitionApplication.getCurrent();
+    }
 	
 	public StartList(HbnSessionManager hbnSessionManager) {
 		this.hbnSessionManager = hbnSessionManager;
