@@ -220,14 +220,12 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         }
 
         synchronized (app) {
+            timeDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
             if (pusher == null) {
-                timeDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
                 timeDisplay.requestRepaint();
-            } else {
-                timeDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
-                pusher.push();
-            }
+            } 
         }
+        if (pusher != null) pusher.push();
     }
 
     @Override

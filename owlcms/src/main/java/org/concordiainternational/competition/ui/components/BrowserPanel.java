@@ -491,17 +491,19 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 			// overlayContent listens to message updates and timer updates
 			masterData.addBlackBoardListener(overlayContent);
 		}
-		// create window
-		if (overlay == null) {
-			logger.debug("creating window");
-			Window mainWindow = app.getMainWindow();;
-			overlay = new Window(platformName);
-			overlay.addStyleName("decisionLightsWindow");
-			overlay.setSizeFull();
-			mainWindow.addWindow(overlay);
-			overlay.center();
-			overlay.setContent(overlayContent);
-			overlay.setVisible(true);
+		synchronized (app) {
+			// create window
+			if (overlay == null) {
+				logger.debug("creating window");
+				Window mainWindow = app.getMainWindow();;
+				overlay = new Window(platformName);
+				overlay.addStyleName("decisionLightsWindow");
+				overlay.setSizeFull();
+				mainWindow.addWindow(overlay);
+				overlay.center();
+				overlay.setContent(overlayContent);
+				overlay.setVisible(true);
+			}
 		}
 		pusher.push();
 	}

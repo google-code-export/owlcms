@@ -182,7 +182,9 @@ public class CountdownField extends CustomField implements MessageTimerListener 
 		Integer remainingMilliseconds = event.getRemainingMilliseconds();
 		int seconds = TimeFormatter.getSeconds(remainingMilliseconds);
 		logger.debug("received update this={} event={}",this.toString(),seconds);
-		remainingSecondsDisplay.setValue(TimeFormatter.formatAsSeconds(remainingMilliseconds));
+		synchronized (CompetitionApplication.getCurrent()) {
+			remainingSecondsDisplay.setValue(TimeFormatter.formatAsSeconds(remainingMilliseconds));
+		}
 		pusher.push();
 	}
 	
