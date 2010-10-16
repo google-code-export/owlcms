@@ -219,9 +219,9 @@ public class LiftList extends GenericBeanList<Lifter> implements
     	 /* Create an empty "Message" item */
     	 if (masterData.getPublicAddressItem() == null) {
         	 PropertysetItem item = new PropertysetItem();
-        	 item.addItemProperty("title", new ObjectProperty("", String.class));
-        	 item.addItemProperty("message", new ObjectProperty("", String.class));
-        	 item.addItemProperty("remainingSeconds", new ObjectProperty(null, PublicAddressCountdownTimer.class));
+        	 item.addItemProperty("title", new ObjectProperty<String>("", String.class));
+        	 item.addItemProperty("message", new ObjectProperty<String>("", String.class));
+        	 item.addItemProperty("remainingSeconds", new ObjectProperty<PublicAddressCountdownTimer>(null, PublicAddressCountdownTimer.class));
         	 masterData.setPublicAddressItem(item);
     	 }
 

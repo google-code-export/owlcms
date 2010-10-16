@@ -103,7 +103,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
             // (the hibernate-managed properties are created as
             // EntityItemProperty)
             for (String propertyId : addedProperties.keySet()) {
-                addItemProperty(propertyId, new MethodProperty(pojo, propertyId));
+                addItemProperty(propertyId, new MethodProperty<Object>(pojo, propertyId));
             }
         }
 
@@ -538,7 +538,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
             throws UnsupportedOperationException {
         boolean propertyExists = true;
         try {
-            new MethodProperty(this.type.newInstance(), propertyId.toString());
+            new MethodProperty<Object>(this.type.newInstance(), propertyId.toString());
         } catch (InstantiationException ex) {
             ex.printStackTrace();
             propertyExists = false;

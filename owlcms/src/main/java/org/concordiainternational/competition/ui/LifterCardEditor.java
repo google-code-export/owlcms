@@ -604,7 +604,7 @@ public class LifterCardEditor extends Panel implements
      *            the field that needs updating.
      */
     private void refreshField(Field field) {
-        Property dataSource = ((MethodProperty) field.getPropertyDataSource());
+        Property dataSource = ((MethodProperty<?>) field.getPropertyDataSource());
         // this will fire a value change if the value has in fact changed.
         field.setPropertyDataSource(dataSource);
     }
