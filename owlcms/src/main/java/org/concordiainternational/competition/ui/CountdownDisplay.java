@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.artur.icepush.ICEPush;
 
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
@@ -109,7 +110,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         this.addStyleName("largeCountdownBackground");
         timeDisplay = createTimeDisplay();
         this.addComponent(timeDisplay);
-        this.setComponentAlignment(timeDisplay, "middle center");
+        this.setComponentAlignment(timeDisplay, Alignment.MIDDLE_CENTER);
 
         if (PUSHING) {
             pusher = this.app.ensurePusher();
