@@ -5,7 +5,7 @@
 	<groupId>org.concordiainternational</groupId>
 	<artifactId>owlcms</artifactId>
 	<packaging>war</packaging>
-	<version>1.8.3</version>
+	<version>1.8.4</version>
 	<name>Olympic Weightlifting Competition Management System</name>
 
 	<properties>
@@ -107,6 +107,11 @@
 						<version>2.2</version>
 						<type>jar</type>
 					</dependency>
+					<dependency>
+						<groupId>org.slf4j</groupId>
+						<artifactId>jcl-over-slf4j</artifactId>
+						<version>1.6.1</version>
+					</dependency>
 				</dependencies>
 			</plugin>
 		</plugins>
@@ -178,7 +183,7 @@
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin</artifactId>
-			<version>6.4-SNAPSHOT</version>
+			<version>6.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
