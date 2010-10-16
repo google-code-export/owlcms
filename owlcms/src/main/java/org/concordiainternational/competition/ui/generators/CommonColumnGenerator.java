@@ -29,6 +29,8 @@ import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.AnnouncerView;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.utils.ItemAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vaadin.artur.icepush.ICEPush;
 
 import com.vaadin.Application;
@@ -56,6 +58,7 @@ import com.vaadin.ui.TextField;
  */
 public class CommonColumnGenerator implements Table.ColumnGenerator {
     private static final long serialVersionUID = 6573562545694966025L;
+    private static final Logger logger = LoggerFactory.getLogger(CommonColumnGenerator.class);
 
     private CategoryContainer activeCategories;
     private HbnContainer<Platform> platforms;
@@ -385,6 +388,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
     public Map<Object, ListSelect> groupIdToCategoryList = new HashMap<Object, ListSelect>();
     private boolean firstMultiSelect = true;
 
+
     /**
      * Selection list when multiple categories need to be selected (e.g. which
      * categories belong to the same group)
@@ -524,7 +528,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
             @Override
             public void updateEvent(Lifter.UpdateEvent updateEvent) {
                 Lifter lifter = (Lifter) updateEvent.getSource();
- System.err.println("received event for "+lifter+" update of "+updateEvent.getPropertyIds());
+                logger.debug("received event for "+lifter+" update of "+updateEvent.getPropertyIds());
                 final Category category2 = lifter.getCategory();
                 synchronized (app) {
                     categoryLabel.removeStyleName("wrong"); //$NON-NLS-1$
