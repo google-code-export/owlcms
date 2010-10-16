@@ -132,28 +132,29 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
         } else {
             setupPolling();
         }
-        topPart.setSizeFull();
-        topPart.addComponent(liftList);
-        topPart.addComponent(announcerInfo);
-        topPart.setComponentAlignment(announcerInfo, Alignment.TOP_LEFT);
-        topPart.setExpandRatio(liftList, 100.0F);
-
-        this.setFirstComponent(topPart);
-        loadFirstLifterInfo(masterData, WebApplicationConfiguration.DEFAULT_STICKINESS);
-
-        adjustSplitBarLocation();
-
-        // we are now fully initialized
-        masterData.setAllowAll(false);
-        masterData.addListener(this);
-        if (masterData.lifters.isEmpty()) {
-            logger.debug("switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
-            switchGroup(app.getCurrentCompetitionSession());
-        } else {
-            logger.debug("not switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
-        }
-        
-        CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
+        synchronized (app) {
+			topPart.setSizeFull();
+			topPart.addComponent(liftList);
+			topPart.addComponent(announcerInfo);
+			topPart.setComponentAlignment(announcerInfo, Alignment.TOP_LEFT);
+			topPart.setExpandRatio(liftList, 100.0F);
+			this.setFirstComponent(topPart);
+			loadFirstLifterInfo(masterData,
+					WebApplicationConfiguration.DEFAULT_STICKINESS);
+			adjustSplitBarLocation();
+			// we are now fully initialized
+			masterData.setAllowAll(false);
+			masterData.addListener(this);
+			if (masterData.lifters.isEmpty()) {
+				logger.debug(
+						"switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
+				switchGroup(app.getCurrentCompetitionSession());
+			} else {
+				logger.debug(
+						"not switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
+			}
+			CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
+		}
         if (pusher != null) pusher.push();
     }
 

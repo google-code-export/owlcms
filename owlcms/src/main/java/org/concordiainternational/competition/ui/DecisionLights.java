@@ -238,20 +238,24 @@ public class DecisionLights extends SplitPanel implements DecisionEventListener,
     }
 
     private void resetLights() {
-        for (int i = 0; i < decisionLights.length; i++) {
-            decisionLights[i].setStyleName("decisionLight");
-            decisionLights[i].addStyleName("undecided");
-            decisionLights[i].setContentMode(Label.CONTENT_XHTML);
-            decisionLights[i].setValue("&nbsp;");
-        }
-        updateTop();
+        synchronized (app) {
+			for (int i = 0; i < decisionLights.length; i++) {
+				decisionLights[i].setStyleName("decisionLight");
+				decisionLights[i].addStyleName("undecided");
+				decisionLights[i].setContentMode(Label.CONTENT_XHTML);
+				decisionLights[i].setValue("&nbsp;");
+			}
+		}
+		updateTop();
     }
 
     private void resetBottom() {
-        for (int i = 0; i < decisionLights.length; i++) {
-            ((Label) bottom.getComponent(i, 0)).setValue(" ");
-        }
-        updateBottom();
+        synchronized (app) {
+			for (int i = 0; i < decisionLights.length; i++) {
+				((Label) bottom.getComponent(i, 0)).setValue(" ");
+			}
+		}
+		updateBottom();
     }
 
     public void refresh() {
