@@ -44,7 +44,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.artur.icepush.ICEPush;
 
+import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.ExternalResource;
+import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
@@ -53,7 +55,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 
-public class BrowserPanel extends VerticalLayout implements ApplicationView, CountdownTimerListener, MessageDisplayListener, Window.CloseListener{
+public class BrowserPanel extends VerticalLayout implements ApplicationView, CountdownTimerListener, MessageDisplayListener, Window.CloseListener, URIHandler { 
     private static final String ATTEMPT_WIDTH = "12em";
 	public final static Logger logger = LoggerFactory.getLogger(BrowserPanel.class);
     private static final long serialVersionUID = 1437157542240297372L;
@@ -96,13 +98,9 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 
         create(app);
         masterData = app.getMasterData(platformName);
-        // listen to changes in the competition data
-        updateListener = registerAsListener(platformName, masterData);
+        app.getMainWindow().addURIHandler(this);
         
-        // listen to public address events
-        if (viewName.contains("resultBoard")) {
-        	masterData.addBlackBoardListener(this);
-        }
+        registerHandlers(viewName);
         
         // we cannot call push() at this point, pass false as parameter
         display(platformName, masterData, false);
@@ -110,6 +108,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
         app.getMainWindow().addListener(this);
 
     }
+
 
     /**
      * Compute where we think the jsp file ought to be.
@@ -508,9 +507,28 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 		pusher.push();
 	}
 
-	@Override
-	public void windowClose(CloseEvent e) {
-        // stop listening to changes in the competition data
+
+
+	/**
+	 * Register listeners for the various model events.
+	 * @param viewName
+	 */
+	private void registerHandlers(String viewName) {
+		// listen to changes in the competition data
+        updateListener = registerAsListener(platformName, masterData);
+        
+        // listen to public address events
+        if (viewName.contains("resultBoard")) {
+        	logger.warn("listening to public address events.");
+        	masterData.addBlackBoardListener(this);
+        }
+	}
+	
+	/**
+	 * Undo what registerListeners did.
+	 */
+	private void unRegisterListeners() {
+		// stop listening to changes in the competition data
 		if (updateListener != null) {
 			masterData.removeListener(updateListener);
 			logger.warn("stopped listening to UpdateEvents");
@@ -522,6 +540,22 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
         	masterData.removeBlackBoardListener(this);
         	logger.warn("stopped listening to PublicAddress TimerEvents");
         }
+	}
+	
+
+	/* Unregister listeners when window is closed.
+	 * @see com.vaadin.ui.Window.CloseListener#windowClose(com.vaadin.ui.Window.CloseEvent)
+	 */
+	@Override
+	public void windowClose(CloseEvent e) {
+        unRegisterListeners();
+	}
+
+	@Override
+	public DownloadStream handleURI(URL context, String relativeUri) {
+		logger.warn("re-registering handlers for {} {}",this,relativeUri);
+		registerHandlers(viewName);
+		return null;
 	}
 
 	
