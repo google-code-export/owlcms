@@ -209,6 +209,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @param viewName
      */
     public void doDisplay(String viewName) {
+    	logger.debug("doDisplay {}",viewName);
         ApplicationView view = components.getViewByName(viewName, false);
         setMainLayoutContent(view);
         uriFragmentUtility.setFragment(view.getFragment(), false);
@@ -514,10 +515,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
             public void transactionStart(Application application, Object transactionData) {
                 ((LocalizedSystemMessages) getSystemMessages()).setThreadLocale(getLocale());
-                current.set(CompetitionApplication.this); // make the
-                                                          // application
-                                                          // available via
-                                                          // ThreadLocal
+                current.set(CompetitionApplication.this); // make the application available via ThreadLocal
                 HttpServletRequest request = (HttpServletRequest) transactionData;
                 checkURI(request.getRequestURI());
                 request.getSession(true).setMaxInactiveInterval(3600);
@@ -546,7 +544,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
             @Override
             public void fragmentChanged(FragmentChangedEvent source) {
-                //logger.warn("fragment {}",source.getUriFragmentUtility().getFragment());
+                logger.warn("fragment {}",source.getUriFragmentUtility().getFragment());
                 String frag = source.getUriFragmentUtility().getFragment();
                 displayView(frag);
             }
