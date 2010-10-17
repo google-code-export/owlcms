@@ -219,6 +219,8 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
     private FormLayout timekeeperOptions() {
         actAsTimekeeper.setCaption(Messages.getString("LifterInfo.actAsTimeKeeper", locale)); //$NON-NLS-1$
         automaticStartTime.setCaption(Messages.getString("LifterInfo.automaticStartTime", locale)); //$NON-NLS-1$
+        automaticStartTime.setValue(groupData.getStartTimeAutomatically());
+        actAsTimekeeper.setValue(showTimerControls);
         FormLayout options = new FormLayout();
         actAsTimekeeper.setImmediate(true);
         automaticStartTime.setImmediate(true);
