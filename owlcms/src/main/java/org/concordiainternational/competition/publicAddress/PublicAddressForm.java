@@ -154,6 +154,7 @@ public class PublicAddressForm extends Form implements Window.CloseListener {
 	}
 
 
+	@Override
 	public Window getWindow() {
 		return window;
 	}

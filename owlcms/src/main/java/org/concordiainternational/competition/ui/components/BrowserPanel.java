@@ -421,7 +421,8 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
     /**
      * @return
      */
-    public String getFragment() {
+    @Override
+	public String getFragment() {
         return viewName+"/"+platformName;
     }
     

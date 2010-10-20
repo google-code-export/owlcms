@@ -237,7 +237,8 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
         top.setEnabled(true);
     }
 
-    public void refresh() {
+    @Override
+	public void refresh() {
     }
 
 
@@ -300,7 +301,8 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
     /**
      * @return
      */
-    public String getFragment() {
+    @Override
+	public String getFragment() {
         return viewName+"/"+platformName+"/"+((int)this.refereeIndex+1);
     }
     

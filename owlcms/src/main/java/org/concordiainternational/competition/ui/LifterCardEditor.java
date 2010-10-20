@@ -634,7 +634,8 @@ public class LifterCardEditor extends Panel implements
      * each object that has a handler; in this example just for login panel. The
      * returned action list might as well be static list.
      */
-    public Action[] getActions(Object target, Object sender) {
+    @Override
+	public Action[] getActions(Object target, Object sender) {
         return new Action[] { action_ok };
     }
 
@@ -642,7 +643,8 @@ public class LifterCardEditor extends Panel implements
      * Handle actions received from keyboard. This simply directs the actions to
      * the same listener methods that are called with ButtonClick events.
      */
-    public void handleAction(Action action, Object sender, Object target) {
+    @Override
+	public void handleAction(Action action, Object sender, Object target) {
         if (action == action_ok) {
             okHandler();
         }

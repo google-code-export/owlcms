@@ -253,7 +253,8 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
     /**
      * @return
      */
-    public String getFragment() {
+    @Override
+	public String getFragment() {
         return viewName+"/"+platformName;
     }
     

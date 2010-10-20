@@ -208,14 +208,16 @@ public class ResultView extends SplitPanel implements ApplicationView, SessionDa
      * @param lifter
      * @param lifterItem
      */
-    public void editLifter(Lifter lifter, Item lifterItem) {
+    @Override
+	public void editLifter(Lifter lifter, Item lifterItem) {
         updateLifterEditor(lifter, lifterItem);
     }
 
     /**
      * @return true if editor in bottom pane is pinned (not to be updated)
      */
-    public boolean isStickyEditor() {
+    @Override
+	public boolean isStickyEditor() {
         return stickyEditor;
     }
 
@@ -224,7 +226,8 @@ public class ResultView extends SplitPanel implements ApplicationView, SessionDa
      * 
      * @param freezeLifterCardEditor
      */
-    public void setStickyEditor(boolean freezeLifterCardEditor) {
+    @Override
+	public void setStickyEditor(boolean freezeLifterCardEditor) {
         setStickyEditor(freezeLifterCardEditor, true);
     }
 
@@ -233,7 +236,8 @@ public class ResultView extends SplitPanel implements ApplicationView, SessionDa
      * 
      * @param freezeLifterCardEditor
      */
-    public void setStickyEditor(boolean freezeLifterCardEditor, boolean reloadLifterInfo) {
+    @Override
+	public void setStickyEditor(boolean freezeLifterCardEditor, boolean reloadLifterInfo) {
         // logger.debug("is frozen: {}",freezeLifterCardEditor);
         boolean wasSticky = this.stickyEditor;
         this.stickyEditor = freezeLifterCardEditor;
@@ -289,7 +293,8 @@ public class ResultView extends SplitPanel implements ApplicationView, SessionDa
         CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
     }
 
-    public void setCurrentGroup(CompetitionSession competitionSession) {
+    @Override
+	public void setCurrentGroup(CompetitionSession competitionSession) {
         setStickyEditor(false, false);
         switchGroup(competitionSession);
     }
@@ -298,7 +303,8 @@ public class ResultView extends SplitPanel implements ApplicationView, SessionDa
      * @param groupData
      *            the groupData to set
      */
-    public void setGroupData(SessionData groupData) {
+    @Override
+	public void setGroupData(SessionData groupData) {
         this.groupData = groupData;
     }
 
@@ -320,7 +326,8 @@ public class ResultView extends SplitPanel implements ApplicationView, SessionDa
     /**
      * @return
      */
-    public String getFragment() {
+    @Override
+	public String getFragment() {
         return viewName;
     }
     

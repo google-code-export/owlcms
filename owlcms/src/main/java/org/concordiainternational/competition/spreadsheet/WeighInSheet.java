@@ -126,7 +126,8 @@ public class WeighInSheet extends OutputSheet implements InputSheet, LifterReade
      *            index of the lifter, starting at 0
      * @throws CellNotFoundException
      */
-    public Lifter readLifter(WorkSheetHandle sheet, int lifterNumber) {
+    @Override
+	public Lifter readLifter(WorkSheetHandle sheet, int lifterNumber) {
         int row = lifterNumber + InputSheetHelper.START_ROW;
         Lifter lifter = new Lifter();
         // read in values; getInt returns null if the cell is empty as opposed

@@ -327,7 +327,8 @@ public class Lifter implements MethodEventSource, Notifier {
      * @see com.vaadin.event.MethodEventSource#addListener(java.lang.Class,
      * java.lang.Object, java.lang.reflect.Method)
      */
-    @SuppressWarnings({ "rawtypes" })
+    @Override
+	@SuppressWarnings({ "rawtypes" })
     public void addListener(Class eventType, Object object, Method method) {
         getEventRouter().addListener(eventType, object, method);
     }
@@ -338,7 +339,8 @@ public class Lifter implements MethodEventSource, Notifier {
      * @see com.vaadin.event.MethodEventSource#addListener(java.lang.Class,
      * java.lang.Object, java.lang.String)
      */
-    @SuppressWarnings({ "rawtypes" })
+    @Override
+	@SuppressWarnings({ "rawtypes" })
     public void addListener(Class eventType, Object object, String methodName) {
         getEventRouter().addListener(eventType, object, methodName);
     }
@@ -349,7 +351,8 @@ public class Lifter implements MethodEventSource, Notifier {
      * 
      * @param listener
      */
-    public void addListener(EventListener listener) {
+    @Override
+	public void addListener(EventListener listener) {
         getEventRouter().addListener(UpdateEvent.class, listener, LIFTER_EVENT_METHOD);
     }
 
@@ -1132,7 +1135,8 @@ public class Lifter implements MethodEventSource, Notifier {
      * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class,
      * java.lang.Object)
      */
-    @SuppressWarnings({ "rawtypes" })
+    @Override
+	@SuppressWarnings({ "rawtypes" })
     public void removeListener(Class eventType, Object target) {
         if (eventRouter != null) {
             eventRouter.removeListener(eventType, target);
@@ -1145,7 +1149,8 @@ public class Lifter implements MethodEventSource, Notifier {
      * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class,
      * java.lang.Object, java.lang.reflect.Method)
      */
-    @SuppressWarnings({ "rawtypes" })
+    @Override
+	@SuppressWarnings({ "rawtypes" })
     public void removeListener(Class eventType, Object target, Method method) {
         if (eventRouter != null) {
             eventRouter.removeListener(eventType, target, method);
@@ -1158,7 +1163,8 @@ public class Lifter implements MethodEventSource, Notifier {
      * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class,
      * java.lang.Object, java.lang.String)
      */
-    @SuppressWarnings({ "rawtypes" })
+    @Override
+	@SuppressWarnings({ "rawtypes" })
     public void removeListener(Class eventType, Object target, String methodName) {
         if (eventRouter != null) {
             eventRouter.removeListener(eventType, target, methodName);
@@ -1170,7 +1176,8 @@ public class Lifter implements MethodEventSource, Notifier {
      * 
      * @param listener
      */
-    public void removeListener(EventListener listener) {
+    @Override
+	public void removeListener(EventListener listener) {
         if (eventRouter != null) {
             eventRouter.removeListener(UpdateEvent.class, listener, LIFTER_EVENT_METHOD);
         }

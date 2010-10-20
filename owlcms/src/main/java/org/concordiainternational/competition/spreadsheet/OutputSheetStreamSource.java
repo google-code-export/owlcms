@@ -62,7 +62,8 @@ public class OutputSheetStreamSource<T extends OutputSheet> implements StreamRes
             final PipedOutputStream out = new PipedOutputStream(in);
             logger.debug("starting getStream"); //$NON-NLS-1$
             new Thread(new Runnable() {
-                public void run() {
+                @Override
+				public void run() {
                     try {
                         outputSheet.writeLifters(lifters, out);
                     } catch (Throwable e) {

@@ -148,7 +148,8 @@ public class AttemptBoardView extends Panel implements ApplicationView, SessionD
     /**
      * @return
      */
-    public String getFragment() {
+    @Override
+	public String getFragment() {
         return viewName+"/"+platformName;
     }
     
