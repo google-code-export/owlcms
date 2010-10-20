@@ -99,6 +99,7 @@ public class SessionForm extends Form  {
     }
 
 
+	@Override
 	public Window getWindow() {
 		return window;
 	}

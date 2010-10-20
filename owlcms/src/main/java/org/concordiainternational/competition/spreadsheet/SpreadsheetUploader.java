@@ -157,7 +157,8 @@ public class SpreadsheetUploader extends CustomComponent implements Upload.Succe
     }
 
     // This is called if the upload fails.
-    public void uploadFailed(Upload.FailedEvent event) {
+    @Override
+	public void uploadFailed(Upload.FailedEvent event) {
         // Log the failure on screen.
         final String messageFormat = Messages.getString("SpreadsheetUploader.UploadingFailure", locale); //$NON-NLS-1$
         final String mimeType = event.getMIMEType();
@@ -180,7 +181,8 @@ public class SpreadsheetUploader extends CustomComponent implements Upload.Succe
     /**
      * @return
      */
-    public String getFragment() {
+    @Override
+	public String getFragment() {
         return viewName;
     }
     

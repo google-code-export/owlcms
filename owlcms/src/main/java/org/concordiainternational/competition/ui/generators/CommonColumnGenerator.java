@@ -72,7 +72,8 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
         this.app = (Application) app;
     }
 
-    public Component generateCell(Table table, Object itemId, Object propertyId) {
+    @Override
+	public Component generateCell(Table table, Object itemId, Object propertyId) {
         final Item item = table.getItem(itemId);
         final String propertyIdString = (String) propertyId;
         final Property uiProp = item.getItemProperty(propertyIdString);

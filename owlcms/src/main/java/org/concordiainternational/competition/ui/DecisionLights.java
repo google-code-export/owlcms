@@ -258,7 +258,8 @@ public class DecisionLights extends SplitPanel implements DecisionEventListener,
 		updateBottom();
     }
 
-    public void refresh() {
+    @Override
+	public void refresh() {
     }
 
     /**
@@ -311,7 +312,8 @@ public class DecisionLights extends SplitPanel implements DecisionEventListener,
     /**
      * @return
      */
-    public String getFragment() {
+    @Override
+	public String getFragment() {
         return viewName+"/"+platformName;
     }
     

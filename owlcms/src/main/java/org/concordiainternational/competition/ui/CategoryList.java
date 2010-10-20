@@ -89,7 +89,8 @@ public class CategoryList extends GenericHbnList<Category> implements Applicatio
     /**
      * @return
      */
-    public String getFragment() {
+    @Override
+	public String getFragment() {
         return viewName;
     }
     

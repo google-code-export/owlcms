@@ -114,7 +114,8 @@ public class CompetitionApplicationComponents {
     private class CompetitionEditorComponent implements CompetitionApplicationComponent {
         private CompetitionEditor competitionEditor = null;
 
-        public CompetitionEditor get(boolean initFromFragment, String viewName) {
+        @Override
+		public CompetitionEditor get(boolean initFromFragment, String viewName) {
             competitionEditor = (new CompetitionEditor(initFromFragment, viewName));
             return competitionEditor;
         }
@@ -126,7 +127,8 @@ public class CompetitionApplicationComponents {
     private class PlatformListComponent implements CompetitionApplicationComponent {
         private PlatformList platformList = null;
 
-        public PlatformList get(boolean initFromFragment, String viewName) {
+        @Override
+		public PlatformList get(boolean initFromFragment, String viewName) {
             this.platformList = (new PlatformList(initFromFragment, viewName));
             return platformList;
         }
@@ -138,7 +140,8 @@ public class CompetitionApplicationComponents {
     private class CategoryListComponent implements CompetitionApplicationComponent {
         private CategoryList categoryList = null;
 
-        public CategoryList get(boolean initFromFragment, String viewName) {
+        @Override
+		public CategoryList get(boolean initFromFragment, String viewName) {
             this.categoryList = (new CategoryList(initFromFragment, viewName));
             return categoryList;
         }
@@ -150,7 +153,8 @@ public class CompetitionApplicationComponents {
     private class GroupListComponent implements CompetitionApplicationComponent {
         private SessionList groupList = null;
 
-        public SessionList get(boolean initFromFragment, String viewName) {
+        @Override
+		public SessionList get(boolean initFromFragment, String viewName) {
             this.groupList = (new SessionList(initFromFragment, viewName));
             return groupList;
         }
@@ -162,7 +166,8 @@ public class CompetitionApplicationComponents {
     private class WeighInListComponent implements CompetitionApplicationComponent {
         private WeighInList weighInList = null;
 
-        public WeighInList get(boolean initFromFragment, String viewName) {
+        @Override
+		public WeighInList get(boolean initFromFragment, String viewName) {
             this.weighInList = (new WeighInList(initFromFragment, viewName, false));
             return weighInList;
         }
@@ -174,7 +179,8 @@ public class CompetitionApplicationComponents {
     private class CountdownDisplayComponent implements CompetitionApplicationComponent {
         private CountdownDisplay countdownDisplay = null;
 
-        public ApplicationView get(boolean initFromFragment, String viewName) {
+        @Override
+		public ApplicationView get(boolean initFromFragment, String viewName) {
             this.countdownDisplay = (new CountdownDisplay(initFromFragment, viewName));
             return countdownDisplay;
         }
@@ -186,7 +192,8 @@ public class CompetitionApplicationComponents {
     private class DecisionLightsComponent implements CompetitionApplicationComponent {
         private DecisionLights decisionLights = null;
 
-        public ApplicationView get(boolean initFromFragment, String viewName) {
+        @Override
+		public ApplicationView get(boolean initFromFragment, String viewName) {
             this.decisionLights = (new DecisionLights(initFromFragment, viewName, false, false));
             return decisionLights;
         }
@@ -198,7 +205,8 @@ public class CompetitionApplicationComponents {
     private class JuryLightsComponent implements CompetitionApplicationComponent {
         private DecisionLights decisionLights = null;
 
-        public ApplicationView get(boolean initFromFragment, String viewName) {
+        @Override
+		public ApplicationView get(boolean initFromFragment, String viewName) {
             this.decisionLights = (new DecisionLights(initFromFragment, viewName, true, false));
             return decisionLights;
         }
@@ -210,7 +218,8 @@ public class CompetitionApplicationComponents {
     private class RefereeConsoleComponent implements CompetitionApplicationComponent {
         private RefereeConsole refereeConsole = null;
 
-        public ApplicationView get(boolean initFromFragment, String viewName) {
+        @Override
+		public ApplicationView get(boolean initFromFragment, String viewName) {
             this.refereeConsole = (new RefereeConsole(initFromFragment, viewName));
             return refereeConsole;
         }
@@ -222,7 +231,8 @@ public class CompetitionApplicationComponents {
     private class RegistrationListComponent implements CompetitionApplicationComponent {
         private WeighInList weighInList = null;
 
-        public WeighInList get(boolean initFromFragment, String viewName) {
+        @Override
+		public WeighInList get(boolean initFromFragment, String viewName) {
             this.weighInList = (new WeighInList(initFromFragment, viewName,true));
             return weighInList;
         }
@@ -234,7 +244,8 @@ public class CompetitionApplicationComponents {
     private class SpreadsheetUploaderComponent implements CompetitionApplicationComponent {
         private SpreadsheetUploader spreadsheetUploader = null;
 
-        public SpreadsheetUploader get(boolean initFromFragment, String viewName) {
+        @Override
+		public SpreadsheetUploader get(boolean initFromFragment, String viewName) {
             this.spreadsheetUploader = (new SpreadsheetUploader(initFromFragment, viewName));
             return spreadsheetUploader;
         }
@@ -246,7 +257,8 @@ public class CompetitionApplicationComponents {
     private class AnnouncerViewComponent implements CompetitionApplicationComponent {
         private AnnouncerView announcerView = null;
 
-        public AnnouncerView get(boolean initFromFragment, String viewName) {
+        @Override
+		public AnnouncerView get(boolean initFromFragment, String viewName) {
             announcerView = (new AnnouncerView(initFromFragment, viewName, Mode.ANNOUNCER));
             announcerView.adjustSplitBarLocation();
             return announcerView;
@@ -259,7 +271,8 @@ public class CompetitionApplicationComponents {
     private class ChangesViewComponent implements CompetitionApplicationComponent {
         private AnnouncerView changesView = null;
 
-        public AnnouncerView get(boolean initFromFragment, String viewName) {
+        @Override
+		public AnnouncerView get(boolean initFromFragment, String viewName) {
             changesView = (new AnnouncerView(initFromFragment, viewName,Mode.MARSHALL));
             changesView.adjustSplitBarLocation();
             return changesView;
@@ -272,7 +285,8 @@ public class CompetitionApplicationComponents {
     private class TimekeeperViewComponent implements CompetitionApplicationComponent {
         private AnnouncerView timekeeperView = null;
 
-        public AnnouncerView get(boolean initFromFragment, String viewName) {
+        @Override
+		public AnnouncerView get(boolean initFromFragment, String viewName) {
             timekeeperView = (new AnnouncerView(initFromFragment, viewName, Mode.TIMEKEEPER));
             timekeeperView.adjustSplitBarLocation();
             return timekeeperView;
@@ -285,7 +299,8 @@ public class CompetitionApplicationComponents {
     private class ResultViewComponent implements CompetitionApplicationComponent {
         private ResultView resultView = null;
 
-        public ResultView get(boolean initFromFragment, String viewName) {
+        @Override
+		public ResultView get(boolean initFromFragment, String viewName) {
             this.resultView = (new ResultView(initFromFragment, viewName));
             return resultView;
         }
@@ -297,7 +312,8 @@ public class CompetitionApplicationComponents {
     private class ResultBoardComponent implements CompetitionApplicationComponent {
         private BrowserPanel resultBoard = null;
         
-        public BrowserPanel get(boolean initFromFragment, String viewName) {
+        @Override
+		public BrowserPanel get(boolean initFromFragment, String viewName) {
             try {
                 resultBoard = (new BrowserPanel(initFromFragment, viewName,"jsp/resultBoard.jsp?platformName=")); //$NON-NLS-1$
             } catch (MalformedURLException e) {
@@ -313,7 +329,8 @@ public class CompetitionApplicationComponents {
     private class SimpleResultBoardComponent implements CompetitionApplicationComponent {
         private BrowserPanel resultBoard = null;
 
-        public BrowserPanel get(boolean initFromFragment, String viewName) {
+        @Override
+		public BrowserPanel get(boolean initFromFragment, String viewName) {
             try {
                 resultBoard = (new BrowserPanel(initFromFragment, viewName,"jsp/simpleResultBoard.jsp?platformName=")); //$NON-NLS-1$
             } catch (MalformedURLException e) {
@@ -329,7 +346,8 @@ public class CompetitionApplicationComponents {
     private class LifterBoardComponent implements CompetitionApplicationComponent {
         private BrowserPanel liftOrderBoard = null;
 
-        public BrowserPanel get(boolean initFromFragment, String viewName) {
+        @Override
+		public BrowserPanel get(boolean initFromFragment, String viewName) {
             try {
                 liftOrderBoard = (new BrowserPanel(initFromFragment, viewName,"jsp/warmupRoom.jsp?platformName=")); //$NON-NLS-1$
             } catch (MalformedURLException e) {
@@ -345,7 +363,8 @@ public class CompetitionApplicationComponents {
     private class SummaryLiftOrderViewComponent implements CompetitionApplicationComponent {
         private BrowserPanel summaryLifterView = null;
 
-        public BrowserPanel get(boolean initFromFragment, String viewName) {
+        @Override
+		public BrowserPanel get(boolean initFromFragment, String viewName) {
             try {
                 summaryLifterView = (new BrowserPanel(initFromFragment, viewName, "jsp/liftingOrder.jsp?platformName=")); //$NON-NLS-1$
             } catch (MalformedURLException e) {
@@ -361,7 +380,8 @@ public class CompetitionApplicationComponents {
     private class AttemptBoardComponent implements CompetitionApplicationComponent {
         // private BrowserPanel currentLifterPanel = null;
 
-        public AttemptBoardView get(boolean initFromFragment, String viewName) {
+        @Override
+		public AttemptBoardView get(boolean initFromFragment, String viewName) {
             return new AttemptBoardView(initFromFragment, viewName);
         }
     }

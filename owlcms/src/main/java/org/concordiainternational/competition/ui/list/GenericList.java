@@ -185,11 +185,13 @@ public abstract class GenericList<T> extends VerticalLayout {
             Action remove = new Action(Messages.getString("Common.deleteThisRow", app.getLocale())); //$NON-NLS-1$
             Action[] actions = new Action[] { add, remove };
 
-            public Action[] getActions(Object target, Object sender) {
+            @Override
+			public Action[] getActions(Object target, Object sender) {
                 return actions;
             }
 
-            public void handleAction(Action action, Object sender, Object targetId) {
+            @Override
+			public void handleAction(Action action, Object sender, Object targetId) {
                 if (action == add) {
                     newItem();
                 } else if (action == remove) {
