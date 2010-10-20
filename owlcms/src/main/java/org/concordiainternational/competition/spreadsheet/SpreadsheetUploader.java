@@ -98,6 +98,7 @@ public class SpreadsheetUploader extends CustomComponent implements Upload.Succe
     }
 
     // Callback method to begin receiving the upload.
+    @Override
     public OutputStream receiveUpload(String filename, String MIMEType) {
         FileOutputStream fos = null; // Output stream to write to
         try {
@@ -124,6 +125,7 @@ public class SpreadsheetUploader extends CustomComponent implements Upload.Succe
     }
 
     // This is called if the upload is finished.
+   @Override
     public void uploadSucceeded(Upload.SucceededEvent event) {
         // Log the upload on screen.
         final String messageFormat = Messages.getString("SpreadsheetUploader.Status", locale); //$NON-NLS-1$
