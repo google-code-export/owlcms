@@ -122,52 +122,52 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
     public void loadLifter(final Lifter lifter, final SessionData groupData) {
         logger.debug("LifterInfo.loadLifter() begin: newLifter = {} previousLifter = {}", lifter, prevLifter); //$NON-NLS-1$
 
-        // make sure that groupData listens to changes relating to the lifter
-        // since the buttons trigger changes within the data (e.g.
-        // successfulLift)
-        if (parentView instanceof AnnouncerView) {
-            if ((((AnnouncerView) parentView).mode == Mode.ANNOUNCER && identifier.startsWith("top"))) { //$NON-NLS-1$
-                groupData.trackEditors(lifter, this.lifter, this);
-            }
-        }
-
-        // don't work for nothing, avoid stutter on the screen.
-        // we have to compare the attributes as last displayed.
-        if (lifter != null) {
-            if (lifter == prevLifter && lifter.getAttemptsDone() == prevAttempt
-                && lifter.getNextAttemptRequestedWeight() == prevWeight) {
-                return; // we are already showing correct information.
-            }
-            prevLifter = lifter;
-            prevAttempt = lifter.getAttemptsDone();
-            prevWeight = lifter.getNextAttemptRequestedWeight();
-        }
-
-        // prepare new display.
-        this.removeAllComponents();
-        if (lifter == null) return;
-
-        updateDisplayBoard(lifter, groupData);
-
-        StringBuilder sb = new StringBuilder();
-
-        boolean done = lifter.getHTMLLifterInfo(identifier.startsWith("bottom"), sb); //$NON-NLS-1$
-        final Label label = new Label(sb.toString(), Label.CONTENT_XHTML);
-        label.setData("lifter");
-        this.addComponent(label);
-
-        this.setSpacing(true);
-        if (done) return; // lifter has already performed all lifts.
-
-        if (lifter.isCurrentLifter() && identifier.startsWith("top")) { //$NON-NLS-1$
-            topDisplayOptions(lifter, groupData);
-        } else if (lifter.isCurrentLifter() && identifier.startsWith("bottom")) { //$NON-NLS-1$
-            bottomDisplayOptions(lifter, groupData);
-        } else if (identifier.startsWith("display")) { //$NON-NLS-1$
-            currentLifterDisplayOptions(lifter, groupData);
-        }
-
-        if (pusher != null) {
+        synchronized (app) {
+			// make sure that groupData listens to changes relating to the lifter
+			// since the buttons trigger changes within the data (e.g.
+			// successfulLift)
+			if (parentView instanceof AnnouncerView) {
+				if ((((AnnouncerView) parentView).mode == Mode.ANNOUNCER && identifier
+						.startsWith("top"))) { //$NON-NLS-1$
+					groupData.trackEditors(lifter, this.lifter, this);
+				}
+			}
+			// don't work for nothing, avoid stutter on the screen.
+			// we have to compare the attributes as last displayed.
+			if (lifter != null) {
+				if (lifter == prevLifter
+						&& lifter.getAttemptsDone() == prevAttempt
+						&& lifter.getNextAttemptRequestedWeight() == prevWeight) {
+					return; // we are already showing correct information.
+				}
+				prevLifter = lifter;
+				prevAttempt = lifter.getAttemptsDone();
+				prevWeight = lifter.getNextAttemptRequestedWeight();
+			}
+			// prepare new display.
+			this.removeAllComponents();
+			if (lifter == null)
+				return;
+			updateDisplayBoard(lifter, groupData);
+			StringBuilder sb = new StringBuilder();
+			boolean done = lifter.getHTMLLifterInfo(
+					identifier.startsWith("bottom"), sb); //$NON-NLS-1$
+			final Label label = new Label(sb.toString(), Label.CONTENT_XHTML);
+			label.setData("lifter");
+			this.addComponent(label);
+			this.setSpacing(true);
+			if (done)
+				return; // lifter has already performed all lifts.
+			if (lifter.isCurrentLifter() && identifier.startsWith("top")) { //$NON-NLS-1$
+				topDisplayOptions(lifter, groupData);
+			} else if (lifter.isCurrentLifter()
+					&& identifier.startsWith("bottom")) { //$NON-NLS-1$
+				bottomDisplayOptions(lifter, groupData);
+			} else if (identifier.startsWith("display")) { //$NON-NLS-1$
+				currentLifterDisplayOptions(lifter, groupData);
+			}
+		}
+		if (pusher != null) {
             pusher.push();
         } else {
             synchronized (app) {
@@ -219,6 +219,8 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
     private FormLayout timekeeperOptions() {
         actAsTimekeeper.setCaption(Messages.getString("LifterInfo.actAsTimeKeeper", locale)); //$NON-NLS-1$
         automaticStartTime.setCaption(Messages.getString("LifterInfo.automaticStartTime", locale)); //$NON-NLS-1$
+        automaticStartTime.setValue(groupData.getStartTimeAutomatically());
+        actAsTimekeeper.setValue(showTimerControls);
         FormLayout options = new FormLayout();
         actAsTimekeeper.setImmediate(true);
         automaticStartTime.setImmediate(true);

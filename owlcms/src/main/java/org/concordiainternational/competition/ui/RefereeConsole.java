@@ -210,12 +210,15 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
      */
     @SuppressWarnings("unused")
     private void allDecisionsIn(Decision[] decisions) {
-        boolean allDecisionsIn = true;
-        for (int i = 0; i < 3; i++) {
-            allDecisionsIn = allDecisionsIn && (decisions[i].accepted != null);
-        }
-        top.setEnabled(!allDecisionsIn);
-        updateTop();
+        synchronized (app) {
+			boolean allDecisionsIn = true;
+			for (int i = 0; i < 3; i++) {
+				allDecisionsIn = allDecisionsIn
+						&& (decisions[i].accepted != null);
+			}
+			top.setEnabled(!allDecisionsIn);
+		}
+		updateTop();
     }
 
     /**
@@ -234,14 +237,17 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
         top.setEnabled(true);
     }
 
-    public void refresh() {
+    @Override
+	public void refresh() {
     }
 
 
     private void resetBottom() {
-        refereeReminder.setValue(refereeLabel(refereeIndex));
-        refereeReminder.setStyleName("refereeOk");
-        updateBottom();
+        synchronized (app) {
+			refereeReminder.setValue(refereeLabel(refereeIndex));
+			refereeReminder.setStyleName("refereeOk");
+		}
+		updateBottom();
     }
 
 
@@ -273,11 +279,14 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
      * @param refereeIndex
      */
     public void setRefereeIndex(int refereeIndex) {
-        this.refereeIndex = refereeIndex;
-        refereeReminder.setValue(refereeLabel(refereeIndex));
-        UriFragmentUtility uriFragmentUtility = CompetitionApplication.getCurrent().getUriFragmentUtility();
-        uriFragmentUtility.setFragment(getFragment(), false);
-        updateBottom();
+        synchronized (app) {
+			this.refereeIndex = refereeIndex;
+			refereeReminder.setValue(refereeLabel(refereeIndex));
+			UriFragmentUtility uriFragmentUtility = CompetitionApplication
+					.getCurrent().getUriFragmentUtility();
+			uriFragmentUtility.setFragment(getFragment(), false);
+		}
+		updateBottom();
     }
 
 
@@ -292,7 +301,8 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
     /**
      * @return
      */
-    public String getFragment() {
+    @Override
+	public String getFragment() {
         return viewName+"/"+platformName+"/"+((int)this.refereeIndex+1);
     }
     

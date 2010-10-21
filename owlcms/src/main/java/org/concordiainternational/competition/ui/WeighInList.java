@@ -121,7 +121,8 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
             final Button.ClickListener drawLotsListener = new Button.ClickListener() { //$NON-NLS-1$
                 private static final long serialVersionUID = -8473648982746209221L;
 
-                public void buttonClick(ClickEvent event) {
+                @Override
+				public void buttonClick(ClickEvent event) {
                     drawLotsButton.setComponentError(null);
                     drawLots();
                 }
@@ -154,7 +155,8 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
             final Button.ClickListener clearAllListener = new Button.ClickListener() { //$NON-NLS-1$
                 private static final long serialVersionUID = -8473648982746209221L;
 
-                public void buttonClick(ClickEvent event) {
+                @Override
+				public void buttonClick(ClickEvent event) {
                     clearAllButton.setComponentError(null);
                     clearAllLifters();
                 }
@@ -190,7 +192,8 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
         final Button.ClickListener listener = new Button.ClickListener() { //$NON-NLS-1$
             private static final long serialVersionUID = -8473648982746209221L;
 
-            public void buttonClick(ClickEvent event) {
+            @Override
+			public void buttonClick(ClickEvent event) {
                 lifterCardsButton.setComponentError(null);
                 final OutputSheetStreamSource<LifterCardSheet> streamSource = new OutputSheetStreamSource<LifterCardSheet>(
                         LifterCardSheet.class, (CompetitionApplication) app, excludeNotWeighed);
@@ -217,7 +220,8 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
         final Button.ClickListener listener = new Button.ClickListener() { //$NON-NLS-1$
             private static final long serialVersionUID = -8473648982746209221L;
 
-            public void buttonClick(ClickEvent event) {
+            @Override
+			public void buttonClick(ClickEvent event) {
                 weighInListButton.setComponentError(null);
                 final OutputSheetStreamSource<WeighInSheet> streamSource = new OutputSheetStreamSource<WeighInSheet>(
                         WeighInSheet.class, (CompetitionApplication) app, excludeNotWeighed);
@@ -244,7 +248,8 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
         final Button.ClickListener listener = new Button.ClickListener() { //$NON-NLS-1$
             private static final long serialVersionUID = -8473648982746209221L;
 
-            public void buttonClick(ClickEvent event) {
+            @Override
+			public void buttonClick(ClickEvent event) {
                 juryListButton.setComponentError(null);
                 final OutputSheetStreamSource<JurySheet> streamSource = new OutputSheetStreamSource<JurySheet>(
                         JurySheet.class, (CompetitionApplication) app, excludeNotWeighed);
@@ -271,7 +276,8 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
         final Button.ClickListener listener = new Button.ClickListener() { //$NON-NLS-1$
             private static final long serialVersionUID = -8473648982746209221L;
 
-            public void buttonClick(ClickEvent event) {
+            @Override
+			public void buttonClick(ClickEvent event) {
                 startListButton.setComponentError(null);
                 final OutputSheetStreamSource<StartList> streamSource = new OutputSheetStreamSource<StartList>(
                         StartList.class, (CompetitionApplication) app, false);
@@ -477,7 +483,8 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
     /**
      * @return
      */
-    public String getFragment() {
+    @Override
+	public String getFragment() {
         return viewName+"/"+platformName+"/"+groupName;
     }
     

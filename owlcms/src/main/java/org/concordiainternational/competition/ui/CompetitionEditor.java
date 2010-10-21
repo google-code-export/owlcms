@@ -337,7 +337,8 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
     /**
      * @return
      */
-    public String getFragment() {
+    @Override
+	public String getFragment() {
         return viewName;
     }
     

@@ -209,6 +209,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @param viewName
      */
     public void doDisplay(String viewName) {
+    	logger.debug("doDisplay {}",viewName);
         ApplicationView view = components.getViewByName(viewName, false);
         setMainLayoutContent(view);
         uriFragmentUtility.setFragment(view.getFragment(), false);
@@ -240,7 +241,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * Used to get current Hibernate session. Also ensures an open Hibernate
      * transaction.
      */
-    public Session getHbnSession() {
+    @Override
+	public Session getHbnSession() {
         Session currentSession = getCurrentSession();
         if (!currentSession.getTransaction().isActive()) {
             currentSession.beginTransaction();
@@ -356,7 +358,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @param streamSource
      * @param filename
      */
-    public void openSpreadsheet(OutputSheetStreamSource<? extends OutputSheet> streamSource, final String filename) {
+    @Override
+	public void openSpreadsheet(OutputSheetStreamSource<? extends OutputSheet> streamSource, final String filename) {
         StreamResource streamResource = new StreamResource(streamSource, filename + ".xls", this); //$NON-NLS-1$
         streamResource.setCacheTime(5000); // no cache (<=0) does not work with
                                            // IE8
@@ -371,7 +374,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * org.concordiainternational.competition.UserActions#setCurrentGroup(org
      * .concordiainternational.competition.data.Group)
      */
-    public void setCurrentCompetitionSession(CompetitionSession value) {
+    @Override
+	public void setCurrentCompetitionSession(CompetitionSession value) {
         currentGroup = value;
         final ApplicationView currentView = components.currentView;
         if (currentView != null) {
@@ -398,7 +402,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * org.concordiainternational.competition.UserActions#setPlatform(java.lang
      * .String)
      */
-    public void setPlatformByName(String platformName) {
+    @Override
+	public void setPlatformByName(String platformName) {
         components.setPlatformByName(platformName);
     }
 
@@ -504,7 +509,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         TransactionListener listener = new TransactionListener() {
             private static final long serialVersionUID = -2365336986843262181L;
 
-            public void transactionEnd(Application application, Object transactionData) {
+            @Override
+			public void transactionEnd(Application application, Object transactionData) {
                 // Transaction listener gets fired for all (Http) sessions
                 // of Vaadin applications, checking to be this one.
                 if (application == CompetitionApplication.this) {
@@ -512,12 +518,10 @@ public class CompetitionApplication extends Application implements HbnSessionMan
                 }
             }
 
-            public void transactionStart(Application application, Object transactionData) {
+            @Override
+			public void transactionStart(Application application, Object transactionData) {
                 ((LocalizedSystemMessages) getSystemMessages()).setThreadLocale(getLocale());
-                current.set(CompetitionApplication.this); // make the
-                                                          // application
-                                                          // available via
-                                                          // ThreadLocal
+                current.set(CompetitionApplication.this); // make the application available via ThreadLocal
                 HttpServletRequest request = (HttpServletRequest) transactionData;
                 checkURI(request.getRequestURI());
                 request.getSession(true).setMaxInactiveInterval(3600);
@@ -546,7 +550,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
             @Override
             public void fragmentChanged(FragmentChangedEvent source) {
-                //logger.warn("fragment {}",source.getUriFragmentUtility().getFragment());
+                logger.warn("fragment {}",source.getUriFragmentUtility().getFragment());
                 String frag = source.getUriFragmentUtility().getFragment();
                 displayView(frag);
             }

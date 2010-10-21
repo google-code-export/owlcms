@@ -129,13 +129,15 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
         table.addGeneratedColumn("actions", new ColumnGenerator() { //$NON-NLS-1$
                 private static final long serialVersionUID = 7397136740353981832L;
 
-                public Component generateCell(Table source, final Object itemId, Object columnId) {
+                @Override
+				public Component generateCell(Table source, final Object itemId, Object columnId) {
                     HorizontalLayout actions = new HorizontalLayout();
                     Button del = new Button(Messages.getString("Common.delete", app.getLocale())); //$NON-NLS-1$
                     del.addListener(new ClickListener() {
                         private static final long serialVersionUID = 5204920602544644705L;
 
-                        public void buttonClick(ClickEvent event) {
+                        @Override
+						public void buttonClick(ClickEvent event) {
                             try {
                                 deleteItem(itemId);
                             } catch (ConstraintViolationException exception) {
@@ -150,7 +152,8 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
                     clear.addListener(new ClickListener() {
                         private static final long serialVersionUID = 5204920602544644705L;
 
-                        public void buttonClick(ClickEvent event) {
+                        @Override
+						public void buttonClick(ClickEvent event) {
                             clearCompetitionSession((Long) itemId);
                         }
                     });
@@ -160,7 +163,8 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
                     edit.addListener(new ClickListener() {
                         private static final long serialVersionUID = 5204920602544644705L;
 
-                        public void buttonClick(ClickEvent event) {
+                        @Override
+						public void buttonClick(ClickEvent event) {
                         	editCompetitionSession((Long) itemId, table.getItem(itemId));
                         }
                     });
@@ -218,7 +222,8 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
     /**
      * @return
      */
-    public String getFragment() {
+    @Override
+	public String getFragment() {
         return viewName;
     }
     

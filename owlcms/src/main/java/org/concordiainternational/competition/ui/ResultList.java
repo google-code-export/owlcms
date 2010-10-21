@@ -84,18 +84,21 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
      * Clear the current selection from the table. This is done by the lift card
      * editor once it has loaded the right lifter.
      */
-    public void clearSelection() {
+    @Override
+	public void clearSelection() {
         table.select(null); // hide selection from table.
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public Lifter getFirstLifter() {
         BeanItem<Lifter> item = (BeanItem<Lifter>) table.getItem(table.firstItemId());
         if (item != null) return (Lifter) item.getBean();
         return null;
     }
 
-    public Item getFirstLifterItem() {
+    @Override
+	public Item getFirstLifterItem() {
         return table.getItem(table.firstItemId());
     }
 
@@ -124,7 +127,8 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
         logger.debug("end refresh ResultList **************{}"); //$NON-NLS-1$
     }
 
-    public void setGroupData(SessionData data) {
+    @Override
+	public void setGroupData(SessionData data) {
         this.data = data;
     }
 
@@ -190,7 +194,8 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
             final Button.ClickListener listener = new Button.ClickListener() { //$NON-NLS-1$
                 private static final long serialVersionUID = -8473648982746209221L;
 
-                public void buttonClick(ClickEvent event) {
+                @Override
+				public void buttonClick(ClickEvent event) {
                     resultSpreadsheetButton.setComponentError(null);
 
                     if (!Competition.isMasters()) {
@@ -244,7 +249,8 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
             final Button.ClickListener teamResultClickListener = new Button.ClickListener() { //$NON-NLS-1$
                 private static final long serialVersionUID = -8473648982746209221L;
 
-                public void buttonClick(ClickEvent event) {
+                @Override
+				public void buttonClick(ClickEvent event) {
                     teamResultSpreadsheetButton.setComponentError(null);
                     final OutputSheetStreamSource<CompetitionBook> streamSource = new OutputSheetStreamSource<CompetitionBook>(
                             CompetitionBook.class, (CompetitionApplication) app, true);
@@ -266,7 +272,8 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
         final Button.ClickListener refreshClickListener = new Button.ClickListener() { //$NON-NLS-1$
             private static final long serialVersionUID = 7744958942977063130L;
 
-            public void buttonClick(ClickEvent event) {
+            @Override
+			public void buttonClick(ClickEvent event) {
                 logger.debug("reloading"); //$NON-NLS-1$
                 data.setCurrentSession(data.getCurrentSession());
             }
@@ -278,7 +285,8 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
         final Button.ClickListener editClickListener = new Button.ClickListener() { //$NON-NLS-1$
             private static final long serialVersionUID = 7744958942977063130L;
 
-            public void buttonClick(ClickEvent event) {
+            @Override
+			public void buttonClick(ClickEvent event) {
             	editCompetitionSession(sessionSelect.getSelectedId(),sessionSelect.getSelectedItem());
             }
         };

@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.vaadin.artur.icepush.ICEPush;
 
 import com.vaadin.terminal.Sizeable;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.ProgressIndicator;
@@ -101,7 +102,7 @@ public class AttemptBoardView extends Panel implements ApplicationView, SessionD
 
         horLayout.addComponent(announcerInfo);
         horLayout.addComponent(imageArea);
-        horLayout.setComponentAlignment(imageArea, "middle center");
+        horLayout.setComponentAlignment(imageArea, Alignment.MIDDLE_CENTER);
         horLayout.setExpandRatio(imageArea, 100);
         horLayout.setMargin(true);
 
@@ -147,7 +148,8 @@ public class AttemptBoardView extends Panel implements ApplicationView, SessionD
     /**
      * @return
      */
-    public String getFragment() {
+    @Override
+	public String getFragment() {
         return viewName+"/"+platformName;
     }
     

@@ -64,7 +64,8 @@ public class InputSheetHelper implements InputSheet {
     /* (non-Javadoc)
      * @see org.concordiainternational.competition.spreadsheet.InputSheet#getAllLifters(java.io.InputStream, com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager)
      */
-    public synchronized List<Lifter> getAllLifters(InputStream is, HbnSessionManager sessionMgr) throws IOException,
+    @Override
+	public synchronized List<Lifter> getAllLifters(InputStream is, HbnSessionManager sessionMgr) throws IOException,
             CellNotFoundException, WorkSheetNotFoundException {
         WorkBookHandle workBookHandle = null;
 
@@ -105,7 +106,8 @@ public class InputSheetHelper implements InputSheet {
      * @see
      * org.concordia_international.reader.ResultSheet#getGroup(java.lang.String)
      */
-    public List<Lifter> getGroupLifters(InputStream is, String aGroup, HbnSessionManager session) throws IOException,
+    @Override
+	public List<Lifter> getGroupLifters(InputStream is, String aGroup, HbnSessionManager session) throws IOException,
             CellNotFoundException, WorkSheetNotFoundException {
         List<Lifter> groupLifters = new ArrayList<Lifter>();
         for (Lifter curLifter : getAllLifters(is, session)) {

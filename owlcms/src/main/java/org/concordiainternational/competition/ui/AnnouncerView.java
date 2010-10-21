@@ -132,28 +132,29 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
         } else {
             setupPolling();
         }
-        topPart.setSizeFull();
-        topPart.addComponent(liftList);
-        topPart.addComponent(announcerInfo);
-        topPart.setComponentAlignment(announcerInfo, Alignment.TOP_LEFT);
-        topPart.setExpandRatio(liftList, 100.0F);
-
-        this.setFirstComponent(topPart);
-        loadFirstLifterInfo(masterData, WebApplicationConfiguration.DEFAULT_STICKINESS);
-
-        adjustSplitBarLocation();
-
-        // we are now fully initialized
-        masterData.setAllowAll(false);
-        masterData.addListener(this);
-        if (masterData.lifters.isEmpty()) {
-            logger.debug("switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
-            switchGroup(app.getCurrentCompetitionSession());
-        } else {
-            logger.debug("not switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
-        }
-        
-        CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
+        synchronized (app) {
+			topPart.setSizeFull();
+			topPart.addComponent(liftList);
+			topPart.addComponent(announcerInfo);
+			topPart.setComponentAlignment(announcerInfo, Alignment.TOP_LEFT);
+			topPart.setExpandRatio(liftList, 100.0F);
+			this.setFirstComponent(topPart);
+			loadFirstLifterInfo(masterData,
+					WebApplicationConfiguration.DEFAULT_STICKINESS);
+			adjustSplitBarLocation();
+			// we are now fully initialized
+			masterData.setAllowAll(false);
+			masterData.addListener(this);
+			if (masterData.lifters.isEmpty()) {
+				logger.debug(
+						"switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
+				switchGroup(app.getCurrentCompetitionSession());
+			} else {
+				logger.debug(
+						"not switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
+			}
+			CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
+		}
         if (pusher != null) pusher.push();
     }
 
@@ -273,14 +274,16 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
      * @param lifter
      * @param lifterItem
      */
-    public void editLifter(Lifter lifter, Item lifterItem) {
+    @Override
+	public void editLifter(Lifter lifter, Item lifterItem) {
         updateLifterEditor(lifter, lifterItem);
     }
 
     /**
      * @return true if editor in bottom pane is pinned (not to be updated)
      */
-    public boolean isStickyEditor() {
+    @Override
+	public boolean isStickyEditor() {
         return stickyEditor;
     }
 
@@ -289,7 +292,8 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
      * 
      * @param freezeLifterCardEditor
      */
-    public void setStickyEditor(boolean freezeLifterCardEditor) {
+    @Override
+	public void setStickyEditor(boolean freezeLifterCardEditor) {
         setStickyEditor(freezeLifterCardEditor, true);
     }
 
@@ -298,7 +302,8 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
      * 
      * @param freezeLifterCardEditor
      */
-    public void setStickyEditor(boolean freezeLifterCardEditor, boolean reloadLifterInfo) {
+    @Override
+	public void setStickyEditor(boolean freezeLifterCardEditor, boolean reloadLifterInfo) {
         // logger.debug("is frozen: {}",freezeLifterCardEditor);
         boolean wasSticky = this.stickyEditor;
         this.stickyEditor = freezeLifterCardEditor;
@@ -365,7 +370,8 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
         }
     }
 
-    public void setCurrentGroup(CompetitionSession competitionSession) {
+    @Override
+	public void setCurrentGroup(CompetitionSession competitionSession) {
         setStickyEditor(false, false);
         switchGroup(competitionSession);
     }
@@ -374,7 +380,8 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
      * @param masterData
      *            the masterData to set
      */
-    public void setGroupData(SessionData groupData) {
+    @Override
+	public void setGroupData(SessionData groupData) {
         this.masterData = groupData;
     }
 
@@ -401,7 +408,8 @@ public class AnnouncerView extends SplitPanel implements ApplicationView, Sessio
     /**
      * @return
      */
-    public String getFragment() {
+    @Override
+	public String getFragment() {
         return viewName+"/"+platformName+"/"+groupName;
     }
     

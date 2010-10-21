@@ -90,18 +90,21 @@ public class LiftList extends GenericBeanList<Lifter> implements
      * Clear the current selection from the table. This is done by the lift card
      * editor once it has loaded the right lifter.
      */
-    public void clearSelection() {
+    @Override
+	public void clearSelection() {
         table.select(null); // hide selection from table.
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public Lifter getFirstLifter() {
         BeanItem<Lifter> item = (BeanItem<Lifter>) table.getItem(table.firstItemId());
         if (item != null) return (Lifter) item.getBean();
         return null;
     }
 
-    public Item getFirstLifterItem() {
+    @Override
+	public Item getFirstLifterItem() {
         return table.getItem(table.firstItemId());
     }
 
@@ -192,7 +195,8 @@ public class LiftList extends GenericBeanList<Lifter> implements
             final Button.ClickListener refreshClickListener = new Button.ClickListener() { //$NON-NLS-1$
                 private static final long serialVersionUID = 7744958942977063130L;
 
-                public void buttonClick(ClickEvent event) {
+                @Override
+				public void buttonClick(ClickEvent event) {
                     logger.debug("reloading"); //$NON-NLS-1$
                     data.setCurrentSession(data.getCurrentSession());
                 }
@@ -204,7 +208,8 @@ public class LiftList extends GenericBeanList<Lifter> implements
             final Button.ClickListener publicAddressClickListener = new Button.ClickListener() { //$NON-NLS-1$
                 private static final long serialVersionUID = 7744958942977063130L;
 
-                public void buttonClick(ClickEvent event) {
+                @Override
+				public void buttonClick(ClickEvent event) {
                 	CompetitionApplication current = CompetitionApplication.getCurrent();
                 	SessionData masterData = current.getMasterData(current.getPlatformName());
 					editPublicAddress(masterData);
@@ -219,9 +224,9 @@ public class LiftList extends GenericBeanList<Lifter> implements
     	 /* Create an empty "Message" item */
     	 if (masterData.getPublicAddressItem() == null) {
         	 PropertysetItem item = new PropertysetItem();
-        	 item.addItemProperty("title", new ObjectProperty("", String.class));
-        	 item.addItemProperty("message", new ObjectProperty("", String.class));
-        	 item.addItemProperty("remainingSeconds", new ObjectProperty(null, PublicAddressCountdownTimer.class));
+        	 item.addItemProperty("title", new ObjectProperty<String>("", String.class));
+        	 item.addItemProperty("message", new ObjectProperty<String>("", String.class));
+        	 item.addItemProperty("remainingSeconds", new ObjectProperty<PublicAddressCountdownTimer>(null, PublicAddressCountdownTimer.class));
         	 masterData.setPublicAddressItem(item);
     	 }
 

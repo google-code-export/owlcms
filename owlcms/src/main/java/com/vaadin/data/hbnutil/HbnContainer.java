@@ -103,7 +103,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
             // (the hibernate-managed properties are created as
             // EntityItemProperty)
             for (String propertyId : addedProperties.keySet()) {
-                addItemProperty(propertyId, new MethodProperty(pojo, propertyId));
+                addItemProperty(propertyId, new MethodProperty<Object>(pojo, propertyId));
             }
         }
 
@@ -111,12 +111,14 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
             return pojo;
         }
 
-        public boolean addItemProperty(Object id, Property property) throws UnsupportedOperationException {
+        @Override
+		public boolean addItemProperty(Object id, Property property) throws UnsupportedOperationException {
             properties.put(id, property);
             return true;
         }
 
-        public Property getItemProperty(Object id) {
+        @Override
+		public Property getItemProperty(Object id) {
             Property p = properties.get(id);
             if (p == null) {
                 p = new EntityItemProperty(id.toString());
@@ -125,11 +127,13 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
             return p;
         }
 
-        public Collection<String> getItemPropertyIds() {
+        @Override
+		public Collection<String> getItemPropertyIds() {
             return getContainerPropertyIds();
         }
 
-        public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
+        @Override
+		public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
             Property removed = properties.remove(id);
             return removed != null;
         }
@@ -164,7 +168,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
                 }
             }
 
-            public Class<?> getType() {
+            @Override
+			public Class<?> getType() {
                 // VAADIN_TODO clean, optimize, review
 
                 if (propertyInEmbeddedKey()) {
@@ -202,7 +207,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
                 }
             }
 
-            public Object getValue() {
+            @Override
+			public Object getValue() {
                 // VAADIN_TODO clean, optimize, review
 
                 if (propertyInEmbeddedKey()) {
@@ -257,14 +263,17 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
                 }
             }
 
-            public boolean isReadOnly() {
+            @Override
+			public boolean isReadOnly() {
                 return false;
             }
 
-            public void setReadOnly(boolean newStatus) {
+            @Override
+			public void setReadOnly(boolean newStatus) {
             }
 
-            public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
+            @Override
+			public void setValue(Object newValue) throws ReadOnlyException, ConversionException {
                 try {
                     Object value = null;
                     try {
@@ -443,7 +452,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
             private class HbnPropertyValueChangeEvent implements Property.ValueChangeEvent {
                 private static final long serialVersionUID = 166764621324404579L;
 
-                public Property getProperty() {
+                @Override
+				public Property getProperty() {
                     return EntityItemProperty.this;
                 }
             }
@@ -463,7 +473,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
                 }
             }
 
-            public void addListener(ValueChangeListener listener) {
+            @Override
+			public void addListener(ValueChangeListener listener) {
                 // System.err.println("adding listener "+System.identityHashCode(listener)+" to property "+System.identityHashCode(this)+" of container "+System.identityHashCode(HbnContainer.this)+" value="+getValue());
                 if (valueChangeListeners == null) {
                     valueChangeListeners = new LinkedList<ValueChangeListener>();
@@ -473,7 +484,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
                 }
             }
 
-            public void removeListener(ValueChangeListener listener) {
+            @Override
+			public void removeListener(ValueChangeListener listener) {
                 if (valueChangeListeners != null) {
                     valueChangeListeners.remove(listener);
                 }
@@ -534,11 +546,12 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
      * 
      * @see Container#addContainerProperty(Object, Class, Object)
      */
-    public boolean addContainerProperty(Object propertyId, Class<?> type, Object defaultValue)
+    @Override
+	public boolean addContainerProperty(Object propertyId, Class<?> type, Object defaultValue)
             throws UnsupportedOperationException {
         boolean propertyExists = true;
         try {
-            new MethodProperty(this.type.newInstance(), propertyId.toString());
+            new MethodProperty<Object>(this.type.newInstance(), propertyId.toString());
         } catch (InstantiationException ex) {
             ex.printStackTrace();
             propertyExists = false;
@@ -565,7 +578,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         return (Serializable) getIdForPojo(entity);
     }
 
-    public Object addItem() throws UnsupportedOperationException {
+    @Override
+	public Object addItem() throws UnsupportedOperationException {
         Object o;
         try {
             o = type.newInstance();
@@ -583,12 +597,14 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         }
     }
 
-    public Item addItem(Object itemId) throws UnsupportedOperationException {
+    @Override
+	public Item addItem(Object itemId) throws UnsupportedOperationException {
         // Expecting autogenerated identifiers
         throw new UnsupportedOperationException();
     }
 
-    public boolean containsId(Object itemId) {
+    @Override
+	public boolean containsId(Object itemId) {
         // test if entity can be found with given id
         try {
             return (hbnSessionManager.getHbnSession().get(type, (Serializable) itemId) != null);
@@ -599,13 +615,15 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         }
     }
 
-    public Property getContainerProperty(Object itemId, Object propertyId) {
+    @Override
+	public Property getContainerProperty(Object itemId, Object propertyId) {
         final EntityItem<T> item = getItem(itemId);
         if (item == null) return null;
         return item.getItemProperty(propertyId);
     }
 
-    public Collection<String> getContainerPropertyIds() {
+    @Override
+	public Collection<String> getContainerPropertyIds() {
         Collection<String> propertyIds = getSortableContainerPropertyIds();
         propertyIds.addAll(addedProperties.keySet());
         return propertyIds;
@@ -635,7 +653,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         return classMetadata;
     }
 
-    public EntityItem<T> getItem(Object itemId) {
+    @Override
+	public EntityItem<T> getItem(Object itemId) {
         EntityItem<T> item = null;
         if (itemId != null) {
             item = loadItem((Serializable) itemId);
@@ -672,7 +691,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         this.filteredItemIds = filteredItemIds;
     }
 
-    public Collection<?> getItemIds() {
+    @Override
+	public Collection<?> getItemIds() {
         if (filteredItemIds) {
             return getFilteredItemIds();
         } else {
@@ -709,7 +729,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         return objectList;
     }
 
-    public Class<?> getType(Object propertyId) {
+    @Override
+	public Class<?> getType(Object propertyId) {
         if (addedProperties.keySet().contains(propertyId)) {
             return addedProperties.get(propertyId);
         } else if (propertyInEmbeddedKey(propertyId)) {
@@ -749,13 +770,15 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         }
     }
 
-    public boolean removeAllItems() throws UnsupportedOperationException {
+    @Override
+	public boolean removeAllItems() throws UnsupportedOperationException {
         throw new UnsupportedOperationException("removeAllItems");
         //return false;
     }
 
     /* Remove a container property added with addContainerProperty() */
-    public boolean removeContainerProperty(Object propertyId) throws UnsupportedOperationException {
+    @Override
+	public boolean removeContainerProperty(Object propertyId) throws UnsupportedOperationException {
         boolean propertyExisted = false;
         Class<?> removed = addedProperties.remove(propertyId);
         if (removed != null) {
@@ -764,7 +787,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         return propertyExisted;
     }
 
-    public boolean removeItem(Object itemId) throws UnsupportedOperationException {
+    @Override
+	public boolean removeItem(Object itemId) throws UnsupportedOperationException {
         Object p = hbnSessionManager.getHbnSession().load(type, (Serializable) itemId);
         // hide row from db
         hbnSessionManager.getHbnSession().delete(p);
@@ -773,14 +797,16 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         return true;
     }
 
-    public void addListener(ItemSetChangeListener listener) {
+    @Override
+	public void addListener(ItemSetChangeListener listener) {
         if (itemSetChangeListeners == null) {
             itemSetChangeListeners = new LinkedList<ItemSetChangeListener>();
         }
         itemSetChangeListeners.add(listener);
     }
 
-    public void removeListener(ItemSetChangeListener listener) {
+    @Override
+	public void removeListener(ItemSetChangeListener listener) {
         if (itemSetChangeListeners != null) {
             itemSetChangeListeners.remove(listener);
         }
@@ -793,7 +819,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
             final Container.ItemSetChangeEvent event = new Container.ItemSetChangeEvent() {
                 private static final long serialVersionUID = -3002746333251784195L;
 
-                public Container getContainer() {
+                @Override
+				public Container getContainer() {
                     return HbnContainer.this;
                 }
             };
@@ -803,19 +830,22 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         }
     }
 
-    public int size() {
+    @Override
+	public int size() {
         if (size == null) {
             size = (Integer) getBaseCriteria().setProjection(Projections.rowCount()).uniqueResult();
         }
         return size.intValue();
     }
 
-    public Object addItemAfter(Object previousItemId) throws UnsupportedOperationException {
+    @Override
+	public Object addItemAfter(Object previousItemId) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
         //return null;
     }
 
-    public Item addItemAfter(Object previousItemId, Object newItemId) throws UnsupportedOperationException {
+    @Override
+	public Item addItemAfter(Object previousItemId, Object newItemId) throws UnsupportedOperationException {
     	throw new UnsupportedOperationException();
         //return null;
     }
@@ -898,7 +928,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         return criteria;
     }
 
-    public Object firstItemId() {
+    @Override
+	public Object firstItemId() {
         if (firstId == null) {
             firstId = firstItemId(true);
         }
@@ -918,15 +949,18 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         return getClassMetadata().getIdentifier(pojo, EntityMode.POJO);
     }
 
-    public boolean isFirstId(Object itemId) {
+    @Override
+	public boolean isFirstId(Object itemId) {
         return itemId.equals(firstItemId());
     }
 
-    public boolean isLastId(Object itemId) {
+    @Override
+	public boolean isLastId(Object itemId) {
         return itemId.equals(lastItemId());
     }
 
-    public Object lastItemId() {
+    @Override
+	public Object lastItemId() {
         if (lastId == null) {
             temporaryFlippedAsc = !temporaryFlippedAsc;
             lastId = firstItemId(true);
@@ -943,7 +977,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
      * 
      * This way this container can be used with large data sets.
      */
-    public Object nextItemId(Object itemId) {
+    @Override
+	public Object nextItemId(Object itemId) {
         if (isLastId(itemId)) {
             return null;
         }
@@ -1094,7 +1129,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         return getClassMetadata().getIdentifierPropertyName();
     }
 
-    public Object prevItemId(Object itemId) {
+    @Override
+	public Object prevItemId(Object itemId) {
         // temp flip order and use nextItemId
         temporaryFlippedAsc = !temporaryFlippedAsc;
         Object prev = nextItemId(itemId);
@@ -1104,15 +1140,18 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
 
     // Container.Indexed
 
-    public Object addItemAt(int index) throws UnsupportedOperationException {
+    @Override
+	public Object addItemAt(int index) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 
-    public Item addItemAt(int index, Object newItemId) throws UnsupportedOperationException {
+    @Override
+	public Item addItemAt(int index, Object newItemId) throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 
-    public Object getIdByIndex(int index) {
+    @Override
+	public Object getIdByIndex(int index) {
         if (indexRowBuffer == null) {
             resetIndexRowBuffer(index);
         }
@@ -1143,14 +1182,16 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
      * VAADIN_TODO make workaround for this. Too bad it is going to be a very slow
      * operation.
      */
-    public int indexOfId(Object itemId) {
+    @Override
+	public int indexOfId(Object itemId) {
         Integer index = idToIndex.get(itemId);
         return index;
     }
 
     // Container.Sortable methods
 
-    public Collection<String> getSortableContainerPropertyIds() {
+    @Override
+	public Collection<String> getSortableContainerPropertyIds() {
         // use Hibernates metadata helper to determine property names
         String[] propertyNames = getClassMetadata().getPropertyNames();
         LinkedList<String> propertyIds = new LinkedList<String>();
@@ -1159,7 +1200,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         return propertyIds;
     }
 
-    public void sort(Object[] propertyId, boolean[] ascending) {
+    @Override
+	public void sort(Object[] propertyId, boolean[] ascending) {
         clearInternalCache();
         orderPropertyIds = propertyId;
         orderAscendings = ascending;
@@ -1199,7 +1241,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
      * @see Container.Filterable#addContainerFilter(Object, String, boolean,
      *      boolean)
      */
-    public void addContainerFilter(Object propertyId, String filterString, boolean ignoreCase, boolean onlyMatchPrefix) {
+    @Override
+	public void addContainerFilter(Object propertyId, String filterString, boolean ignoreCase, boolean onlyMatchPrefix) {
         if (addedProperties.containsKey(propertyId)) {
             throw new UnsupportedOperationException(
                     "HbnContainer does not support filtering properties not mapped by Hibernate");
@@ -1214,7 +1257,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         }
     }
 
-    public void removeAllContainerFilters() {
+    @Override
+	public void removeAllContainerFilters() {
         if (filters != null) {
             filters = null;
             clearInternalCache();
@@ -1222,7 +1266,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         }
     }
 
-    public void removeContainerFilters(Object propertyId) {
+    @Override
+	public void removeContainerFilters(Object propertyId) {
         if (filters != null) {
             for (Iterator<ContainerFilter> iterator = filters.iterator(); iterator.hasNext();) {
                 ContainerFilter f = iterator.next();
@@ -1252,7 +1297,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
         context.addTransactionListener(new TransactionListener() {
             private static final long serialVersionUID = -7727149551252570994L;
 
-            public void transactionEnd(Application application, Object transactionData) {
+            @Override
+			public void transactionEnd(Application application, Object transactionData) {
                 // System.err.println("HbnContainer: transactionEnd class="+application.getClass());
                 // Transaction listener gets fired for all (Http) sessions
                 // of Vaadin applications, checking to be this one.
@@ -1265,7 +1311,8 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
                 }
             }
 
-            public void transactionStart(Application application, Object transactionData) {
+            @Override
+			public void transactionStart(Application application, Object transactionData) {
             }
         });
     }

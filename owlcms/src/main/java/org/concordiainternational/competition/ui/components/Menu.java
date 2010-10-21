@@ -560,7 +560,8 @@ public class Menu extends MenuBar implements Serializable {
                     private static final long serialVersionUID = 1L;
 
                     // inline click-listener
-                    public void buttonClick(ClickEvent event) {
+                    @Override
+					public void buttonClick(ClickEvent event) {
                         // close the window by removing it from the main window
                         getApplication().getMainWindow().removeWindow(subwindow);
                     }
@@ -571,7 +572,8 @@ public class Menu extends MenuBar implements Serializable {
                     private static final long serialVersionUID = 1L;
 
                     // inline click-listener
-                    public void buttonClick(ClickEvent event) {
+                    @Override
+					public void buttonClick(ClickEvent event) {
                         // close the window by removing it from the main window
                         restart();
                         message.setValue(Messages.getString("Restart.InProgress", getApplication().getLocale()));//$NON-NLS-1$
