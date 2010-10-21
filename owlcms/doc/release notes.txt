@@ -3,6 +3,7 @@
 = Release Notes =
 
 == Release 1.8.4 ==
+  * Improved behaviour when refreshing public address display (cleanup of listeners)
   * Support for Vaadin 6.5
 
 == Release 1.8.3 ==
