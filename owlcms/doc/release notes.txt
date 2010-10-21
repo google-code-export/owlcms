@@ -1,17 +1,23 @@
+#summary Release Notes
+
 = Release Notes =
 
+== Release 1.8.4 ==
+  * Improved behaviour when refreshing public address display (cleanup of listeners)
+  * Support for Vaadin 6.5
+
 == Release 1.8.3 ==
-* Display public message on demand, overlaid over result boards.  Typically used between sessions or during pauses.
-* Fixed Jetty configuration issue relative to serial communication native library.
-* Cosmetic fixes to Start List
+  * Display public message on demand, overlaid over result boards.  Typically used between sessions or during pauses.
+  * Fixed Jetty configuration issue relative to serial communication native library.
+  * Cosmetic fixes to Start List
 
 == Release 1.8.2 ==
-* Show officials on result sheet.
-* Editing competition session information, officials in particular
-* Can again reload competition data from old spreadsheets.
-* Further Maven changes to follow testing conventions
+  * Show officials on result sheet.
+  * Editing competition session information, officials in particular
+  * Can again reload competition data from old spreadsheets.
+  * Further Maven changes to follow testing conventions
 
 == Release 1.8.1 ==
-* Change in source layout to run under Maven
-* Small fixes to run under Maven jetty:run plugin (ICEpush causes exception if called in class constructor)
-* Time display now shows referee decisions after 3 seconds.
+  * Change in source layout to run under Maven
+  * Small fixes to run under Maven jetty:run plugin (ICEpush causes exception if called in class constructor)
+  * Time display now shows referee decisions after 3 seconds.

@@ -71,13 +71,15 @@ public abstract class GenericHbnList<T> extends GenericList<T> {
         table.addGeneratedColumn("actions", new ColumnGenerator() { //$NON-NLS-1$
                 private static final long serialVersionUID = 7397136740353981832L;
 
-                public Component generateCell(Table source, final Object itemId, Object columnId) {
+                @Override
+				public Component generateCell(Table source, final Object itemId, Object columnId) {
                     // HorizontalLayout actions = new HorizontalLayout();
                     Button del = new Button(Messages.getString("Common.delete", app.getLocale())); //$NON-NLS-1$
                     del.addListener(new ClickListener() {
                         private static final long serialVersionUID = 5204920602544644705L;
 
-                        public void buttonClick(ClickEvent event) {
+                        @Override
+						public void buttonClick(ClickEvent event) {
                             deleteItem(itemId);
                         }
                     });

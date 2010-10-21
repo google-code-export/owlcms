@@ -31,7 +31,7 @@ import com.vaadin.ui.Window.CloseEvent;
  * 
  * @author jflamy
  */
-@SuppressWarnings({ "serial", "unchecked" })
+@SuppressWarnings({ "serial" })
 public class PublicAddressForm extends Form implements Window.CloseListener {
 	private CountdownField countdownField;
 	
@@ -154,6 +154,7 @@ public class PublicAddressForm extends Form implements Window.CloseListener {
 	}
 
 
+	@Override
 	public Window getWindow() {
 		return window;
 	}

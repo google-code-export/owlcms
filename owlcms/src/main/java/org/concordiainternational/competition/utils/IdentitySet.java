@@ -93,7 +93,8 @@ public final class IdentitySet implements Set<Object>, Serializable {
      * 
      * @see java.util.Collection#clear()
      */
-    public void clear() {
+    @Override
+	public void clear() {
         _capacity = DEFAULT_CAPACITY;
         _maximum = DEFAULT_ENTRIES;
         _buckets = new Entry[DEFAULT_CAPACITY];
@@ -105,7 +106,8 @@ public final class IdentitySet implements Set<Object>, Serializable {
      * 
      * @see java.util.Collection#size()
      */
-    public int size() {
+    @Override
+	public int size() {
         return _entries;
     }
 
@@ -114,7 +116,8 @@ public final class IdentitySet implements Set<Object>, Serializable {
      * 
      * @see java.util.Collection#isEmpty()
      */
-    public boolean isEmpty() {
+    @Override
+	public boolean isEmpty() {
         return (_entries == 0);
     }
 
@@ -123,7 +126,8 @@ public final class IdentitySet implements Set<Object>, Serializable {
      * 
      * @see java.util.Collection#add(java.lang.Object)
      */
-    public boolean add(final Object key) {
+    @Override
+	public boolean add(final Object key) {
         int hash = System.identityHashCode(key);
         int index = hash % _capacity;
         if (index < 0) {
@@ -245,7 +249,8 @@ public final class IdentitySet implements Set<Object>, Serializable {
      * 
      * @see java.util.Collection#contains(java.lang.Object)
      */
-    public boolean contains(final Object key) {
+    @Override
+	public boolean contains(final Object key) {
         int hash = System.identityHashCode(key);
         int index = hash % _capacity;
         if (index < 0) {
@@ -267,7 +272,8 @@ public final class IdentitySet implements Set<Object>, Serializable {
      * 
      * @see java.util.Collection#remove(java.lang.Object)
      */
-    public boolean remove(final Object key) {
+    @Override
+	public boolean remove(final Object key) {
         int hash = System.identityHashCode(key);
         int index = hash % _capacity;
         if (index < 0) {
@@ -300,7 +306,8 @@ public final class IdentitySet implements Set<Object>, Serializable {
      * 
      * @see java.util.Collection#iterator()
      */
-    public Iterator<Object> iterator() {
+    @Override
+	public Iterator<Object> iterator() {
         return new IdentityIterator();
     }
 
@@ -309,7 +316,8 @@ public final class IdentitySet implements Set<Object>, Serializable {
      * 
      * @see java.util.Collection#toArray()
      */
-    public Object[] toArray() {
+    @Override
+	public Object[] toArray() {
         Object[] result = new Object[_entries];
 
         int j = 0;
@@ -329,7 +337,8 @@ public final class IdentitySet implements Set<Object>, Serializable {
      * 
      * @see java.util.Collection#toArray(java.lang.Object[])
      */
-    @SuppressWarnings("unchecked")
+    @Override
+	@SuppressWarnings("unchecked")
     public Object[] toArray(final Object[] a) {
         Object[] result = a;
         if (result.length < _entries) {
@@ -380,7 +389,8 @@ public final class IdentitySet implements Set<Object>, Serializable {
      * 
      * @see java.util.Set#containsAll
      */
-    public boolean containsAll(final Collection<?> c) {
+    @Override
+	public boolean containsAll(final Collection<?> c) {
         throw new UnsupportedOperationException();
     }
 
@@ -394,7 +404,8 @@ public final class IdentitySet implements Set<Object>, Serializable {
      * 
      * @see java.util.Set#addAll
      */
-    public boolean addAll(final Collection<?> c) {
+    @Override
+	public boolean addAll(final Collection<?> c) {
         throw new UnsupportedOperationException();
     }
 
@@ -408,7 +419,8 @@ public final class IdentitySet implements Set<Object>, Serializable {
      * 
      * @see java.util.Set#removeAll
      */
-    public boolean removeAll(final Collection<?> c) {
+    @Override
+	public boolean removeAll(final Collection<?> c) {
         throw new UnsupportedOperationException();
     }
 
@@ -422,7 +434,8 @@ public final class IdentitySet implements Set<Object>, Serializable {
      * 
      * @see java.util.Set#retainAll
      */
-    public boolean retainAll(final Collection<?> c) {
+    @Override
+	public boolean retainAll(final Collection<?> c) {
         throw new UnsupportedOperationException();
     }
 
@@ -525,7 +538,8 @@ public final class IdentitySet implements Set<Object>, Serializable {
          * 
          * @see java.util.Iterator#hasNext()
          */
-        public boolean hasNext() {
+        @Override
+		public boolean hasNext() {
             return (_next != null);
         }
 
@@ -534,7 +548,8 @@ public final class IdentitySet implements Set<Object>, Serializable {
          * 
          * @see java.util.Iterator#next()
          */
-        public Object next() {
+        @Override
+		public Object next() {
             Entry entry = _next;
             if (entry == null) {
                 throw new NoSuchElementException();
@@ -554,7 +569,8 @@ public final class IdentitySet implements Set<Object>, Serializable {
          * 
          * @see java.util.Iterator#remove()
          */
-        public void remove() {
+        @Override
+		public void remove() {
             IdentitySet.this.remove(_lastReturned.getKey());
         }
     }

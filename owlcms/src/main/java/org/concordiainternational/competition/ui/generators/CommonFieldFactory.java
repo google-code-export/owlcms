@@ -272,7 +272,8 @@ public class CommonFieldFactory extends DefaultFieldFactory {
         f.addValidator(new Validator() {
             private static final long serialVersionUID = -4073378031354132670L;
 
-            public boolean isValid(Object value) {
+            @Override
+			public boolean isValid(Object value) {
                 try {
                     Integer.parseInt((String) value);
                     return true;
@@ -284,7 +285,8 @@ public class CommonFieldFactory extends DefaultFieldFactory {
                 }
             }
 
-            public void validate(Object value) throws InvalidValueException {
+            @Override
+			public void validate(Object value) throws InvalidValueException {
                 if (!isValid(value))
                     throw new InvalidValueException(Messages.getString(
                         "CommonFieldFactory.badNumberFormat", app.getLocale())); //$NON-NLS-1$

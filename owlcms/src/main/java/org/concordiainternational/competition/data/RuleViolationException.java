@@ -43,7 +43,8 @@ public class RuleViolationException extends InvalidValueException implements Loc
         return MessageFormat.format(messageTemplate, messageFormatData);
     }
 
-    public void setLocale(Locale locale) {
+    @Override
+	public void setLocale(Locale locale) {
         this.locale = locale;
     }
 

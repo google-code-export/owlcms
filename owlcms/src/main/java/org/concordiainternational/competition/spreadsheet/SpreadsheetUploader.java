@@ -47,7 +47,7 @@ import com.vaadin.ui.Upload;
  * 
  */
 public class SpreadsheetUploader extends CustomComponent implements Upload.SucceededListener, Upload.FailedListener,
-        Upload.Receiver, ApplicationView {
+        com.vaadin.terminal.Receiver, ApplicationView {
     private static final long serialVersionUID = 6843262937708809785L;
     final private static Logger logger = LoggerFactory.getLogger(SpreadsheetUploader.class);
 
@@ -98,6 +98,7 @@ public class SpreadsheetUploader extends CustomComponent implements Upload.Succe
     }
 
     // Callback method to begin receiving the upload.
+    @Override
     public OutputStream receiveUpload(String filename, String MIMEType) {
         FileOutputStream fos = null; // Output stream to write to
         try {
@@ -124,6 +125,7 @@ public class SpreadsheetUploader extends CustomComponent implements Upload.Succe
     }
 
     // This is called if the upload is finished.
+   @Override
     public void uploadSucceeded(Upload.SucceededEvent event) {
         // Log the upload on screen.
         final String messageFormat = Messages.getString("SpreadsheetUploader.Status", locale); //$NON-NLS-1$
@@ -155,7 +157,8 @@ public class SpreadsheetUploader extends CustomComponent implements Upload.Succe
     }
 
     // This is called if the upload fails.
-    public void uploadFailed(Upload.FailedEvent event) {
+    @Override
+	public void uploadFailed(Upload.FailedEvent event) {
         // Log the failure on screen.
         final String messageFormat = Messages.getString("SpreadsheetUploader.UploadingFailure", locale); //$NON-NLS-1$
         final String mimeType = event.getMIMEType();
@@ -178,7 +181,8 @@ public class SpreadsheetUploader extends CustomComponent implements Upload.Succe
     /**
      * @return
      */
-    public String getFragment() {
+    @Override
+	public String getFragment() {
         return viewName;
     }
     

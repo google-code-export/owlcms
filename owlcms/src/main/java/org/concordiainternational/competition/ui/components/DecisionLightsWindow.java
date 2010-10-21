@@ -160,12 +160,14 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
     }
 
     private void resetLights() {
-        for (int i = 0; i < decisionLights.length; i++) {
-            decisionLights[i].setStyleName("decisionLight");
-            decisionLights[i].addStyleName("undecided");
-            decisionLights[i].setContentMode(Label.CONTENT_XHTML);
-            decisionLights[i].setValue("&nbsp;");
-        }
+    	synchronized(app) {
+    		for (int i = 0; i < decisionLights.length; i++) {
+    			decisionLights[i].setStyleName("decisionLight");
+    			decisionLights[i].addStyleName("undecided");
+    			decisionLights[i].setContentMode(Label.CONTENT_XHTML);
+    			decisionLights[i].setValue("&nbsp;");
+    		}
+    	}
         updateLights();
     }
 
