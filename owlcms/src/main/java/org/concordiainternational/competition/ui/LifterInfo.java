@@ -449,6 +449,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
         prevTimeRemaining = remaining;
 
         synchronized (app) {
+        	timerDisplay.setEnabled(false); // show that timer has stopped.
             timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
             setBlocked(false);
             if (pusher == null) timerDisplay.requestRepaint();
