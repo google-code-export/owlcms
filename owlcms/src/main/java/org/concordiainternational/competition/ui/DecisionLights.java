@@ -31,11 +31,11 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.ProgressIndicator;
-import com.vaadin.ui.SplitPanel;
+import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
-public class DecisionLights extends SplitPanel implements DecisionEventListener, ApplicationView {
+public class DecisionLights extends VerticalSplitPanel implements DecisionEventListener, ApplicationView {
 
     private static final String CELL_WIDTH = "8em";
     private static final boolean PUSHING = true;

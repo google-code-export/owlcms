@@ -22,6 +22,7 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.Form;
 import com.vaadin.ui.FormFieldFactory;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
@@ -50,7 +51,7 @@ public class PublicAddressForm extends Form implements Window.CloseListener {
 				titleField.setColumns(20);
 				return titleField;
 			} else if (propertyId.equals("message")) {
-				TextField messageField = new TextField();
+				TextArea messageField = new TextArea();
 				messageField.setCaption(Messages.getString("FieldName.message", CompetitionApplication.getCurrentLocale()));
 				messageField.setRows(5);
 				messageField.setColumns(20);  // yields about 30 chars monospaced.

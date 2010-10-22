@@ -33,7 +33,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.ProgressIndicator;
-import com.vaadin.ui.SplitPanel;
+import com.vaadin.ui.VerticalSplitPanel;
 
 /**
  * This class defines the screen layout for the announcer.
@@ -56,7 +56,7 @@ import com.vaadin.ui.SplitPanel;
  * @author jflamy
  * 
  */
-public class AnnouncerView extends SplitPanel implements ApplicationView, SessionData.UpdateEventListener, EditingView {
+public class AnnouncerView extends VerticalSplitPanel implements ApplicationView, SessionData.UpdateEventListener, EditingView {
     private static final long serialVersionUID = 7881028819569705161L;
     private static final Logger logger = LoggerFactory.getLogger(AnnouncerView.class);
     public static final boolean PUSHING = true;
