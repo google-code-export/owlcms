@@ -485,7 +485,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
      */
     @Override
 	public String getFragment() {
-        return viewName+"/"+platformName+"/"+groupName;
+        return viewName+"/"+(platformName == null ? "" : platformName)+"/"+(groupName == null ? "" : groupName);
     }
     
 
@@ -505,7 +505,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
         if (params.length >= 2) {
             platformName = params[1];
         } else {
-            platformName = null;
+        	platformName = CompetitionApplicationComponents.initPlatformName();
         }
         
         if (params.length >= 3) {

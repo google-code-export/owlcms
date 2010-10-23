@@ -17,7 +17,6 @@
 package org.concordiainternational.competition.ui;
 
 import org.concordiainternational.competition.data.Platform;
-import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.slf4j.Logger;
@@ -150,7 +149,7 @@ public class AttemptBoardView extends Panel implements ApplicationView, SessionD
      */
     @Override
 	public String getFragment() {
-        return viewName+"/"+platformName;
+        return viewName+"/"+(platformName == null ? "" : platformName);
     }
     
 
@@ -164,11 +163,12 @@ public class AttemptBoardView extends Panel implements ApplicationView, SessionD
         if (params.length >= 1) {
             viewName = params[0];
         } else {
-            throw new RuleViolationException("Error.ViewNameIsMissing"); 
+        	platformName = CompetitionApplicationComponents.initPlatformName(); 
         }
-        
         if (params.length >= 2) {
             platformName = params[1];
+        } else {
+        	platformName = CompetitionApplicationComponents.initPlatformName();
         }
     }
 
