@@ -34,7 +34,7 @@ public class AbstractLifterComparator {
         if (lifter1Value == null) return -1;
         if (lifter2Value == null) return 1;
 
-        int compare = lifter1.getGender().compareTo(lifter2.getGender());
+        int compare = compareGender(lifter1,lifter2);
         if (compare != 0) return compare;
 
         Double value1 = lifter1.getCategory().getMaximumWeight();
@@ -49,7 +49,7 @@ public class AbstractLifterComparator {
         if (lifter1Category == null) return -1;
         if (lifter2Category == null) return 1;
 
-        int compare = lifter1.getGender().compareTo(lifter2.getGender());
+        int compare = compareGender(lifter1,lifter2);
         if (compare != 0) return compare;
 
         Double value1 = lifter1Category.getMaximumWeight();
@@ -128,7 +128,7 @@ public class AbstractLifterComparator {
         if (lifter1String == null && lifter2String == null) return 0;
         if (lifter1String == null) return -1;
         if (lifter2String == null) return 1;
-        return compare;
+        return lifter1String.compareTo(lifter2String);
     }
 
     /**
@@ -178,9 +178,9 @@ public class AbstractLifterComparator {
     int compareRequestedWeight(Lifter lifter1, Lifter lifter2) {
         Integer lifter1Value = lifter1.getNextAttemptRequestedWeight();
         Integer lifter2Value = lifter2.getNextAttemptRequestedWeight();
-        if (lifter1Value == 0) lifter1Value = 999; // place people with no
+        if (lifter1Value == null || lifter1Value == 0) lifter1Value = 999; // place people with no
                                                    // declared weight at the end
-        if (lifter2Value == 0) lifter2Value = 999; // place people with no
+        if (lifter2Value == null || lifter2Value == 0) lifter2Value = 999; // place people with no
                                                    // declared weight at the end
         return lifter1Value.compareTo(lifter2Value);
     }
@@ -296,6 +296,7 @@ public class AbstractLifterComparator {
     int compareLastSuccessfulLiftTime(Lifter lifter1, Lifter lifter2) {
         Date lifter1Value = lifter1.getLastSuccessfulLiftTime();
         Date lifter2Value = lifter2.getLastSuccessfulLiftTime();
+        // safe to compare, no nulls.
         return lifter1Value.compareTo(lifter2Value);
     }
 
@@ -358,33 +359,25 @@ public class AbstractLifterComparator {
      */
     int comparePreviousAttempts(int startingFrom, boolean excludeSnatch, Lifter lifter1, Lifter lifter2) {
         int compare = 0;
-        boolean trace =
-        // (
-        // (lifter1.getFirstName().equals("Jessica") &&
-        // lifter2.getFirstName().equals("Annick"))
-        // ||
-        // (lifter2.getFirstName().equals("Jessica") &&
-        // lifter1.getFirstName().equals("Annick"))
-        // );
-        false;
+        boolean trace = false;
         if (trace)
-            logger.warn("starting from {}, lifter1 {}, lifter2 {}", new Object[] { startingFrom, lifter1, lifter2 });
+            logger.trace("starting from {}, lifter1 {}, lifter2 {}", new Object[] { startingFrom, lifter1, lifter2 });
         if (startingFrom >= 6) {
             compare = ((Integer) Math.abs(Lifter.zeroIfInvalid(lifter1.getCleanJerk3ActualLift()))).compareTo(Math
                     .abs(Lifter.zeroIfInvalid(lifter2.getCleanJerk3ActualLift())));
-            if (trace) logger.warn("essai 6: {}", compare);
+            if (trace) logger.trace("essai 6: {}", compare);
             if (compare != 0) return compare;
         }
         if (startingFrom >= 5) {
             compare = ((Integer) Math.abs(Lifter.zeroIfInvalid(lifter1.getCleanJerk2ActualLift()))).compareTo(Math
                     .abs(Lifter.zeroIfInvalid(lifter2.getCleanJerk2ActualLift())));
-            if (trace) logger.warn("essai 5: {}", compare);
+            if (trace) logger.trace("essai 5: {}", compare);
             if (compare != 0) return compare;
         }
         if (startingFrom >= 4) {
             compare = ((Integer) Math.abs(Lifter.zeroIfInvalid(lifter1.getCleanJerk1ActualLift()))).compareTo(Math
                     .abs(Lifter.zeroIfInvalid(lifter2.getCleanJerk1ActualLift())));
-            if (trace) logger.warn("essai 4: {}", compare);
+            if (trace) logger.trace("essai 4: {}", compare);
             if (compare != 0) return compare;
         }
         if (excludeSnatch) {
@@ -393,19 +386,19 @@ public class AbstractLifterComparator {
         if (startingFrom >= 3) {
             compare = ((Integer) Math.abs(Lifter.zeroIfInvalid(lifter1.getSnatch3ActualLift()))).compareTo(Math
                     .abs(Lifter.zeroIfInvalid(lifter2.getSnatch3ActualLift())));
-            if (trace) logger.warn("essai 3: {}", compare);
+            if (trace) logger.trace("essai 3: {}", compare);
             if (compare != 0) return compare;
         }
         if (startingFrom >= 2) {
             compare = ((Integer) Math.abs(Lifter.zeroIfInvalid(lifter1.getSnatch2ActualLift()))).compareTo(Math
                     .abs(Lifter.zeroIfInvalid(lifter2.getSnatch2ActualLift())));
-            if (trace) logger.warn("essai 2: {}", compare);
+            if (trace) logger.trace("essai 2: {}", compare);
             if (compare != 0) return compare;
         }
         if (startingFrom >= 1) {
             compare = ((Integer) Math.abs(Lifter.zeroIfInvalid(lifter1.getSnatch1ActualLift()))).compareTo(Math
                     .abs(Lifter.zeroIfInvalid(lifter2.getSnatch1ActualLift())));
-            if (trace) logger.warn("essai 1: {}", compare);
+            if (trace) logger.trace("essai 1: {}", compare);
             if (compare != 0) return compare;
         }
         return 0;
@@ -419,6 +412,9 @@ public class AbstractLifterComparator {
     protected int compareGender(Lifter lifter1, Lifter lifter2) {
         String gender1 = lifter1.getGender();
         String gender2 = lifter2.getGender();
+        if (gender1 == null && gender2 == null) return 0;
+        if (gender1 == null) return -1;
+        if (gender2 == null) return 1;
         // "F" is smaller than "M"
         return gender1.compareTo(gender2);
     }
@@ -429,6 +425,11 @@ public class AbstractLifterComparator {
      * @return
      */
     protected int compareClub(Lifter lifter1, Lifter lifter2) {
+        String club1 = lifter1.getClub();
+        String club2 = lifter2.getClub();
+        if (club1 == null && club2 == null) return 0;
+        if (club1 == null) return -1;
+        if (club2 == null) return 1;
         return lifter1.getClub().compareTo(lifter2.getClub());
     }
 
