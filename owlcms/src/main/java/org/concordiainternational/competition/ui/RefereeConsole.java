@@ -303,7 +303,7 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
      */
     @Override
 	public String getFragment() {
-        return viewName+"/"+platformName+"/"+((int)this.refereeIndex+1);
+        return viewName+"/"+(platformName == null ? "" : platformName)+"/"+((int)this.refereeIndex+1);
     }
     
 
@@ -323,7 +323,7 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
         if (params.length >= 2) {
             platformName = params[1];
         } else {
-            throw new RuleViolationException("Error.PlatformNameIsMissing"); 
+        	platformName = CompetitionApplicationComponents.initPlatformName();
         }
         
         if (params.length >= 3) {

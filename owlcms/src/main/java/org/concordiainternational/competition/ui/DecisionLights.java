@@ -314,7 +314,7 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
      */
     @Override
 	public String getFragment() {
-        return viewName+"/"+platformName;
+        return viewName+"/"+(platformName == null ? "" : platformName);
     }
     
 
@@ -332,6 +332,8 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
         }
         if (params.length >= 2) {
             platformName = params[1];
+        } else {
+        	platformName = CompetitionApplicationComponents.initPlatformName();
         }
     }
     

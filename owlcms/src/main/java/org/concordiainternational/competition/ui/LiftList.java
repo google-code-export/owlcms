@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.Lifter;
+import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.publicAddress.PublicAddressCountdownTimer;
 import org.concordiainternational.competition.publicAddress.PublicAddressForm;
@@ -80,10 +81,15 @@ public class LiftList extends GenericBeanList<Lifter> implements
      * @return
      */
     private static String buildCaption(AnnouncerView.Mode mode, SessionData groupData) {
-        final String role = Messages.getString(
-            "LiftList." + mode.toString(), CompetitionApplication.getCurrent().getLocale()); //$NON-NLS-1$
-        final String currentPlatformName = " " + CompetitionApplication.getCurrent().getPlatformName(); //$NON-NLS-1$
-        return role + currentPlatformName;
+        CompetitionApplication current = CompetitionApplication.getCurrent();
+		final String role = Messages.getString(
+            "LiftList." + mode.toString(), current.getLocale()); //$NON-NLS-1$
+		if (Platform.getSize() == 1) {
+			return role;
+		} else {
+	        final String currentPlatformName = " " + current.getPlatformName(); //$NON-NLS-1$
+	        return role + currentPlatformName;
+		}
     }
 
     /**

@@ -273,6 +273,8 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         }
         if (params.length >= 2) {
             platformName = params[1];
+        } else {
+        	platformName = CompetitionApplicationComponents.initPlatformName();
         }
     }
     

@@ -109,7 +109,8 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
             if (currentGroup == null && groupName != null && groupName.length() > 0) {
                 switchGroup(new CompetitionSessionLookup(app).lookup(groupName));
             } else {
-                app.setCurrentCompetitionSession(currentGroup); 
+                app.setCurrentCompetitionSession(currentGroup);
+                groupName = currentGroup.getName();
             }
 
         }
@@ -410,7 +411,7 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
      */
     @Override
 	public String getFragment() {
-        return viewName+"/"+platformName+"/"+groupName;
+        return viewName+"/"+(platformName == null ? "" : platformName)+"/"+(groupName == null ? "" : groupName);
     }
     
 
@@ -430,7 +431,7 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
         if (params.length >= 2) {
             platformName = params[1];
         } else {
-            throw new RuleViolationException("Error.PlatformNameIsMissing"); 
+        	platformName = CompetitionApplicationComponents.initPlatformName();
         }
         
         if (params.length >= 3) {
