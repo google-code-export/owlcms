@@ -304,7 +304,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
         int timeAllowed = groupData.getTimeAllowed();
         final CountdownTimer timer = groupData.getTimer();
         final boolean running = timer.isRunning();
-        logger.debug("timeAllowed={} timer.isRunning()={}", timeAllowed, running); //$NON-NLS-1$
+        logger.warn("timeAllowed={} timer.isRunning()={}", timeAllowed, running); //$NON-NLS-1$
         if (!running) {
             timerDisplay.setValue(TimeFormatter.formatAsSeconds(timeAllowed));
             timerDisplay.setEnabled(false); // greyed out.
