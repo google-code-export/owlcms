@@ -492,18 +492,5 @@ public class CompetitionApplicationComponents {
         return platformName;
     }
     
-	/**
-//	 * @param masterData
-//	 * @param doPush
-//	 */
-//	public void forceMenuIfMasterApplication(final SessionData masterData) {
-//		CompetitionApplication masterApplication = masterData.getMasterApplication();
-//		CompetitionApplication app = CompetitionApplication.getCurrent();
-//		boolean isMaster = (app  == masterApplication);
-//		if (isMaster) {
-//        	logger.warn("forcing menu app={} master={}",app,masterApplication);
-//        	app.components.menu.setVisible(true);
-//        }
-//	}
 
 }

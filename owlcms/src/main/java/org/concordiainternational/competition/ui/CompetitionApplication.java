@@ -193,7 +193,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
     private SoundPlayer buzzer = new SoundPlayer();
 
-    private ICEPush pusher;
+    private ICEPush pusher = null;
 
 	private TransactionListener httpRequestListener;
 
@@ -229,7 +229,11 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
 
     public void push() {
-    	if (!pusherDisabled) ensurePusher().push();
+    	pusher = this.ensurePusher();
+    	if (!pusherDisabled) {
+    		logger.debug("pushing with {} on window {}",pusher,getMainWindow());
+    		pusher.push();
+    	}
     }
     
     public void setPusherDisabled(boolean disabled) {
@@ -565,7 +569,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
             @Override
             public void fragmentChanged(FragmentChangedEvent source) {
-                logger.warn("fragment {}",source.getUriFragmentUtility().getFragment());
+                logger.debug("fragment {}",source.getUriFragmentUtility().getFragment());
                 String frag = source.getUriFragmentUtility().getFragment();
                 displayView(frag);
             }
@@ -626,7 +630,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
 
     protected void displayView(String frag) {
-        logger.warn("request to display view {}", frag); //$NON-NLS-1$
+        logger.debug("request to display view {}", frag); //$NON-NLS-1$
         ApplicationView view = components.getViewByName(frag, true); // initialize from URI fragment
         setMainLayoutContent(view);
     }
