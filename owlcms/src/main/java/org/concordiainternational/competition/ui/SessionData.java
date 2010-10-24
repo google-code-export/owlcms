@@ -284,12 +284,11 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             } // stop time something is happening.
             setTimeAllowed(timeAllowed(currentLifter));
             needToUpdateNEC = true;
-            logger
-                    .debug(
+            logger.warn(
                         "paused time, needToUpdateNec = true, timeAllowed={}, timeRemaining={}", timeAllowed, timer2.getTimeRemaining()); //$NON-NLS-1$
         } else {
             needToUpdateNEC = false;
-            logger.debug("needToUpdateNEC = false"); //$NON-NLS-1$
+            logger.warn("needToUpdateNEC = false"); //$NON-NLS-1$
         }
 
         if (currentLifter != null) {
@@ -1060,7 +1059,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      */
     public void startTimer(Lifter lifter, SessionData groupData,CountdownTimer timing) {
         manageTimerOwner(lifter,groupData, timing);
-        timing.start();
+        timing.restart();
+        setLifterAsHavingStarted(lifter);
     }
     
     public Item getPublicAddressItem() {
