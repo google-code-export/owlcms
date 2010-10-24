@@ -105,7 +105,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
             } finally {
                 app.setPusherDisabled(prevDisabled);
             }
-            logger.warn("browser panel: push disabled = {}",app.getPusherDisabled());
+            logger.debug("browser panel: push disabled = {}",app.getPusherDisabled());
         }
 	
 
@@ -137,7 +137,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 
                 @Override
                 public void updateEvent(UpdateEvent updateEvent) {
-                	logger.warn("request to display {}",BrowserPanel.this);
+                	logger.debug("request to display {}",BrowserPanel.this);
                     display(platformName, masterData);
                 }
 
@@ -191,7 +191,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
                 top.addComponent(timeDisplay, "timeDisplay"); //$NON-NLS-1$
                 timeDisplay.setVisible(!done);
             } else {
-            	logger.warn("lifter null");
+            	logger.debug("lifter null");
                 name.setValue(getWaitingMessage()); //$NON-NLS-1$
                 top.addComponent(name, "name"); //$NON-NLS-1$
                 attempt.setValue(""); //$NON-NLS-1$

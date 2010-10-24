@@ -2,6 +2,12 @@
 
 = Release Notes =
 
+== Release 1.8.5 ==
+  * Clean-up of push behaviour so that the push() method is not called involuntarily in constructors.
+  * Removal of all vestiges of polling.
+  * merged jetty and tomcat configurations (widgetset located in Maven src instead of target)
+  * Bug fix for 2-minute rule in "one-man-orchestra" mode (announcing starts clock)
+
 == Release 1.8.4 ==
   * Improved behaviour when refreshing public address display (cleanup of listeners)
   * Support for Vaadin 6.5
