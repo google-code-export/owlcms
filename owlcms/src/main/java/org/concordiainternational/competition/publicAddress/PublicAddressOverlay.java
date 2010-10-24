@@ -4,7 +4,6 @@ import org.concordiainternational.competition.publicAddress.PublicAddressMessage
 import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent.MessageTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
-import org.vaadin.artur.icepush.ICEPush;
 
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;
@@ -12,7 +11,6 @@ import com.vaadin.ui.Label;
 @SuppressWarnings("serial")
 public class PublicAddressOverlay extends CustomLayout implements MessageTimerListener, MessageDisplayListener {
 
-	private ICEPush pusher;
 	private Label remainingTime;
 	private Label title;
 	private Label message;
@@ -20,18 +18,24 @@ public class PublicAddressOverlay extends CustomLayout implements MessageTimerLi
 
 	public PublicAddressOverlay(String title2, String message2, Integer remainingMilliseconds) {
 		app = CompetitionApplication.getCurrent();
-		synchronized(app) {
-			setTemplateName("publicAddressOverlay");
-			setSizeFull();
-			pusher = CompetitionApplication.getCurrent().ensurePusher();
-			title = new Label(title2);
-			addComponent(title,"title");
-			message = new Label(message2,Label.CONTENT_PREFORMATTED);
-			addComponent(message,"message");
-			String formatAsSeconds = TimeFormatter.formatAsSeconds(remainingMilliseconds);
-			remainingTime = new Label(formatAsSeconds != null ? formatAsSeconds : "");
-			addComponent(remainingTime,"remainingTime");
-		}
+
+        synchronized (app) {
+            boolean prevDisabled = app.getPusherDisabled();
+            try {
+                app.setPusherDisabled(true);
+    			setTemplateName("publicAddressOverlay");
+    			setSizeFull();
+    			title = new Label(title2);
+    			addComponent(title,"title");
+    			message = new Label(message2,Label.CONTENT_PREFORMATTED);
+    			addComponent(message,"message");
+    			String formatAsSeconds = TimeFormatter.formatAsSeconds(remainingMilliseconds);
+    			remainingTime = new Label(formatAsSeconds != null ? formatAsSeconds : "");
+    			addComponent(remainingTime,"remainingTime");
+            } finally {
+                app.setPusherDisabled(prevDisabled);
+            }
+        }
 	}
 	
 	@Override
@@ -42,7 +46,7 @@ public class PublicAddressOverlay extends CustomLayout implements MessageTimerLi
 				remainingTime.setValue(TimeFormatter.formatAsSeconds(remainingMilliseconds));
 			}
 		}
-		pusher.push();
+		app.push();
 	}
 
 	@Override
@@ -56,7 +60,7 @@ public class PublicAddressOverlay extends CustomLayout implements MessageTimerLi
 					remainingTime.setValue(TimeFormatter.formatAsSeconds(remainingMilliseconds));
 				}
 			}
-			pusher.push();
+			app.push();
 		}
 	}
 

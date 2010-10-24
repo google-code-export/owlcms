@@ -549,14 +549,14 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      */
     void setCurrentSession(CompetitionSession newCurrentSession) {
         logger.debug("{} setting group to {}", this, newCurrentSession); //$NON-NLS-1$
+        // do this first, in case we get called us recursively  
+        this.currentSession = newCurrentSession;
+        
         if (app.getCurrentCompetitionSession() != newCurrentSession) {
-            // we are not always called from the application, but we must remain
-            // in sync.
-            // we cannot systematically call app.setCurrentSession else we get
-            // infinite loop.
+            // synchronize with the application (if we were not called from there)
             app.setCurrentCompetitionSession(newCurrentSession);
         }
-        this.currentSession = newCurrentSession;
+
         loadData();
         sortLists();
         publishLists();

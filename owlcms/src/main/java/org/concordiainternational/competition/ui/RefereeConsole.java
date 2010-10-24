@@ -18,21 +18,19 @@ package org.concordiainternational.competition.ui;
 
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.DecisionController;
-import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionController.Decision;
 import org.concordiainternational.competition.decision.DecisionController.DecisionEventListener;
+import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.artur.icepush.ICEPush;
 
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.UriFragmentUtility;
 import com.vaadin.ui.VerticalLayout;
 
@@ -43,7 +41,6 @@ import com.vaadin.ui.VerticalLayout;
  */
 @SuppressWarnings("serial")
 public class RefereeConsole extends VerticalLayout implements DecisionEventListener, ApplicationView {
-    private static boolean PUSHING = true;
 
     private static final long serialVersionUID = 1L;
 
@@ -57,7 +54,6 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
 
     private int refereeIndex;
 
-    private ICEPush pusher;
     private Label refereeReminder = new Label();
 
     private String platformName;
@@ -94,12 +90,6 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
         this.addComponent(bottom);
         this.setExpandRatio(top, 80.0F);
         this.setExpandRatio(bottom, 20.0F);
-        
-        if (PUSHING) {
-            pusher = app.ensurePusher();
-        } else {
-            setupPolling();
-        }
     }
 
     /**
@@ -147,15 +137,6 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
         refereeReminder.setStyleName("refereeOk");
     }
 
-    /**
-     * 
-     */
-    private void setupPolling() {
-        final ProgressIndicator refresher = new ProgressIndicator();
-        refresher.setStyleName("invisible");
-        top.addComponent(refresher);
-        refresher.setPollingInterval(150);
-    }
 
     /**
      * @param refereeIndex2
@@ -177,21 +158,18 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
                     logger.warn("referee #{} decision required after DOWN", refereeIndex+1);
                     requireDecision();
                 }
-                updateBottom();
                 break;
             case WAITING:
                 if (decisions[refereeIndex].accepted == null) {
                     logger.warn("referee #{} decision required WAITING", refereeIndex+1);
                     requireDecision();
                 }
-                updateBottom();
                 break;
             case UPDATE:
                 break;
             case SHOW:
                 // decisions are shown to the public; prevent refs from changing.
                 top.setEnabled(false);
-                updateTop();
                 break;
             case RESET:
                 logger.warn("referee #{} RESET", refereeIndex+1);
@@ -200,9 +178,7 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
                 break;
             }
         }
-        if (pusher != null) {
-            pusher.push();
-        }
+        app.push();
     }
 
     /**
@@ -218,7 +194,7 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
 			}
 			top.setEnabled(!allDecisionsIn);
 		}
-		updateTop();
+		app.push();
     }
 
     /**
@@ -247,33 +223,9 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
 			refereeReminder.setValue(refereeLabel(refereeIndex));
 			refereeReminder.setStyleName("refereeOk");
 		}
-		updateBottom();
+		app.push();
     }
 
-
-    private void updateTop() {
-        if (pusher != null) {
-            pusher.push();
-        } else {
-            synchronized (app) {
-                top.requestRepaint();
-            };
-        }
-    }
-
-    /**
-     * 
-     */
-    private void updateBottom() {
-
-        if (pusher != null) {
-            pusher.push();
-        } else {
-            synchronized (app) {
-                bottom.requestRepaint();
-            }
-        }
-    }
 
     /**
      * @param refereeIndex
@@ -286,7 +238,7 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
 					.getCurrent().getUriFragmentUtility();
 			uriFragmentUtility.setFragment(getFragment(), false);
 		}
-		updateBottom();
+		app.push();
     }
 
 

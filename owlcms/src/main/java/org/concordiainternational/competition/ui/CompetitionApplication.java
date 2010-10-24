@@ -197,6 +197,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
 	private TransactionListener httpRequestListener;
 
+	private boolean pusherDisabled = false;
+
     public void displayRefereeConsole(int refereeIndex) {
         final RefereeConsole view = (RefereeConsole) components
                 .getViewByName(CompetitionApplicationComponents.REFEREE_CONSOLE, false);
@@ -218,7 +220,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     /**
      * @return
      */
-    public ICEPush ensurePusher() {
+    private ICEPush ensurePusher() {
         if (pusher == null) {
             pusher = new ICEPush();
             getMainWindow().addComponent(pusher);
@@ -226,6 +228,18 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         return pusher;
     }
 
+    public void push() {
+    	if (!pusherDisabled) ensurePusher().push();
+    }
+    
+    public void setPusherDisabled(boolean disabled) {
+    	pusherDisabled = disabled;
+    }
+    
+    public boolean getPusherDisabled() {
+    	return pusherDisabled;
+    }
+    
     /**
      * @return the buzzer
      */
@@ -375,12 +389,13 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * .concordiainternational.competition.data.Group)
      */
     @Override
-	public void setCurrentCompetitionSession(CompetitionSession value) {
-        currentGroup = value;
+	public void setCurrentCompetitionSession(CompetitionSession newSession) {
+    	final CompetitionSession oldSession = currentGroup;
+        currentGroup = newSession;
         final ApplicationView currentView = components.currentView;
         if (currentView != null) {
-            if (currentView instanceof EditingView) {
-                ((EditingView) currentView).setCurrentGroup(value);
+            if (currentView instanceof EditingView && oldSession != newSession) {
+                ((EditingView) currentView).setCurrentSession(newSession);
             } else {
                 currentView.refresh();
             }

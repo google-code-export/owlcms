@@ -428,7 +428,7 @@ public class CompetitionApplicationComponents {
             logger.debug("new current group {}", currentGroup); //$NON-NLS-1$
             setPlatform(platform);
             if (currentView instanceof EditingView) {
-                ((EditingView) currentView).setGroupData(masterData);
+                ((EditingView) currentView).setSessionData(masterData);
             }
             app.setCurrentCompetitionSession(currentGroup);
         } else {

@@ -75,7 +75,12 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
                 	selectedId = selectedValue;
                     selectedItem = sessionDataSource.getItem(selectedValue);
                     value = (CompetitionSession) ItemAdapter.getObject(selectedItem);
+                } else {
+                	selectedId = null;
+                	selectedItem = null;
+                	value = null;
                 }
+                logger.warn("valueChange {}",value);
                 competitionApplication.setCurrentCompetitionSession(value);
             }
 

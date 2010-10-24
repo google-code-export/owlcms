@@ -24,12 +24,10 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.artur.icepush.ICEPush;
 
 import com.vaadin.data.Item;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalSplitPanel;
 
 /**
@@ -56,7 +54,6 @@ import com.vaadin.ui.VerticalSplitPanel;
 public class ResultView extends VerticalSplitPanel implements ApplicationView, SessionData.UpdateEventListener, EditingView {
     private static final long serialVersionUID = 7881028819569705161L;
     private static final Logger logger = LoggerFactory.getLogger(ResultView.class);
-    private static final boolean PUSHING = true;
 
     private HorizontalLayout topPart;
     private ResultList resultList;
@@ -64,7 +61,6 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
     private CompetitionApplication app;
     private boolean stickyEditor = false;
     private SessionData groupData;
-    private ICEPush pusher = null;
     private String viewName;
 
     /**
@@ -90,11 +86,6 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
         resultList.setSizeFull();
 
         topPart = new HorizontalLayout();
-        if (PUSHING) {
-            pusher = this.app.ensurePusher();
-        } else {
-            setupPolling();
-        }
         topPart.setSizeFull();
         topPart.addComponent(resultList);
         topPart.setExpandRatio(resultList, 100.0F);
@@ -114,16 +105,6 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
 
     }
 
-    /**
-     * 
-     */
-    private void setupPolling() {
-        ProgressIndicator refresher = new ProgressIndicator();
-        refresher.setWidth("0pt"); //$NON-NLS-1$
-        refresher.setPollingInterval(1000);
-        refresher.addStyleName("invisible"); //$NON-NLS-1$
-        topPart.addComponent(refresher);
-    }
 
     /**
      * Update the lifter editor and the information panels with the first
@@ -275,10 +256,7 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
             // updateLifterEditor(updateEvent.getCurrentLifter(),
             // liftList.getFirstLifterItem());
         }
-
-        if (pusher != null) {
-            pusher.push();
-        }
+        app.push();
     }
 
     /**
@@ -288,13 +266,13 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
      * @param dataCurrentGroup
      */
     private void switchGroup(final CompetitionSession dataCurrentGroup) {
-        logger.debug("===============ResultView switching to group {}", dataCurrentGroup); //$NON-NLS-1$
+        logger.warn("===============ResultView switching to group {}", dataCurrentGroup); //$NON-NLS-1$
         groupData.setCurrentSession(dataCurrentGroup);
         CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
     }
 
     @Override
-	public void setCurrentGroup(CompetitionSession competitionSession) {
+	public void setCurrentSession(CompetitionSession competitionSession) {
         setStickyEditor(false, false);
         switchGroup(competitionSession);
     }
@@ -304,14 +282,14 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
      *            the groupData to set
      */
     @Override
-	public void setGroupData(SessionData groupData) {
+	public void setSessionData(SessionData groupData) {
         this.groupData = groupData;
     }
 
     /**
      * @return the groupData
      */
-    public SessionData getGroupData() {
+    public SessionData getSessionData() {
         return groupData;
     }
 

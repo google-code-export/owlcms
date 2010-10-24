@@ -32,7 +32,6 @@ import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalSplitPanel;
 
 /**
@@ -96,7 +95,8 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
         if (platformName == null) {
         	// get the default platform name
             platformName = CompetitionApplicationComponents.initPlatformName();
-        } else if (app.getPlatform() == null) {
+        }
+        if (app.getPlatform() == null || !platformName.equals(app.getPlatformName())) {
         	app.setPlatformByName(platformName);
         }
 
@@ -106,11 +106,16 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
             final CompetitionSession currentGroup = masterData.getCurrentSession();
             masterData.setAnnouncerView(this);
             masterData.setMasterApplication(this.app);
-            if (currentGroup == null && groupName != null && groupName.length() > 0) {
+            
+            logger.warn("why is groupName = {}",groupName);
+            if (groupName != null && groupName.length() > 0) {
                 switchGroup(new CompetitionSessionLookup(app).lookup(groupName));
             } else {
                 app.setCurrentCompetitionSession(currentGroup);
-                groupName = currentGroup.getName();
+                if (currentGroup != null) {
+                	 groupName = currentGroup.getName();
+                }
+               
             }
 
         }
@@ -128,12 +133,10 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
         liftList.setSizeFull();
 
         topPart = new HorizontalLayout();
-        if (PUSHING) {
-            pusher = this.app.ensurePusher();
-        } else {
-            setupPolling();
-        }
+
         synchronized (app) {
+        	boolean prevDisabled = app.getPusherDisabled();
+        	app.setPusherDisabled(true);
 			topPart.setSizeFull();
 			topPart.addComponent(liftList);
 			topPart.addComponent(announcerInfo);
@@ -155,20 +158,11 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
 						"not switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
 			}
 			CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
+			app.setPusherDisabled(prevDisabled);
 		}
-        if (pusher != null) pusher.push();
+		app.push();
     }
 
-    /**
-     * 
-     */
-    private void setupPolling() {
-        ProgressIndicator refresher = new ProgressIndicator();
-        refresher.setWidth("0pt"); //$NON-NLS-1$
-        refresher.setPollingInterval(1000);
-        refresher.addStyleName("invisible"); //$NON-NLS-1$
-        topPart.addComponent(refresher);
-    }
 
     /**
      * Update the lifter editor and the information panels with the first
@@ -354,25 +348,36 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
      * Reload data according to this session's (CompetitionApplication) current
      * lifter group.
      * 
-     * @param dataCurrentGroup
+     * @param newSession
      */
-    private void switchGroup(final CompetitionSession dataCurrentGroup) {
+    private void switchGroup(final CompetitionSession newSession) {
+    	CompetitionSession oldSession = masterData.getCurrentSession();
+        boolean switching = oldSession != newSession;
+        
         if (mode == Mode.ANNOUNCER) {
-            logger.debug("==============={} switching to group {}", mode, dataCurrentGroup); //$NON-NLS-1$
-            logger.debug("==============={} modifying group data {}", masterData); //$NON-NLS-1$
-            masterData.setCurrentSession(dataCurrentGroup);
+            
+
+			if (switching) {
+	            logger.warn("=============== switching from {} to group {}", oldSession, newSession); //$NON-NLS-1$
+	            logger.warn("=============== modifying group data {}", masterData, (newSession != null ? newSession.getName() : null)); //$NON-NLS-1$
+            	masterData.setCurrentSession(newSession);
+            }
+            
             CompetitionSession currentCompetitionSession = masterData.getCurrentSession();
             if (currentCompetitionSession != null) {
                 groupName = currentCompetitionSession.getName();
             } else {
                 groupName = "";
             }
-            CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
+            
+            if (switching) {
+            	CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
+            }
         }
     }
 
     @Override
-	public void setCurrentGroup(CompetitionSession competitionSession) {
+	public void setCurrentSession(CompetitionSession competitionSession) {
         setStickyEditor(false, false);
         switchGroup(competitionSession);
     }
@@ -382,8 +387,8 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
      *            the masterData to set
      */
     @Override
-	public void setGroupData(SessionData groupData) {
-        this.masterData = groupData;
+	public void setSessionData(SessionData sessionData) {
+        this.masterData = sessionData;
     }
 
     /**

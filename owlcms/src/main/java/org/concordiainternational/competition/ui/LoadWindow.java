@@ -26,7 +26,6 @@ import org.concordiainternational.competition.ui.SessionData.UpdateEventListener
 import org.concordiainternational.competition.ui.components.Menu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.artur.icepush.ICEPush;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -47,15 +46,9 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-public class LoadWindow extends Window implements Property.ValueChangeListener, // listen
-                                                                                // to
-                                                                                // changes
-                                                                                // within
-                                                                                // the
-                                                                                // editor.
+public class LoadWindow extends Window implements Property.ValueChangeListener,
         Window.CloseListener {
     private static final long serialVersionUID = 4907861433698426676L;
-    private static final boolean PUSHING = true;
 
     private static final Logger logger = LoggerFactory.getLogger(LoadWindow.class);
 
@@ -70,7 +63,6 @@ public class LoadWindow extends Window implements Property.ValueChangeListener, 
     private UpdateEventListener groupDataListener;
 
     private Menu menu;
-    private ICEPush pusher = null;
 
     public LoadWindow(Menu menu) {
         super();
@@ -83,9 +75,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener, 
 
         platform = Platform.getByName(platformName);
         item = new BeanItem<Platform>(platform);
-        if (PUSHING) {
-            pusher = CompetitionApplication.getCurrent().ensurePusher();
-        }
+
         display(locale);
         position();
         registerAsListener(locale);
@@ -129,7 +119,8 @@ public class LoadWindow extends Window implements Property.ValueChangeListener, 
      * @param locale
      */
     private void display(final Locale locale) {
-        synchronized (CompetitionApplication.getCurrent()) {
+        CompetitionApplication app = CompetitionApplication.getCurrent();
+		synchronized (app) {
             boolean gridIsVisible = (grid == null ? false : grid.isVisible());
             removeAllComponents();
             final int expectedBarWeight = computeOfficialBarWeight();
@@ -173,9 +164,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener, 
             this.addComponent(root);
             this.addStyleName("light");
         }
-        if (pusher != null) {
-            pusher.push();
-        }
+        app.push();
     }
 
     @Override
