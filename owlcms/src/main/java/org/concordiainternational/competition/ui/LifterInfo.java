@@ -28,12 +28,11 @@ import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.artur.icepush.ICEPush;
 
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.event.LayoutEvents.LayoutClickEvent;
+import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.terminal.ClassResource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.CheckBox;
@@ -78,7 +77,6 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
 
     private long lastOkButtonClick = 0L;
     private long lastFailedButtonClick = 0L;
-    private ICEPush pusher;
 
     @SuppressWarnings("serial")
     public LifterInfo(String identifier, final SessionData groupData, AnnouncerView.Mode mode, Component parentView) {
@@ -89,8 +87,6 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
         this.groupData = groupData;
         this.parentView = parentView;
         this.mode = mode;
-
-        pusher = app.ensurePusher();
 
         this.addListener(new LayoutClickListener() {
 
@@ -167,13 +163,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
 				currentLifterDisplayOptions(lifter, groupData);
 			}
 		}
-		if (pusher != null) {
-            pusher.push();
-        } else {
-            synchronized (app) {
-                this.requestRepaintAll();
-            }
-        }
+        app.push();
 
         this.lifter = lifter;
         logger.debug("LifterInfo.loadLifter() end: " + lifter.getLastName()); //$NON-NLS-1$
@@ -351,11 +341,8 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
                 timerDisplay.setEnabled(true);
             }
             setBlocked(false);
-            if (pusher == null) timerDisplay.requestRepaint();
         }
-        if (pusher != null) {
-            pusher.push();
-        }
+        app.push();
     }
 
     @Override
@@ -372,11 +359,8 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
                 playSound(resource);
             }
             setBlocked(false);
-            if (pusher == null) timerDisplay.requestRepaint();
         }
-        if (pusher != null) {
-            pusher.push();
-        }
+        app.push();
     }
 
     @Override
@@ -391,11 +375,8 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
                 playSound(resource);
             }
             setBlocked(false);
-            if (pusher == null) timerDisplay.requestRepaint();
         }
-        if (pusher != null) {
-            pusher.push();
-        }
+        app.push();
     }
 
     /**
@@ -436,11 +417,8 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
                 }
             }
             setBlocked(false);
-            if (pusher == null) timerDisplay.requestRepaint();
         }
-        if (pusher != null) {
-            pusher.push();
-        }
+        app.push();
     }
 
     @Override
@@ -452,57 +430,48 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
         	timerDisplay.setEnabled(false); // show that timer has stopped.
             timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
             setBlocked(false);
-            if (pusher == null) timerDisplay.requestRepaint();
         }
-        if (pusher != null) {
-            pusher.push();
-        }
+        app.push();
 
     }
 
     @Override
     public void pause(int timeRemaining) {
-
+    	
         setBlocked(true); // don't process the next update from the timer.
-        if (buttons != null) buttons.stopStart.setEnabled(true);
-        if (timerDisplay != null) {
-            timerDisplay.setEnabled(false);
+        synchronized (app) {
+	        if (buttons != null) buttons.stopStart.setEnabled(true);
+	        if (timerDisplay != null) {
+	            timerDisplay.setEnabled(false);
+	        }
         }
-        forceUpdate();
+        app.push();
     }
 
     @Override
     public void start(int timeRemaining) {
-
         setBlocked(false);
-        if (buttons != null) buttons.stopStart.setEnabled(true);
-        if (timerDisplay != null) {
-            timerDisplay.setEnabled(true);
+        synchronized (app) {
+	        if (buttons != null) buttons.stopStart.setEnabled(true);
+	        if (timerDisplay != null) {
+	            timerDisplay.setEnabled(true);
+	        }
         }
-        forceUpdate();
+        app.push();
     }
 
-    /**
-     * 
-     */
-    private void forceUpdate() {
-        synchronized (app) {
-            requestRepaint();
-        }
-        if (pusher != null) {
-            pusher.push();
-        }
-    }
 
     @Override
     public void stop(int timeRemaining) {
 
         setBlocked(true); // don't process the next update from the timer.
-        if (buttons != null) buttons.stopStart.setEnabled(true);
-        if (timerDisplay != null) {
-            timerDisplay.setEnabled(false);
+        synchronized (app) {
+	        if (buttons != null) buttons.stopStart.setEnabled(true);
+	        if (timerDisplay != null) {
+	            timerDisplay.setEnabled(false);
+	        }
         }
-        forceUpdate();
+        app.push();
     }
 
     /**

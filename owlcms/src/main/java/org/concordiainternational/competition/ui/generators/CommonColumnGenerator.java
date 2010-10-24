@@ -26,12 +26,10 @@ import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.i18n.Messages;
-import org.concordiainternational.competition.ui.AnnouncerView;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.utils.ItemAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.artur.icepush.ICEPush;
 
 import com.vaadin.Application;
 import com.vaadin.data.Item;
@@ -63,13 +61,13 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
     private CategoryContainer activeCategories;
     private HbnContainer<Platform> platforms;
     private HbnContainer<CompetitionSession> competitionSessions;
-    private Application app;
+    private CompetitionApplication app;
 
     public CommonColumnGenerator(Application app) {
         activeCategories = new CategoryContainer((HbnSessionManager) app, true);
         platforms = new HbnContainer<Platform>(Platform.class, (HbnSessionManager) app);
         competitionSessions = new HbnContainer<CompetitionSession>(CompetitionSession.class, (HbnSessionManager) app);
-        this.app = (Application) app;
+        this.app = (CompetitionApplication) app;
     }
 
     @Override
@@ -547,10 +545,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
                         }
                     }
                 }
-                if (AnnouncerView.PUSHING) {
-                    ICEPush pusher = CompetitionApplication.getCurrent().ensurePusher();
-                    if (pusher != null) pusher.push();
-                }
+                app.push();
             }
             
         };

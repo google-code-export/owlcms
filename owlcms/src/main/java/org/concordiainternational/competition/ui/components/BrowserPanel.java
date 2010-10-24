@@ -42,7 +42,6 @@ import org.concordiainternational.competition.ui.UserActions;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.artur.icepush.ICEPush;
 
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.ExternalResource;
@@ -50,7 +49,6 @@ import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
@@ -59,11 +57,8 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
     private static final String ATTEMPT_WIDTH = "12em";
 	public final static Logger logger = LoggerFactory.getLogger(BrowserPanel.class);
     private static final long serialVersionUID = 1437157542240297372L;
-    private static final boolean PUSHING = true;
-
     private Embedded iframe;
     public String urlString;
-    private ProgressIndicator refresher;
     private String platformName;
     private SessionData masterData;
     private CustomLayout top;
@@ -72,7 +67,6 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
     private Label attempt = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
     private Label timeDisplay = new Label();
     private Label weight = new Label();
-    private ICEPush pusher = null;
     private String appUrlString;
 	private UpdateEventListener updateListener;
 
@@ -102,8 +96,13 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
         
         registerHandlers(viewName);
         
-        // we cannot call push() at this point, pass false as parameter
-        display(platformName, masterData, false);
+        // we cannot call push() at this point
+        synchronized (app) {
+        	boolean prevDisabled = app.getPusherDisabled();
+        	app.setPusherDisabled(true);
+        	display(platformName, masterData);
+            app.setPusherDisabled(prevDisabled);
+        }	
 
         app.getMainWindow().addListener(this);
 
@@ -134,7 +133,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 
                 @Override
                 public void updateEvent(UpdateEvent updateEvent) {
-                    display(platformName, masterData,true);
+                    display(platformName, masterData);
                 }
 
             };
@@ -165,38 +164,17 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
         iframe.setSizeFull();
         this.addComponent(iframe);
 
-        if (PUSHING) {
-            pusher = this.app.ensurePusher();
-        } else {
-            setupPolling();
-        }
-
         this.setExpandRatio(top, 0);
         this.setExpandRatio(iframe, 100);
     }
 
-    /**
-     * Force the client to poll.
-     */
-    private void setupPolling() {
-        // we need this because the client side won't refresh unless it
-        // initiates the poll.
-        refresher = new ProgressIndicator();
-        refresher.setIndeterminate(true);
-        refresher.setPollingInterval(1000);
-        refresher.addStyleName("hidden"); //$NON-NLS-1$
-        refresher.setHeight("0"); //$NON-NLS-1$
-        this.addComponent(refresher);
-        this.setExpandRatio(refresher, 0);
-    }
 
     /**
      * @param platformName
      * @param masterData
-     * @param b 
      * @throws RuntimeException
      */
-    private void display(final String platformName, final SessionData masterData, boolean doPush) throws RuntimeException {
+    private void display(final String platformName, final SessionData masterData) throws RuntimeException {
         synchronized (app) {
             URL url = computeUrl(platformName);
             iframe.setSource(new ExternalResource(url));
@@ -220,10 +198,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
                 top.addComponent(weight, "weight"); //$NON-NLS-1$	
             }
         }
-        
-        if (doPush && pusher != null) {
-            pusher.push();
-        }
+        app.push();
     }
 
 
@@ -266,7 +241,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 
     @Override
     public void refresh() {
-        display(platformName, masterData,true);
+        display(platformName, masterData);
     }
 
     public boolean fillLifterInfo(Lifter lifter) {
@@ -391,11 +366,8 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 
         synchronized (app) {
             timeDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
-            if (pusher == null) timeDisplay.requestRepaint();
         }
-        if (pusher != null) {
-            pusher.push();
-        }
+        app.push();
     }
 
     @Override
@@ -462,7 +434,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 				}
 			}
 		}
-		pusher.push();
+		app.push();
 
 	}
 
@@ -485,7 +457,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 	 */
 	private void displayMessage(String title, String message, Integer remainingMilliseconds) {
 		// create content formatting
-		logger.warn("displayMessage {} {}",title,message);
+		logger.debug("displayMessage {} {}",title,message);
 		if (overlayContent == null) {
 			overlayContent = new PublicAddressOverlay(title,message,remainingMilliseconds);
 			// overlayContent listens to message updates and timer updates
@@ -505,7 +477,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 				overlay.setVisible(true);
 			}
 		}
-		pusher.push();
+		app.push();
 	}
 
 

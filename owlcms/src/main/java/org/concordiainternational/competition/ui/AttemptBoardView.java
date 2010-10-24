@@ -21,13 +21,11 @@ import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.artur.icepush.ICEPush;
 
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.ProgressIndicator;
 
 public class AttemptBoardView extends Panel implements ApplicationView, SessionData.UpdateEventListener {
 
@@ -41,13 +39,9 @@ public class AttemptBoardView extends Panel implements ApplicationView, SessionD
 
     private LoadImage imageArea;
 
-    private ICEPush pusher;
-
     private String platformName;
 
     private String viewName;
-
-    private static final boolean PUSHING = true;
 
     public AttemptBoardView(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
@@ -85,12 +79,6 @@ public class AttemptBoardView extends Panel implements ApplicationView, SessionD
         announcerInfo.setMargin(true);
         logger.debug("after announcerInfo"); //$NON-NLS-1$
 
-        if (PUSHING) {
-            pusher = app.ensurePusher();
-        } else {
-            setupPolling(horLayout);
-        }
-
         imageArea = new LoadImage(null);
         imageArea.computeImageArea(masterData, platform);
         imageArea.setCaption("");
@@ -108,16 +96,6 @@ public class AttemptBoardView extends Panel implements ApplicationView, SessionD
         this.addComponent(horLayout);
     }
 
-    /**
-     * @param horLayout
-     */
-    private void setupPolling(HorizontalLayout horLayout) {
-        ProgressIndicator refresher = new ProgressIndicator();
-        refresher.setWidth("0pt"); //$NON-NLS-1$
-        refresher.setPollingInterval(1000);
-        refresher.addStyleName("invisible"); //$NON-NLS-1$
-        horLayout.addComponent(refresher);
-    }
 
     @Override
     public void refresh() {
@@ -125,14 +103,13 @@ public class AttemptBoardView extends Panel implements ApplicationView, SessionD
 
     @Override
     public void updateEvent(SessionData.UpdateEvent updateEvent) {
-        synchronized (CompetitionApplication.getCurrent()) {
+        CompetitionApplication app = CompetitionApplication.getCurrent();
+		synchronized (app) {
             logger.debug("loading {} ", updateEvent.getCurrentLifter()); //$NON-NLS-1$
             announcerInfo.loadLifter(masterData.getCurrentLifter(), masterData);
             imageArea.computeImageArea(masterData, platform);
         }
-        if (pusher != null) {
-            pusher.push();
-        }
+		app.push();
     }
 
     /* (non-Javadoc)

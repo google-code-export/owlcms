@@ -23,15 +23,11 @@ import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.artur.icepush.ICEPush;
 
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.ProgressIndicator;
 
 public class DecisionLightsWindow extends HorizontalLayout implements DecisionEventListener {
-
-    private static final boolean PUSHING = true;
 
     private static final long serialVersionUID = 1L;
 
@@ -41,7 +37,6 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
     private Logger logger = LoggerFactory.getLogger(DecisionLightsWindow.class);
 
     private boolean juryMode = false;
-    private ICEPush pusher;
 
 	private boolean publicFacing;
 
@@ -55,12 +50,6 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
 
         this.setMargin(true);
         this.setSpacing(true);
-
-        if (PUSHING) {
-            pusher = app.ensurePusher();
-        } else {
-            setupPolling();
-        }
         
         resetLights();
     }
@@ -115,15 +104,12 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
                 this.removeStyleName("down");
                 if (juryMode) {
                     showLights(decisions);
-                    updateLights();
                 }
                 break;
             case SHOW:
                 logger.debug("received SHOW event");
                 this.removeStyleName("down");
                 showLights(decisions);
-                updateLights();
-
                 break;
             case RESET:
                 logger.debug("received RESET event");
@@ -132,9 +118,7 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
                 break;
             }
         }
-        if (pusher != null) {
-            pusher.push();
-        }
+        app.push();
     }
 
     /**
@@ -168,24 +152,10 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
     			decisionLights[i].setValue("&nbsp;");
     		}
     	}
-        updateLights();
+        app.push();
     }
 
     public void refresh() {
-    }
-
-    /**
-     * Push information to browser
-     */
-    private void updateLights() {
-
-        if (pusher != null) {
-            pusher.push();
-        } else {
-            synchronized (app) {
-                this.requestRepaint();
-            }
-        }
     }
 
 
@@ -199,15 +169,5 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
             + (refereeIndex2 + 1);
     }
 
-    
-    
-    /**
-     * Obsolete now that we use pushing.
-     */
-    private void setupPolling() {
-        final ProgressIndicator refresher = new ProgressIndicator();
-        refresher.setStyleName("invisible");
-        this.addComponent(refresher);
-        refresher.setPollingInterval(150);
-    }
+
 }

@@ -54,10 +54,10 @@ public interface EditingView extends Component {
     /**
      * Switch to editing a new group.
      * 
-     * @param newGroup
+     * @param newSession
      */
-    public void setCurrentGroup(CompetitionSession newGroup);
+    public void setCurrentSession(CompetitionSession newSession);
 
-    public void setGroupData(SessionData newGroupData);
+    public void setSessionData(SessionData newSessionData);
 
 }

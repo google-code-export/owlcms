@@ -7,7 +7,6 @@ import org.concordiainternational.competition.ui.components.ISO8601DateField;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.artur.icepush.ICEPush;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
@@ -32,12 +31,10 @@ public class CountdownField extends CustomField implements MessageTimerListener 
 	private DateField endTime;
 	private DurationField requestedSeconds;
 	private BeanItem<PublicAddressCountdownTimer> timerItem;
-	private ICEPush pusher;
 	private CompetitionApplication app;
 
 	public CountdownField() {
 		app = CompetitionApplication.getCurrent();
-		pusher = app.ensurePusher();
 		setCompositionRoot(createLayout());
 		setInternalValue(null);
 	}
@@ -182,10 +179,10 @@ public class CountdownField extends CustomField implements MessageTimerListener 
 		Integer remainingMilliseconds = event.getRemainingMilliseconds();
 		int seconds = TimeFormatter.getSeconds(remainingMilliseconds);
 		logger.debug("received update this={} event={}",this.toString(),seconds);
-		synchronized (CompetitionApplication.getCurrent()) {
+		synchronized (app) {
 			remainingSecondsDisplay.setValue(TimeFormatter.formatAsSeconds(remainingMilliseconds));
 		}
-		pusher.push();
+		app.push();
 	}
 	
 }

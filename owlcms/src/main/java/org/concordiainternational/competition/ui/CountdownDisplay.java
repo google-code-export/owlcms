@@ -30,25 +30,20 @@ import org.concordiainternational.competition.ui.components.DecisionLightsWindow
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.artur.icepush.ICEPush;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 public class CountdownDisplay extends VerticalLayout implements ApplicationView, CountdownTimerListener, DecisionEventListener {
     public final static Logger logger = LoggerFactory.getLogger(CountdownDisplay.class);
     private static final long serialVersionUID = 1437157542240297372L;
-    private static final boolean PUSHING = true;
 
-    private ProgressIndicator refresher;
     private String platformName;
     private SessionData masterData;
     private CompetitionApplication app;
     private Label timeDisplay = new Label();
-    private ICEPush pusher = null;
     private int lastTimeRemaining;
     private String viewName;
 	private Window popUp = null;
@@ -69,14 +64,20 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         } else if (app.getPlatform() == null) {
         	app.setPlatformByName(platformName);
         }
-
-        create(app, platformName);
-        masterData = app.getMasterData(platformName);
-
-        registerAsGroupDataListener(platformName, masterData);
-        masterData.getDecisionController().addListener(this);
-
-        display(platformName, masterData);
+       
+        synchronized (app) {
+        	boolean prevDisabled = app.getPusherDisabled();
+        	try {
+        		app.setPusherDisabled(true);
+        		create(app, platformName);
+        		masterData = app.getMasterData(platformName);
+        		registerAsGroupDataListener(platformName, masterData);
+        		masterData.getDecisionController().addListener(this);
+        		display(platformName, masterData);
+        	} finally {
+        		app.setPusherDisabled(prevDisabled);
+        	}
+        }
     }
 
     private void registerAsGroupDataListener(final String platformName, final SessionData masterData) {
@@ -112,12 +113,6 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         this.addComponent(timeDisplay);
         this.setComponentAlignment(timeDisplay, Alignment.MIDDLE_CENTER);
 
-        if (PUSHING) {
-            pusher = this.app.ensurePusher();
-        } else {
-            setupPolling();
-        }
-
         this.setExpandRatio(timeDisplay, 100);
 
     }
@@ -151,7 +146,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
             }
         }
 
-        if (pusher != null) pusher.push();
+        app.push();
     }
 
     @Override
@@ -222,11 +217,8 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
 
         synchronized (app) {
             timeDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
-            if (pusher == null) {
-                timeDisplay.requestRepaint();
-            } 
         }
-        if (pusher != null) pusher.push();
+        app.push();
     }
 
     @Override
@@ -278,21 +270,6 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         }
     }
     
-    /**
-     * Set up polling by browser.
-     * Obsolete now that we use pushing.
-     */
-    private void setupPolling() {
-        // we need this because the client side won't refresh unless it
-        // initiates the poll.
-        refresher = new ProgressIndicator();
-        refresher.setIndeterminate(true);
-        refresher.setPollingInterval(1000);
-        refresher.addStyleName("hidden"); //$NON-NLS-1$
-        refresher.setHeight("0"); //$NON-NLS-1$
-        this.addComponent(refresher);
-        this.setExpandRatio(refresher, 0);
-    }
 
     @Override
     public void updateEvent(DecisionEvent updateEvent) {
@@ -324,9 +301,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
             	break;
             }
         }
-        if (pusher != null) {
-            pusher.push();
-        }
+        app.push();
     }
 
     

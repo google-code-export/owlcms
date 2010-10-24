@@ -17,28 +17,25 @@
 package org.concordiainternational.competition.ui;
 
 import org.concordiainternational.competition.data.RuleViolationException;
-import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionController.Decision;
 import org.concordiainternational.competition.decision.DecisionController.DecisionEventListener;
+import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.artur.icepush.ICEPush;
 
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
-import com.vaadin.ui.ProgressIndicator;
 import com.vaadin.ui.VerticalSplitPanel;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 
 public class DecisionLights extends VerticalSplitPanel implements DecisionEventListener, ApplicationView {
 
     private static final String CELL_WIDTH = "8em";
-    private static final boolean PUSHING = true;
 
     private static final long serialVersionUID = 1L;
 
@@ -51,7 +48,6 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
     private Logger logger = LoggerFactory.getLogger(DecisionLights.class);
 
     private boolean juryMode = false;
-    private ICEPush pusher;
     private String platformName;
     private String viewName;
 
@@ -81,12 +77,6 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
         bottom = createDecisionButtons();
         this.setSecondComponent(bottom);
         setSplitPosition(650, UNITS_PIXELS);
-
-        if (PUSHING) {
-            pusher = app.ensurePusher();
-        } else {
-            setupPolling();
-        }
         
         resetLights();
         resetBottom();
@@ -186,7 +176,6 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
                         ((Label) bottom.getComponent(i, 0)).setValue("decision required");
                     }
                 }
-                updateBottom();
                 break;
             case WAITING:
                 logger.debug("received WAITING event");
@@ -195,20 +184,16 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
                         ((Label) bottom.getComponent(i, 0)).setValue("decision required");
                     }
                 }
-                updateBottom();
                 break;
             case UPDATE:
                 logger.debug("received UPDATE event");
                 if (juryMode) {
                     showLights(decisions);
-                    updateTop();
                 }
                 break;
             case SHOW:
                 logger.debug("received SHOW event");
                 showLights(decisions);
-                updateTop();
-
                 break;
             case RESET:
                 logger.debug("received RESET event");
@@ -217,9 +202,7 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
                 break;
             }
         }
-        if (pusher != null) {
-            pusher.push();
-        }
+        app.push();
     }
 
     /**
@@ -246,7 +229,7 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
 				decisionLights[i].setValue("&nbsp;");
 			}
 		}
-		updateTop();
+		app.push();
     }
 
     private void resetBottom() {
@@ -255,40 +238,11 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
 				((Label) bottom.getComponent(i, 0)).setValue(" ");
 			}
 		}
-		updateBottom();
+		app.push();
     }
 
     @Override
 	public void refresh() {
-    }
-
-    /**
-     * 
-     */
-    private void updateTop() {
-
-        if (pusher != null) {
-            pusher.push();
-        } else {
-            synchronized (app) {
-                top.requestRepaint();
-            }
-        }
-    }
-
-    /**
-     * 
-     */
-    private void updateBottom() {
-
-        if (pusher != null) {
-            pusher.push();
-        } else {
-            synchronized (app) {
-                bottom.requestRepaint();
-            }
-            ;
-        }
     }
 
     /**
@@ -337,13 +291,4 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
         }
     }
     
-    /**
-     * 
-     */
-    private void setupPolling() {
-        final ProgressIndicator refresher = new ProgressIndicator();
-        refresher.setStyleName("invisible");
-        top.addComponent(refresher);
-        refresher.setPollingInterval(150);
-    }
 }

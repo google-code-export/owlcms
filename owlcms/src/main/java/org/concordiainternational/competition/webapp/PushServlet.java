@@ -27,7 +27,7 @@ public class PushServlet extends ApplicationServlet {
     protected void service(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
         if (request.getRequestURI().endsWith(".icepush")) {
-            // Push request
+            // delegate the Push request to the IcePush servlet
             try {
                 pushServlet.service(request, response);
             } catch (ServletException e) {

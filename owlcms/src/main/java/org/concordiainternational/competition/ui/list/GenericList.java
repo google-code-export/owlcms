@@ -20,6 +20,7 @@ import java.util.Iterator;
 
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.generators.CommonFieldFactory;
 import org.concordiainternational.competition.ui.generators.FieldTable;
 
@@ -67,17 +68,30 @@ public abstract class GenericList<T> extends VerticalLayout {
      * below it.
      */
     protected void buildView() {
-        this.setSizeFull();
-        this.setMargin(true);
+    	final CompetitionApplication app = CompetitionApplication.getCurrent();
+    	// we synchronize because specializations of this class may do all sorts of
+    	// event-based things in their construction, and we don't want them to call
+    	// the push() method while in the constructor (this causes the session to drop.)
+    	synchronized (app) {
+    		boolean prevDisabled = app.getPusherDisabled();
+    		try {
+    			app.setPusherDisabled(true);
 
-        tableToolbar = createTableToolbar();
-        this.addComponent(tableToolbar);
+    			this.setSizeFull();
+    			this.setMargin(true);
 
-        populateAndConfigureTable();
+    			tableToolbar = createTableToolbar();
+    			this.addComponent(tableToolbar);
 
-        this.addComponent(table);
-        positionTable();
-        setButtonVisibility();
+    			populateAndConfigureTable();
+
+    			this.addComponent(table);
+    			positionTable();
+    			setButtonVisibility();
+    		} finally {
+    			app.setPusherDisabled(prevDisabled);
+    		}
+    	}
 
     }
 

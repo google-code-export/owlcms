@@ -81,9 +81,7 @@ public class PublicAddressForm extends Form implements Window.CloseListener {
 		
 		setImmediate(true);
         setWriteThrough(true);
-        
-
-		        
+        		        
         HorizontalLayout footer = new HorizontalLayout();
         footer.setSpacing(true);
         footer.addComponent(ok);
