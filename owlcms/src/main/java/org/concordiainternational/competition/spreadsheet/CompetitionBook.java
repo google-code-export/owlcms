@@ -24,7 +24,9 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.TreeSet;
 
+import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.Competition;
+import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
@@ -50,15 +52,34 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
  * 
  */
 public class CompetitionBook extends ResultSheet {
-
-    public CompetitionBook(HbnSessionManager hbnSessionManager) {
-		super(hbnSessionManager);
-	}
-
+    
 	protected static String templateXls = "/TeamResultSheetTemplate_Standard.xls"; //$NON-NLS-1$
     private Logger logger = LoggerFactory.getLogger(CompetitionBook.class);
     Competition competition;
 	private HbnSessionManager hbnSessionManager;
+	
+	
+    /**
+     * Create a sheet.
+     * If this constructor is used, or newInstance is called, then 
+     * {@link #init(CategoryLookup, CompetitionApplication, CompetitionSession)} must also be called.
+     * OutputSheetStreamSource does call init() correctly.
+     */
+	public CompetitionBook() {
+	}
+	
+	public CompetitionBook(HbnSessionManager hbnSessionManager) {
+		super(hbnSessionManager);
+		this.hbnSessionManager = hbnSessionManager;
+	}
+
+    @Override
+	public void init(CategoryLookup categoryLookup, CompetitionApplication app,
+			CompetitionSession competitionSession) {
+		super.init(categoryLookup, app, competitionSession);
+		this.hbnSessionManager = app;
+		createInputSheetHelper(app);
+	}
 
 
     @Override
