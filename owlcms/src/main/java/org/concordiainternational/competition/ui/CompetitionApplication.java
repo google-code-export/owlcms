@@ -91,7 +91,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     public CompetitionApplication() {
 		super();
         current.set(this);
-        logger.warn("new application {}",this);
+        logger.debug("new application {}",this);
 	}
     
 	/**
