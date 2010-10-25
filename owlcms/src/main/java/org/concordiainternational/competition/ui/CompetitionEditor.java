@@ -160,7 +160,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         final Competition competition = (Competition) ci.getPojo();
         
         FilesystemContainer fsContainer;
-        String relativeLocation = "/WEB-INF/classes/templates";
+        String relativeLocation = "/WEB-INF/classes/templates/teamResults";
 		String realPath = wContext.getHttpSession().getServletContext().getRealPath(relativeLocation);
 
 		File file = new File(realPath);
@@ -171,7 +171,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
 		}
         
         Select fileSelector = new Select(Messages.getString("Competition." + fieldName, locale), fsContainer);
-
+        fileSelector.setItemCaptionPropertyId("Name");
         fileSelector.addListener(new Property.ValueChangeListener() {
             private static final long serialVersionUID = 1L;
 
@@ -189,7 +189,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
     }
 
 	/**
-	 * kludge when running in-place under jetty (development mode)
+	 * kludge when running in-place under jetty (development mode) with Maven
 	 * @param wContext
 	 * @param fsContainer
 	 * @return
@@ -201,10 +201,13 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
 		String relativeLocationKludge = "/classes";
 		realPath = wContext.getHttpSession().getServletContext().getRealPath(relativeLocationKludge);
 		try {
+			logger.debug("findTemplatesWhenRunningInPlace 1 {}",realPath);
 			// really ugly, no benefit whatsoever in cleaning this up.
 			File file1 = new File(realPath).getParentFile().getParentFile();
+			logger.debug("findTemplatesWhenRunningInPlace 2 {}",file1.getAbsolutePath());
 			if (realPath != null && file1.isDirectory()) {
-				file1 = new File(file1,"classes/templates");
+				file1 = new File(file1,"resources/templates/teamResults");
+				logger.debug("findTemplatesWhenRunningInPlace 3 {}",file1.getAbsolutePath());
 				fsContainer = new FilesystemContainer(file1, "xls", false);
 			} else {
 				throw new RuntimeException("templates not found in WEB-INF or application root");
