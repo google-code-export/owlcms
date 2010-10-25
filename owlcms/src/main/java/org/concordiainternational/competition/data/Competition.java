@@ -28,10 +28,13 @@ import javax.persistence.Id;
 
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 public class Competition implements Serializable {
     private static final long serialVersionUID = -2817516132425565754L;
+    private static final Logger logger = LoggerFactory.getLogger(Competition.class);
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -146,11 +149,12 @@ public class Competition implements Serializable {
     }
 
     public String getResultTemplateFileName() {
+    	logger.warn("getResultTemplateFileName {}",resultTemplateFileName);
         if (resultTemplateFileName != null && new File(resultTemplateFileName).exists()) {
             return resultTemplateFileName;
         } else {
             return CompetitionApplication.getCurrent().getContext().getBaseDirectory()
-                + "/WEB-INF/classes/templates/TeamResultSheetTemplate.xls";
+                + "/WEB-INF/classes/templates/team/TeamResultSheetTemplate.xls";
         }
     }
 
