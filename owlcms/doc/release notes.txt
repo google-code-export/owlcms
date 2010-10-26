@@ -3,10 +3,13 @@
 = Release Notes =
 
 == Release 1.8.5 ==
+  * Location of team templates moved to a team sub-directory, only name shown in dropdown
+  * Restored Points and Ranking button on results page (fixed regression introduced in 1.8.2)
+  * Fix for obscure bug with 2-minute rule that only showed up if announcer acts as timekeeper ("start time on announce" option).
   * Clean-up of push behavior so that the push() method is not called involuntarily in constructors.
   * Removal of all vestiges of polling.
   * merged jetty and tomcat configurations (widgetset located in Maven src instead of target)
-  * Bug fix for 2-minute rule in "one-man-orchestra" mode (announcing starts clock)
+
 
 == Release 1.8.4 ==
   * Improved behavior when refreshing public address display (cleanup of listeners)
