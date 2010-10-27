@@ -24,6 +24,7 @@ import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
+import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
@@ -255,8 +256,13 @@ public class StartSheet extends ResultSheet {
 
         
         cell = workSheet.getCell(rownum, 3);
-        cell.setVal("Weigh-in/Pesée: " + formatDate(competitionSession.getWeighInTime()) + "   " + "Start/Début: "
-            + formatDate(competitionSession.getCompetitionTime()));
+        Date weighInTime = competitionSession.getWeighInTime();
+		Date competitionTime = competitionSession.getCompetitionTime();
+		
+		String weighIn = weighInTime != null ? formatDate(weighInTime) : Messages.getString("StartSheet.TBA",CompetitionApplication.getCurrentLocale());
+		String start = competitionTime != null ? formatDate(competitionTime) : Messages.getString("StartSheet.TBA",CompetitionApplication.getCurrentLocale());
+		cell.setVal("Weigh-in/Pesée: " + weighIn + "   " + "Start/Début: "+ start);
+		
         rangeCoords = new int[] { rownum, 3, rownum, nbCols };
         try {
             CellRange cellRange = new CellRange(workSheet, rangeCoords);
