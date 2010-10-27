@@ -14,6 +14,7 @@
 
 	<description>Vaadin Web Application for managing an Olympic Weightlifting Competition.</description>
 	<url>http://owlcms.googlecode.com</url>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -22,6 +23,14 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.2-SNAPSHOT</version>
+				<configuration>
+					<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
 				</configuration>
 			</plugin>
 
@@ -157,6 +166,10 @@
 	</repositories>
 
 	<pluginRepositories>
+		<pluginRepository>
+			<id>apache.snapshots</id>
+			<url>http://repository.apache.org/snapshots/</url>
+		</pluginRepository>
 		<pluginRepository>
 			<id>mojo-snapshots</id>
 			<url>http://snapshots.repository.codehaus.org/</url>
