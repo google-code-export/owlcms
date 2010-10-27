@@ -3,6 +3,8 @@
 = Release Notes =
 
 == Release 1.8.5 ==
+  * (-a) Fixed Exception in Start Sheet when a group had no start or end time
+  * (-a) Fixed default communication port for NEC display.
   * Location of team templates moved to a team sub-directory, only name shown in dropdown
   * Restored Points and Ranking button on results page (fixed regression introduced in 1.8.2)
   * Fix for obscure bug with 2-minute rule that only showed up if announcer acts as timekeeper ("start time on announce" option).
