@@ -4,7 +4,7 @@
 
 	<context-param>
 		<param-name>productionMode</param-name>
-		<param-value>false</param-value>
+		<param-value>true</param-value>
 	</context-param>
 	<context-param>
 		<param-name>dbPath</param-name>
@@ -12,7 +12,7 @@
 	</context-param>
 	<context-param>
 		<param-name>comPort</param-name>
-		<param-value>COM7</param-value>
+		<param-value>COM3</param-value>
 	</context-param>
 	
     <listener>
