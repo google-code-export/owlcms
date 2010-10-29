@@ -256,6 +256,10 @@ button.v-button-failedLift span {
 	text-shadow: none;
 }
 
+.attemptBoardView .v-caption-loadChart .v-captiontext {
+	display: none;
+}
+
 .loadChart div.plate {
 	border-color: black;
 	border-width: 1px;
