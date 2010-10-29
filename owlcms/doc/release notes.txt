@@ -2,6 +2,9 @@
 
 = Release Notes =
 
+== Release 1.8.7 ==
+  * Attempt board shows referee decisions.
+  
 == Release 1.8.6 ==
   * Changes made to plate loading information are propagated to all plate loading subwindows and to attempt board.
   
