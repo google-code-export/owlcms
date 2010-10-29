@@ -274,7 +274,12 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @return
      */
     public SessionData getMasterData() {
-    	return getMasterData(getPlatformName());
+    	
+    	String platformName = getPlatformName();
+    	if (platformName == null) {
+    		platformName = CompetitionApplicationComponents.initPlatformName();
+    	}
+		return getMasterData(platformName);
     }
     
     /**

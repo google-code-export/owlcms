@@ -25,7 +25,9 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
 
 public class LoadImage extends HorDashLayout {
-    private static final long serialVersionUID = 8340222363211435843L;
+
+
+	private static final long serialVersionUID = 8340222363211435843L;
 
     private int weight;
     private Window parentWindow;
@@ -68,25 +70,39 @@ public class LoadImage extends HorDashLayout {
         addPlates(1, "bar", barWeight);
         addPlates(1, "barInner", 0);
         final Integer collarAvailable = platform.getNbC_2_5();
-        if (collarAvailable > 0) {
-            // we only take off the collar weight because we need to
-            // wait before showing the collar.
-            weight -= 5;
-        }
+        boolean useCollar = false;
+        
+        final int nonBarWeight = weight;
+        if (weight >= 25) {
+	        if (collarAvailable > 0) {
+	            // we only take off the collar weight because we need to
+	            // wait before showing the collar.
+	            weight -= 5;
+	            useCollar = true;
+	        }
+	
+	        // use large plates first
+	        addPlates(platform.getNbL_25(), "L_25", 2 * 25);
+	        addPlates(platform.getNbL_20(), "L_20", 2 * 20);
+	        addPlates(platform.getNbL_15(), "L_15", 2 * 15);
+	        addPlates(platform.getNbL_10(), "L_10", 2 * 10);
+        } else {
+            // make sure that large 5 and large 2.5 are only used when warranted
+            // (must not require manual intervention if they are available)
+	        addPlates(platform.getNbL_10(), "L_10", 2 * 10);
+            addPlates(platform.getNbL_5(), "L_5", 2 * 5);
+            if (nonBarWeight < 10) {
+                addPlates(platform.getNbL_2_5(), "L_2_5", 2 * 2.5);      	
+            }
 
-        // use large plates first
-        addPlates(platform.getNbL_25(), "L_25", 2 * 25);
-        addPlates(platform.getNbL_20(), "L_20", 2 * 20);
-        addPlates(platform.getNbL_15(), "L_15", 2 * 15);
-        addPlates(platform.getNbL_10(), "L_10", 2 * 10);
-        addPlates(platform.getNbL_5(), "L_5", 2 * 5);
-        addPlates(platform.getNbL_2_5(), "L_2_5", 2 * 2.5);
+        }
+        
 
         // then small plates
         addPlates(platform.getNbS_5(), "S_5", 2 * 5);
         addPlates(platform.getNbS_2_5(), "S_2_5", 2 * 2.5);
         // collar is depicted here
-        if (collarAvailable > 0) {
+        if (useCollar) {
             // we add back the collar weight we took off above
             weight += 5;
             addPlates(collarAvailable, "C_2_5", 2 * 2.5);
