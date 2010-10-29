@@ -21,6 +21,7 @@ import java.util.Locale;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.ui.PlatesInfoEvent.PlatesInfoListener;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
 import org.concordiainternational.competition.ui.components.Menu;
@@ -47,7 +48,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
 public class LoadWindow extends Window implements Property.ValueChangeListener,
-        Window.CloseListener {
+        Window.CloseListener, PlatesInfoListener {
     private static final long serialVersionUID = 4907861433698426676L;
 
     private static final Logger logger = LoggerFactory.getLogger(LoadWindow.class);
@@ -55,8 +56,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
     private GridLayout grid = null;
     LifterInfo lifterCardIdentification;
     boolean ignoreChanges;
-    private Item item;
-    private Platform platform;
+    private Item availablePlates;
     private SessionData masterData;
     private LoadImage imageArea;
 
@@ -64,21 +64,24 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
 
     private Menu menu;
 
+	CompetitionApplication app;
+
     public LoadWindow(Menu menu) {
         super();
         this.menu = menu;
 
         final Locale locale = CompetitionApplication.getCurrentLocale();
-        CompetitionApplication app = CompetitionApplication.getCurrent();
-        final String platformName = CompetitionApplicationComponents.initPlatformName();
-        masterData = app.getMasterData(platformName);
-
-        platform = Platform.getByName(platformName);
-        item = new BeanItem<Platform>(platform);
-
+        app = CompetitionApplication.getCurrent();
+        
+        masterData = app.getMasterData();
+        
         display(locale);
         position();
+        addListener((CloseListener)this);
+        app.getMainWindow().addListener((CloseListener)this);
         registerAsListener(locale);
+        
+        logger.debug("window {} created",this);
     }
 
     private void position() {
@@ -113,6 +116,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
 
         };
         masterData.addListener(groupDataListener);
+        masterData.addBlackBoardListener(this);
     }
 
     /**
@@ -120,6 +124,9 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
      */
     private void display(final Locale locale) {
         CompetitionApplication app = CompetitionApplication.getCurrent();
+        Platform platform = masterData.getPlatform();
+        logger.debug("diplaying platform {} {}",platform.getName(),platform);
+		availablePlates = new BeanItem<Platform>(platform);
 		synchronized (app) {
             boolean gridIsVisible = (grid == null ? false : grid.isVisible());
             removeAllComponents();
@@ -279,7 +286,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
     }
 
     /**
-     * Utility routine to associate a grid cell with a Pojo field through a
+     * Utility routine to associate a grid cell with an availablePlates field through a
      * property.
      * 
      * @param propertyId
@@ -291,7 +298,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
         if (component == null) {
             component = createIntegerField(column, row, CompetitionApplication.getCurrentLocale());
         }
-        component.setPropertyDataSource(item.getItemProperty(propertyId));
+        component.setPropertyDataSource(availablePlates.getItemProperty(propertyId));
         component.addListener((ValueChangeListener) this);
         component.setWriteThrough(true);
         component.setReadOnly(false);
@@ -311,24 +318,34 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
     public void valueChange(Property.ValueChangeEvent event) {
         // prevent triggering if called recursively or during initial display
         // prior to editing.
-        if (ignoreChanges) return;
-        ignoreChanges = true;
 
-        // this means that an editable property has changed in the form; refresh
-        // all the computed ones.
-        if (event != null) logger.debug(event.getProperty().toString());
-
-        // manage field interdependencies.
-        final Integer lightBar = (Integer) item.getItemProperty("lightBar").getValue();
-        if (lightBar != 0) {
-            item.getItemProperty("officialBar").setValue("0");
-        } else {
-            item.getItemProperty("officialBar").setValue(computeOfficialBarWeight());
+        if (ignoreChanges) {
+        	logger.debug("listener in window {} ignoring event",this);
+        	return;
         }
+		boolean prevIgnoreChanges = ignoreChanges;
+    	try {
+			logger.debug("listener in window {} notified",this);
+			ignoreChanges = true;
 
-        CompetitionApplication.getCurrent().getHbnSession().merge(platform);
-        ignoreChanges = false;
-        imageArea.computeImageArea(masterData, platform);
+			// this means that an editable property has changed in the form; refresh
+			// all the computed ones.
+			if (event != null) logger.debug(event.getProperty().toString());
+
+			// manage field interdependencies.
+			final Integer lightBar = (Integer) availablePlates.getItemProperty("lightBar").getValue();
+			if (lightBar != 0) {
+			    availablePlates.getItemProperty("officialBar").setValue("0");
+			} else {
+			    availablePlates.getItemProperty("officialBar").setValue(computeOfficialBarWeight());
+			}
+			CompetitionApplication.getCurrent().getHbnSession().merge(masterData.getPlatform());
+			masterData.fireBlackBoardEvent(new PlatesInfoEvent(this));
+			imageArea.computeImageArea(masterData, masterData.getPlatform());
+		} finally {
+			ignoreChanges = prevIgnoreChanges;
+		}
+
     }
 
     /**
@@ -346,6 +363,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
 
     @Override
     public void windowClose(CloseEvent e) {
+    	logger.debug("plates subwindow closed");
         if (e.getWindow() == this) {
             cleanup();
         }
@@ -353,7 +371,33 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
 
     public void cleanup() {
         masterData.removeListener(groupDataListener);
+        CompetitionApplication.getCurrent().getMainWindow().removeListener((CloseListener)this);
+        masterData.removeBlackBoardListener(this);
         menu.setLoadComputerWindow(null);
     }
+
+
+	/* Refresh when someone has updated plate loading information in another window.
+	 * @see org.concordiainternational.competition.ui.PlatesInfoEvent.PlatesInfoListener#plateLoadingUpdate(org.concordiainternational.competition.ui.PlatesInfoEvent)
+	 */
+	@Override
+	public void plateLoadingUpdate(PlatesInfoEvent event) {
+		
+		if (event.source != this) {
+			logger.debug("event from {} received in {}",event.source,this);
+			boolean prevIgnoreChanges = ignoreChanges;
+			try {
+				ignoreChanges = true;
+				display(app.getLocale());
+			} finally {
+				ignoreChanges = prevIgnoreChanges;
+			}
+		} else {
+			logger.debug("event from {} ignored by self.",event.source);
+		}
+	}
+    
+
+
 
 }

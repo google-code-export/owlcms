@@ -46,6 +46,7 @@ import org.concordiainternational.competition.publicAddress.PublicAddressMessage
 import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent;
 import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent.MessageTimerListener;
 import org.concordiainternational.competition.timer.CountdownTimer;
+import org.concordiainternational.competition.ui.PlatesInfoEvent.PlatesInfoListener;
 import org.concordiainternational.competition.utils.EventHelper;
 import org.concordiainternational.competition.utils.IdentitySet;
 import org.concordiainternational.competition.utils.LoggerUtils;
@@ -121,6 +122,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         app = CompetitionApplication.getCurrent();
         lifters = new ArrayList<Lifter>();
         currentPlatformName = platformName;
+        platform = Platform.getByName(platformName);
         notificationManager = new NotificationManager<SessionData, Lifter, Component>(this);
         init();
     }
@@ -167,9 +169,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     private void init() {
     	blackBoardEventRouter.register(MessageDisplayListener.class, PublicAddressMessageEvent.class);
     	blackBoardEventRouter.register(MessageTimerListener.class, PublicAddressTimerEvent.class);
-        // logger.entry();
-        // loadData();
-        // logger.exit();
+    	blackBoardEventRouter.register(PlatesInfoListener.class, PlatesInfoEvent.class);
     }
 
     /**
@@ -284,11 +284,11 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             } // stop time something is happening.
             setTimeAllowed(timeAllowed(currentLifter));
             needToUpdateNEC = true;
-            logger.warn(
+            logger.debug(
                         "paused time, needToUpdateNec = true, timeAllowed={}, timeRemaining={}", timeAllowed, timer2.getTimeRemaining()); //$NON-NLS-1$
         } else {
             needToUpdateNEC = false;
-            logger.warn("needToUpdateNEC = false"); //$NON-NLS-1$
+            logger.debug("needToUpdateNEC = false"); //$NON-NLS-1$
         }
 
         if (currentLifter != null) {
@@ -655,6 +655,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     private boolean announcerEnabled = true;
 	public Item publicAddressItem;
 	private PublicAddressCountdownTimer publicAddressTimer = new PublicAddressCountdownTimer(this);
+	private Platform platform;
 
 
 	public boolean getAnnouncerEnabled() {
@@ -885,7 +886,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         if (servletContext != null) {
             servletContext.setAttribute(SessionData.MASTER_KEY + platformName, this);
             logger.info("Master data registered for platform {}={}", platformName, this); //$NON-NLS-1$ //$NON-NLS-2$
-        }
+        }        
     }
 
     /**
@@ -1120,6 +1121,14 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 		return publicAddressTimer;
 	}
 
+	public Platform getPlatform() {
+		return platform;
+	}
+
+	public void setPlatform(Platform platform) {
+		this.platform = platform;
+	}
+	
 //	public void setPublicAddressTimer(PublicAddressCountdownTimer publicAddressTimer) {
 //		this.publicAddressTimer = publicAddressTimer;
 //	}
