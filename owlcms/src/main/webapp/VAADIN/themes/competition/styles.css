@@ -260,6 +260,27 @@ button.v-button-failedLift span {
 	display: none;
 }
 
+.zoomLarge .zoomable {
+	zoom: 135%;
+	padding-left:-2em;
+}
+
+
+.zoomLarge .zoomable.timerDisplay {
+	zoom: 200%;
+	color: orange;
+}
+
+.zoomLarge .v-disabled.zoomable.timerDisplay {
+	zoom: 200%;
+	color: orange;
+	opacity: 0.5;
+}
+
+.zoomMedium  {
+	zoom: 120%;
+}
+
 .loadChart div.plate {
 	border-color: black;
 	border-width: 1px;

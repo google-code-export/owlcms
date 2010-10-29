@@ -149,6 +149,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
 			boolean done = lifter.getHTMLLifterInfo(
 					identifier.startsWith("bottom"), sb); //$NON-NLS-1$
 			final Label label = new Label(sb.toString(), Label.CONTENT_XHTML);
+			label.addStyleName("zoomable");
 			label.setData("lifter");
 			this.addComponent(label);
 			this.setSpacing(true);
@@ -298,13 +299,15 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
      */
     private void createTimerDisplay(final SessionData groupData) {
         timerDisplay = new Label();
+        timerDisplay.addStyleName("zoomable");
+        timerDisplay.addStyleName("timerDisplay");
 
         // we set the value to the time allowed for the current lifter as
         // computed by groupData
         int timeAllowed = groupData.getTimeAllowed();
         final CountdownTimer timer = groupData.getTimer();
         final boolean running = timer.isRunning();
-        logger.warn("timeAllowed={} timer.isRunning()={}", timeAllowed, running); //$NON-NLS-1$
+        logger.debug("timeAllowed={} timer.isRunning()={}", timeAllowed, running); //$NON-NLS-1$
         if (!running) {
             timerDisplay.setValue(TimeFormatter.formatAsSeconds(timeAllowed));
             timerDisplay.setEnabled(false); // greyed out.

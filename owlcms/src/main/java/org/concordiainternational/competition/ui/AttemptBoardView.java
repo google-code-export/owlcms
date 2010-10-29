@@ -16,22 +16,26 @@
 
 package org.concordiainternational.competition.ui;
 
+import java.net.URL;
+
 import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.ui.PlatesInfoEvent.PlatesInfoListener;
 import org.concordiainternational.competition.ui.components.ApplicationView;
+import org.concordiainternational.competition.ui.components.DecisionLightsWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
-public class AttemptBoardView extends Panel implements
-	ApplicationView, SessionData.UpdateEventListener, CloseListener, PlatesInfoListener {
+public class AttemptBoardView extends VerticalLayout implements
+	ApplicationView, SessionData.UpdateEventListener, CloseListener, PlatesInfoListener, URIHandler {
 
     Logger logger = LoggerFactory.getLogger(AttemptBoardView.class);
 
@@ -41,11 +45,15 @@ public class AttemptBoardView extends Panel implements
     private Mode mode;
     private Platform platform;
 
-    private LoadImage imageArea;
+    private VerticalLayout imageArea;
 
     private String platformName;
 
     private String viewName;
+
+	private DecisionLightsWindow decisionArea;
+
+	private LoadImage plates;
 
     public AttemptBoardView(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
@@ -55,8 +63,6 @@ public class AttemptBoardView extends Panel implements
         }
         
         this.mode = AnnouncerView.Mode.DISPLAY;
-        final String height = "8cm";
-        this.setHeight(height);
         this.addStyleName("attemptBoardView");
 
         HorizontalLayout horLayout = new HorizontalLayout();
@@ -76,29 +82,60 @@ public class AttemptBoardView extends Panel implements
             app.components.menu.setVisible(false);
         }
         platform = Platform.getByName(platformName);
+        
 
-        announcerInfo = new LifterInfo("display", masterData, mode, horLayout); //$NON-NLS-1$
-        announcerInfo.addStyleName("currentLifterSummary"); //$NON-NLS-1$
-        announcerInfo.setWidth(15.0F, Sizeable.UNITS_CM); //$NON-NLS-1$
-        announcerInfo.setHeight(height);
-        announcerInfo.setMargin(true);
-        logger.debug("after announcerInfo"); //$NON-NLS-1$
+		boolean prevPusherDisabled = app.getPusherDisabled();
+        try {
+        	app.setPusherDisabled(true);
+        	this.setSizeFull();
+        	
+			announcerInfo = new LifterInfo("display", masterData, mode, horLayout); //$NON-NLS-1$
+			announcerInfo.addStyleName("currentLifterSummary"); //$NON-NLS-1$
+			announcerInfo.setSizeFull(); //$NON-NLS-1$
+			announcerInfo.setHeight("30em");
+			announcerInfo.setWidth("30em");
+			announcerInfo.setMargin(false);
+			announcerInfo.setSpacing(false);
+			announcerInfo.addStyleName("zoomLarge");
+			logger.debug("after announcerInfo"); //$NON-NLS-1$
 
-        imageArea = new LoadImage(null);
-        imageArea.computeImageArea(masterData, platform);
-        imageArea.setCaption("");
+			decisionArea = new DecisionLightsWindow(false, true);
+			decisionArea.setSizeFull(); //$NON-NLS-1$
+			decisionArea.setHeight("35em");
+			//decisionArea.addStyleName("zoomMedium");
+			
+			imageArea = new VerticalLayout();
+			plates = new LoadImage(null);
+			imageArea.addComponent(plates);
+			imageArea.setHeight("30em");
+			imageArea.setSpacing(false);
+			imageArea.setMargin(true);
+			imageArea.setComponentAlignment(plates, Alignment.MIDDLE_LEFT);
+			imageArea.addStyleName("zoomMedium");
+			imageArea.setCaption("");
+		} finally {
+			app.setPusherDisabled(prevPusherDisabled);
+		}
 
+        horLayout.addComponent(announcerInfo);
+        horLayout.addComponent(decisionArea);
+        horLayout.addComponent(imageArea);
+        horLayout.setComponentAlignment(announcerInfo, Alignment.MIDDLE_CENTER);
+        horLayout.setComponentAlignment(decisionArea, Alignment.MIDDLE_CENTER);
+        horLayout.setComponentAlignment(imageArea, Alignment.MIDDLE_CENTER);
+        horLayout.setExpandRatio(announcerInfo, 5);
+        horLayout.setExpandRatio(decisionArea, 60);
+        horLayout.setExpandRatio(imageArea, 40);
+        horLayout.setMargin(true);
+        horLayout.setSpacing(true);
+
+        this.addComponent(horLayout);
+        this.setComponentAlignment(horLayout, Alignment.MIDDLE_CENTER);
+        
         // we are now fully initialized
         announcerInfo.loadLifter(masterData.getCurrentLifter(), masterData);
         registerAsListener();
-
-        horLayout.addComponent(announcerInfo);
-        horLayout.addComponent(imageArea);
-        horLayout.setComponentAlignment(imageArea, Alignment.MIDDLE_CENTER);
-        horLayout.setExpandRatio(imageArea, 100);
-        horLayout.setMargin(true);
-
-        this.addComponent(horLayout);
+        doPlatesInfoUpdate();
     }
 
 
@@ -120,7 +157,7 @@ public class AttemptBoardView extends Panel implements
 		synchronized (app) {
             logger.debug("loading {} ", masterData.getCurrentLifter()); //$NON-NLS-1$
             announcerInfo.loadLifter(masterData.getCurrentLifter(), masterData);
-            imageArea.computeImageArea(masterData, platform);
+            plates.computeImageArea(masterData, platform);
         }
 		app.push();
 	}
@@ -168,7 +205,10 @@ public class AttemptBoardView extends Panel implements
 		doPlatesInfoUpdate();
 	}
 
-
+	
+	/* Unregister listeners when window is closed.
+	 * @see com.vaadin.ui.Window.CloseListener#windowClose(com.vaadin.ui.Window.CloseEvent)
+	 */
 	@Override
 	public void windowClose(CloseEvent e) {
 		unregisterAsListener();
@@ -176,11 +216,22 @@ public class AttemptBoardView extends Panel implements
 
 	private void registerAsListener() {
         masterData.addListener(this);
+        masterData.getDecisionController().addListener(decisionArea);
         masterData.addBlackBoardListener(this);
 	}
 	
 	private void unregisterAsListener() {
-		// TODO Auto-generated method stub	
+		masterData.removeListener(this);
+		masterData.getDecisionController().removeListener(decisionArea);
+		masterData.removeBlackBoardListener(this);
+	}
+
+
+	@Override
+	public DownloadStream handleURI(URL context, String relativeUri) {
+		logger.warn("re-registering handlers for {} {}",this,relativeUri);
+		registerAsListener();
+		return null;
 	}
 
 }
