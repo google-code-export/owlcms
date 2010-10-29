@@ -77,8 +77,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
         
         display(locale);
         position();
-        addListener((CloseListener)this);
-        app.getMainWindow().addListener((CloseListener)this);
+
         registerAsListener(locale);
         
         logger.debug("window {} created",this);
@@ -105,21 +104,42 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
     }
 
     /**
+     * Listen to various events.
+     * {@link #unregisterAsListener()} undoes the registrations.
      * @param locale
      */
     private void registerAsListener(final Locale locale) {
+    	// subwindow closes
+        addListener((CloseListener)this);
+        
+        // main window closes
+        app.getMainWindow().addListener((CloseListener)this);
+        
+        // changes to current lifter
         groupDataListener = new SessionData.UpdateEventListener() {
             @Override
             public void updateEvent(UpdateEvent updateEvent) {
                 display(locale);
             }
-
         };
         masterData.addListener(groupDataListener);
+        
+        // changes to plates available
         masterData.addBlackBoardListener(this);
     }
 
     /**
+     * Clean-up listener registrations.
+     * Removes all listeners registered by {@link #registerAsListener(Locale)}
+     */
+    public void unregisterAsListener() {
+	    masterData.removeListener(groupDataListener);
+	    CompetitionApplication.getCurrent().getMainWindow().removeListener((CloseListener)this);
+	    masterData.removeBlackBoardListener(this);
+	    menu.setLoadComputerWindow(null);
+	}
+
+	/**
      * @param locale
      */
     private void display(final Locale locale) {
@@ -177,7 +197,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
     @Override
     public void close() {
         super.close();
-        cleanup();
+        unregisterAsListener();
     }
 
     /**
@@ -365,19 +385,11 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
     public void windowClose(CloseEvent e) {
     	logger.debug("plates subwindow closed");
         if (e.getWindow() == this) {
-            cleanup();
+            unregisterAsListener();
         }
     }
 
-    public void cleanup() {
-        masterData.removeListener(groupDataListener);
-        CompetitionApplication.getCurrent().getMainWindow().removeListener((CloseListener)this);
-        masterData.removeBlackBoardListener(this);
-        menu.setLoadComputerWindow(null);
-    }
-
-
-	/* Refresh when someone has updated plate loading information in another window.
+    /* Refresh when someone has updated plate loading information in another window.
 	 * @see org.concordiainternational.competition.ui.PlatesInfoEvent.PlatesInfoListener#plateLoadingUpdate(org.concordiainternational.competition.ui.PlatesInfoEvent)
 	 */
 	@Override
