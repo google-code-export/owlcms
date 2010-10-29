@@ -5,7 +5,7 @@
 	<groupId>org.concordiainternational</groupId>
 	<artifactId>owlcms</artifactId>
 	<packaging>war</packaging>
-	<version>1.8.5-a</version>
+	<version>1.8.6</version>
 	<name>Olympic Weightlifting Competition Management System</name>
 
 	<properties>
@@ -91,7 +91,7 @@
 					<reload>manual</reload>
 					<!-- make sure Jetty also finds the widgetset -->
 					<webAppConfig>
-						<contextPath>/owlcms</contextPath>
+						<contextPath>/${artifactId}</contextPath>
 						<baseResource implementation="org.mortbay.resource.ResourceCollection">
 							<!-- Workaround for Maven/Jetty issue http://jira.codehaus.org/browse/JETTY-680 -->
 							<!-- <resources>src/main/webapp,${project.build.directory}/${project.build.finalName}</resources> -->
