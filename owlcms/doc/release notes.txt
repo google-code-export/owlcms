@@ -3,7 +3,7 @@
 = Release Notes =
 
 == Release 1.8.6 ==
-  * Changes made to plate loading information is propagated to all plate loading subwindows and to attempt board.
+  * Changes made to plate loading information are propagated to all plate loading subwindows and to attempt board.
   
 == Release 1.8.5 ==
   * (-a) Fixed Exception in Start Sheet when a group had no start or end time
