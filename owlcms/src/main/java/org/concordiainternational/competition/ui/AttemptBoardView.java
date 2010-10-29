@@ -18,6 +18,7 @@ package org.concordiainternational.competition.ui;
 
 import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
+import org.concordiainternational.competition.ui.PlatesInfoEvent.PlatesInfoListener;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +27,11 @@ import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 
-public class AttemptBoardView extends Panel implements ApplicationView, SessionData.UpdateEventListener {
+public class AttemptBoardView extends Panel implements
+	ApplicationView, SessionData.UpdateEventListener, CloseListener, PlatesInfoListener {
 
     Logger logger = LoggerFactory.getLogger(AttemptBoardView.class);
 
@@ -53,6 +57,7 @@ public class AttemptBoardView extends Panel implements ApplicationView, SessionD
         this.mode = AnnouncerView.Mode.DISPLAY;
         final String height = "8cm";
         this.setHeight(height);
+        this.addStyleName("attemptBoardView");
 
         HorizontalLayout horLayout = new HorizontalLayout();
         horLayout.setSizeFull();
@@ -85,7 +90,7 @@ public class AttemptBoardView extends Panel implements ApplicationView, SessionD
 
         // we are now fully initialized
         announcerInfo.loadLifter(masterData.getCurrentLifter(), masterData);
-        masterData.addListener(this);
+        registerAsListener();
 
         horLayout.addComponent(announcerInfo);
         horLayout.addComponent(imageArea);
@@ -103,14 +108,22 @@ public class AttemptBoardView extends Panel implements ApplicationView, SessionD
 
     @Override
     public void updateEvent(SessionData.UpdateEvent updateEvent) {
-        CompetitionApplication app = CompetitionApplication.getCurrent();
+        doPlatesInfoUpdate();
+    }
+
+
+	/**
+	 * @param updateEvent
+	 */
+	private void doPlatesInfoUpdate() {
+		CompetitionApplication app = CompetitionApplication.getCurrent();
 		synchronized (app) {
-            logger.debug("loading {} ", updateEvent.getCurrentLifter()); //$NON-NLS-1$
+            logger.debug("loading {} ", masterData.getCurrentLifter()); //$NON-NLS-1$
             announcerInfo.loadLifter(masterData.getCurrentLifter(), masterData);
             imageArea.computeImageArea(masterData, platform);
         }
 		app.push();
-    }
+	}
 
     /* (non-Javadoc)
      * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()
@@ -148,5 +161,26 @@ public class AttemptBoardView extends Panel implements ApplicationView, SessionD
         	platformName = CompetitionApplicationComponents.initPlatformName();
         }
     }
+
+
+	@Override
+	public void plateLoadingUpdate(PlatesInfoEvent event) {
+		doPlatesInfoUpdate();
+	}
+
+
+	@Override
+	public void windowClose(CloseEvent e) {
+		unregisterAsListener();
+	}
+
+	private void registerAsListener() {
+        masterData.addListener(this);
+        masterData.addBlackBoardListener(this);
+	}
+	
+	private void unregisterAsListener() {
+		// TODO Auto-generated method stub	
+	}
 
 }
