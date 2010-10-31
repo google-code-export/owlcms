@@ -16,11 +16,14 @@
 
 package org.concordiainternational.competition.ui;
 
+import java.text.MessageFormat;
+
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.CompetitionSessionLookup;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.RuleViolationException;
+import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.slf4j.Logger;
@@ -30,6 +33,7 @@ import org.vaadin.notifique.Notifique.Message;
 import org.vaadin.overlay.CustomOverlay;
 
 import com.vaadin.data.Item;
+import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
@@ -75,6 +79,7 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
     private String platformName;
     private String viewName;
     private String groupName;
+	private Notifique notifications;
 
     public enum Mode {
         ANNOUNCER, TIMEKEEPER, MARSHALL, DISPLAY
@@ -451,7 +456,7 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
     
     private void setupNotifications() {
     	// Notification area. Full width.
-    	final Notifique notifications = new Notifique(true);
+    	notifications = new Notifique(true);
     	notifications.setWidth("100%");
     	notifications.setVisibleCount(3);
     	
@@ -467,10 +472,20 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
     	});
     	
     	// Display as overlay in top of the main window
-    	Window mainWindow = app.getMainWindow();
+    	Window mainWindow = CompetitionApplication.getCurrent().getMainWindow();
 		CustomOverlay ol = new CustomOverlay(notifications, mainWindow);
 		mainWindow.addComponent(ol);
     	
     	//notifications.add((Resource)null,"1!",true,Notifique.Styles.VAADIN_ORANGE,true);
+	}
+
+
+
+	public void displayNotification(Mode mode2, NotificationReason reason) {
+		String message = MessageFormat.format(
+				Messages.getString("NotificationReason.NotificationFormat", CompetitionApplication.getCurrentLocale()),
+				Messages.getString("LiftList."+mode2.name(), CompetitionApplication.getCurrentLocale()),
+				Messages.getString("NotificationReason."+reason.name(), CompetitionApplication.getCurrentLocale()));
+		notifications.add((Resource)null,message,true,Notifique.Styles.VAADIN_ORANGE,true);
 	}
 }

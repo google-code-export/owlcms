@@ -318,7 +318,7 @@ public class DecisionController implements CountdownTimerListener {
     }
 
     @Override
-    public void forceTimeRemaining(int startTime, CompetitionApplication app, NotificationReason reason) {
+    public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, NotificationReason reason) {
     }
 
     @Override

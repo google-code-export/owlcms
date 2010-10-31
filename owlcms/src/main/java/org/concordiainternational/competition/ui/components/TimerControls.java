@@ -23,6 +23,7 @@ import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.ui.AnnouncerView;
 import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.ui.NotificationReason;
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.LifterInfo;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
@@ -254,7 +255,7 @@ public class TimerControls extends GridLayout {
                 timingLogger.debug("stop/start timer.isRunning()={}", running); //$NON-NLS-1$
                 if (running) {
                     lifterInfo.setBlocked(true);
-                    timer.pause(); // pause() does not clear the associated
+                    timer.pause(NotificationReason.STOP_START_BUTTON); // pause() does not clear the associated
                                    // lifter
                 } else {
                     lifterInfo.setBlocked(false); // !!!!
@@ -345,7 +346,7 @@ public class TimerControls extends GridLayout {
             public void buttonClick(ClickEvent event) {
                 timingLogger.debug("weightChangeButton clicked"); //$NON-NLS-1$
                 logger.info("WEIGHT CHANGE button clicked");
-                groupData.getTimer().pause();
+                groupData.getTimer().pause(NotificationReason.CURRENT_LIFTER_CHANGE);
                 if (mode == Mode.ANNOUNCER || mode == Mode.MARSHALL) {
                     // if
                     // (!WebApplicationConfiguration.NECShowsLifterImmediately)
@@ -423,7 +424,7 @@ public class TimerControls extends GridLayout {
             @Override
             public void buttonClick(ClickEvent event) {
                 timingLogger.debug("stopTimeBottom"); //$NON-NLS-1$
-                groupData.getTimer().pause();
+                groupData.getTimer().pause(NotificationReason.CURRENT_LIFTER_CHANGE);
             }
         };
         stopTimeBottom.addListener(stopTimeBottomListener);
