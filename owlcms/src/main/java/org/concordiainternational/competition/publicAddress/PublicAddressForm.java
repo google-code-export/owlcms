@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
+import com.vaadin.data.util.ObjectProperty;
+import com.vaadin.data.util.PropertysetItem;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
@@ -34,6 +36,32 @@ import com.vaadin.ui.Window.CloseEvent;
  */
 @SuppressWarnings({ "serial" })
 public class PublicAddressForm extends Form implements Window.CloseListener {
+	
+	public static void editPublicAddress(GenericList<?> list,
+			SessionData masterData) {
+		/* Create an empty "Message" item */
+		if (masterData.getPublicAddressItem() == null) {
+			PropertysetItem item = new PropertysetItem();
+			item.addItemProperty("title", new ObjectProperty<String>("", String.class));
+			item.addItemProperty("message", new ObjectProperty<String>("", String.class));
+			item.addItemProperty("remainingSeconds", new ObjectProperty<PublicAddressCountdownTimer>(null, PublicAddressCountdownTimer.class));
+			masterData.setPublicAddressItem(item);
+		}
+
+
+		PublicAddressForm form = new PublicAddressForm(masterData);
+		form.setReadOnly(false);
+
+		CompetitionApplication app = CompetitionApplication.getCurrent();
+		Window editingWindow = new Window(Messages.getString("FieldName.message", app.getLocale()));
+		form.setWindow(editingWindow);
+		form.setParentList(list);
+		editingWindow.getContent().addComponent(form);
+		app.getMainWindow().addWindow(editingWindow);
+		editingWindow.setWidth("60em");
+		editingWindow.center();
+	}
+
 	private CountdownField countdownField;
 	
 	public class PublicAddressFormFieldFactory implements FormFieldFactory {

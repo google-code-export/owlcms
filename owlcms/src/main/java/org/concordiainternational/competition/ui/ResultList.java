@@ -26,6 +26,7 @@ import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.lifterSort.WinningOrderComparator;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.publicAddress.PublicAddressForm;
 import org.concordiainternational.competition.spreadsheet.CompetitionBook;
 import org.concordiainternational.competition.spreadsheet.MastersGroupResults;
 import org.concordiainternational.competition.spreadsheet.OutputSheetStreamSource;
@@ -183,12 +184,6 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
         sessionSelect = new SessionSelect((CompetitionApplication) app, locale);
         tableToolbar.addComponent(sessionSelect);
 
-        // result spreadsheet
-
-        //        toggleEditModeButton = new Button("", this, "toggleEditable"); //$NON-NLS-1$
-        // tableToolbar.addComponent(toggleEditModeButton);
-        // setButtonVisibility();
-
         {
             final Button resultSpreadsheetButton = new Button(Messages.getString("ResultList.ResultSheet", locale)); //$NON-NLS-1$
             final Button.ClickListener listener = new Button.ClickListener() { //$NON-NLS-1$
@@ -240,7 +235,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
                 }
             };
             resultSpreadsheetButton.addListener(listener);
-            tableToolbar.addComponent(resultSpreadsheetButton);
+            tableToolbar.addComponent(resultSpreadsheetButton);       
         }
 
         {
@@ -292,6 +287,20 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
         };
         editButton.addListener(editClickListener);
         tableToolbar.addComponent(editButton);
+        
+        final Button publicAddressButton = new Button(Messages.getString("LiftList.publicAddress", app.getLocale())); //$NON-NLS-1$
+        final Button.ClickListener publicAddressClickListener = new Button.ClickListener() { //$NON-NLS-1$
+            private static final long serialVersionUID = 7744958942977063130L;
+
+            @Override
+			public void buttonClick(ClickEvent event) {
+            	CompetitionApplication current = CompetitionApplication.getCurrent();
+            	SessionData masterData = current.getMasterData(current.getPlatformName());
+				PublicAddressForm.editPublicAddress(ResultList.this, masterData);
+            }
+        };
+        publicAddressButton.addListener(publicAddressClickListener);
+        tableToolbar.addComponent(publicAddressButton);
     }
 
     /**
