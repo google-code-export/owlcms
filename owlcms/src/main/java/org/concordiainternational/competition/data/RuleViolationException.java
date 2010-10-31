@@ -50,13 +50,13 @@ public class RuleViolationException extends InvalidValueException implements Loc
 
     @Override
     public String getLocalizedMessage() {
-        final Locale locale = (this.locale == null ? CompetitionApplication.getDefaultLocale() : this.locale);
-        final String messageTemplate = Messages.getString(this.messageKey, locale);
+        final Locale locale1 = (this.locale == null ? CompetitionApplication.getDefaultLocale() : this.locale);
+        final String messageTemplate = Messages.getString(this.messageKey, locale1);
         return MessageFormat.format(messageTemplate, messageFormatData);
     }
 
-    public String getLocalizedMessage(Locale locale) {
-        final String messageTemplate = Messages.getString(this.messageKey, locale);
+    public String getLocalizedMessage(Locale locale1) {
+        final String messageTemplate = Messages.getString(this.messageKey, locale1);
         return MessageFormat.format(messageTemplate, messageFormatData);
     }
 

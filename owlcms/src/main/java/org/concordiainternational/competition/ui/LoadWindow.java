@@ -143,11 +143,11 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
      * @param locale
      */
     private void display(final Locale locale) {
-        CompetitionApplication app = CompetitionApplication.getCurrent();
+        CompetitionApplication app1 = CompetitionApplication.getCurrent();
         Platform platform = masterData.getPlatform();
         logger.debug("diplaying platform {} {}",platform.getName(),platform);
 		availablePlates = new BeanItem<Platform>(platform);
-		synchronized (app) {
+		synchronized (app1) {
             boolean gridIsVisible = (grid == null ? false : grid.isVisible());
             removeAllComponents();
             final int expectedBarWeight = computeOfficialBarWeight();
@@ -191,7 +191,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
             this.addComponent(root);
             this.addStyleName("light");
         }
-        app.push();
+        app1.push();
     }
 
     @Override

@@ -547,7 +547,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
      * @see Container#addContainerProperty(Object, Class, Object)
      */
     @Override
-	public boolean addContainerProperty(Object propertyId, Class<?> type, Object defaultValue)
+	public boolean addContainerProperty(Object propertyId, Class<?> type1, Object defaultValue)
             throws UnsupportedOperationException {
         boolean propertyExists = true;
         try {
@@ -559,7 +559,7 @@ public class HbnContainer<T> implements Container.Indexed, Container.Sortable, C
             ex.printStackTrace();
             propertyExists = false;
         }
-        addedProperties.put(propertyId.toString(), type);
+        addedProperties.put(propertyId.toString(), type1);
         return propertyExists;
     }
 

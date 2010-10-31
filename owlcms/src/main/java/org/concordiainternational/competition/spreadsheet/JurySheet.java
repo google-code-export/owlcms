@@ -62,7 +62,7 @@ public class JurySheet extends OutputSheet {
      *      org.concordiainternational.competition.data.CategoryLookup, int)
      */
     @Override
-    public void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup, int rownum)
+    public void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup1, int rownum)
             throws CellTypeMismatchException, CellNotFoundException {
         rownum = rownum + START_ROW;
         final String lastName = lifter.getLastName();

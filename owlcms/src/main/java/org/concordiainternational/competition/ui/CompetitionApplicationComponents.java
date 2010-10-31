@@ -420,13 +420,13 @@ public class CompetitionApplicationComponents {
             setPlatform(null);
             return;
         }
-        final Platform platform = Platform.getByName(platformName);
-        if (platform != null) {
+        final Platform platform1 = Platform.getByName(platformName);
+        if (platform1 != null) {
             final CompetitionApplication app = CompetitionApplication.getCurrent();
             SessionData masterData = app.getMasterData(platformName);
             final CompetitionSession currentGroup = masterData.getCurrentSession();
             logger.debug("new current group {}", currentGroup); //$NON-NLS-1$
-            setPlatform(platform);
+            setPlatform(platform1);
             if (currentView instanceof EditingView) {
                 ((EditingView) currentView).setSessionData(masterData);
             }

@@ -18,4 +18,6 @@
     <inherits name="org.vaadin.jouni.animator.AnimatorWidgetset" />
 
     <inherits name="org.vaadin.notifique.widgetset.NotifiqueWidgetset" />
+
+    <inherits name="org.vaadin.overlay.OverlaysWidgetset" />
 </module>

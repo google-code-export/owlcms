@@ -69,10 +69,10 @@ public class WeighInSheet extends OutputSheet implements InputSheet, LifterReade
     }
 
     @Override
-	public void init(CategoryLookup categoryLookup, CompetitionApplication app,
-			CompetitionSession competitionSession) {
-		super.init(categoryLookup, app, competitionSession);
-		createInputSheetHelper(app);
+	public void init(CategoryLookup categoryLookup1, CompetitionApplication app1,
+			CompetitionSession competitionSession1) {
+		super.init(categoryLookup1, app1, competitionSession1);
+		createInputSheetHelper(app1);
 	}
     
     /**
@@ -84,7 +84,7 @@ public class WeighInSheet extends OutputSheet implements InputSheet, LifterReade
      *      {@link InputSheetHelper#readLifter(WorkSheetHandle, int)}
      */
     @Override
-    public void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup, int rownum)
+    public void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup1, int rownum)
             throws CellTypeMismatchException, CellNotFoundException {
         rownum = rownum + InputSheetHelper.START_ROW;
         workSheet.insertRow(rownum, true); // insérer une nouvelle ligne
@@ -115,8 +115,8 @@ public class WeighInSheet extends OutputSheet implements InputSheet, LifterReade
         workSheet.getCell(rownum, 16).setVal(SheetUtils.fixValue(lifter.getCleanJerk2ActualLift()));
         workSheet.getCell(rownum, 17).setVal(SheetUtils.fixValue(lifter.getCleanJerk3ActualLift()));
 
-        final CompetitionSession competitionSession = lifter.getCompetitionSession();
-        workSheet.getCell(rownum, 22).setVal((competitionSession != null ? competitionSession.getName() : null));
+        final CompetitionSession competitionSession1 = lifter.getCompetitionSession();
+        workSheet.getCell(rownum, 22).setVal((competitionSession1 != null ? competitionSession1.getName() : null));
     }
     
     /**

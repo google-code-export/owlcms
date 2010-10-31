@@ -63,16 +63,16 @@ public abstract class OutputSheet {
     }
 
     /**
-     * @param categoryLookup
-     * @param app
-     * @param competitionSession
+     * @param categoryLookup1
+     * @param app1
+     * @param competitionSession1
      */
-    public void init(CategoryLookup categoryLookup, CompetitionApplication app, CompetitionSession competitionSession) {
-        this.categoryLookup = categoryLookup;
-        this.app = app;
-        this.competitionSession = competitionSession;
-        if (competitionSession != null){
-            logger.warn("resultSheet session = {} {}",System.identityHashCode(competitionSession), competitionSession.getReferee3());
+    public void init(CategoryLookup categoryLookup1, CompetitionApplication app1, CompetitionSession competitionSession1) {
+        this.categoryLookup = categoryLookup1;
+        this.app = app1;
+        this.competitionSession = competitionSession1;
+        if (competitionSession1 != null){
+            logger.warn("resultSheet session = {} {}",System.identityHashCode(competitionSession1), competitionSession1.getReferee3());
         }
     }
 
@@ -190,7 +190,7 @@ public abstract class OutputSheet {
         }
     }
 
-    abstract void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup, int rownum)
+    abstract void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup1, int rownum)
             throws CellTypeMismatchException, CellNotFoundException;
 
     /**

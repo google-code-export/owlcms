@@ -73,16 +73,16 @@ class PublicAddressCountdownTask extends TimerTask implements Serializable {
 	/**
 	 * Round up to decrement interval (1000ms)
 	 * @param countdownFrom
-	 * @param decrement
+	 * @param decrement1
 	 * @return
 	 */
-	private int roundUpCountdown(int countdownFrom, int decrement) {
+	private int roundUpCountdown(int countdownFrom, int decrement1) {
 		if (countdownFrom <= 0) {
 			return 0;
-		} else if (countdownFrom % decrement == 0) {
+		} else if (countdownFrom % decrement1 == 0) {
 			return countdownFrom;
 		} else {
-			return ((countdownFrom / decrement) * decrement) + decrement;
+			return ((countdownFrom / decrement1) * decrement1) + decrement1;
 		}
 		
 	}

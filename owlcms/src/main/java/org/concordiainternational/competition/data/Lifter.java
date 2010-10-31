@@ -393,45 +393,45 @@ public class Lifter implements MethodEventSource, Notifier {
         if (this.birthDate == null || this.gender == null || this.gender.trim().isEmpty()) {
             return null;
         }
-        int year = Calendar.getInstance().get(Calendar.YEAR);
-        final int age = year - this.birthDate;
+        int year1 = Calendar.getInstance().get(Calendar.YEAR);
+        final int age = year1 - this.birthDate;
         if (age < 30) {
             return null;
         }
-        int ageGroup = (int) (Math.ceil(age / 5) * 5);
-        if (this.getGender().equals("F") && ageGroup >= 65) { //$NON-NLS-1$
+        int ageGroup1 = (int) (Math.ceil(age / 5) * 5);
+        if (this.getGender().equals("F") && ageGroup1 >= 65) { //$NON-NLS-1$
             return 65;
         }
-        if (this.getGender().equals("M") && ageGroup >= 80) { //$NON-NLS-1$
+        if (this.getGender().equals("M") && ageGroup1 >= 80) { //$NON-NLS-1$
             return 80;
         }
         // normal case
-        return ageGroup;
+        return ageGroup1;
     }
 
     /**
      * @return the ageGroup
      */
     public String getMastersAgeGroupInterval() {
-        Integer ageGroup = getAgeGroup();
-        if (this.getGender().equals("F") && ageGroup >= 65) { //$NON-NLS-1$
+        Integer ageGroup1 = getAgeGroup();
+        if (this.getGender().equals("F") && ageGroup1 >= 65) { //$NON-NLS-1$
             return "65+";
         }
-        if (this.getGender().equals("M") && ageGroup >= 80) { //$NON-NLS-1$
+        if (this.getGender().equals("M") && ageGroup1 >= 80) { //$NON-NLS-1$
             return "80+";
         }
-        return ageGroup + "-" + (ageGroup + 4);
+        return ageGroup1 + "-" + (ageGroup1 + 4);
     }
 
     public String getMastersGenderAgeGroupInterval() {
-        Integer ageGroup = getAgeGroup();
-        if (this.getGender().equals("F") && ageGroup >= 65) { //$NON-NLS-1$
+        Integer ageGroup1 = getAgeGroup();
+        if (this.getGender().equals("F") && ageGroup1 >= 65) { //$NON-NLS-1$
             return "F65+";
         }
-        if (this.getGender().equals("M") && ageGroup >= 80) { //$NON-NLS-1$
+        if (this.getGender().equals("M") && ageGroup1 >= 80) { //$NON-NLS-1$
             return "M80+";
         }
-        return getGender().toUpperCase() + ageGroup + "-" + (ageGroup + 4);
+        return getGender().toUpperCase() + ageGroup1 + "-" + (ageGroup1 + 4);
     }
 
     /**
@@ -520,8 +520,8 @@ public class Lifter implements MethodEventSource, Notifier {
      * @return the category
      */
     public Category getCategory() {
-        final CategoryLookup categoryLookup = CategoryLookup.getSharedInstance();
-        final Category lookup = categoryLookup.lookup(this.gender, this.bodyWeight);
+        final CategoryLookup categoryLookup1 = CategoryLookup.getSharedInstance();
+        final Category lookup = categoryLookup1.lookup(this.gender, this.bodyWeight);
         // System.err.println("getCategory: "+this.gender+","+this.bodyWeight+" = "+(lookup
         // == null? null: lookup.getName()));
         return lookup;
@@ -539,8 +539,8 @@ public class Lifter implements MethodEventSource, Notifier {
         Category category = getCategory();
         if (category == null) return 0.0;
         Double categoryWeight = category.getMaximumWeight();
-        final Integer total = getTotal();
-        if (total == null || total < 0.1) return 0.0;
+        final Integer total1 = getTotal();
+        if (total1 == null || total1 < 0.1) return 0.0;
         if (getGender().equalsIgnoreCase("M")) { //$NON-NLS-1$
             if (categoryWeight < 56.0) {
                 categoryWeight = 56.0;
@@ -902,19 +902,19 @@ public class Lifter implements MethodEventSource, Notifier {
      * @return the sinclair-adjusted value for the lifter
      */
     public Double getSinclair() {
-        final Double bodyWeight = getBodyWeight();
-        if (bodyWeight == null) return 0.0;
-        return getSinclair(bodyWeight);
+        final Double bodyWeight1 = getBodyWeight();
+        if (bodyWeight1 == null) return 0.0;
+        return getSinclair(bodyWeight1);
     }
 
-    public Double getSinclair(Double bodyWeight) {
-        Integer total = getTotal();
-        if (total == null || total < 0.1) return 0.0;
+    public Double getSinclair(Double bodyWeight1) {
+        Integer total1 = getTotal();
+        if (total1 == null || total1 < 0.1) return 0.0;
         if (gender == null) return 0.0;
         if (gender.equalsIgnoreCase("M")) { //$NON-NLS-1$
-            return total * sinclairFactor(bodyWeight, Coefficients.menCoefficient(), Coefficients.menMaxWeight());
+            return total1 * sinclairFactor(bodyWeight1, Coefficients.menCoefficient(), Coefficients.menMaxWeight());
         } else {
-            return total * sinclairFactor(bodyWeight, Coefficients.womenCoefficient(), Coefficients.womenMaxWeight());
+            return total1 * sinclairFactor(bodyWeight1, Coefficients.womenCoefficient(), Coefficients.womenMaxWeight());
         }
     }
 
@@ -926,9 +926,9 @@ public class Lifter implements MethodEventSource, Notifier {
 
     public Double getSMM() {
         try {
-            final Integer birthDate = getBirthDate();
-            if (birthDate == null) return 0.0;
-            return getSinclair() * Coefficients.getSMMCoefficient(year - birthDate);
+            final Integer birthDate1 = getBirthDate();
+            if (birthDate1 == null) return 0.0;
+            return getSinclair() * Coefficients.getSMMCoefficient(year - birthDate1);
         } catch (IOException e) {
             LoggerUtils.logException(logger, e);
             return getSinclair();
@@ -1899,12 +1899,12 @@ public class Lifter implements MethodEventSource, Notifier {
     // 10^(1.056683941*((LOG10($G7/125.441))^2)),1)
     // )
     // )
-    private Double sinclairFactor(Double bodyWeight, Double coefficient, Double maxWeight) {
-        if (bodyWeight == null) return 0.0;
-        if (bodyWeight >= maxWeight) {
+    private Double sinclairFactor(Double bodyWeight1, Double coefficient, Double maxWeight) {
+        if (bodyWeight1 == null) return 0.0;
+        if (bodyWeight1 >= maxWeight) {
             return 1.0;
         } else {
-            return Math.pow(10.0, coefficient * (Math.pow(Math.log10(bodyWeight / maxWeight), 2)));
+            return Math.pow(10.0, coefficient * (Math.pow(Math.log10(bodyWeight1 / maxWeight), 2)));
         }
     }
 
@@ -2020,9 +2020,9 @@ public class Lifter implements MethodEventSource, Notifier {
      */
     public String getMastersLongCategory() {
         String catString;
-        String gender = getGender().toUpperCase();
-        final String mastersAgeCategory = getMastersAgeGroup(gender);
-        final String displayCategory = getShortCategory(gender);
+        String gender1 = getGender().toUpperCase();
+        final String mastersAgeCategory = getMastersAgeGroup(gender1);
+        final String displayCategory = getShortCategory(gender1);
         catString = mastersAgeCategory + " " + displayCategory;
         return catString;
     }
@@ -2032,20 +2032,20 @@ public class Lifter implements MethodEventSource, Notifier {
      * @return
      */
     public String getMastersAgeGroup() {
-        String gender = getGender().toUpperCase();
-        return getMastersAgeGroup(gender);
+        String gender1 = getGender().toUpperCase();
+        return getMastersAgeGroup(gender1);
     }
 
     /**
-     * @param gender
+     * @param gender1
      * @return
      */
-    private String getMastersAgeGroup(String gender) {
-        Integer ageGroup;
-        ageGroup = getAgeGroup();
-        final String agePlus = (("M".equals(gender) && ageGroup == 80) || ("F".equals(gender) && ageGroup == 65) ? "+"
+    private String getMastersAgeGroup(String gender1) {
+        Integer ageGroup1;
+        ageGroup1 = getAgeGroup();
+        final String agePlus = (("M".equals(gender1) && ageGroup1 == 80) || ("F".equals(gender1) && ageGroup1 == 65) ? "+"
                 : "");
-        final String mastersAgeCategory = gender + ageGroup + agePlus;
+        final String mastersAgeCategory = gender1 + ageGroup1 + agePlus;
         return mastersAgeCategory;
     }
 
@@ -2054,18 +2054,18 @@ public class Lifter implements MethodEventSource, Notifier {
      * @return
      */
     public String getShortCategory() {
-        String gender = getGender();
-        return getShortCategory(gender);
+        String gender1 = getGender();
+        return getShortCategory(gender1);
     }
 
     /**
-     * @param gender
+     * @param gender1
      * @return
      */
-    public String getShortCategory(String gender) {
+    public String getShortCategory(String gender1) {
         final Double catMin = getCategory().getMinimumWeight();
         Double catMax = getCategory().getMaximumWeight();
-        final String weightPlus = (("M".equals(gender) && catMin > 104.999) || ("F".equals(gender) && catMin > 74.999) ? ">"
+        final String weightPlus = (("M".equals(gender1) && catMin > 104.999) || ("F".equals(gender1) && catMin > 74.999) ? ">"
                 : "");
         if (catMax > 125) {
             catMax = catMin;

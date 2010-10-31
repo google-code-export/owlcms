@@ -69,7 +69,7 @@ public class IndividualSheet extends ResultSheet {
     @SuppressWarnings("unused")
     private static Logger logger = LoggerFactory.getLogger(IndividualSheet.class);
 
-    private void writeIndividualLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup)
+    private void writeIndividualLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup1)
             throws CellTypeMismatchException, CellNotFoundException, RowNotFoundException {
 
         Category category = null;

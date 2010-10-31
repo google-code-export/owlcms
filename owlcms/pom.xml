@@ -197,11 +197,21 @@
 	</pluginRepositories>
 
 	<dependencies>
-		<!--  vaadin and add-ons -->
+		<!-- vaadin and add-ons -->
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin</artifactId>
 			<version>6.5-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>icepush</artifactId>
+			<version>0.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.icepush</groupId>
+			<artifactId>icepush</artifactId>
+			<version>2.0-A3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
@@ -213,23 +223,15 @@
 			<artifactId>dashlayout</artifactId>
 			<version>0.1.5-beta</version>
 		</dependency>
-		<!-- 
-		<dependency> 
-			<groupId>org.vaadin.addons</groupId>
-			<artifactId>blackboard</artifactId> 
-			<version>2.0.1</version>
-		</dependency>
-		-->
+		<!-- <dependency> <groupId>org.vaadin.addons</groupId> <artifactId>blackboard</artifactId> 
+			<version>2.0.1</version> </dependency> -->
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
 			<artifactId>customfield</artifactId>
 			<version>0.7.3</version>
 		</dependency>
-		<dependency>
-			<groupId>org.vaadin.addons</groupId>
-			<artifactId>icepush</artifactId>
-			<version>0.1.2</version>
-		</dependency>
+
+		<!-- notifications on top of display -->
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
 			<artifactId>notifique</artifactId>
@@ -240,7 +242,12 @@
 			<artifactId>animator</artifactId>
 			<version>1.1</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>overlays</artifactId>
+			<version>0.9.8</version>
+		</dependency>
+
 		<!-- This is also used by gwt-maven-plugin to deduce GWT version number. -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
@@ -248,19 +255,14 @@
 			<version>2.0.4</version>
 			<scope>provided</scope>
 		</dependency>
-		
-		<!--  misc. dependencies -->
+
+		<!-- misc. dependencies -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
 			<type>jar</type>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.icepush</groupId>
-			<artifactId>icepush</artifactId>
-			<version>2.0-A3</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

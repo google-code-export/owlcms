@@ -35,6 +35,7 @@ import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
+import org.concordiainternational.competition.ui.NotificationReason;
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
@@ -127,10 +128,10 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
         // System.err.println("appUrlString with slash="+appUrlString);
     }
 
-    private UpdateEventListener registerAsListener(final String platformName, final SessionData masterData) {
+    private UpdateEventListener registerAsListener(final String platformName1, final SessionData masterData1) {
         // locate the current group data for the platformName
-        if (masterData != null) {
-            logger.debug(urlString + "{} listening to: {}", platformName, masterData); //$NON-NLS-1$	
+        if (masterData1 != null) {
+            logger.debug(urlString + "{} listening to: {}", platformName1, masterData1); //$NON-NLS-1$	
             //masterData.addListener(SessionData.UpdateEvent.class, this, "update"); //$NON-NLS-1$
 
             SessionData.UpdateEventListener listener = new SessionData.UpdateEventListener() {
@@ -138,25 +139,25 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
                 @Override
                 public void updateEvent(UpdateEvent updateEvent) {
                 	logger.debug("request to display {}",BrowserPanel.this);
-                    display(platformName, masterData);
+                    display(platformName1, masterData1);
                 }
 
             };
-            masterData.addListener(listener); //$NON-NLS-1$		
+            masterData1.addListener(listener); //$NON-NLS-1$		
             return listener;
 
         } else {
-            logger.debug(urlString + "{} NOT listening to:  = {}", platformName, masterData); //$NON-NLS-1$	
+            logger.debug(urlString + "{} NOT listening to:  = {}", platformName1, masterData1); //$NON-NLS-1$	
             return null;
         }
     }
 
     /**
-     * @param app
+     * @param app1
      * @param platformName
      * @throws MalformedURLException
      */
-    private void create(UserActions app) throws MalformedURLException {
+    private void create(UserActions app1) throws MalformedURLException {
         this.setSizeFull();
 
         top = new CustomLayout("projectorTop"); //$NON-NLS-1$
@@ -175,19 +176,19 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 
 
     /**
-     * @param platformName
-     * @param masterData
+     * @param platformName1
+     * @param masterData1
      * @throws RuntimeException
      */
-    private void display(final String platformName, final SessionData masterData) throws RuntimeException {
+    private void display(final String platformName1, final SessionData masterData1) throws RuntimeException {
         synchronized (app) {
-            URL url = computeUrl(platformName);
+            URL url = computeUrl(platformName1);
             iframe.setSource(new ExternalResource(url));
-            final Lifter currentLifter = masterData.getCurrentLifter();
+            final Lifter currentLifter = masterData1.getCurrentLifter();
             if (currentLifter != null) {
-            	logger.debug("masterData {}",masterData.getCurrentSession().getName());
+            	logger.debug("masterData {}",masterData1.getCurrentSession().getName());
                 boolean done = fillLifterInfo(currentLifter);
-                updateTime(masterData);
+                updateTime(masterData1);
                 top.addComponent(timeDisplay, "timeDisplay"); //$NON-NLS-1$
                 timeDisplay.setVisible(!done);
             } else {
@@ -213,15 +214,15 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 
 
     /**
-     * @param platformName
+     * @param platformName1
      * @return
      * @throws RuntimeException
      */
-    private URL computeUrl(final String platformName) throws RuntimeException {
+    private URL computeUrl(final String platformName1) throws RuntimeException {
         URL url;
         String encodedPlatformName;
         try {
-            encodedPlatformName = URLEncoder.encode(platformName, "UTF-8");
+            encodedPlatformName = URLEncoder.encode(platformName1, "UTF-8");
             // System.err.println(encodedPlatformName);
         } catch (UnsupportedEncodingException e1) {
             throw new RuntimeException(e1);
@@ -344,7 +345,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
     }
 
     @Override
-    public void forceTimeRemaining(int startTime) {
+    public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, NotificationReason reason) {
         timeDisplay.setValue(TimeFormatter.formatAsSeconds(startTime));
     }
 
@@ -380,7 +381,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
     }
 
     @Override
-    public void pause(int timeRemaining) {
+    public void pause(int timeRemaining, CompetitionApplication originatingApp, NotificationReason reason) {
     }
 
     @Override
@@ -388,7 +389,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
     }
 
     @Override
-    public void stop(int timeRemaining) {
+    public void stop(int timeRemaining, CompetitionApplication originatingApp, NotificationReason reason) {
     }
 
     /* (non-Javadoc)
@@ -493,15 +494,15 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 
 	/**
 	 * Register listeners for the various model events.
-	 * @param viewName
+	 * @param viewName1
 	 */
-	private void registerHandlers(String viewName) {
+	private void registerHandlers(String viewName1) {
 		// listen to changes in the competition data
 		logger.warn("listening to session data updates.");
         updateListener = registerAsListener(platformName, masterData);
         
         // listen to public address events
-        if (viewName.contains("resultBoard")) {
+        if (viewName1.contains("resultBoard")) {
         	logger.warn("listening to public address events.");
         	masterData.addBlackBoardListener(this);
         }

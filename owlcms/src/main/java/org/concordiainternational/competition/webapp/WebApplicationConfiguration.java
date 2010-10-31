@@ -146,17 +146,17 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
     /**
      * @param testMode
      * @param dbPath
-     * @param cnf
+     * @param cnf1
      */
-    private static void h2Setup(boolean testMode, String dbPath, AnnotationConfiguration cnf) {
-        cnf.setProperty(Environment.DRIVER, "org.h2.Driver"); //$NON-NLS-1$
+    private static void h2Setup(boolean testMode, String dbPath, AnnotationConfiguration cnf1) {
+        cnf1.setProperty(Environment.DRIVER, "org.h2.Driver"); //$NON-NLS-1$
         if (testMode) {
-            cnf.setProperty(Environment.URL, "jdbc:h2:mem:competition"); //$NON-NLS-1$
-            cnf.setProperty(Environment.SHOW_SQL, "false"); //$NON-NLS-1$
-            cnf.setProperty(Environment.HBM2DDL_AUTO, "create-drop"); //$NON-NLS-1$
+            cnf1.setProperty(Environment.URL, "jdbc:h2:mem:competition"); //$NON-NLS-1$
+            cnf1.setProperty(Environment.SHOW_SQL, "false"); //$NON-NLS-1$
+            cnf1.setProperty(Environment.HBM2DDL_AUTO, "create-drop"); //$NON-NLS-1$
         } else {
-            cnf.setProperty(Environment.SHOW_SQL, "false"); //$NON-NLS-1$
-            cnf.setProperty(Environment.URL, "jdbc:h2:file:" + dbPath); //$NON-NLS-1$
+            cnf1.setProperty(Environment.SHOW_SQL, "false"); //$NON-NLS-1$
+            cnf1.setProperty(Environment.URL, "jdbc:h2:file:" + dbPath); //$NON-NLS-1$
             String ddlMode = "create"; //$NON-NLS-1$
             File file = new File(dbPath + ".h2.db"); //$NON-NLS-1$
             logger.warn("Using Hibernate (file {} exists={}", new Object[] { file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
@@ -171,11 +171,11 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
             }
             logger.warn(
                         "Using Hibernate mode {} (file {} exists={}", new Object[] { ddlMode, file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
-            cnf.setProperty(Environment.HBM2DDL_AUTO, ddlMode);
+            cnf1.setProperty(Environment.HBM2DDL_AUTO, ddlMode);
             // throw new
             // ExceptionInInitializerError("Production database configuration not specified");
         }
-        cnf.setProperty(Environment.DIALECT, H2Dialect.class.getName());
+        cnf1.setProperty(Environment.DIALECT, H2Dialect.class.getName());
     }
 
     /**

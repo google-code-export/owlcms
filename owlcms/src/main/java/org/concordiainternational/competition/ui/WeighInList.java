@@ -104,17 +104,17 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
     }
 
     @Override
-    protected void createToolbarButtons(HorizontalLayout tableToolbar) {
+    protected void createToolbarButtons(HorizontalLayout tableToolbar1) {
 
         SessionSelect groupSelect = new SessionSelect((CompetitionApplication) app, app.getLocale());
-        tableToolbar.addComponent(groupSelect);
-        super.createToolbarButtons(tableToolbar);
+        tableToolbar1.addComponent(groupSelect);
+        super.createToolbarButtons(tableToolbar1);
 
         final Locale locale = app.getLocale();
 
         if (this.admin) {
             addRowButton = new Button(Messages.getString("Common.addRow", app.getLocale()), this, "newItem"); //$NON-NLS-1$ //$NON-NLS-2$
-            tableToolbar.addComponent(addRowButton);
+            tableToolbar1.addComponent(addRowButton);
 
             // draw lot numbers
             final Button drawLotsButton = new Button(Messages.getString("WeighInList.drawLots", locale)); //$NON-NLS-1$
@@ -128,7 +128,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
                 }
             };
             drawLotsButton.addListener(drawLotsListener);
-            tableToolbar.addComponent(drawLotsButton);
+            tableToolbar1.addComponent(drawLotsButton);
 
             // produce start list for technical meeting, includes all lifters.
             final Button startListButton = startListButton(locale, false); // false
@@ -138,7 +138,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
                                                                            // hide
                                                                            // unweighed
                                                                            // lifters
-            tableToolbar.addComponent(startListButton);
+            tableToolbar1.addComponent(startListButton);
 
             // produce start list for technical meeting, includes all lifters.
             final Button lifterCardsButton = lifterCardsButton(locale, false); // false
@@ -148,7 +148,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
                                                                                // hide
                                                                                // unweighed
                                                                                // lifters
-            tableToolbar.addComponent(lifterCardsButton);
+            tableToolbar1.addComponent(lifterCardsButton);
 
             // clear all lifters.
             final Button clearAllButton = new Button(Messages.getString("WeighInList.deleteLifters", locale)); //$NON-NLS-1$
@@ -162,7 +162,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
                 }
             };
             clearAllButton.addListener(clearAllListener);
-            tableToolbar.addComponent(clearAllButton);
+            tableToolbar1.addComponent(clearAllButton);
         } else {
             // produce list of lifters that were actually weighed-in.
             final Button weighInListButton = weighInListButton(locale, true); // true
@@ -170,7 +170,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
                                                                               // exclude
                                                                               // unweighed
                                                                               // lifters
-            tableToolbar.addComponent(weighInListButton);
+            tableToolbar1.addComponent(weighInListButton);
 
             // produce list of lifters that were actually weighed-in.
             final Button juryListButton = juryListButton(locale, true); // true
@@ -178,7 +178,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
                                                                         // exclude
                                                                         // unweighed
                                                                         // lifters
-            tableToolbar.addComponent(juryListButton);
+            tableToolbar1.addComponent(juryListButton);
         }
 
     }

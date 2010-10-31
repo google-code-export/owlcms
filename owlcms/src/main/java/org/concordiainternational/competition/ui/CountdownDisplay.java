@@ -80,33 +80,33 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         }
     }
 
-    private void registerAsGroupDataListener(final String platformName, final SessionData masterData) {
+    private void registerAsGroupDataListener(final String platformName1, final SessionData masterData1) {
         // locate the current group data for the platformName
-        if (masterData != null) {
-            logger.debug("{} listening to: {}", platformName, masterData); //$NON-NLS-1$	
+        if (masterData1 != null) {
+            logger.debug("{} listening to: {}", platformName1, masterData1); //$NON-NLS-1$	
             //masterData.addListener(SessionData.UpdateEvent.class, this, "update"); //$NON-NLS-1$
 
             SessionData.UpdateEventListener listener = new SessionData.UpdateEventListener() {
 
                 @Override
                 public void updateEvent(UpdateEvent updateEvent) {
-                    display(platformName, masterData);
+                    display(platformName1, masterData1);
                 }
 
             };
-            masterData.addListener(listener); //$NON-NLS-1$		
+            masterData1.addListener(listener); //$NON-NLS-1$		
 
         } else {
-            logger.debug("{} NOT listening to:  = {}", platformName, masterData); //$NON-NLS-1$	
+            logger.debug("{} NOT listening to:  = {}", platformName1, masterData1); //$NON-NLS-1$	
         }
     }
 
     /**
-     * @param app
-     * @param platformName
+     * @param app1
+     * @param platformName1
      * @throws MalformedURLException
      */
-    private void create(UserActions app, String platformName) {
+    private void create(UserActions app1, String platformName1) {
         this.setSizeFull();
         this.addStyleName("largeCountdownBackground");
         timeDisplay = createTimeDisplay();
@@ -121,25 +121,25 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
      * 
      */
     private Label createTimeDisplay() {
-        Label timeDisplay = new Label();
-        timeDisplay.setSizeUndefined();
-        timeDisplay.addStyleName("largeCountdown");
-        return timeDisplay;
+        Label timeDisplay1 = new Label();
+        timeDisplay1.setSizeUndefined();
+        timeDisplay1.addStyleName("largeCountdown");
+        return timeDisplay1;
     }
 
 
 
     /**
-     * @param platformName
-     * @param masterData
+     * @param platformName1
+     * @param masterData1
      * @throws RuntimeException
      */
-    private void display(final String platformName, final SessionData masterData) throws RuntimeException {
+    private void display(final String platformName1, final SessionData masterData1) throws RuntimeException {
         synchronized (app) {
-            final Lifter currentLifter = masterData.getCurrentLifter();
+            final Lifter currentLifter = masterData1.getCurrentLifter();
             if (currentLifter != null) {
                 boolean done = fillLifterInfo(currentLifter);
-                updateTime(masterData);
+                updateTime(masterData1);
                 timeDisplay.setVisible(!done);
             } else {
                 timeDisplay.setValue(""); //$NON-NLS-1$
@@ -182,7 +182,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
     }
 
     @Override
-    public void forceTimeRemaining(int startTime) {
+    public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, NotificationReason reason) {
         pushTime(startTime);
     }
 
@@ -222,7 +222,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
     }
 
     @Override
-    public void pause(int timeRemaining) {
+    public void pause(int timeRemaining, CompetitionApplication originatingApp, NotificationReason reason) {
     }
 
     @Override
@@ -230,7 +230,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
     }
 
     @Override
-    public void stop(int timeRemaining) {
+    public void stop(int timeRemaining, CompetitionApplication originatingApp, NotificationReason reason) {
     }
     
 

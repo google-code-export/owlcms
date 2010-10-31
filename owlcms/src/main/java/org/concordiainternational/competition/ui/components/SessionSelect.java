@@ -97,15 +97,15 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
 	/**
 	 * Force a reload of the names in the dropdown.
 	 * @param competitionApplication
-	 * @param sessionSelect
+	 * @param sessionSelect1
 	 * @return
 	 */
 	private HbnContainer<CompetitionSession> loadData(
 			final CompetitionApplication competitionApplication,
-			final Select sessionSelect) {
+			final Select sessionSelect1) {
 		final HbnContainer<CompetitionSession> sessionDataSource = new HbnContainer<CompetitionSession>(CompetitionSession.class, competitionApplication);
-        sessionSelect.setContainerDataSource(sessionDataSource);
-        sessionSelect.setItemCaptionPropertyId("name"); //$NON-NLS-1$
+        sessionSelect1.setContainerDataSource(sessionDataSource);
+        sessionSelect1.setItemCaptionPropertyId("name"); //$NON-NLS-1$
 		return sessionDataSource;
 	}
 	

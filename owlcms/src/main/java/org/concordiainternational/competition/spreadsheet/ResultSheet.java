@@ -66,14 +66,14 @@ public class ResultSheet extends OutputSheet implements InputSheet, LifterReader
       
 
     @Override
-	public void init(CategoryLookup categoryLookup, CompetitionApplication app,
-			CompetitionSession competitionSession) {
-		super.init(categoryLookup, app, competitionSession);
-		createInputSheetHelper(app);
+	public void init(CategoryLookup categoryLookup1, CompetitionApplication app1,
+			CompetitionSession competitionSession1) {
+		super.init(categoryLookup1, app1, competitionSession1);
+		createInputSheetHelper(app1);
 	}
 
 	@Override
-    public void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup, int rownum)
+    public void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup1, int rownum)
             throws CellTypeMismatchException, CellNotFoundException {
         rownum = rownum + InputSheetHelper.START_ROW;
         workSheet.insertRow(rownum, true); // insérer une nouvelle ligne.

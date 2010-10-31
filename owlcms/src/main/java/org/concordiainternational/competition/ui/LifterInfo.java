@@ -112,11 +112,11 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
      * Display the information about the lifter Also displays the buttons to
      * manage timer.
      * 
-     * @param lifter
-     * @param groupData
+     * @param lifter1
+     * @param groupData1
      */
-    public void loadLifter(final Lifter lifter, final SessionData groupData) {
-        logger.debug("LifterInfo.loadLifter() begin: newLifter = {} previousLifter = {}", lifter, prevLifter); //$NON-NLS-1$
+    public void loadLifter(final Lifter lifter1, final SessionData groupData1) {
+        logger.debug("LifterInfo.loadLifter() begin: newLifter = {} previousLifter = {}", lifter1, prevLifter); //$NON-NLS-1$
 
         synchronized (app) {
 			// make sure that groupData listens to changes relating to the lifter
@@ -125,28 +125,28 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
 			if (parentView instanceof AnnouncerView) {
 				if ((((AnnouncerView) parentView).mode == Mode.ANNOUNCER && identifier
 						.startsWith("top"))) { //$NON-NLS-1$
-					groupData.trackEditors(lifter, this.lifter, this);
+					groupData1.trackEditors(lifter1, this.lifter, this);
 				}
 			}
 			// don't work for nothing, avoid stutter on the screen.
 			// we have to compare the attributes as last displayed.
-			if (lifter != null) {
-				if (lifter == prevLifter
-						&& lifter.getAttemptsDone() == prevAttempt
-						&& lifter.getNextAttemptRequestedWeight() == prevWeight) {
+			if (lifter1 != null) {
+				if (lifter1 == prevLifter
+						&& lifter1.getAttemptsDone() == prevAttempt
+						&& lifter1.getNextAttemptRequestedWeight() == prevWeight) {
 					return; // we are already showing correct information.
 				}
-				prevLifter = lifter;
-				prevAttempt = lifter.getAttemptsDone();
-				prevWeight = lifter.getNextAttemptRequestedWeight();
+				prevLifter = lifter1;
+				prevAttempt = lifter1.getAttemptsDone();
+				prevWeight = lifter1.getNextAttemptRequestedWeight();
 			}
 			// prepare new display.
 			this.removeAllComponents();
-			if (lifter == null)
+			if (lifter1 == null)
 				return;
-			updateDisplayBoard(lifter, groupData);
+			updateDisplayBoard(lifter1, groupData1);
 			StringBuilder sb = new StringBuilder();
-			boolean done = lifter.getHTMLLifterInfo(
+			boolean done = lifter1.getHTMLLifterInfo(
 					identifier.startsWith("bottom"), sb); //$NON-NLS-1$
 			final Label label = new Label(sb.toString(), Label.CONTENT_XHTML);
 			label.addStyleName("zoomable");
@@ -155,29 +155,29 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
 			this.setSpacing(true);
 			if (done)
 				return; // lifter has already performed all lifts.
-			if (lifter.isCurrentLifter() && identifier.startsWith("top")) { //$NON-NLS-1$
-				topDisplayOptions(lifter, groupData);
-			} else if (lifter.isCurrentLifter()
+			if (lifter1.isCurrentLifter() && identifier.startsWith("top")) { //$NON-NLS-1$
+				topDisplayOptions(lifter1, groupData1);
+			} else if (lifter1.isCurrentLifter()
 					&& identifier.startsWith("bottom")) { //$NON-NLS-1$
-				bottomDisplayOptions(lifter, groupData);
+				bottomDisplayOptions(lifter1, groupData1);
 			} else if (identifier.startsWith("display")) { //$NON-NLS-1$
-				currentLifterDisplayOptions(lifter, groupData);
+				currentLifterDisplayOptions(lifter1, groupData1);
 			}
 		}
         app.push();
 
-        this.lifter = lifter;
-        logger.debug("LifterInfo.loadLifter() end: " + lifter.getLastName()); //$NON-NLS-1$
+        this.lifter = lifter1;
+        logger.debug("LifterInfo.loadLifter() end: " + lifter1.getLastName()); //$NON-NLS-1$
     }
 
     /**
-     * @param lifter
-     * @param groupData
+     * @param lifter1
+     * @param groupData1
      */
-    private void updateDisplayBoard(final Lifter lifter, final SessionData groupData) {
+    private void updateDisplayBoard(final Lifter lifter1, final SessionData groupData1) {
         logger.trace("loadLifter prior to updateNEC {} {} {} ", new Object[] { identifier, parentView, mode }); //$NON-NLS-1$
-        if (identifier.startsWith("top") && parentView == groupData.getAnnouncerView() && mode == Mode.ANNOUNCER) { //$NON-NLS-1$
-            updateNECOnWeightChange(lifter, groupData);
+        if (identifier.startsWith("top") && parentView == groupData1.getAnnouncerView() && mode == Mode.ANNOUNCER) { //$NON-NLS-1$
+            updateNECOnWeightChange(lifter1, groupData1);
         }
         logger.trace("loadLifter after updateNEC"); //$NON-NLS-1$
     }
@@ -187,21 +187,21 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
      * 
      * Changed weight.
      * 
-     * @param lifter
-     * @param groupData
+     * @param lifter1
+     * @param groupData1
      */
-    private void updateNECOnWeightChange(final Lifter lifter, final SessionData groupData) {
+    private void updateNECOnWeightChange(final Lifter lifter1, final SessionData groupData1) {
         // top part of announcer view drives electronic display
-        if (groupData.needToUpdateNEC) {
+        if (groupData1.needToUpdateNEC) {
             if (WebApplicationConfiguration.NECShowsLifterImmediately) {
-                groupData.displayLifterInfo(lifter);
+                groupData1.displayLifterInfo(lifter1);
             } else {
-                final Lifter currentLifter = groupData.getNECDisplay().getCurrentLifter();
-                logger.trace("lifter = {}  currentLifter={}", lifter, currentLifter); //$NON-NLS-1$
-                if (currentLifter != null && currentLifter.equals(lifter)) {
-                    groupData.displayLifterInfo(lifter);
+                final Lifter currentLifter = groupData1.getNECDisplay().getCurrentLifter();
+                logger.trace("lifter = {}  currentLifter={}", lifter1, currentLifter); //$NON-NLS-1$
+                if (currentLifter != null && currentLifter.equals(lifter1)) {
+                    groupData1.displayLifterInfo(lifter1);
                 } else {
-                    groupData.displayWeight(lifter);
+                    groupData1.displayWeight(lifter1);
                 }
             }
         }
@@ -260,14 +260,14 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
     /**
      * Display remaining time and timer controls
      * 
-     * @param lifter
-     * @param groupData
+     * @param lifter1
+     * @param groupData1
      */
-    private void topDisplayOptions(final Lifter lifter, final SessionData groupData) {
+    private void topDisplayOptions(final Lifter lifter1, final SessionData groupData1) {
 
-        createTimerDisplay(groupData);
+        createTimerDisplay(groupData1);
 
-        buttons = new TimerControls(lifter, groupData, true, mode, this, showTimerControls, app);
+        buttons = new TimerControls(lifter1, groupData1, true, mode, this, showTimerControls, app);
         this.addComponent(new Label());
         this.addComponent(buttons);
         if (mode == Mode.ANNOUNCER) {
@@ -279,9 +279,9 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
     /**
      * Nothing to display in the lifter editor.
      * 
-     * @param groupData
+     * @param groupData1
      */
-    private void bottomDisplayOptions(Lifter lifter, final SessionData groupData) {
+    private void bottomDisplayOptions(Lifter lifter1, final SessionData groupData1) {
     }
 
     /**
@@ -295,17 +295,17 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
     }
 
     /**
-     * @param groupData
+     * @param groupData1
      */
-    private void createTimerDisplay(final SessionData groupData) {
+    private void createTimerDisplay(final SessionData groupData1) {
         timerDisplay = new Label();
         timerDisplay.addStyleName("zoomable");
         timerDisplay.addStyleName("timerDisplay");
 
         // we set the value to the time allowed for the current lifter as
         // computed by groupData
-        int timeAllowed = groupData.getTimeAllowed();
-        final CountdownTimer timer = groupData.getTimer();
+        int timeAllowed = groupData1.getTimeAllowed();
+        final CountdownTimer timer = groupData1.getTimer();
         final boolean running = timer.isRunning();
         logger.debug("timeAllowed={} timer.isRunning()={}", timeAllowed, running); //$NON-NLS-1$
         if (!running) {
@@ -313,7 +313,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
             timerDisplay.setEnabled(false); // greyed out.
         }
 
-        CompetitionApplication masterApplication = groupData.getMasterApplication();
+        CompetitionApplication masterApplication = groupData1.getMasterApplication();
 //        logger.warn("masterApplication = {}, app={}", masterApplication, app);
         if (masterApplication == app) {
             timer.setMasterBuzzer(this);
@@ -425,7 +425,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
     }
 
     @Override
-    public void forceTimeRemaining(int remaining) {
+    public void forceTimeRemaining(int remaining, CompetitionApplication originatingApp, NotificationReason reason) {
         if (timerDisplay == null) return;
         prevTimeRemaining = remaining;
 
@@ -439,7 +439,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
     }
 
     @Override
-    public void pause(int timeRemaining) {
+    public void pause(int timeRemaining, CompetitionApplication originatingApp, NotificationReason reason) {
     	
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {
@@ -465,7 +465,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
 
 
     @Override
-    public void stop(int timeRemaining) {
+    public void stop(int timeRemaining, CompetitionApplication originatingApp, NotificationReason reason) {
 
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {

@@ -56,13 +56,13 @@ public class TeamSheet extends ResultSheet {
     /**
      * @param curLifter
      * @param workSheet
-     * @param categoryLookup
+     * @param categoryLookup1
      * @param rankingType
      * @param i
      * @throws CellNotFoundException
      * @throws CellTypeMismatchException
      */
-    private void writeTeamLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup,
+    private void writeTeamLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup1,
             int lifterIndex, Ranking rankingType) throws CellTypeMismatchException, CellNotFoundException {
         lifterIndex = lifterIndex + LIFTER_OFFSET;
 
