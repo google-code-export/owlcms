@@ -18,6 +18,7 @@ package org.concordiainternational.competition.ui;
 
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CompetitionSession;
+import org.concordiainternational.competition.data.CompetitionSessionLookup;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.ui.components.ApplicationView;
@@ -61,7 +62,9 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
     private CompetitionApplication app;
     private boolean stickyEditor = false;
     private SessionData groupData;
+    private String platformName;
     private String viewName;
+    private String groupName;
 
     /**
      * Create view.
@@ -75,9 +78,21 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
             this.viewName = viewName;
         }
         
+        // platform name should be null, since the result view is independent of platform
+        platformName = "";
         
         this.app = CompetitionApplication.getCurrent();
         groupData = SessionData.getIndependentInstance();
+        final CompetitionSession currentGroup = groupData.getCurrentSession();
+        if (groupName != null && groupName.length() > 0) {
+            switchGroup(new CompetitionSessionLookup(app).lookup(groupName));
+        } else {
+            app.setCurrentCompetitionSession(currentGroup);
+            if (currentGroup != null) {
+            	 groupName = currentGroup.getName();
+            }
+           
+        }
 
         // left side is the lifting order, as well as the menu to switch groups.
         resultList = new ResultList(groupData, this);
@@ -95,13 +110,24 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
 
         adjustSplitBarLocation();
 
-        // we are now fully initialized
-        groupData.addListener(this);
-        groupData.setAllowAll(true);
-        if (groupData.lifters.isEmpty()) {
-            logger.warn("switching groupData.lifters {}", groupData.lifters); //$NON-NLS-1$
-            switchGroup(app.getCurrentCompetitionSession());
-        }
+        synchronized (app) {
+        	boolean prevDisabled = app.getPusherDisabled();
+        	app.setPusherDisabled(true);
+	        // we are now fully initialized
+	        groupData.addListener(this);
+	        groupData.setAllowAll(true);
+			if (groupData.lifters.isEmpty()) {
+				logger.debug(
+						"switching masterData.lifters {}", groupData.lifters); //$NON-NLS-1$
+				switchGroup(app.getCurrentCompetitionSession());
+			} else {
+				logger.debug(
+						"not switching masterData.lifters {}", groupData.lifters); //$NON-NLS-1$
+			}
+			CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
+			app.setPusherDisabled(prevDisabled);
+		}
+		app.push();
 
     }
 
@@ -268,6 +294,11 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
     private void switchGroup(final CompetitionSession dataCurrentGroup) {
         logger.warn("===============ResultView switching to group {}", dataCurrentGroup); //$NON-NLS-1$
         groupData.setCurrentSession(dataCurrentGroup);
+        if (dataCurrentGroup != null) {
+            groupName = dataCurrentGroup.getName();
+        } else {
+            groupName = "";
+        }
         CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
     }
 
@@ -306,7 +337,7 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
      */
     @Override
 	public String getFragment() {
-        return viewName;
+        return viewName+"/"+(platformName == null ? "" : platformName)+"/"+(groupName == null ? "" : groupName);
     }
     
 
@@ -321,6 +352,20 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
             viewName = params[0];
         } else {
             throw new RuleViolationException("Error.ViewNameIsMissing"); 
+        }
+        
+//        if (params.length >= 2) {
+//            platformName = params[1];
+//        } else {
+//        	platformName = CompetitionApplicationComponents.initPlatformName();
+//        }
+        // ignore platform name if given
+        platformName = "";
+        
+        if (params.length >= 3) {
+            groupName = params[2];
+        } else {
+            groupName = null;
         }
     }
 
