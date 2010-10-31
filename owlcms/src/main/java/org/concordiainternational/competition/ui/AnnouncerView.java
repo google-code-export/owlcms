@@ -25,7 +25,6 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.artur.icepush.ICEPush;
 
 import com.vaadin.data.Item;
 import com.vaadin.terminal.Sizeable;
@@ -68,7 +67,7 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
     private boolean stickyEditor = false;
     private SessionData masterData;
     Mode mode;
-    private ICEPush pusher;
+    
     private String platformName;
     private String viewName;
     private String groupName;
@@ -338,9 +337,7 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
                 // liftList.getFirstLifterItem());
             }
         }
-        if (pusher != null) {
-            pusher.push();
-        }
+        app.push();
     }
 
     /**
