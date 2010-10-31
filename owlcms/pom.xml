@@ -5,14 +5,15 @@
 	<groupId>org.concordiainternational</groupId>
 	<artifactId>owlcms</artifactId>
 	<packaging>war</packaging>
-	<version>1.8.7</version>
+	<version>1.9.0</version>
 	<name>Olympic Weightlifting Competition Management System</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<description>Vaadin Web Application for managing an Olympic Weightlifting Competition.</description>
+	<description>Vaadin Web Application for managing an Olympic
+		Weightlifting Competition.</description>
 	<url>http://owlcms.googlecode.com</url>
 
 	<build>
@@ -129,7 +130,8 @@
 	<repositories>
 		<repository>
 			<id>vaadin-snapshots</id>
-			<url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+			<url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/
+			</url>
 			<releases>
 				<enabled>false</enabled>
 			</releases>
@@ -145,7 +147,8 @@
 			<id>JBoss</id>
 			<name>JBoss Repository</name>
 			<layout>default</layout>
-			<url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+			<url>http://repository.jboss.org/nexus/content/groups/public-jboss/
+			</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
@@ -182,7 +185,8 @@
 		</pluginRepository>
 		<pluginRepository>
 			<id>vaadin-snapshots</id>
-			<url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+			<url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/
+			</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -193,6 +197,7 @@
 	</pluginRepositories>
 
 	<dependencies>
+		<!--  vaadin and add-ons -->
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin</artifactId>
@@ -208,8 +213,13 @@
 			<artifactId>dashlayout</artifactId>
 			<version>0.1.5-beta</version>
 		</dependency>
-		<!-- <dependency> <groupId>org.vaadin.addons</groupId> <artifactId>blackboard</artifactId> 
-			<version>2.0.1</version> </dependency> -->
+		<!-- 
+		<dependency> 
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>blackboard</artifactId> 
+			<version>2.0.1</version>
+		</dependency>
+		-->
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
 			<artifactId>customfield</artifactId>
@@ -219,6 +229,33 @@
 			<groupId>org.vaadin.addons</groupId>
 			<artifactId>icepush</artifactId>
 			<version>0.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>notifique</artifactId>
+			<version>1.0.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>animator</artifactId>
+			<version>1.1</version>
+		</dependency>
+		
+		<!-- This is also used by gwt-maven-plugin to deduce GWT version number. -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>2.0.4</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!--  misc. dependencies -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<type>jar</type>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.icepush</groupId>
@@ -275,23 +312,6 @@
 			<artifactId>h2</artifactId>
 			<version>1.1.116</version>
 		</dependency>
-
-		<!-- This is also used by gwt-maven-plugin to deduce GWT version number. -->
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<version>2.0.4</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-
-
 
 		<!-- the dependency on the hibernate-core module (see above) -->
 		<dependency>
