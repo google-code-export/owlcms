@@ -14,4 +14,8 @@
     
 
     <inherits name="org.vaadin.soundplayer.widgetset.SoundplayerWidgetset" />
+
+    <inherits name="org.vaadin.jouni.animator.AnimatorWidgetset" />
+
+    <inherits name="org.vaadin.notifique.widgetset.NotifiqueWidgetset" />
 </module>
