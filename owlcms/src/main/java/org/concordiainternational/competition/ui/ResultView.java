@@ -77,9 +77,16 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
         } else {
             this.viewName = viewName;
         }
+
+        this.app = CompetitionApplication.getCurrent();
         
-        // platform name should be null, since the result view is independent of platform
-        platformName = "";
+        if (platformName == null) {
+        	// get the default platform name
+            platformName = CompetitionApplicationComponents.initPlatformName();
+        }
+        if (app.getPlatform() == null || !platformName.equals(app.getPlatformName())) {
+        	app.setPlatformByName(platformName);
+        }
         
         this.app = CompetitionApplication.getCurrent();
         groupData = SessionData.getIndependentInstance();
@@ -354,13 +361,11 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
             throw new RuleViolationException("Error.ViewNameIsMissing"); 
         }
         
-//        if (params.length >= 2) {
-//            platformName = params[1];
-//        } else {
-//        	platformName = CompetitionApplicationComponents.initPlatformName();
-//        }
-        // ignore platform name if given
-        platformName = "";
+        if (params.length >= 2) {
+            platformName = params[1];
+        } else {
+        	platformName = CompetitionApplicationComponents.initPlatformName();
+        }
         
         if (params.length >= 3) {
             groupName = params[2];
