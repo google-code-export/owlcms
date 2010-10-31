@@ -413,6 +413,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
 
     public void setMainLayoutContent(ApplicationView c) {
+    	logger.trace(">>>>> setting app view for {} -- view {}",this,c);
         this.components.currentView = c;
         boolean needsMenu = c.needsMenu();
 		this.components.menu.setVisible(needsMenu);

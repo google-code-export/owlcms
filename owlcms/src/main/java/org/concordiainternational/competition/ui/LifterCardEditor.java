@@ -159,24 +159,17 @@ public class LifterCardEditor extends Panel implements
         Button withdraw = new Button();
         withdraw.setCaption(Messages.getString("LifterInfo.Withdraw", locale)); //$NON-NLS-1$
         withdraw.addListener(new Button.ClickListener() { //$NON-NLS-1$
-                    private static final long serialVersionUID = 5693610077500773431L;
+        	private static final long serialVersionUID = 5693610077500773431L;
 
-                    @Override
-                    public void buttonClick(ClickEvent event) {
-                        // next statement no longer needed as we are currently
-                        // listening to the lifter
-                        // and once setwithdraw fires, the various new editors
-                        // will register themselves
-                        // liftList.getGroupData().trackEditors(lifter,
-                        // previousLifter, editor);
-                        logger.info("WITHDRAW button pushed.");
-                        final CountdownTimer timer = liftList.getGroupData().getTimer();
-                        if (timer != null) timer.pause();
-                        lifter.withdraw(); // this will trigger an update event
-                                           // on the lift list.
-                    }
+        	@Override
+        	public void buttonClick(ClickEvent event) {
+        		logger.info("WITHDRAW button pushed.");
+        		final CountdownTimer timer = liftList.getGroupData().getTimer();
+        		if (timer != null) timer.pause(NotificationReason.LIFTER_WITHDRAWAL);
+        		lifter.withdraw(); // this will trigger an update event on the lift list.
+        	}
 
-                });
+        });
 
         rightHandSide.setWidth("50ex"); //$NON-NLS-1$
 

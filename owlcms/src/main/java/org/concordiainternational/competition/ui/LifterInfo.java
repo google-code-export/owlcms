@@ -434,6 +434,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
             timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
             setBlocked(false);
         }
+        showNotification(originatingApp, reason);
         app.push();
 
     }
@@ -448,8 +449,25 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
 	            timerDisplay.setEnabled(false);
 	        }
         }
+        showNotification(originatingApp, reason);
         app.push();
     }
+
+	/**
+	 * @param originatingApp
+	 * @param reason
+	 */
+	private void showNotification(CompetitionApplication originatingApp, NotificationReason reason) {
+
+		if (app != originatingApp) {
+        	CompetitionApplication receivingApp = app;
+			if (receivingApp.components.currentView instanceof AnnouncerView && reason != NotificationReason.UNKNOWN) {
+				AnnouncerView receivingView = (AnnouncerView) receivingApp.components.currentView;
+				AnnouncerView originatingView = (AnnouncerView)originatingApp.components.currentView;
+				receivingView.displayNotification(originatingView.mode,reason);
+        	}
+        }
+	}
 
     @Override
     public void start(int timeRemaining) {
@@ -474,6 +492,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
 	            timerDisplay.setEnabled(false);
 	        }
         }
+        showNotification(originatingApp, reason);
         app.push();
     }
 

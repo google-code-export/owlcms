@@ -1,5 +1,8 @@
 #summary Release Notes
 
+== Release 1.9.0 ==
+  * Consoles are notified when someone else stops time (e.g. marshall console receiving weight change for current lifter whose time has started).
+
 == Release 1.8.7 ==
   * Attempt board shows referee decisions.
   * Public Message button added to all consoles, including Results.
