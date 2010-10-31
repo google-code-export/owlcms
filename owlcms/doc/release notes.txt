@@ -1,12 +1,10 @@
 #summary Release Notes
 
-= Release Notes =
-
 == Release 1.8.7 ==
   * Attempt board shows referee decisions.
   * Public Message button added to all consoles, including Results.
   * Results pane now correctly shows the selected group on first invocation and through URL fragment.
-    * same fix corrects behavior of Team Points and Rankings buttons.
+    * same fix corrects behavior of Team Points and Rankings buttons (selector showed no group, but a group was in fact selected, resulting in a truncated report)
   
 == Release 1.8.6 ==
   * Changes made to plate loading information are propagated to all plate loading subwindows and to attempt board.
