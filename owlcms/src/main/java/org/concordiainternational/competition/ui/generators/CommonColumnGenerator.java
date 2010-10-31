@@ -526,9 +526,9 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 
             @Override
             public void updateEvent(Lifter.UpdateEvent updateEvent) {
-                Lifter lifter = (Lifter) updateEvent.getSource();
-                logger.debug("received event for "+lifter+" update of "+updateEvent.getPropertyIds());
-                final Category category2 = lifter.getCategory();
+                Lifter lifter1 = (Lifter) updateEvent.getSource();
+                logger.debug("received event for "+lifter1+" update of "+updateEvent.getPropertyIds());
+                final Category category2 = lifter1.getCategory();
                 synchronized (app) {
                     categoryLabel.removeStyleName("wrong"); //$NON-NLS-1$
                     if (category2 == null) {
@@ -536,7 +536,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
                         categoryLabel.addStyleName("wrong"); //$NON-NLS-1$
                     } else {
                         categoryLabel.setValue(category2.getName());
-                        Category regCat = lifter.getRegistrationCategory();
+                        Category regCat = lifter1.getRegistrationCategory();
                         if (!(category2.equals(regCat))) {
                             // System.err.println("setting flag on category for "+lifter.getLastName()
                             // +" "+System.identityHashCode(this)

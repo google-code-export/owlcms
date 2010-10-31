@@ -178,11 +178,11 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
     }
 
     @Override
-    protected void createToolbarButtons(HorizontalLayout tableToolbar) {
+    protected void createToolbarButtons(HorizontalLayout tableToolbar1) {
         // we do not call super because the default buttons are inappropriate.
         final Locale locale = app.getLocale();
         sessionSelect = new SessionSelect((CompetitionApplication) app, locale);
-        tableToolbar.addComponent(sessionSelect);
+        tableToolbar1.addComponent(sessionSelect);
 
         {
             final Button resultSpreadsheetButton = new Button(Messages.getString("ResultList.ResultSheet", locale)); //$NON-NLS-1$
@@ -201,15 +201,15 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
                 }
 
                 /**
-                 * @param locale
+                 * @param locale1
                  * @throws RuntimeException
                  */
-                private void regularCompetition(final Locale locale) throws RuntimeException {
+                private void regularCompetition(final Locale locale1) throws RuntimeException {
                     final OutputSheetStreamSource<ResultSheet> streamSource = new OutputSheetStreamSource<ResultSheet>(
                             ResultSheet.class, (CompetitionApplication) app, true);
                     if (streamSource.size() == 0) {
-                        setComponentError(new SystemError(Messages.getString("ResultList.NoResults", locale))); //$NON-NLS-1$
-                        throw new RuntimeException(Messages.getString("ResultList.NoResults", locale)); //$NON-NLS-1$
+                        setComponentError(new SystemError(Messages.getString("ResultList.NoResults", locale1))); //$NON-NLS-1$
+                        throw new RuntimeException(Messages.getString("ResultList.NoResults", locale1)); //$NON-NLS-1$
                     }
 
                     String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss") //$NON-NLS-1$
@@ -218,15 +218,15 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
                 }
 
                 /**
-                 * @param locale
+                 * @param locale1
                  * @throws RuntimeException
                  */
-                private void mastersCompetition(final Locale locale) throws RuntimeException {
+                private void mastersCompetition(final Locale locale1) throws RuntimeException {
                     final OutputSheetStreamSource<MastersGroupResults> streamSource = new OutputSheetStreamSource<MastersGroupResults>(
                             MastersGroupResults.class, (CompetitionApplication) app, true);
                     if (streamSource.size() == 0) {
-                        setComponentError(new SystemError(Messages.getString("ResultList.NoResults", locale))); //$NON-NLS-1$
-                        throw new RuntimeException(Messages.getString("ResultList.NoResults", locale)); //$NON-NLS-1$
+                        setComponentError(new SystemError(Messages.getString("ResultList.NoResults", locale1))); //$NON-NLS-1$
+                        throw new RuntimeException(Messages.getString("ResultList.NoResults", locale1)); //$NON-NLS-1$
                     }
 
                     String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss") //$NON-NLS-1$
@@ -235,7 +235,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
                 }
             };
             resultSpreadsheetButton.addListener(listener);
-            tableToolbar.addComponent(resultSpreadsheetButton);       
+            tableToolbar1.addComponent(resultSpreadsheetButton);       
         }
 
         {
@@ -260,7 +260,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
                 }
             };
             teamResultSpreadsheetButton.addListener(teamResultClickListener);
-            tableToolbar.addComponent(teamResultSpreadsheetButton);
+            tableToolbar1.addComponent(teamResultSpreadsheetButton);
         }
 
         final Button refreshButton = new Button(Messages.getString("ResultList.Refresh", locale)); //$NON-NLS-1$
@@ -274,7 +274,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
             }
         };
         refreshButton.addListener(refreshClickListener);
-        tableToolbar.addComponent(refreshButton);
+        tableToolbar1.addComponent(refreshButton);
         
         final Button editButton = new Button(Messages.getString("ResultList.edit", locale)); //$NON-NLS-1$
         final Button.ClickListener editClickListener = new Button.ClickListener() { //$NON-NLS-1$
@@ -286,7 +286,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
             }
         };
         editButton.addListener(editClickListener);
-        tableToolbar.addComponent(editButton);
+        tableToolbar1.addComponent(editButton);
         
         final Button publicAddressButton = new Button(Messages.getString("LiftList.publicAddress", app.getLocale())); //$NON-NLS-1$
         final Button.ClickListener publicAddressClickListener = new Button.ClickListener() { //$NON-NLS-1$
@@ -300,7 +300,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
             }
         };
         publicAddressButton.addListener(publicAddressClickListener);
-        tableToolbar.addComponent(publicAddressButton);
+        tableToolbar1.addComponent(publicAddressButton);
     }
 
     /**

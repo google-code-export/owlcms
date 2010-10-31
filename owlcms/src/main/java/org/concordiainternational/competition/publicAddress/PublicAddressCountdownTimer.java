@@ -131,9 +131,9 @@ public class PublicAddressCountdownTimer implements Serializable {
 	/**
 	 * 
 	 */
-	private void fireTimerEvent(int remainingSeconds) {
+	private void fireTimerEvent(int remainingSeconds1) {
 		PublicAddressTimerEvent timerEvent = new PublicAddressTimerEvent();
-        timerEvent.setRemainingMilliseconds(remainingSeconds*1000);
+        timerEvent.setRemainingMilliseconds(remainingSeconds1*1000);
         masterData.fireBlackBoardEvent(timerEvent);
 	}
 

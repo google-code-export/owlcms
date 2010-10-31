@@ -91,14 +91,14 @@ public abstract class GenericHbnList<T> extends GenericList<T> {
     }
 
     /**
-     * @param tableToolbar
+     * @param tableToolbar1
      */
     @Override
-    protected void createToolbarButtons(HorizontalLayout tableToolbar) {
+    protected void createToolbarButtons(HorizontalLayout tableToolbar1) {
         toggleEditModeButton = new Button("", this, "toggleEditable"); //$NON-NLS-1$ //$NON-NLS-2$
-        tableToolbar.addComponent(toggleEditModeButton);
+        tableToolbar1.addComponent(toggleEditModeButton);
         addRowButton = new Button(Messages.getString("Common.addRow", app.getLocale()), this, "newItem"); //$NON-NLS-1$ //$NON-NLS-2$
-        tableToolbar.addComponent(addRowButton);
+        tableToolbar1.addComponent(addRowButton);
         setButtonVisibility();
         setDefaultActions();
     }

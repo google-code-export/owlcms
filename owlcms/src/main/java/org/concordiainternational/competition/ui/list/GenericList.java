@@ -68,14 +68,14 @@ public abstract class GenericList<T> extends VerticalLayout {
      * below it.
      */
     protected void buildView() {
-    	final CompetitionApplication app = CompetitionApplication.getCurrent();
+    	final CompetitionApplication app1 = CompetitionApplication.getCurrent();
     	// we synchronize because specializations of this class may do all sorts of
     	// event-based things in their construction, and we don't want them to call
     	// the push() method while in the constructor (this causes the session to drop.)
-    	synchronized (app) {
-    		boolean prevDisabled = app.getPusherDisabled();
+    	synchronized (app1) {
+    		boolean prevDisabled = app1.getPusherDisabled();
     		try {
-    			app.setPusherDisabled(true);
+    			app1.setPusherDisabled(true);
 
     			this.setSizeFull();
     			this.setMargin(true);
@@ -89,7 +89,7 @@ public abstract class GenericList<T> extends VerticalLayout {
     			positionTable();
     			setButtonVisibility();
     		} finally {
-    			app.setPusherDisabled(prevDisabled);
+    			app1.setPusherDisabled(prevDisabled);
     		}
     	}
 
@@ -110,17 +110,17 @@ public abstract class GenericList<T> extends VerticalLayout {
      * buttons.
      */
     protected Component createTableToolbar() {
-        HorizontalLayout tableToolbar = new HorizontalLayout();
+        HorizontalLayout tableToolbar1 = new HorizontalLayout();
 
-        tableToolbar.setStyleName("tableWithButtons"); //$NON-NLS-1$
-        tableToolbar.setMargin(true);
-        tableToolbar.setSpacing(true);
+        tableToolbar1.setStyleName("tableWithButtons"); //$NON-NLS-1$
+        tableToolbar1.setMargin(true);
+        tableToolbar1.setSpacing(true);
 
-        createToolbarButtons(tableToolbar);
+        createToolbarButtons(tableToolbar1);
 
-        for (Iterator<?> iterator = tableToolbar.getComponentIterator(); iterator.hasNext();) {
+        for (Iterator<?> iterator = tableToolbar1.getComponentIterator(); iterator.hasNext();) {
             Component component = (Component) iterator.next();
-            tableToolbar.setComponentAlignment(component, Alignment.MIDDLE_LEFT);
+            tableToolbar1.setComponentAlignment(component, Alignment.MIDDLE_LEFT);
         }
 
         // add the caption first
@@ -131,11 +131,11 @@ public abstract class GenericList<T> extends VerticalLayout {
             hl.setStyleName("title"); //$NON-NLS-1$
             hl.addComponent(cap);
             hl.setComponentAlignment(cap, Alignment.MIDDLE_LEFT);
-            tableToolbar.addComponent(hl, 0);
-            tableToolbar.setComponentAlignment(hl, Alignment.MIDDLE_LEFT);
+            tableToolbar1.addComponent(hl, 0);
+            tableToolbar1.setComponentAlignment(hl, Alignment.MIDDLE_LEFT);
         }
 
-        return tableToolbar;
+        return tableToolbar1;
     }
 
     /**
@@ -237,9 +237,9 @@ public abstract class GenericList<T> extends VerticalLayout {
     }
 
     /**
-     * @param tableToolbar
+     * @param tableToolbar1
      */
-    protected void createToolbarButtons(HorizontalLayout tableToolbar) {
+    protected void createToolbarButtons(HorizontalLayout tableToolbar1) {
     }
 
     /**

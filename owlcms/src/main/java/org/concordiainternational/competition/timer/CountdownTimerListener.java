@@ -16,6 +16,9 @@
 
 package org.concordiainternational.competition.timer;
 
+import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.ui.NotificationReason;
+
 public interface CountdownTimerListener {
 
     void finalWarning(int timeRemaining);
@@ -30,8 +33,10 @@ public interface CountdownTimerListener {
      * timer has been stopped, lifter is still associated with timer.
      * 
      * @param timeRemaining
+     * @param reason 
+     * @param competitionApplication 
      */
-    void pause(int timeRemaining);
+    void pause(int timeRemaining, CompetitionApplication originatingApp, NotificationReason reason);
 
     void start(int timeRemaining);
 
@@ -40,13 +45,13 @@ public interface CountdownTimerListener {
      * 
      * @param timeRemaining
      */
-    void stop(int timeRemaining);
+    void stop(int timeRemaining, CompetitionApplication originatingApp, NotificationReason reason);
 
     /**
      * someone is forcing the amount of time.
      * 
      * @param startTime
      */
-    void forceTimeRemaining(int startTime);
+    void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, NotificationReason reason);
 
 }

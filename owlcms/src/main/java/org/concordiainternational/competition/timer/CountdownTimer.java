@@ -22,7 +22,9 @@ import java.util.Set;
 import java.util.Timer;
 
 import org.concordiainternational.competition.data.Lifter;
+import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.LifterInfo;
+import org.concordiainternational.competition.ui.NotificationReason;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,6 +109,10 @@ public class CountdownTimer implements Serializable {
      * Stop the timer, without clearing the associated lifter.
      */
     public void pause() {
+    	pause(NotificationReason.UNKNOWN);
+    }
+    
+	public void pause(NotificationReason reason) {
         logger.debug("enter pause {} {}", getTimeRemaining()); //$NON-NLS-1$
         if (countdownTask != null) {
             startTime = (int) countdownTask.getBestTimeRemaining();
@@ -121,20 +127,24 @@ public class CountdownTimer implements Serializable {
         }
         logger.warn("pause: {}", startTime); //$NON-NLS-1$
         if (countdownDisplay != null) {
-            countdownDisplay.pause(startTime);
+            countdownDisplay.pause(startTime, CompetitionApplication.getCurrent(), reason);
         }
         if (masterBuzzer != null) {
-            masterBuzzer.pause(startTime);
+            masterBuzzer.pause(startTime, CompetitionApplication.getCurrent(), reason);
         }
         for (CountdownTimerListener curListener : getListeners()) {
-            curListener.pause(startTime);
+            curListener.pause(startTime, CompetitionApplication.getCurrent(), reason);
         }
-    }
+	}
 
     /**
      * Stop the timer, clear the associated lifter.
      */
     public void stop() {
+    	stop(NotificationReason.UNKNOWN);
+    }
+    
+    public void stop(NotificationReason reason) {
         logger.debug("enter stop {} {}", getTimeRemaining()); //$NON-NLS-1$
         if (timer != null) timer.cancel();
         timer = null;
@@ -145,13 +155,13 @@ public class CountdownTimer implements Serializable {
         setOwner(null);
         logger.warn("stop: {}", startTime); //$NON-NLS-1$
         if (countdownDisplay != null) {
-            countdownDisplay.stop(startTime);
+            countdownDisplay.stop(startTime, CompetitionApplication.getCurrent(), reason);
         }
         if (masterBuzzer != null) {
-            masterBuzzer.stop(startTime);
+            masterBuzzer.stop(startTime, CompetitionApplication.getCurrent(), reason);
         }
         for (CountdownTimerListener curListener : getListeners()) {
-            curListener.stop(startTime);
+            curListener.stop(startTime, CompetitionApplication.getCurrent(), reason);
         }
     }
 
@@ -160,6 +170,10 @@ public class CountdownTimer implements Serializable {
      * so that the time is reset correctly.
      */
     public void forceTimeRemaining(int remainingTime) {
+    	forceTimeRemaining(remainingTime, NotificationReason.UNKNOWN);
+    }
+    
+    public void forceTimeRemaining(int remainingTime,NotificationReason reason) {
         if (timer != null) timer.cancel();
         timer = null;
         if (countdownTask != null) {
@@ -169,13 +183,13 @@ public class CountdownTimer implements Serializable {
         setTimeRemaining(remainingTime);
         logger.warn("forceTimeRemaining: {}", getTimeRemaining()); //$NON-NLS-1$
         if (countdownDisplay != null) {
-            countdownDisplay.forceTimeRemaining(startTime);
+            countdownDisplay.forceTimeRemaining(startTime, CompetitionApplication.getCurrent(), reason);
         }
         if (masterBuzzer != null) {
-            masterBuzzer.forceTimeRemaining(startTime);
+            masterBuzzer.forceTimeRemaining(startTime, CompetitionApplication.getCurrent(), reason);
         }
         for (CountdownTimerListener curListener : getListeners()) {
-            curListener.forceTimeRemaining(getTimeRemaining());
+            curListener.forceTimeRemaining(getTimeRemaining(), CompetitionApplication.getCurrent(), reason);
         }
     }
 
@@ -301,6 +315,8 @@ public class CountdownTimer implements Serializable {
             logger.error(t.getMessage());
         }
     }
+
+
 
 
 }

@@ -25,6 +25,9 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.notifique.Notifique;
+import org.vaadin.notifique.Notifique.Message;
+import org.vaadin.overlay.CustomOverlay;
 
 import com.vaadin.data.Item;
 import com.vaadin.terminal.Sizeable;
@@ -32,6 +35,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.Window;
 
 /**
  * This class defines the screen layout for the announcer.
@@ -131,6 +135,8 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
         liftList.setSizeFull();
 
         topPart = new HorizontalLayout();
+        
+        setupNotifications();
 
         synchronized (app) {
         	boolean prevDisabled = app.getPusherDisabled();
@@ -162,7 +168,8 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
     }
 
 
-    /**
+
+	/**
      * Update the lifter editor and the information panels with the first
      * lifter.
      * 
@@ -441,4 +448,29 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
             groupName = null;
         }
     }
+    
+    private void setupNotifications() {
+    	// Notification area. Full width.
+    	final Notifique notifications = new Notifique(true);
+    	notifications.setWidth("100%");
+    	notifications.setVisibleCount(3);
+    	
+    	// Hide messages when clicked anywhere (not only with the close
+    	// button)
+    	notifications.setClickListener(new Notifique.ClickListener() {
+    	    private static final long serialVersionUID = 1L;
+
+    	    @Override
+    	    public void messageClicked(Message message) {
+    	        message.hide();
+    	    }
+    	});
+    	
+    	// Display as overlay in top of the main window
+    	Window mainWindow = app.getMainWindow();
+		CustomOverlay ol = new CustomOverlay(notifications, mainWindow);
+		mainWindow.addComponent(ol);
+    	
+    	//notifications.add((Resource)null,"1!",true,Notifique.Styles.VAADIN_ORANGE,true);
+	}
 }

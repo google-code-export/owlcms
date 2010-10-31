@@ -143,9 +143,9 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
      * Update the lifter editor and the information panels with the first
      * lifter.
      * 
-     * @param groupData
+     * @param groupData1
      */
-    public void loadFirstLifterInfo(SessionData groupData) {
+    public void loadFirstLifterInfo(SessionData groupData1) {
         final Lifter firstLifter = resultList.getFirstLifter();
         final Item firstLifterItem = resultList.getFirstLifterItem();
         updateLifterEditor(firstLifter, firstLifterItem);
@@ -155,10 +155,10 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
      * Update the lifter editor and the information panels with the first
      * lifter.
      * 
-     * @param groupData
+     * @param groupData1
      */
-    public void loadFirstLifterInfo(SessionData groupData, boolean sticky) {
-        loadFirstLifterInfo(groupData);
+    public void loadFirstLifterInfo(SessionData groupData1, boolean sticky) {
+        loadFirstLifterInfo(groupData1);
         if (lifterCardEditor != null) {
             boolean buf = lifterCardEditor.ignoreChanges;
             lifterCardEditor.ignoreChanges = true;

@@ -224,18 +224,18 @@ public class Blackboard {
   private Collection<Class<? extends Listener>> getRegisteredListenerClasses(
       final Class<? extends Listener> listenerClass) {
 
-    final Collection<Class<? extends Listener>> listeners = new HashSet<Class<? extends Listener>>();
+    final Collection<Class<? extends Listener>> listeners1 = new HashSet<Class<? extends Listener>>();
 
     for (final Registration registration : registrationsByEvent.values()) {
       final Class<? extends Listener> registeredListenerClass = registration
           .getListener();
 
       if (registeredListenerClass.isAssignableFrom(listenerClass)) {
-        listeners.add(registeredListenerClass);
+        listeners1.add(registeredListenerClass);
       }
     }
 
-    return listeners;
+    return listeners1;
   }
 
   /**

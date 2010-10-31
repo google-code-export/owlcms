@@ -125,7 +125,7 @@ public class StartList extends OutputSheet {
      * org.concordiainternational.competition.data.CategoryLookup, int)
      */
     @Override
-    void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup, int rownum)
+    void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup1, int rownum)
             throws CellTypeMismatchException, CellNotFoundException {
         // Intentionally empty
 

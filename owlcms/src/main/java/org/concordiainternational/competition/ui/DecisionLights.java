@@ -101,13 +101,13 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
 	}
 
     private GridLayout createDecisionButtons() {
-        GridLayout bottom = new GridLayout(3, 3);
-        bottom.setMargin(true);
-        bottom.setSpacing(true);
+        GridLayout bottom1 = new GridLayout(3, 3);
+        bottom1.setMargin(true);
+        bottom1.setSpacing(true);
 
-        createLabel(bottom, refereeLabel(0));
-        createLabel(bottom, refereeLabel(1));
-        createLabel(bottom, refereeLabel(2));
+        createLabel(bottom1, refereeLabel(0));
+        createLabel(bottom1, refereeLabel(1));
+        createLabel(bottom1, refereeLabel(2));
 
         for (int i = 0; i < decisionLights.length; i++) {
             final int j = i;
@@ -123,7 +123,7 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
             yesButton.addStyleName("referee"); //$NON-NLS-1$
             yesButton.addStyleName("yesButton"); //$NON-NLS-1$
             yesButton.setWidth(CELL_WIDTH);
-            bottom.addComponent(yesButton);
+            bottom1.addComponent(yesButton);
         }
         for (int i = 0; i < decisionLights.length; i++) {
             final int j = i;
@@ -139,21 +139,21 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
             noButton.addStyleName("referee"); //$NON-NLS-1$
             noButton.addStyleName("noButton"); //$NON-NLS-1$
             noButton.setWidth(CELL_WIDTH);
-            bottom.addComponent(noButton);
+            bottom1.addComponent(noButton);
         }
-        return bottom;
+        return bottom1;
     }
 
     /**
-     * @param bottom
+     * @param bottom1
      * @param width
      */
-    private void createLabel(GridLayout bottom, String caption) {
+    private void createLabel(GridLayout bottom1, String caption) {
         final Label ref1Label = new Label("");
         ref1Label.setCaption(caption);
         ref1Label.setWidth(CELL_WIDTH);
         ref1Label.addStyleName("refereeButtonLabel");
-        bottom.addComponent(ref1Label);
+        bottom1.addComponent(ref1Label);
     }
 
     @Override

@@ -74,11 +74,11 @@ public class CompetitionBook extends ResultSheet {
 	}
 
     @Override
-	public void init(CategoryLookup categoryLookup, CompetitionApplication app,
-			CompetitionSession competitionSession) {
-		super.init(categoryLookup, app, competitionSession);
-		this.hbnSessionManager = app;
-		createInputSheetHelper(app);
+	public void init(CategoryLookup categoryLookup1, CompetitionApplication app1,
+			CompetitionSession competitionSession1) {
+		super.init(categoryLookup1, app1, competitionSession1);
+		this.hbnSessionManager = app1;
+		createInputSheetHelper(app1);
 	}
 
 

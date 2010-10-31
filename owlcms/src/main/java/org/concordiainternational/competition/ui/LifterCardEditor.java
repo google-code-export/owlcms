@@ -148,7 +148,7 @@ public class LifterCardEditor extends Panel implements
                         // previousLifter, editor);
                         logger.info("FORCE AS CURRENT button pushed.");
                         final CountdownTimer timer = liftList.getGroupData().getTimer();
-                        if (timer != null) timer.pause();
+                        if (timer != null) timer.pause(NotificationReason.FORCE_AS_CURRENT);
                         lifter.setForcedAsCurrent(true); // this will trigger an
                                                          // update event on the
                                                          // lift list.
@@ -298,20 +298,20 @@ public class LifterCardEditor extends Panel implements
      * list. By binding to the items in the editor grid to the same property
      * datasource as in the lift list, updates are automatic and instantaneous.
      * 
-     * @param lifter
-     * @param item
+     * @param lifter1
+     * @param item1
      */
-    public void loadLifter(Lifter lifter, Item item) {
+    public void loadLifter(Lifter lifter1, Item item1) {
         logger.debug("announcerView={} loading {} previousLifter {}", //$NON-NLS-1$
-            new Object[] { parentView, lifter, this.lifter }); //$NON-NLS-1$
+            new Object[] { parentView, lifter1, this.lifter }); //$NON-NLS-1$
         // LoggerUtils.logException(logger, new Exception("whoCalls"));
         final SessionData groupData = liftList.getGroupData();
-        if (lifter == null) {
+        if (lifter1 == null) {
             logger.debug("case 1, lifter = null"); //$NON-NLS-1$
             // we leave the current lifter as is
             setFocus(this.lifter, this.item);
             return;
-        } else if ((parentView.isStickyEditor() && lifter != this.lifter)) {
+        } else if ((parentView.isStickyEditor() && lifter1 != this.lifter)) {
             logger.debug("Case 2, sticky editor and lifter change"); //$NON-NLS-1$
             // we are sticky and the current lifter is not ourselves
             // we leave the current lifter as is, but the focus may need to
@@ -323,72 +323,72 @@ public class LifterCardEditor extends Panel implements
             logger.debug("case 3: not sticky, or reloading same lifter"); //$NON-NLS-1$
             ignoreChanges = true;
 
-            groupData.trackEditors(lifter, this.lifter, this);
+            groupData.trackEditors(lifter1, this.lifter, this);
 
-            lifterCardIdentification.loadLifter(lifter, liftList.getGroupData());
+            lifterCardIdentification.loadLifter(lifter1, liftList.getGroupData());
             int column = 1;
             int row = 1;
 
-            bindGridCell(column, row++, item, "snatch1AutomaticProgression"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "snatch1Declaration"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "snatch1Change1"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "snatch1Change2"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "snatch1ActualLift"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "snatch1LiftTime"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch1AutomaticProgression"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch1Declaration"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch1Change1"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch1Change2"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch1ActualLift"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch1LiftTime"); //$NON-NLS-1$
 
             column++;
             row = 1;
-            bindGridCell(column, row++, item, "snatch2AutomaticProgression"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "snatch2Declaration"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "snatch2Change1"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "snatch2Change2"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "snatch2ActualLift"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "snatch2LiftTime"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch2AutomaticProgression"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch2Declaration"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch2Change1"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch2Change2"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch2ActualLift"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch2LiftTime"); //$NON-NLS-1$
 
             column++;
             row = 1;
-            bindGridCell(column, row++, item, "snatch3AutomaticProgression"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "snatch3Declaration"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "snatch3Change1"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "snatch3Change2"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "snatch3ActualLift"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "snatch3LiftTime"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch3AutomaticProgression"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch3Declaration"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch3Change1"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch3Change2"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch3ActualLift"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "snatch3LiftTime"); //$NON-NLS-1$
 
             column++;
             row = 1;
-            bindGridCell(column, row++, item, "cleanJerk1AutomaticProgression"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "cleanJerk1Declaration"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "cleanJerk1Change1"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "cleanJerk1Change2"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "cleanJerk1ActualLift"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "cleanJerk1LiftTime"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk1AutomaticProgression"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk1Declaration"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk1Change1"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk1Change2"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk1ActualLift"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk1LiftTime"); //$NON-NLS-1$
 
             column++;
             row = 1;
-            bindGridCell(column, row++, item, "cleanJerk2AutomaticProgression"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "cleanJerk2Declaration"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "cleanJerk2Change1"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "cleanJerk2Change2"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "cleanJerk2ActualLift"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "cleanJerk2LiftTime"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk2AutomaticProgression"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk2Declaration"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk2Change1"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk2Change2"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk2ActualLift"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk2LiftTime"); //$NON-NLS-1$
 
             column++;
             row = 1;
-            bindGridCell(column, row++, item, "cleanJerk3AutomaticProgression"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "cleanJerk3Declaration"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "cleanJerk3Change1"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "cleanJerk3Change2"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "cleanJerk3ActualLift"); //$NON-NLS-1$
-            bindGridCell(column, row++, item, "cleanJerk3LiftTime"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk3AutomaticProgression"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk3Declaration"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk3Change1"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk3Change2"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk3ActualLift"); //$NON-NLS-1$
+            bindGridCell(column, row++, item1, "cleanJerk3LiftTime"); //$NON-NLS-1$
 
-            logger.debug("LifterCardEditor.loadLifter() end: {} ", lifter.getLastName()); //$NON-NLS-1$
-            logger.debug("*** setting lifter to {}", lifter); //$NON-NLS-1$
-            this.lifter = lifter;
-            this.item = item;
+            logger.debug("LifterCardEditor.loadLifter() end: {} ", lifter1.getLastName()); //$NON-NLS-1$
+            logger.debug("*** setting lifter to {}", lifter1); //$NON-NLS-1$
+            this.lifter = lifter1;
+            this.item = item1;
 
             // set the focus in the best location
             logger.debug("before setFocus"); //$NON-NLS-1$
-            setFocus(lifter, item);
+            setFocus(lifter1, item1);
             logger.debug("before setButtonVisibility"); //$NON-NLS-1$
             setButtonVisibility();
             logger.debug(("before setButtonVisibility")); //$NON-NLS-1$
@@ -493,12 +493,12 @@ public class LifterCardEditor extends Panel implements
      * 
      * @param column
      * @param row
-     * @param item
+     * @param item1
      * @param propertyId
      */
-    private void bindGridCell(int column, int row, Item item, Object propertyId) {
+    private void bindGridCell(int column, int row, Item item1, Object propertyId) {
         final Field component = (Field) grid.getComponent(column, row);
-        component.setPropertyDataSource(item.getItemProperty(propertyId));
+        component.setPropertyDataSource(item1.getItemProperty(propertyId));
     }
 
     /**

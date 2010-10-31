@@ -58,11 +58,11 @@ public class NECDisplay implements Serializable {
     public NECDisplay() throws NoSuchPortException, PortInUseException, IOException, UnsupportedCommOperationException {
     }
 
-    private void init(String comPortName) throws NoSuchPortException, PortInUseException, IOException,
+    private void init(String comPortName1) throws NoSuchPortException, PortInUseException, IOException,
             UnsupportedCommOperationException {
         if (opened) return;
-        if (comPortName == null) comPortName = "COM1"; //$NON-NLS-1$
-        this.serialPort = openPort(comPortName);
+        if (comPortName1 == null) comPortName1 = "COM1"; //$NON-NLS-1$
+        this.serialPort = openPort(comPortName1);
     }
 
     /**
@@ -206,12 +206,12 @@ public class NECDisplay implements Serializable {
      * @throws NoSuchPortException
      * 
      */
-    private SerialPort openPort(String comPortName) throws PortInUseException, IOException,
+    private SerialPort openPort(String comPortName1) throws PortInUseException, IOException,
             UnsupportedCommOperationException, NoSuchPortException {
 
         CommPortIdentifier portId;
         try {
-            portId = CommPortIdentifier.getPortIdentifier(comPortName);
+            portId = CommPortIdentifier.getPortIdentifier(comPortName1);
         } catch (NoSuchPortException e) {
             logger.trace("running on COM1"); //$NON-NLS-1$
             portId = CommPortIdentifier.getPortIdentifier("COM1"); //$NON-NLS-1$

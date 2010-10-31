@@ -63,7 +63,7 @@ public class LifterCardSheet extends OutputSheet {
     }
 
     @Override
-    public void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup, int ignored)
+    public void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup1, int ignored)
             throws CellTypeMismatchException, CellNotFoundException {
         int rowNum = (nbCardsPrinted * TEMPLATE_ROWS) - (nbCardsPrinted / 2);
 

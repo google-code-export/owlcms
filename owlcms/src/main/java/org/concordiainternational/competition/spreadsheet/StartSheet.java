@@ -71,14 +71,14 @@ public class StartSheet extends ResultSheet {
 
     private static Logger logger = LoggerFactory.getLogger(StartSheet.class);
 
-    private void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup)
+    private void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup1)
             throws CellTypeMismatchException, CellNotFoundException, RowNotFoundException {
 
-        CompetitionSession competitionSession = lifter.getCompetitionSession();
-        if (!competitionSession.equals(prevGroup)) {
-            createGroupHeading(workSheet, INDIVIDUAL_COLS - 1, competitionSession);
+        CompetitionSession competitionSession1 = lifter.getCompetitionSession();
+        if (!competitionSession1.equals(prevGroup)) {
+            createGroupHeading(workSheet, INDIVIDUAL_COLS - 1, competitionSession1);
         }
-        prevGroup = competitionSession;
+        prevGroup = competitionSession1;
 
         workSheet.insertRow(rownum, true); // insérer une nouvelle ligne.
 
@@ -221,7 +221,7 @@ public class StartSheet extends ResultSheet {
      * @throws CellNotFoundException
      * @throws RowNotFoundException
      */
-    private int createGroupHeading(WorkSheetHandle workSheet, int nbCols, CompetitionSession competitionSession) throws CellNotFoundException,
+    private int createGroupHeading(WorkSheetHandle workSheet, int nbCols, CompetitionSession competitionSession1) throws CellNotFoundException,
             RowNotFoundException {
 
         groupIx = 1;
@@ -239,7 +239,7 @@ public class StartSheet extends ResultSheet {
         CellHandle cell = workSheet.getCell(rownum, 0);
 
         // create a group label
-        String groupCode = competitionSession.getName();
+        String groupCode = competitionSession1.getName();
         cell.setVal(groupCode);
 
         int[] rangeCoords = new int[] { rownum, 0, rownum, 2 };
@@ -256,8 +256,8 @@ public class StartSheet extends ResultSheet {
 
         
         cell = workSheet.getCell(rownum, 3);
-        Date weighInTime = competitionSession.getWeighInTime();
-		Date competitionTime = competitionSession.getCompetitionTime();
+        Date weighInTime = competitionSession1.getWeighInTime();
+		Date competitionTime = competitionSession1.getCompetitionTime();
 		
 		String weighIn = weighInTime != null ? formatDate(weighInTime) : Messages.getString("StartSheet.TBA",CompetitionApplication.getCurrentLocale());
 		String start = competitionTime != null ? formatDate(competitionTime) : Messages.getString("StartSheet.TBA",CompetitionApplication.getCurrentLocale());

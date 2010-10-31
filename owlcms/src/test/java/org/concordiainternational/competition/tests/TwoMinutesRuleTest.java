@@ -432,23 +432,23 @@ public class TwoMinutesRuleTest {
      * 
      * @param lifter
      */
-    private void successfulLift(List<Lifter> lifters) {
-        final Lifter lifter = lifters.get(0);
+    private void successfulLift(List<Lifter> lifters1) {
+        final Lifter lifter = lifters1.get(0);
         final String weight = Integer.toString(lifter.getNextAttemptRequestedWeight());
-        doLift(lifter, lifters, weight);
+        doLift(lifter, lifters1, weight);
     }
 
     /**
      * Current lifter fails.
      * 
      * @param lifter
-     * @param lifters
+     * @param lifters1
      */
-    private void failedLift(List<Lifter> lifters) {
-        final Lifter lifter = lifters.get(0);
+    private void failedLift(List<Lifter> lifters1) {
+        final Lifter lifter = lifters1.get(0);
         final Integer nextAttemptRequestedWeight = lifter.getNextAttemptRequestedWeight();
         final String weight = Integer.toString(-nextAttemptRequestedWeight);
-        doLift(lifter, lifters, weight);
+        doLift(lifter, lifters1, weight);
         if (lifter.getAttemptsDone() < 5)
             assertEquals(
                 "next requested weight should be equal after failed lift", nextAttemptRequestedWeight, lifter.getNextAttemptRequestedWeight()); //$NON-NLS-1$
@@ -456,11 +456,11 @@ public class TwoMinutesRuleTest {
 
     /**
      * @param lifter
-     * @param lifters
+     * @param lifters1
      * @param weight
      * @throws InterruptedException
      */
-    private void declaration(final Lifter lifter, List<Lifter> lifters, final String weight)
+    private void declaration(final Lifter lifter, List<Lifter> lifters1, final String weight)
             throws InterruptedException {
         // sleep for a while to ensure that we get different time stamps on the
         // lifts.
@@ -496,11 +496,11 @@ public class TwoMinutesRuleTest {
 
     /**
      * @param lifter
-     * @param lifters
+     * @param lifters1
      * @param weight
      */
     @SuppressWarnings("unused")
-    private void change1(final Lifter lifter, List<Lifter> lifters, final String weight) {
+    private void change1(final Lifter lifter, List<Lifter> lifters1, final String weight) {
         // sleep for a while to ensure that we get different time stamps on the
         // lifts.
         try {
@@ -535,11 +535,11 @@ public class TwoMinutesRuleTest {
 
     /**
      * @param lifter
-     * @param lifters
+     * @param lifters1
      * @param weight
      */
     @SuppressWarnings("unused")
-    private void change2(final Lifter lifter, List<Lifter> lifters, final String weight) {
+    private void change2(final Lifter lifter, List<Lifter> lifters1, final String weight) {
         // sleep for a while to ensure that we get different time stamps on the
         // lifts.
         try {
@@ -574,10 +574,10 @@ public class TwoMinutesRuleTest {
 
     /**
      * @param lifter
-     * @param lifters
+     * @param lifters1
      * @param weight
      */
-    private void doLift(final Lifter lifter, List<Lifter> lifters, final String weight) {
+    private void doLift(final Lifter lifter, List<Lifter> lifters1, final String weight) {
         // sleep for a while to ensure that we get different time stamps on the
         // lifts.
         try {
@@ -605,7 +605,7 @@ public class TwoMinutesRuleTest {
             lifter.setCleanJerk3ActualLift(weight);
             break;
         }
-        LifterSorter.liftingOrder(lifters);
+        LifterSorter.liftingOrder(lifters1);
         groupData.liftDone(lifter, !weight.startsWith("-")); //$NON-NLS-1$
         groupData.updateListsForLiftingOrderChange();
     }

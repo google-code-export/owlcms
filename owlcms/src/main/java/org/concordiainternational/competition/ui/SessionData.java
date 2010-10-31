@@ -636,8 +636,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     }
 
     public NECDisplay getNECDisplay() {
-        Platform platform = app.getPlatform();
-        if (platform != null && platform.getHasDisplay()) {
+        Platform platform1 = app.getPlatform();
+        if (platform1 != null && platform1.getHasDisplay()) {
             return WebApplicationConfiguration.necDisplay;
         } else {
             return null;
@@ -1083,8 +1083,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
 
 	public void displayPublicAddress() {
-		PublicAddressCountdownTimer timer = (PublicAddressCountdownTimer) publicAddressItem.getItemProperty("remainingSeconds").getValue();
-		int remainingMilliseconds = timer.getRemainingMilliseconds();
+		PublicAddressCountdownTimer timer1 = (PublicAddressCountdownTimer) publicAddressItem.getItemProperty("remainingSeconds").getValue();
+		int remainingMilliseconds = timer1.getRemainingMilliseconds();
 		
 		// tell the registered browsers to pop-up the message area
 		PublicAddressMessageEvent messageEvent = new PublicAddressMessageEvent();

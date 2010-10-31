@@ -46,7 +46,7 @@ public class SinclairSheet extends ResultSheet {
 
 	private int rownum = 0;
 
-    private void writeSinclairLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup)
+    private void writeSinclairLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup1)
             throws CellTypeMismatchException, CellNotFoundException {
         workSheet.insertRow(rownum, true); // insérer une nouvelle ligne.
 
