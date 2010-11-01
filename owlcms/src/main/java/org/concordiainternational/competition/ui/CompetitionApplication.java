@@ -56,6 +56,7 @@ import com.vaadin.service.ApplicationContext.TransactionListener;
 import com.vaadin.terminal.ErrorMessage;
 import com.vaadin.terminal.ParameterHandler;
 import com.vaadin.terminal.StreamResource;
+import com.vaadin.terminal.StreamResource.StreamSource;
 import com.vaadin.terminal.SystemError;
 import com.vaadin.terminal.Terminal;
 import com.vaadin.terminal.URIHandler;
@@ -387,6 +388,13 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         streamResource.setCacheTime(5000); // no cache (<=0) does not work with
                                            // IE8
         streamResource.setMIMEType("application/x-msexcel"); //$NON-NLS-1$
+        this.getMainWindow().open(streamResource, "_top"); //$NON-NLS-1$
+    }
+    
+	public void openPdf(StreamSource streamSource, final String filename) {
+        StreamResource streamResource = new StreamResource(streamSource, filename + ".pdf", this); //$NON-NLS-1$
+        streamResource.setCacheTime(5000); // no cache (<=0) does not work with IE8
+        streamResource.setMIMEType("application/pdf"); //$NON-NLS-1$
         this.getMainWindow().open(streamResource, "_top"); //$NON-NLS-1$
     }
 
