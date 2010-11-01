@@ -22,11 +22,11 @@ import com.vaadin.Application;
 import com.vaadin.data.hbnutil.HbnContainer;
 import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Table.ColumnGenerator;
 
 public abstract class GenericHbnList<T> extends GenericList<T> {

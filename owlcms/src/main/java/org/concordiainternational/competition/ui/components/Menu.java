@@ -26,19 +26,19 @@ import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
-import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.LoadWindow;
+import org.concordiainternational.competition.ui.SessionData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.Button.ClickEvent;
 
 public class Menu extends MenuBar implements Serializable {
     private static final long serialVersionUID = -3809346951739483448L;
