@@ -44,9 +44,9 @@ import org.hibernate.criterion.Restrictions;
 
 import com.vaadin.terminal.SystemError;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Button.ClickEvent;
 
 public class WeighInList extends LifterHbnList implements ApplicationView {
 

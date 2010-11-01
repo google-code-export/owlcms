@@ -32,11 +32,12 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.MethodProperty;
 import com.vaadin.data.validator.IntegerValidator;
 import com.vaadin.event.Action;
-import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.Action.Handler;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Field;
@@ -47,7 +48,6 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.Button.ClickEvent;
 
 public class LifterCardEditor extends Panel implements 
 	Property.ValueChangeListener, // listen to changes within the editor

@@ -22,18 +22,18 @@ import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.ui.AnnouncerView;
+import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.ui.LifterInfo;
 import org.concordiainternational.competition.ui.NotificationReason;
 import org.concordiainternational.competition.ui.SessionData;
-import org.concordiainternational.competition.ui.LifterInfo;
-import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Button;
-import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.GridLayout;
 
 public class TimerControls extends GridLayout {
 

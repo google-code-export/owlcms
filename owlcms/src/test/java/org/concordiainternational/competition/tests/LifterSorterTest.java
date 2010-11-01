@@ -16,10 +16,10 @@
 
 package org.concordiainternational.competition.tests;
 
+import static org.concordiainternational.competition.tests.AllTests.assertEqualsToReferenceFile;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.concordiainternational.competition.tests.AllTests.assertEqualsToReferenceFile;
 
 import java.util.Collections;
 import java.util.List;

@@ -19,8 +19,8 @@ package org.concordiainternational.competition.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.slf4j.Logger;
