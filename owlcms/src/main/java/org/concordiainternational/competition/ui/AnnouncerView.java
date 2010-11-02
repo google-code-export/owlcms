@@ -481,11 +481,11 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
 
 
 
-	public void displayNotification(Mode mode2, NotificationReason reason) {
+	public void displayNotification(Mode mode2, TimeStoppedNotificationReason reason) {
 		String message = MessageFormat.format(
-				Messages.getString("NotificationReason.NotificationFormat", CompetitionApplication.getCurrentLocale()),
+				Messages.getString("TimeStoppedNotificationReason.NotificationFormat", CompetitionApplication.getCurrentLocale()),
 				Messages.getString("LiftList."+mode2.name(), CompetitionApplication.getCurrentLocale()),
-				Messages.getString("NotificationReason."+reason.name(), CompetitionApplication.getCurrentLocale()));
+				Messages.getString("TimeStoppedNotificationReason."+reason.name(), CompetitionApplication.getCurrentLocale()));
 		notifications.add((Resource)null,message,true,Notifique.Styles.VAADIN_ORANGE,true);
 	}
 }

@@ -24,7 +24,7 @@ import java.util.Timer;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.LifterInfo;
-import org.concordiainternational.competition.ui.NotificationReason;
+import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,10 +109,10 @@ public class CountdownTimer implements Serializable {
      * Stop the timer, without clearing the associated lifter.
      */
     public void pause() {
-    	pause(NotificationReason.UNKNOWN);
+    	pause(TimeStoppedNotificationReason.UNKNOWN);
     }
     
-	public void pause(NotificationReason reason) {
+	public void pause(TimeStoppedNotificationReason reason) {
         logger.debug("enter pause {} {}", getTimeRemaining()); //$NON-NLS-1$
         if (countdownTask != null) {
             startTime = (int) countdownTask.getBestTimeRemaining();
@@ -141,10 +141,10 @@ public class CountdownTimer implements Serializable {
      * Stop the timer, clear the associated lifter.
      */
     public void stop() {
-    	stop(NotificationReason.UNKNOWN);
+    	stop(TimeStoppedNotificationReason.UNKNOWN);
     }
     
-    public void stop(NotificationReason reason) {
+    public void stop(TimeStoppedNotificationReason reason) {
         logger.debug("enter stop {} {}", getTimeRemaining()); //$NON-NLS-1$
         if (timer != null) timer.cancel();
         timer = null;
@@ -170,10 +170,10 @@ public class CountdownTimer implements Serializable {
      * so that the time is reset correctly.
      */
     public void forceTimeRemaining(int remainingTime) {
-    	forceTimeRemaining(remainingTime, NotificationReason.UNKNOWN);
+    	forceTimeRemaining(remainingTime, TimeStoppedNotificationReason.UNKNOWN);
     }
     
-    public void forceTimeRemaining(int remainingTime,NotificationReason reason) {
+    public void forceTimeRemaining(int remainingTime,TimeStoppedNotificationReason reason) {
         if (timer != null) timer.cancel();
         timer = null;
         if (countdownTask != null) {
