@@ -35,7 +35,7 @@ import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
-import org.concordiainternational.competition.ui.NotificationReason;
+import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
@@ -345,7 +345,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
     }
 
     @Override
-    public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, NotificationReason reason) {
+    public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
         timeDisplay.setValue(TimeFormatter.formatAsSeconds(startTime));
     }
 
@@ -381,7 +381,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
     }
 
     @Override
-    public void pause(int timeRemaining, CompetitionApplication originatingApp, NotificationReason reason) {
+    public void pause(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
     }
 
     @Override
@@ -389,7 +389,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
     }
 
     @Override
-    public void stop(int timeRemaining, CompetitionApplication originatingApp, NotificationReason reason) {
+    public void stop(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
     }
 
     /* (non-Javadoc)

@@ -22,7 +22,7 @@ import java.util.TimerTask;
 
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.ui.NotificationReason;
+import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.utils.EventHelper;
 import org.slf4j.Logger;
@@ -318,7 +318,7 @@ public class DecisionController implements CountdownTimerListener {
     }
 
     @Override
-    public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, NotificationReason reason) {
+    public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
     }
 
     @Override
@@ -334,7 +334,7 @@ public class DecisionController implements CountdownTimerListener {
     }
 
     @Override
-    public void pause(int timeRemaining, CompetitionApplication app, NotificationReason reason) {
+    public void pause(int timeRemaining, CompetitionApplication app, TimeStoppedNotificationReason reason) {
     }
 
     @Override
@@ -342,7 +342,7 @@ public class DecisionController implements CountdownTimerListener {
     }
 
     @Override
-    public void stop(int timeRemaining, CompetitionApplication app, NotificationReason reason) {
+    public void stop(int timeRemaining, CompetitionApplication app, TimeStoppedNotificationReason reason) {
     }
 
 }

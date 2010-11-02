@@ -148,7 +148,7 @@ public class LifterCardEditor extends Panel implements
                         // previousLifter, editor);
                         logger.info("FORCE AS CURRENT button pushed.");
                         final CountdownTimer timer = liftList.getGroupData().getTimer();
-                        if (timer != null) timer.pause(NotificationReason.FORCE_AS_CURRENT);
+                        if (timer != null) timer.pause(TimeStoppedNotificationReason.FORCE_AS_CURRENT);
                         lifter.setForcedAsCurrent(true); // this will trigger an
                                                          // update event on the
                                                          // lift list.
@@ -165,7 +165,7 @@ public class LifterCardEditor extends Panel implements
         	public void buttonClick(ClickEvent event) {
         		logger.info("WITHDRAW button pushed.");
         		final CountdownTimer timer = liftList.getGroupData().getTimer();
-        		if (timer != null) timer.pause(NotificationReason.LIFTER_WITHDRAWAL);
+        		if (timer != null) timer.pause(TimeStoppedNotificationReason.LIFTER_WITHDRAWAL);
         		lifter.withdraw(); // this will trigger an update event on the lift list.
         	}
 

@@ -425,7 +425,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
     }
 
     @Override
-    public void forceTimeRemaining(int remaining, CompetitionApplication originatingApp, NotificationReason reason) {
+    public void forceTimeRemaining(int remaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
         if (timerDisplay == null) return;
         prevTimeRemaining = remaining;
 
@@ -440,7 +440,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
     }
 
     @Override
-    public void pause(int timeRemaining, CompetitionApplication originatingApp, NotificationReason reason) {
+    public void pause(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
     	
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {
@@ -454,17 +454,23 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
     }
 
 	/**
+	 * Show a notification on other consoles.
+	 * Notification is shown for actors other than the time keeper (when the announcer or marshall stops the time
+	 * through a weight change).
+	 * 
 	 * @param originatingApp
 	 * @param reason
 	 */
-	private void showNotification(CompetitionApplication originatingApp, NotificationReason reason) {
+	private void showNotification(CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
 
 		if (app != originatingApp) {
         	CompetitionApplication receivingApp = app;
-			if (receivingApp.components.currentView instanceof AnnouncerView && reason != NotificationReason.UNKNOWN) {
+			if (receivingApp.components.currentView instanceof AnnouncerView && reason != TimeStoppedNotificationReason.UNKNOWN) {
 				AnnouncerView receivingView = (AnnouncerView) receivingApp.components.currentView;
 				AnnouncerView originatingView = (AnnouncerView)originatingApp.components.currentView;
-				receivingView.displayNotification(originatingView.mode,reason);
+				if (originatingView.mode != Mode.TIMEKEEPER) {
+					receivingView.displayNotification(originatingView.mode,reason);
+				}
         	}
         }
 	}
@@ -483,7 +489,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
 
 
     @Override
-    public void stop(int timeRemaining, CompetitionApplication originatingApp, NotificationReason reason) {
+    public void stop(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
 
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {

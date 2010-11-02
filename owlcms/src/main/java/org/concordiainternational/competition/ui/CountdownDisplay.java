@@ -182,7 +182,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
     }
 
     @Override
-    public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, NotificationReason reason) {
+    public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
         pushTime(startTime);
     }
 
@@ -222,7 +222,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
     }
 
     @Override
-    public void pause(int timeRemaining, CompetitionApplication originatingApp, NotificationReason reason) {
+    public void pause(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
     }
 
     @Override
@@ -230,7 +230,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
     }
 
     @Override
-    public void stop(int timeRemaining, CompetitionApplication originatingApp, NotificationReason reason) {
+    public void stop(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
     }
     
 
