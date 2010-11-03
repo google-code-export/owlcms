@@ -59,9 +59,10 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
     @Override
     protected String[] getColOrder() {
         if (NATURAL_COL_ORDER != null) return NATURAL_COL_ORDER;
-        NATURAL_COL_ORDER = new String[] { "name", //$NON-NLS-1$
+        NATURAL_COL_ORDER = new String[] {
+        		"name", //$NON-NLS-1$
                 "hasDisplay", //$NON-NLS-1$
-                "defaultPlatform", //$NON-NLS-1$
+                "showDecisionLights", //$NON-NLS-1$
                 "actions" //$NON-NLS-1$
         };
         return NATURAL_COL_ORDER;
@@ -77,7 +78,7 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
         if (COL_HEADERS != null) return COL_HEADERS;
         COL_HEADERS = new String[] { Messages.getString("CategoryEditor.name", locale), //$NON-NLS-1$
                 Messages.getString("Platform.NECDisplay", locale), //$NON-NLS-1$
-                Messages.getString("Platform.defaultPlatform", locale), //$NON-NLS-1$
+                Messages.getString("Platform.showDecisionLights", locale), //$NON-NLS-1$
                 Messages.getString("Common.actions", locale), //$NON-NLS-1$
         };
         return COL_HEADERS;

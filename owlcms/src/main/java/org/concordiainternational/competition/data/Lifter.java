@@ -39,7 +39,6 @@ import javax.persistence.Version;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter.Ranking;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.ui.generators.TryFormatter;
 import org.concordiainternational.competition.utils.Coefficients;
 import org.concordiainternational.competition.utils.EventHelper;
 import org.concordiainternational.competition.utils.LoggerUtils;
@@ -714,43 +713,7 @@ public class Lifter implements MethodEventSource, Notifier {
         return competitionSession;
     }
 
-    /**
-     * @param sb
-     * @return
-     */
-    public boolean getHTMLLifterInfo(boolean alwaysShowName, StringBuilder sb) {
-        final Locale locale = CompetitionApplication.getCurrentLocale();
-        final int currentTry = 1 + (getAttemptsDone() >= 3 ? getCleanJerkAttemptsDone() : getSnatchAttemptsDone());
-        boolean done = currentTry > 3;
 
-        // display requested weight
-        if (done) {
-            appendDiv(sb, "break", "&nbsp;"); //$NON-NLS-1$ //$NON-NLS-2$
-            done = true;
-        } else {
-            appendDiv(sb, "weight", getNextAttemptRequestedWeight() + Messages.getString("Common.kg", locale)); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        appendDiv(sb, "break", "&nbsp;"); //$NON-NLS-1$ //$NON-NLS-2$
-
-        // display lifter name and affiliation
-        if (!done || alwaysShowName) {
-            appendDiv(sb, getLastName().toUpperCase());
-            appendDiv(sb, getFirstName());
-            appendDiv(sb, getClub());
-            appendDiv(sb, "break", "&nbsp;"); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-
-        // display current attempt number
-        if (done) {
-            // we're done, write a "finished" message and return.
-            appendDiv(sb, Messages.getString("LifterInfo.Done", locale)); //$NON-NLS-1$
-        } else {
-            //appendDiv(sb, lifter.getNextAttemptRequestedWeight()+Messages.getString("Common.kg",locale)); //$NON-NLS-1$
-            String tryInfo = TryFormatter.formatTry(this, locale, currentTry);
-            appendDiv(sb, tryInfo);
-        }
-        return done;
-    }
 
     /**
      * @return the id
@@ -762,7 +725,7 @@ public class Lifter implements MethodEventSource, Notifier {
     /**
      * Compute the time of last lift for lifter. Times are only compared within
      * the same lift type (if a lifter is at the first attempt of clean and
-     * jerk, then the last lift occured forever ago.)
+     * jerk, then the last lift occurred forever ago.)
      * 
      * @param lifter1
      * @return null if lifter has not lifted
@@ -1790,15 +1753,7 @@ public class Lifter implements MethodEventSource, Notifier {
         }
     }
 
-    private void appendDiv(StringBuilder sb, String string) {
-        sb.append("<div>") //$NON-NLS-1$
-                .append(string).append("</div>"); //$NON-NLS-1$
-    }
 
-    private void appendDiv(StringBuilder sb, String cssClass, String string) {
-        sb.append("<div class='" + cssClass + "'>") //$NON-NLS-1$ //$NON-NLS-2$
-                .append(string).append("</div>"); //$NON-NLS-1$
-    }
 
     /**
      * @param prevVal

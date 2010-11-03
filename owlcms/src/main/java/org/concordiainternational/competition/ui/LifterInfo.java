@@ -16,8 +16,10 @@
 
 package org.concordiainternational.competition.ui;
 
+import java.text.MessageFormat;
 import java.util.Locale;
 
+import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.timer.CountdownTimer;
@@ -25,6 +27,7 @@ import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.ui.components.TimerControls;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
+import org.concordiainternational.competition.ui.generators.TryFormatter;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +80,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
 
     private long lastOkButtonClick = 0L;
     private long lastFailedButtonClick = 0L;
+	private SessionData sessionData;
 
     @SuppressWarnings("serial")
     public LifterInfo(String identifier, final SessionData groupData, AnnouncerView.Mode mode, Component parentView) {
@@ -87,6 +91,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
         this.groupData = groupData;
         this.parentView = parentView;
         this.mode = mode;
+        this.sessionData = groupData;
 
         this.addListener(new LayoutClickListener() {
 
@@ -146,7 +151,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
 				return;
 			updateDisplayBoard(lifter1, groupData1);
 			StringBuilder sb = new StringBuilder();
-			boolean done = lifter1.getHTMLLifterInfo(
+			boolean done = getHTMLLifterInfo(lifter1,
 					identifier.startsWith("bottom"), sb); //$NON-NLS-1$
 			final Label label = new Label(sb.toString(), Label.CONTENT_XHTML);
 			label.addStyleName("zoomable");
@@ -170,6 +175,48 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
         logger.debug("LifterInfo.loadLifter() end: " + lifter1.getLastName()); //$NON-NLS-1$
     }
 
+    /**
+     * @param sb
+     * @return
+     */
+    public boolean getHTMLLifterInfo(Lifter lifter1, boolean alwaysShowName, StringBuilder sb) {
+        final int currentTry = 1 + (lifter1.getAttemptsDone() >= 3 ? lifter1.getCleanJerkAttemptsDone() : lifter1.getSnatchAttemptsDone());
+        boolean done = currentTry > 3;
+
+        // display requested weight
+        if (done) {
+            appendDiv(sb, "break", "&nbsp;"); //$NON-NLS-1$ //$NON-NLS-2$
+            done = true;
+        } else {
+            appendDiv(sb, "weight", lifter1.getNextAttemptRequestedWeight() + Messages.getString("Common.kg", locale)); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+        appendDiv(sb, "break", "&nbsp;"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        // display lifter name and affiliation
+        if (!done || alwaysShowName) {
+            appendDiv(sb, lifter1.getLastName().toUpperCase());
+            appendDiv(sb, lifter1.getFirstName());
+            appendDiv(sb, lifter1.getClub());
+            appendDiv(sb, "break", "&nbsp;"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
+        // display current attempt number
+        if (done) {
+            CompetitionSession currentSession = sessionData.getCurrentSession();
+			if (currentSession != null) {
+				// we're done, write a "finished" message and return.
+				appendDiv(sb, MessageFormat.format(Messages.getString("LifterInfo.Done", locale),currentSession.getName() )); //$NON-NLS-1$
+			} else {
+				// do nothing.
+			}
+        } else {
+            //appendDiv(sb, lifter.getNextAttemptRequestedWeight()+Messages.getString("Common.kg",locale)); //$NON-NLS-1$
+            String tryInfo = TryFormatter.formatTry(lifter1, locale, currentTry);
+            appendDiv(sb, tryInfo);
+        }
+        return done;
+    }
+    
     /**
      * @param lifter1
      * @param groupData1
@@ -557,4 +604,13 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
         return lastFailedButtonClick;
     }
 
+    private void appendDiv(StringBuilder sb, String string) {
+        sb.append("<div>") //$NON-NLS-1$
+                .append(string).append("</div>"); //$NON-NLS-1$
+    }
+
+    private void appendDiv(StringBuilder sb, String cssClass, String string) {
+        sb.append("<div class='" + cssClass + "'>") //$NON-NLS-1$ //$NON-NLS-2$
+                .append(string).append("</div>"); //$NON-NLS-1$
+    }
 }
