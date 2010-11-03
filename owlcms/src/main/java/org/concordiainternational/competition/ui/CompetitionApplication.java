@@ -229,7 +229,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         return pusher;
     }
 
-    public void push() {
+    synchronized public void push() {
     	pusher = this.ensurePusher();
     	if (!pusherDisabled) {
     		logger.debug("pushing with {} on window {}",pusher,getMainWindow());

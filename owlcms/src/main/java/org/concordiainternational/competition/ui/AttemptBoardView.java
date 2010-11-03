@@ -18,6 +18,7 @@ package org.concordiainternational.competition.ui;
 
 import java.net.URL;
 
+import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.ui.PlatesInfoEvent.PlatesInfoListener;
@@ -28,12 +29,20 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.URIHandler;
+import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
+/**
+ * Display information about the current athlete and lift.
+ * Shows lifter information, decision lights, and plates loading diagram.
+ * 
+ * @author jflamy
+ *
+ */
 public class AttemptBoardView extends VerticalLayout implements
 	ApplicationView, SessionData.UpdateEventListener, CloseListener, PlatesInfoListener, URIHandler {
 
@@ -55,6 +64,10 @@ public class AttemptBoardView extends VerticalLayout implements
 
 	private LoadImage plates;
 
+	private HorizontalLayout horLayout;
+
+	private boolean ie;
+
     public AttemptBoardView(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
             setParametersFromFragment();
@@ -71,10 +84,6 @@ public class AttemptBoardView extends VerticalLayout implements
         try {
         	app.setPusherDisabled(true);
         	
-            HorizontalLayout horLayout = new HorizontalLayout();
-            horLayout.setSizeFull();
-
-
             if (platformName == null) {
             	// get the default platform name
                 platformName = CompetitionApplicationComponents.initPlatformName();
@@ -88,9 +97,13 @@ public class AttemptBoardView extends VerticalLayout implements
                 app.components.menu.setVisible(false);
             }
             platform = Platform.getByName(platformName);
-            
+	        Lifter currentLifter = masterData.getCurrentLifter();
 
         	this.setSizeFull();
+            horLayout = new HorizontalLayout();
+        	
+            WebApplicationContext context = (WebApplicationContext) app.getContext();
+			ie = context.getBrowser().isIE();
         	
 			announcerInfo = new LifterInfo("display", masterData, mode, horLayout); //$NON-NLS-1$
 			announcerInfo.addStyleName("currentLifterSummary"); //$NON-NLS-1$
@@ -117,25 +130,21 @@ public class AttemptBoardView extends VerticalLayout implements
 			imageArea.addStyleName("zoomMedium");
 			imageArea.setCaption("");
 			
-	        horLayout.addComponent(announcerInfo);
-	        horLayout.addComponent(decisionArea);
-	        horLayout.addComponent(imageArea);
-	        horLayout.setComponentAlignment(announcerInfo, Alignment.MIDDLE_CENTER);
-	        horLayout.setComponentAlignment(decisionArea, Alignment.MIDDLE_CENTER);
-	        horLayout.setComponentAlignment(imageArea, Alignment.MIDDLE_CENTER);
-	        horLayout.setExpandRatio(announcerInfo, 5);
-	        horLayout.setExpandRatio(decisionArea, 60);
-	        horLayout.setExpandRatio(imageArea, 40);
+			horLayout.addComponent(announcerInfo);
+			horLayout.addComponent(decisionArea);
+			horLayout.addComponent(imageArea);
+
 	        horLayout.setMargin(true);
 	        horLayout.setSpacing(true);
 
 	        this.addComponent(horLayout);
 	        this.setComponentAlignment(horLayout, Alignment.MIDDLE_CENTER);
+
 	        
 	        // we are now fully initialized
-	        announcerInfo.loadLifter(masterData.getCurrentLifter(), masterData);
+	        announcerInfo.loadLifter(currentLifter, masterData);
 	        registerAsListener();
-	        doPlatesInfoUpdate();
+	        doDisplay();
 		} finally {
 			app.setPusherDisabled(prevPusherDisabled);
 		}
@@ -148,19 +157,53 @@ public class AttemptBoardView extends VerticalLayout implements
 
     @Override
     public void updateEvent(SessionData.UpdateEvent updateEvent) {
-        doPlatesInfoUpdate();
+        doDisplay();
     }
 
 
 	/**
 	 * @param updateEvent
 	 */
-	private void doPlatesInfoUpdate() {
+	private void doDisplay() {
 		CompetitionApplication app = CompetitionApplication.getCurrent();
 		synchronized (app) {
+            platform = Platform.getByName(platformName);
+	        Lifter currentLifter = masterData.getCurrentLifter();
+			boolean done = currentLifter != null && currentLifter.getAttemptsDone() >= 6;
+			boolean displayLights = platform.getShowDecisionLights() && !done;
             logger.debug("loading {} ", masterData.getCurrentLifter()); //$NON-NLS-1$
             announcerInfo.loadLifter(masterData.getCurrentLifter(), masterData);
-            plates.computeImageArea(masterData, platform);
+            
+			if (displayLights) {
+            	horLayout.setSizeFull();
+            } else {
+            	// looks better centered
+            	horLayout.setSizeUndefined();
+            }
+            
+	        if (ie || !done) {
+	        	horLayout.setComponentAlignment(announcerInfo, Alignment.MIDDLE_CENTER);
+	        	horLayout.setExpandRatio(announcerInfo, 5);
+	        } else {
+	        	horLayout.setComponentAlignment(announcerInfo, Alignment.MIDDLE_LEFT);
+	        	horLayout.setExpandRatio(announcerInfo, 5);
+	        }
+	        
+	        decisionArea.setVisible(false);
+			if ((displayLights && !done)) {
+				decisionArea.setVisible(true);
+		        horLayout.setComponentAlignment(decisionArea, Alignment.MIDDLE_CENTER);
+		        horLayout.setExpandRatio(decisionArea, 60);
+	        }  
+	        
+			imageArea.setVisible(false);
+			if (ie || !done) {
+	            plates.computeImageArea(masterData, platform);
+				imageArea.setVisible(true);
+				horLayout.setComponentAlignment(imageArea, Alignment.MIDDLE_CENTER);
+				horLayout.setExpandRatio(imageArea, 40);
+			}
+
         }
 		app.push();
 	}
@@ -205,7 +248,7 @@ public class AttemptBoardView extends VerticalLayout implements
 
 	@Override
 	public void plateLoadingUpdate(PlatesInfoEvent event) {
-		doPlatesInfoUpdate();
+		doDisplay();
 	}
 
 	

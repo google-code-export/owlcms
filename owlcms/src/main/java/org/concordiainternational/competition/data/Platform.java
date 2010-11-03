@@ -57,9 +57,17 @@ public class Platform implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     String name;
-    Boolean hasDisplay = false; // true if we need to update a display over the
-                                // serial port
-    Boolean defaultPlatform = false; // true if is the default platformName
+    
+    /**
+     * true if the NEC LED display is attached to the platform.
+     */
+    Boolean hasDisplay = false;
+    
+    /**
+     * true if the referee use this application to give decisions, and
+     * decision lights need to be shown on the attempt and result boards.
+     */
+    Boolean showDecisionLights = false;
 
     // collar
     Integer nbC_2_5 = 0;
@@ -144,14 +152,6 @@ public class Platform implements Serializable {
 
     public void setHasDisplay(Boolean hasDisplay) {
         this.hasDisplay = hasDisplay;
-    }
-
-    public Boolean getDefaultPlatform() {
-        return defaultPlatform;
-    }
-
-    public void setDefaultPlatform(Boolean defaultPlatform) {
-        this.defaultPlatform = defaultPlatform;
     }
 
     public static int getSize() {
@@ -321,6 +321,14 @@ public class Platform implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public Boolean getShowDecisionLights() {
+		return showDecisionLights;
+	}
+
+	public void setShowDecisionLights(Boolean showDecisionLights) {
+		this.showDecisionLights = showDecisionLights;
 	}
     
     
