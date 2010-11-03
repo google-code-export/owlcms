@@ -20,4 +20,6 @@
     <inherits name="org.vaadin.notifique.widgetset.NotifiqueWidgetset" />
 
     <inherits name="org.vaadin.overlay.OverlaysWidgetset" />
+
+    <inherits name="org.vaadin.weelayout.WeelayoutWidgetset" />
 </module>

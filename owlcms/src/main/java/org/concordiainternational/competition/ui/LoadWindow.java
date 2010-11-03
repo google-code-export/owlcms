@@ -151,7 +151,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
             boolean gridIsVisible = (grid == null ? false : grid.isVisible());
             removeAllComponents();
             final int expectedBarWeight = computeOfficialBarWeight();
-            this.setSizeUndefined();
+            this.setSizeFull();
 
             VerticalLayout root = new VerDashLayout();
             HorizontalLayout top = new HorDashLayout();

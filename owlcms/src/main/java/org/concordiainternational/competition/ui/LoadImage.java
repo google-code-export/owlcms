@@ -18,13 +18,13 @@ package org.concordiainternational.competition.ui;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.Platform;
+import org.vaadin.weelayout.WeeLayout;
 
-import com.vaadin.incubator.dashlayout.ui.HorDashLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
 
-public class LoadImage extends HorDashLayout {
+public class LoadImage extends WeeLayout {
 
 
 	private static final long serialVersionUID = 8340222363211435843L;
@@ -33,7 +33,7 @@ public class LoadImage extends HorDashLayout {
     private Window parentWindow;
 
     public LoadImage() {
-        super();
+        super(Direction.HORIZONTAL);
         addStyleName("loadChart");
         setMargin(false);
     }
@@ -64,7 +64,8 @@ public class LoadImage extends HorDashLayout {
     private void createImageArea(Platform platform, final Integer barWeight, final String caption) {
         this.removeAllComponents();
         setCaption(caption);
-
+        
+        if (weight == 0) return;
         // compute the bar and collar first.
 
         addPlates(1, "bar", barWeight);
@@ -125,6 +126,7 @@ public class LoadImage extends HorDashLayout {
         int subtractedWeight = 0;
         while (availablePlates > 0 && weight >= plateWeight) {
             Label plate = new Label();
+            plate.setSizeUndefined();
             plate.addStyleName(style);
             if (!style.startsWith("bar")) {
                 plate.addStyleName("plate");
