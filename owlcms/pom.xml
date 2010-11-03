@@ -223,6 +223,11 @@
 			<artifactId>dashlayout</artifactId>
 			<version>0.1.5-beta</version>
 		</dependency>
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>weelayout</artifactId>
+			<version>0.1</version>
+		</dependency>
 		<!-- <dependency> <groupId>org.vaadin.addons</groupId> <artifactId>blackboard</artifactId> 
 			<version>2.0.1</version> </dependency> -->
 		<dependency>
