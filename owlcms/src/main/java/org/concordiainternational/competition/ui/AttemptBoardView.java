@@ -62,31 +62,34 @@ public class AttemptBoardView extends VerticalLayout implements
             this.viewName = viewName;
         }
         
+        CompetitionApplication app = CompetitionApplication.getCurrent();
         this.mode = AnnouncerView.Mode.DISPLAY;
         this.addStyleName("attemptBoardView");
 
-        HorizontalLayout horLayout = new HorizontalLayout();
-        horLayout.setSizeFull();
-
-        CompetitionApplication app = CompetitionApplication.getCurrent();
-        if (platformName == null) {
-        	// get the default platform name
-            platformName = CompetitionApplicationComponents.initPlatformName();
-        } else if (app.getPlatform() == null) {
-        	app.setPlatformByName(platformName);
-        }
-        
-        masterData = app.getMasterData(platformName);
-        if (app != masterData.getMasterApplication()) {
-            // we are not the master application; hide the menu bar.
-            app.components.menu.setVisible(false);
-        }
-        platform = Platform.getByName(platformName);
-        
 
 		boolean prevPusherDisabled = app.getPusherDisabled();
         try {
         	app.setPusherDisabled(true);
+        	
+            HorizontalLayout horLayout = new HorizontalLayout();
+            horLayout.setSizeFull();
+
+
+            if (platformName == null) {
+            	// get the default platform name
+                platformName = CompetitionApplicationComponents.initPlatformName();
+            } else if (app.getPlatform() == null) {
+            	app.setPlatformByName(platformName);
+            }
+            
+            masterData = app.getMasterData(platformName);
+            if (app != masterData.getMasterApplication()) {
+                // we are not the master application; hide the menu bar.
+                app.components.menu.setVisible(false);
+            }
+            platform = Platform.getByName(platformName);
+            
+
         	this.setSizeFull();
         	
 			announcerInfo = new LifterInfo("display", masterData, mode, horLayout); //$NON-NLS-1$
@@ -113,29 +116,29 @@ public class AttemptBoardView extends VerticalLayout implements
 			imageArea.setComponentAlignment(plates, Alignment.MIDDLE_LEFT);
 			imageArea.addStyleName("zoomMedium");
 			imageArea.setCaption("");
+			
+	        horLayout.addComponent(announcerInfo);
+	        horLayout.addComponent(decisionArea);
+	        horLayout.addComponent(imageArea);
+	        horLayout.setComponentAlignment(announcerInfo, Alignment.MIDDLE_CENTER);
+	        horLayout.setComponentAlignment(decisionArea, Alignment.MIDDLE_CENTER);
+	        horLayout.setComponentAlignment(imageArea, Alignment.MIDDLE_CENTER);
+	        horLayout.setExpandRatio(announcerInfo, 5);
+	        horLayout.setExpandRatio(decisionArea, 60);
+	        horLayout.setExpandRatio(imageArea, 40);
+	        horLayout.setMargin(true);
+	        horLayout.setSpacing(true);
+
+	        this.addComponent(horLayout);
+	        this.setComponentAlignment(horLayout, Alignment.MIDDLE_CENTER);
+	        
+	        // we are now fully initialized
+	        announcerInfo.loadLifter(masterData.getCurrentLifter(), masterData);
+	        registerAsListener();
+	        doPlatesInfoUpdate();
 		} finally {
 			app.setPusherDisabled(prevPusherDisabled);
 		}
-
-        horLayout.addComponent(announcerInfo);
-        horLayout.addComponent(decisionArea);
-        horLayout.addComponent(imageArea);
-        horLayout.setComponentAlignment(announcerInfo, Alignment.MIDDLE_CENTER);
-        horLayout.setComponentAlignment(decisionArea, Alignment.MIDDLE_CENTER);
-        horLayout.setComponentAlignment(imageArea, Alignment.MIDDLE_CENTER);
-        horLayout.setExpandRatio(announcerInfo, 5);
-        horLayout.setExpandRatio(decisionArea, 60);
-        horLayout.setExpandRatio(imageArea, 40);
-        horLayout.setMargin(true);
-        horLayout.setSpacing(true);
-
-        this.addComponent(horLayout);
-        this.setComponentAlignment(horLayout, Alignment.MIDDLE_CENTER);
-        
-        // we are now fully initialized
-        announcerInfo.loadLifter(masterData.getCurrentLifter(), masterData);
-        registerAsListener();
-        doPlatesInfoUpdate();
     }
 
 
