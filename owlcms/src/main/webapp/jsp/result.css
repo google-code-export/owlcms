@@ -62,7 +62,7 @@ td.fail {
 	color: black;
 	font-size: large;
 	font-weight: 700;
-	background-color: #FF7B7C; /* desaturated red */
+	background-color: #FFAD99; /* #FF7B7C;  desaturated red */
 	text-align: center;
 	width: 7%;
 }
@@ -70,7 +70,7 @@ td.fail {
 td.success {
 	font-weight: 700;
 	font-size: large;
-	background-color: #A5FF7F; /* desaturated lime */
+	background-color: #EBFFAD; /* #A5FF7F;  desaturated lime */
 	color: black;
 	text-align: center;
 	width: 7%;
@@ -82,7 +82,7 @@ td.success {
 }
 
 .current {
-	background-color: #7FFFFF; /* desaturated aqua */
+	background-color: #FFFF66;/* yellow - was #7FFFFF;  desaturated aqua */
 	/* text-decoration: blink; */
 	font-size: large;
 	font-weight: bolder; 
@@ -90,7 +90,7 @@ td.success {
 
 
 .currentWeight {
-	background-color: #7FFFFF; /* desaturated aqua */
+	background-color: #FFFF66;/* yellow - was #7FFFFF;  desaturated aqua */
 	/* text-decoration: blink; */
 	font-size: medium;
 	color: navy;
