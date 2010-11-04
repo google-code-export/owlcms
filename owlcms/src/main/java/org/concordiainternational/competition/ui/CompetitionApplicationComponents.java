@@ -28,7 +28,7 @@ import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.spreadsheet.SpreadsheetUploader;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.ui.components.ApplicationView;
-import org.concordiainternational.competition.ui.components.BrowserPanel;
+import org.concordiainternational.competition.ui.components.EmbeddedPage;
 import org.concordiainternational.competition.ui.components.Menu;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -310,12 +310,12 @@ public class CompetitionApplicationComponents {
      * Lazy builder for main result board.
      */
     private class ResultBoardComponent implements CompetitionApplicationComponent {
-        private BrowserPanel resultBoard = null;
+        private EmbeddedPage resultBoard = null;
         
         @Override
-		public BrowserPanel get(boolean initFromFragment, String viewName) {
+		public EmbeddedPage get(boolean initFromFragment, String viewName) {
             try {
-                resultBoard = (new BrowserPanel(initFromFragment, viewName,"jsp/resultBoard.jsp?platformName=")); //$NON-NLS-1$
+                resultBoard = (new EmbeddedPage(initFromFragment, viewName,"jsp/resultBoard.jsp?platformName=")); //$NON-NLS-1$
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
@@ -327,12 +327,12 @@ public class CompetitionApplicationComponents {
      * Lazy builder for main result board.
      */
     private class SimpleResultBoardComponent implements CompetitionApplicationComponent {
-        private BrowserPanel resultBoard = null;
+        private EmbeddedPage resultBoard = null;
 
         @Override
-		public BrowserPanel get(boolean initFromFragment, String viewName) {
+		public EmbeddedPage get(boolean initFromFragment, String viewName) {
             try {
-                resultBoard = (new BrowserPanel(initFromFragment, viewName,"jsp/simpleResultBoard.jsp?platformName=")); //$NON-NLS-1$
+                resultBoard = (new EmbeddedPage(initFromFragment, viewName,"jsp/simpleResultBoard.jsp?platformName=")); //$NON-NLS-1$
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
@@ -344,12 +344,12 @@ public class CompetitionApplicationComponents {
      * Lazy builder for lift order board.
      */
     private class LifterBoardComponent implements CompetitionApplicationComponent {
-        private BrowserPanel liftOrderBoard = null;
+        private EmbeddedPage liftOrderBoard = null;
 
         @Override
-		public BrowserPanel get(boolean initFromFragment, String viewName) {
+		public EmbeddedPage get(boolean initFromFragment, String viewName) {
             try {
-                liftOrderBoard = (new BrowserPanel(initFromFragment, viewName,"jsp/warmupRoom.jsp?platformName=")); //$NON-NLS-1$
+                liftOrderBoard = (new EmbeddedPage(initFromFragment, viewName,"jsp/warmupRoom.jsp?platformName=")); //$NON-NLS-1$
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
@@ -361,12 +361,12 @@ public class CompetitionApplicationComponents {
      * Lazy builder for lift order board.
      */
     private class SummaryLiftOrderViewComponent implements CompetitionApplicationComponent {
-        private BrowserPanel summaryLifterView = null;
+        private EmbeddedPage summaryLifterView = null;
 
         @Override
-		public BrowserPanel get(boolean initFromFragment, String viewName) {
+		public EmbeddedPage get(boolean initFromFragment, String viewName) {
             try {
-                summaryLifterView = (new BrowserPanel(initFromFragment, viewName, "jsp/liftingOrder.jsp?platformName=")); //$NON-NLS-1$
+                summaryLifterView = (new EmbeddedPage(initFromFragment, viewName, "jsp/liftingOrder.jsp?platformName=")); //$NON-NLS-1$
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
@@ -378,7 +378,7 @@ public class CompetitionApplicationComponents {
      * Lazy builder for current lifter information
      */
     private class AttemptBoardComponent implements CompetitionApplicationComponent {
-        // private BrowserPanel currentLifterPanel = null;
+        // private EmbeddedPage currentLifterPanel = null;
 
         @Override
 		public AttemptBoardView get(boolean initFromFragment, String viewName) {
