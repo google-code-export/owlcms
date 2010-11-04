@@ -64,7 +64,7 @@ import com.vaadin.ui.Window.CloseListener;
  *
  */
 //TODO: make this class listen to decision events so it waits for a decision event to display the name
-public class EmbeddedPage extends VerticalLayout implements 
+public class ResultFrame extends VerticalLayout implements 
 		ApplicationView, 
 		CountdownTimerListener,
 		MessageDisplayListener,
@@ -73,7 +73,7 @@ public class EmbeddedPage extends VerticalLayout implements
 		{ 
 	
     private static final String ATTEMPT_WIDTH = "6em";
-	public final static Logger logger = LoggerFactory.getLogger(EmbeddedPage.class);
+	public final static Logger logger = LoggerFactory.getLogger(ResultFrame.class);
     private static final long serialVersionUID = 1437157542240297372L;
     private Embedded iframe;
     public String urlString;
@@ -89,7 +89,7 @@ public class EmbeddedPage extends VerticalLayout implements
 	private UpdateEventListener updateListener;
 	private DecisionLightsWindow decisionLights;
 
-    public EmbeddedPage(boolean initFromFragment, String viewName, String urlString) throws MalformedURLException {
+    public ResultFrame(boolean initFromFragment, String viewName, String urlString) throws MalformedURLException {
 
         if (initFromFragment) {
             setParametersFromFragment();
@@ -159,7 +159,7 @@ public class EmbeddedPage extends VerticalLayout implements
 
                 @Override
                 public void updateEvent(UpdateEvent updateEvent) {
-                	logger.debug("request to display {}",EmbeddedPage.this);
+                	logger.debug("request to display {}",ResultFrame.this);
                     display(platformName1, masterData1);
                 }
 
@@ -262,7 +262,7 @@ public class EmbeddedPage extends VerticalLayout implements
      * @return message used when Announcer has not selected a group
      */
     private String getWaitingMessage() {
-        String message = Messages.getString("EmbeddedPage.Waiting", CompetitionApplication.getCurrentLocale());
+        String message = Messages.getString("ResultFrame.Waiting", CompetitionApplication.getCurrentLocale());
         List<Competition> competitions = Competition.getAll();
         if (competitions.size() > 0) {
             message = competitions.get(0).getCompetitionName();
@@ -350,7 +350,7 @@ public class EmbeddedPage extends VerticalLayout implements
         // display current attempt number
         if (!done) {  
             //appendDiv(sb, lifter.getNextAttemptRequestedWeight()+Messages.getString("Common.kg",locale)); //$NON-NLS-1$
-            String tryInfo = MessageFormat.format(Messages.getString("EmbeddedPage.tryNumber", locale), //$NON-NLS-1$
+            String tryInfo = MessageFormat.format(Messages.getString("ResultFrame.tryNumber", locale), //$NON-NLS-1$
                 currentTry, (lifter.getAttemptsDone() >= 3 ? Messages.getString("Common.shortCleanJerk", locale) //$NON-NLS-1$
                         : Messages.getString("Common.shortSnatch", locale))); //$NON-NLS-1$
             attempt.setValue(tryInfo);
