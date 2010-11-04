@@ -23,10 +23,13 @@ import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.RuleViolationException;
+import org.concordiainternational.competition.decision.DecisionController;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent;
 import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener;
@@ -35,10 +38,10 @@ import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
-import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
+import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
 import org.concordiainternational.competition.ui.UserActions;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
@@ -53,10 +56,24 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 
-public class BrowserPanel extends VerticalLayout implements ApplicationView, CountdownTimerListener, MessageDisplayListener, Window.CloseListener, URIHandler { 
-    private static final String ATTEMPT_WIDTH = "12em";
-	public final static Logger logger = LoggerFactory.getLogger(BrowserPanel.class);
+/**
+ * Show an WebPage underneath a banner.
+ * @author jflamy
+ *
+ */
+//TODO: make this class listen to decision events so it waits for a decision event to display the name
+public class EmbeddedPage extends VerticalLayout implements 
+		ApplicationView, 
+		CountdownTimerListener,
+		MessageDisplayListener,
+		Window.CloseListener, 
+		URIHandler
+		{ 
+	
+    private static final String ATTEMPT_WIDTH = "6em";
+	public final static Logger logger = LoggerFactory.getLogger(EmbeddedPage.class);
     private static final long serialVersionUID = 1437157542240297372L;
     private Embedded iframe;
     public String urlString;
@@ -70,8 +87,9 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
     private Label weight = new Label();
     private String appUrlString;
 	private UpdateEventListener updateListener;
+	private DecisionLightsWindow decisionLights;
 
-    public BrowserPanel(boolean initFromFragment, String viewName, String urlString) throws MalformedURLException {
+    public EmbeddedPage(boolean initFromFragment, String viewName, String urlString) throws MalformedURLException {
 
         if (initFromFragment) {
             setParametersFromFragment();
@@ -81,36 +99,39 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
         
         this.app = CompetitionApplication.getCurrent();
         
-        if (platformName == null) {
-        	// get the default platform name
-            platformName = CompetitionApplicationComponents.initPlatformName();
-        } else if (app.getPlatform() == null) {
-        	app.setPlatformByName(platformName);
-        }
-        
-        this.urlString = urlString;
-        getAppUrlString();
+        boolean prevDisabledPush = app.getPusherDisabled();
+        try {
+        	app.setPusherDisabled(true);
+			if (platformName == null) {
+				// get the default platform name
+			    platformName = CompetitionApplicationComponents.initPlatformName();
+			} else if (app.getPlatform() == null) {
+				app.setPlatformByName(platformName);
+			}
+			
+			this.urlString = urlString;
+			getAppUrlString();
 
-        create(app);
-        masterData = app.getMasterData(platformName);
-        app.getMainWindow().addURIHandler(this);
-        
-        registerHandlers(viewName);
-        
-        // we cannot call push() at this point
-        synchronized (app) {
-            boolean prevDisabled = app.getPusherDisabled();
-            try {
-                app.setPusherDisabled(true);
-            	display(platformName, masterData);
-            } finally {
-                app.setPusherDisabled(prevDisabled);
-            }
-            logger.debug("browser panel: push disabled = {}",app.getPusherDisabled());
-        }
-	
-
-        app.getMainWindow().addListener(this);
+			create(app);
+			masterData = app.getMasterData(platformName);
+			app.getMainWindow().addURIHandler(this);
+			
+			// we cannot call push() at this point
+			synchronized (app) {
+			    boolean prevDisabled = app.getPusherDisabled();
+			    try {
+			        app.setPusherDisabled(true);
+			        decisionLights = new DecisionLightsWindow(false, true);
+			    	display(platformName, masterData);
+			    } finally {
+			        app.setPusherDisabled(prevDisabled);
+			    }
+			    logger.debug("browser panel: push disabled = {}",app.getPusherDisabled());
+			}
+			registerHandlers(viewName);
+		} finally {
+			app.setPusherDisabled(prevDisabledPush);
+		}
     }
 
 
@@ -138,7 +159,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
 
                 @Override
                 public void updateEvent(UpdateEvent updateEvent) {
-                	logger.debug("request to display {}",BrowserPanel.this);
+                	logger.debug("request to display {}",EmbeddedPage.this);
                     display(platformName1, masterData1);
                 }
 
@@ -241,7 +262,7 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
      * @return message used when Announcer has not selected a group
      */
     private String getWaitingMessage() {
-        String message = Messages.getString("BrowserPanel.Waiting", CompetitionApplication.getCurrentLocale());
+        String message = Messages.getString("EmbeddedPage.Waiting", CompetitionApplication.getCurrentLocale());
         List<Competition> competitions = Competition.getAll();
         if (competitions.size() > 0) {
             message = competitions.get(0).getCompetitionName();
@@ -260,32 +281,63 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
                 .getSnatchAttemptsDone());
         boolean done = currentTry > 3;
 
-        displayName(lifter, done);
-        displayAttemptNumber(lifter, locale, currentTry, done);
-        displayRequestedWeight(lifter, locale, done);
+        synchronized (app) {
+			displayName(lifter, locale, done);
+			displayDecision(done);
+			displayAttemptNumber(lifter, locale, currentTry, done);
+			displayRequestedWeight(lifter, locale, done);
+		}
+		app.push();
         return done;
     }
 
-    /**
+
+
+	/**
      * @param lifter
      * @param alwaysShowName
      * @param sb
      * @param done
      */
-    private void displayName(Lifter lifter, boolean done) {
+    private void displayName(Lifter lifter, final Locale locale, boolean done) {
         // display lifter name and affiliation
         if (!done) {
             final String lastName = lifter.getLastName();
             final String firstName = lifter.getFirstName();
             final String club = lifter.getClub();
             name.setValue(lastName.toUpperCase() + " " + firstName + " &nbsp;&nbsp; " + club); //$NON-NLS-1$ //$NON-NLS-2$
-
+            top.addComponent(name, "name"); //$NON-NLS-1$
         } else {
-            name.setValue(""); //$NON-NLS-1$
-
+        	// we're done, write a "finished" message and return.
+        	// we need to wait for the decision to be shown
+        	logger.warn("writing DONE after a delay");
+        	new Timer().schedule(new TimerTask() {
+				
+				@Override
+				public void run() {
+					logger.warn("doing it!");
+					synchronized (app) {
+						name.setValue(MessageFormat.format(
+								Messages.getString("LifterInfo.Done", locale), masterData.getCurrentSession().getName())); //$NON-NLS-1$
+						top.addComponent(name, "name"); //$NON-NLS-1$
+					}
+					app.push();
+				}
+			}, (long)3500);
         }
-        top.addComponent(name, "name"); //$NON-NLS-1$
+       
     }
+    
+    private void displayDecision(boolean done) {
+    	if (!done && decisionLights != null) {
+    		decisionLights.setSizeFull();
+    		decisionLights.setHeight("2ex");
+    		decisionLights.setMargin(false);
+    		top.addComponent(decisionLights, "decisionLights"); //$NON-NLS-1$
+    	} else {
+    		top.addComponent(new Label(),"decisionLights");
+    	}
+	}
 
     /**
      * @param lifter
@@ -296,15 +348,14 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
      */
     private void displayAttemptNumber(Lifter lifter, final Locale locale, final int currentTry, boolean done) {
         // display current attempt number
-        if (done) {
-            // we're done, write a "finished" message and return.
-            attempt.setValue(Messages.getString("LifterInfo.Done", locale)); //$NON-NLS-1$
-        } else {
+        if (!done) {  
             //appendDiv(sb, lifter.getNextAttemptRequestedWeight()+Messages.getString("Common.kg",locale)); //$NON-NLS-1$
-            String tryInfo = MessageFormat.format(Messages.getString("LifterInfo.tryNumber", locale), //$NON-NLS-1$
+            String tryInfo = MessageFormat.format(Messages.getString("EmbeddedPage.tryNumber", locale), //$NON-NLS-1$
                 currentTry, (lifter.getAttemptsDone() >= 3 ? Messages.getString("Common.shortCleanJerk", locale) //$NON-NLS-1$
                         : Messages.getString("Common.shortSnatch", locale))); //$NON-NLS-1$
             attempt.setValue(tryInfo);
+        } else {
+        	attempt.setValue("");
         }
         attempt.setWidth(ATTEMPT_WIDTH);
         top.addComponent(attempt, "attempt"); //$NON-NLS-1$
@@ -506,6 +557,15 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
         	logger.warn("listening to public address events.");
         	masterData.addBlackBoardListener(this);
         }
+        
+        // listen to decisions
+        DecisionController decisionController = masterData.getDecisionController();
+        if (decisionController != null) {
+    		decisionController.addListener(decisionLights);
+        }
+
+        // listen to close events
+        app.getMainWindow().addListener((CloseListener)this);
 	}
 	
 	/**
@@ -524,6 +584,15 @@ public class BrowserPanel extends VerticalLayout implements ApplicationView, Cou
         	masterData.removeBlackBoardListener(this);
         	logger.warn("stopped listening to PublicAddress TimerEvents");
         }
+        
+        // stop listening to decisions
+        DecisionController decisionController = masterData.getDecisionController();
+        if (decisionController != null) {
+        	decisionController.removeListener(decisionLights);
+        }
+        
+        // stop listening to close events
+        app.getMainWindow().removeListener((CloseListener)this);
 	}
 	
 
