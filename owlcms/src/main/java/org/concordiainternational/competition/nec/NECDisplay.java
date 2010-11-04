@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.text.MessageFormat;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.i18n.Messages;
@@ -91,8 +92,9 @@ public class NECDisplay implements Serializable {
                 String firstName = fixAccents(curLifter.getFirstName());
                 if (firstName.length() > 16) firstName = firstName.substring(0, 16);
                 final String weight = curLifter.getNextAttemptRequestedWeight() + "kg"; //$NON-NLS-1$
-                final String curTry = Messages.getString(
-                    "NECDisplay.Attempt", CompetitionApplication.getCurrentLocale()) + ((curLifter.getAttemptsDone() % 3) + 1); //$NON-NLS-1$
+                final String curTry = MessageFormat.format(
+                		Messages.getString("NECDisplay.Attempt", CompetitionApplication.getCurrentLocale()),
+                		((curLifter.getAttemptsDone() % 3) + 1)); //$NON-NLS-1$
                 final String curClub = curLifter.getClub().toUpperCase();
                 String padding = "                     "; //$NON-NLS-1$
 
