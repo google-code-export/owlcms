@@ -52,6 +52,7 @@ import org.concordiainternational.competition.utils.IdentitySet;
 import org.concordiainternational.competition.utils.LoggerUtils;
 import org.concordiainternational.competition.utils.NotificationManager;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
+import org.hibernate.Session;
 import org.hibernate.StaleObjectStateException;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
@@ -991,6 +992,9 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             if (currentLifter2 != null) currentLifter2.failedLift();
         }
 
+        // record the decision.
+        Session session = app.getHbnSession();
+        session.merge(currentLifter2);
     }
 
     public void setAnnouncerEnabled(boolean b) {

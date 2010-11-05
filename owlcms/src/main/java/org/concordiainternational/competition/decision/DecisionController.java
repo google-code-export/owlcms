@@ -120,6 +120,10 @@ public class DecisionController implements CountdownTimerListener {
             }
         }
         if (decisionsMade == 3) {
+        	// save the decision
+            groupData.majorityDecision(refereeDecisions);
+            
+            // broadcast the decision
             if (allDecisionsMadeTime == 0L) {
 
                 // all 3 referees have just made a choice; schedule the display
@@ -147,7 +151,6 @@ public class DecisionController implements CountdownTimerListener {
             public void run() {
                 fireEvent(new DecisionEvent(DecisionController.this, DecisionEvent.Type.SHOW, currentTimeMillis,
                         refereeDecisions));
-                groupData.majorityDecision(refereeDecisions);
             }
         }, DECISION_REVERSAL_DELAY);
     }
