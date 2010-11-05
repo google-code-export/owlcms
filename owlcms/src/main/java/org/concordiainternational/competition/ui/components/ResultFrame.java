@@ -23,13 +23,13 @@ import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.DecisionController;
+import org.concordiainternational.competition.decision.DecisionController.DecisionEventListener;
+import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent;
 import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener;
@@ -63,13 +63,14 @@ import com.vaadin.ui.Window.CloseListener;
  * @author jflamy
  *
  */
-//TODO: make this class listen to decision events so it waits for a decision event to display the name
+
 public class ResultFrame extends VerticalLayout implements 
 		ApplicationView, 
 		CountdownTimerListener,
 		MessageDisplayListener,
 		Window.CloseListener, 
-		URIHandler
+		URIHandler,
+		DecisionEventListener
 		{ 
 	
     private static final String ATTEMPT_WIDTH = "6em";
@@ -88,6 +89,7 @@ public class ResultFrame extends VerticalLayout implements
     private String appUrlString;
 	private UpdateEventListener updateListener;
 	private DecisionLightsWindow decisionLights;
+	protected boolean waitingForDecisionLightsReset;
 
     public ResultFrame(boolean initFromFragment, String viewName, String urlString) throws MalformedURLException {
 
@@ -159,8 +161,10 @@ public class ResultFrame extends VerticalLayout implements
 
                 @Override
                 public void updateEvent(UpdateEvent updateEvent) {
-                	logger.debug("request to display {}",ResultFrame.this);
-                    display(platformName1, masterData1);
+                	logger.warn("request to display {}",ResultFrame.this);
+                	if (!waitingForDecisionLightsReset) {
+	                    display(platformName1, masterData1);
+                	}
                 }
 
             };
@@ -300,43 +304,28 @@ public class ResultFrame extends VerticalLayout implements
      * @param done
      */
     private void displayName(Lifter lifter, final Locale locale, boolean done) {
-        // display lifter name and affiliation
-        if (!done) {
-            final String lastName = lifter.getLastName();
-            final String firstName = lifter.getFirstName();
-            final String club = lifter.getClub();
-            name.setValue(lastName.toUpperCase() + " " + firstName + " &nbsp;&nbsp; " + club); //$NON-NLS-1$ //$NON-NLS-2$
-            top.addComponent(name, "name"); //$NON-NLS-1$
-        } else {
-        	// we're done, write a "finished" message and return.
-        	// we need to wait for the decision to be shown
-        	logger.warn("writing DONE after a delay");
-        	new Timer().schedule(new TimerTask() {
-				
-				@Override
-				public void run() {
-					logger.warn("doing it!");
-					synchronized (app) {
-						name.setValue(MessageFormat.format(
-								Messages.getString("LifterInfo.Done", locale), masterData.getCurrentSession().getName())); //$NON-NLS-1$
-						top.addComponent(name, "name"); //$NON-NLS-1$
-					}
-					app.push();
-				}
-			}, (long)3500);
-        }
-       
+    	// display lifter name and affiliation
+    	if (!done) {
+    		final String lastName = lifter.getLastName();
+    		final String firstName = lifter.getFirstName();
+    		final String club = lifter.getClub();
+    		name.setValue(lastName.toUpperCase() + " " + firstName + " &nbsp;&nbsp; " + club); //$NON-NLS-1$ //$NON-NLS-2$
+    		top.addComponent(name, "name"); //$NON-NLS-1$
+    	} else {
+
+    		name.setValue(MessageFormat.format(
+    				Messages.getString("LifterInfo.Done", locale), masterData.getCurrentSession().getName())); //$NON-NLS-1$
+    		top.addComponent(name, "name"); //$NON-NLS-1$
+    	}
+
     }
     
     private void displayDecision(boolean done) {
-    	if (!done && decisionLights != null) {
     		decisionLights.setSizeFull();
     		decisionLights.setHeight("2ex");
     		decisionLights.setMargin(false);
     		top.addComponent(decisionLights, "decisionLights"); //$NON-NLS-1$
-    	} else {
-    		top.addComponent(new Label(),"decisionLights");
-    	}
+    		decisionLights.setVisible(false);
 	}
 
     /**
@@ -562,6 +551,7 @@ public class ResultFrame extends VerticalLayout implements
         DecisionController decisionController = masterData.getDecisionController();
         if (decisionController != null) {
     		decisionController.addListener(decisionLights);
+    		decisionController.addListener(this);
         }
 
         // listen to close events
@@ -589,6 +579,7 @@ public class ResultFrame extends VerticalLayout implements
         DecisionController decisionController = masterData.getDecisionController();
         if (decisionController != null) {
         	decisionController.removeListener(decisionLights);
+        	decisionController.removeListener(this);
         }
         
         // stop listening to close events
@@ -609,6 +600,41 @@ public class ResultFrame extends VerticalLayout implements
 		logger.warn("re-registering handlers for {} {}",this,relativeUri);
 		registerHandlers(viewName);
 		return null;
+	}
+
+
+	@Override
+	public void updateEvent(DecisionEvent updateEvent) {
+		synchronized (app) {
+			switch (updateEvent.getType()) {
+			case DOWN:
+				waitingForDecisionLightsReset = true;
+				decisionLights.setVisible(false);
+				break;
+			case SHOW:
+				// if window is not up, show it.
+				waitingForDecisionLightsReset = true;
+				decisionLights.setVisible(true);
+				break;
+			case RESET:
+				// we are done
+				waitingForDecisionLightsReset = false;
+				decisionLights.setVisible(false);
+				display(platformName, masterData);
+				break;
+			case WAITING:
+				waitingForDecisionLightsReset = true;
+				decisionLights.setVisible(false);
+				break;
+			case UPDATE:
+				// change is made during 3 seconds where refs
+				// can change their mind privately.
+				waitingForDecisionLightsReset = true;
+				decisionLights.setVisible(false);
+				break;
+			}
+		}
+		app.push();
 	}
 
 	
