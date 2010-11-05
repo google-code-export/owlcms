@@ -1,6 +1,9 @@
 #summary Release Notes
 
 == Release 1.9.0 ==
+  * Release candidate for referee decision handling.
+  * Result board shows decisions
+  * Attempt board waits for decision display to reset prior to switching to next lifter.
   * Consoles are notified when someone else stops time (e.g. marshall console receiving weight change for current lifter whose time has started).
 
 == Release 1.8.7 ==
