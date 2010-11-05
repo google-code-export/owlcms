@@ -20,6 +20,8 @@ import java.net.URL;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.Platform;
+import org.concordiainternational.competition.decision.DecisionController.DecisionEventListener;
+import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.ui.PlatesInfoEvent.PlatesInfoListener;
 import org.concordiainternational.competition.ui.components.ApplicationView;
@@ -43,8 +45,14 @@ import com.vaadin.ui.Window.CloseListener;
  * @author jflamy
  *
  */
+
 public class AttemptBoardView extends VerticalLayout implements
-	ApplicationView, SessionData.UpdateEventListener, CloseListener, PlatesInfoListener, URIHandler {
+	ApplicationView,
+	SessionData.UpdateEventListener,
+	CloseListener,
+	PlatesInfoListener,
+	DecisionEventListener,
+	URIHandler {
 
     Logger logger = LoggerFactory.getLogger(AttemptBoardView.class);
 
@@ -68,6 +76,10 @@ public class AttemptBoardView extends VerticalLayout implements
 
 	private boolean ie;
 
+	private CompetitionApplication app;
+
+	private boolean decisionDisplayInProgress;
+
     public AttemptBoardView(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
             setParametersFromFragment();
@@ -75,7 +87,7 @@ public class AttemptBoardView extends VerticalLayout implements
             this.viewName = viewName;
         }
         
-        CompetitionApplication app = CompetitionApplication.getCurrent();
+        app = CompetitionApplication.getCurrent();
         this.mode = AnnouncerView.Mode.DISPLAY;
         this.addStyleName("attemptBoardView");
 
@@ -109,7 +121,7 @@ public class AttemptBoardView extends VerticalLayout implements
 			announcerInfo.addStyleName("currentLifterSummary"); //$NON-NLS-1$
 			announcerInfo.setSizeFull(); //$NON-NLS-1$
 			announcerInfo.setHeight("30em");
-			announcerInfo.setWidth("30em");
+			announcerInfo.setWidth("32em");
 			announcerInfo.setMargin(false);
 			announcerInfo.setSpacing(false);
 			announcerInfo.addStyleName("zoomLarge");
@@ -118,6 +130,7 @@ public class AttemptBoardView extends VerticalLayout implements
 			decisionArea = new DecisionLightsWindow(false, true);
 			decisionArea.setSizeFull(); //$NON-NLS-1$
 			decisionArea.setHeight("35em");
+			decisionArea.setVisible(false);
 			//decisionArea.addStyleName("zoomMedium");
 			
 			imageArea = new VerticalLayout();
@@ -157,7 +170,9 @@ public class AttemptBoardView extends VerticalLayout implements
 
     @Override
     public void updateEvent(SessionData.UpdateEvent updateEvent) {
-        doDisplay();
+    	if (!decisionDisplayInProgress) {
+	        doDisplay();
+    	}
     }
 
 
@@ -165,7 +180,6 @@ public class AttemptBoardView extends VerticalLayout implements
 	 * @param updateEvent
 	 */
 	private void doDisplay() {
-		CompetitionApplication app = CompetitionApplication.getCurrent();
 		synchronized (app) {
             platform = Platform.getByName(platformName);
 	        Lifter currentLifter = masterData.getCurrentLifter();
@@ -190,11 +204,8 @@ public class AttemptBoardView extends VerticalLayout implements
 	        }
 	        
 	        decisionArea.setVisible(false);
-			if ((displayLights && !done)) {
-				decisionArea.setVisible(true);
-		        horLayout.setComponentAlignment(decisionArea, Alignment.MIDDLE_CENTER);
-		        horLayout.setExpandRatio(decisionArea, 60);
-	        }  
+	        horLayout.setComponentAlignment(decisionArea, Alignment.MIDDLE_CENTER);
+	        horLayout.setExpandRatio(decisionArea, 60);
 	        
 			imageArea.setVisible(false);
 			if (ie || !done) {
@@ -262,12 +273,14 @@ public class AttemptBoardView extends VerticalLayout implements
 
 	private void registerAsListener() {
         masterData.addListener(this);
+        masterData.getDecisionController().addListener(this);
         masterData.getDecisionController().addListener(decisionArea);
         masterData.addBlackBoardListener(this);
 	}
 	
 	private void unregisterAsListener() {
 		masterData.removeListener(this);
+		masterData.getDecisionController().removeListener(this);
 		masterData.getDecisionController().removeListener(decisionArea);
 		masterData.removeBlackBoardListener(this);
 	}
@@ -278,6 +291,46 @@ public class AttemptBoardView extends VerticalLayout implements
 		logger.warn("re-registering handlers for {} {}",this,relativeUri);
 		registerAsListener();
 		return null;
+	}
+
+
+	/**
+	 * Process a decision regarding the current lifter.
+	 * Make sure that the name of the lifter does not change until after the decision has been shown.
+	 * @see org.concordiainternational.competition.decision.DecisionController.DecisionEventListener#updateEvent(org.concordiainternational.competition.decision.DecisionEvent)
+	 */
+	@Override
+	public void updateEvent(DecisionEvent updateEvent) {
+		synchronized (app) {
+			switch (updateEvent.getType()) {
+			case DOWN:
+				decisionDisplayInProgress = true;
+				decisionArea.setVisible(false);
+				break;
+			case SHOW:
+				// if window is not up, show it.
+				decisionDisplayInProgress = true;
+				decisionArea.setVisible(true);
+				break;
+			case RESET:
+				// we are done
+				decisionDisplayInProgress = false;
+				decisionArea.setVisible(false);
+				doDisplay();
+				break;
+			case WAITING:
+				decisionDisplayInProgress = true;
+				decisionArea.setVisible(false);
+				break;
+			case UPDATE:
+				// change is made during 3 seconds where refs
+				// can change their mind privately.
+				decisionDisplayInProgress = true;
+				decisionArea.setVisible(false);
+				break;
+			}
+		}
+		app.push();
 	}
 
 }

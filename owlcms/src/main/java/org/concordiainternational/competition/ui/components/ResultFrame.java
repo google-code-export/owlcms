@@ -603,6 +603,11 @@ public class ResultFrame extends VerticalLayout implements
 	}
 
 
+	/**
+	 * Process a decision regarding the current lifter.
+	 * Make sure that the name of the lifter does not change until after the decision has been shown.
+	 * @see org.concordiainternational.competition.decision.DecisionController.DecisionEventListener#updateEvent(org.concordiainternational.competition.decision.DecisionEvent)
+	 */
 	@Override
 	public void updateEvent(DecisionEvent updateEvent) {
 		synchronized (app) {
