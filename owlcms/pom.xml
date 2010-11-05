@@ -5,15 +5,14 @@
 	<groupId>org.concordiainternational</groupId>
 	<artifactId>owlcms</artifactId>
 	<packaging>war</packaging>
-	<version>1.9.0</version>
+	<version>1.9.1</version>
 	<name>Olympic Weightlifting Competition Management System</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
-	<description>Vaadin Web Application for managing an Olympic
-		Weightlifting Competition.</description>
+	<description>Web Application for managing an Olympic Weightlifting Competition.</description>
 	<url>http://owlcms.googlecode.com</url>
 
 	<build>
