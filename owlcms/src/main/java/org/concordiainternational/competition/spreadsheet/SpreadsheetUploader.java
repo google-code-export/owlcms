@@ -47,7 +47,7 @@ import com.vaadin.ui.Upload;
  * 
  */
 public class SpreadsheetUploader extends CustomComponent implements Upload.SucceededListener, Upload.FailedListener,
-        com.vaadin.terminal.Receiver, ApplicationView {
+        Upload.Receiver, ApplicationView {
     private static final long serialVersionUID = 6843262937708809785L;
     final private static Logger logger = LoggerFactory.getLogger(SpreadsheetUploader.class);
 
