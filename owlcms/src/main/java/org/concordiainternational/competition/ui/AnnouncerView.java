@@ -475,6 +475,7 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
     	// Display as overlay in top of the main window
     	Window mainWindow = CompetitionApplication.getCurrent().getMainWindow();
 		CustomOverlay ol = new CustomOverlay(notifications, mainWindow);
+		ol.addStyleName("timeStoppedNotifications");
 		mainWindow.addComponent(ol);
     	
     	//notifications.add((Resource)null,"1!",true,Notifique.Styles.VAADIN_ORANGE,true);
