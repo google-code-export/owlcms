@@ -28,8 +28,8 @@ import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.spreadsheet.SpreadsheetUploader;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.ui.components.ApplicationView;
-import org.concordiainternational.competition.ui.components.ResultFrame;
 import org.concordiainternational.competition.ui.components.Menu;
+import org.concordiainternational.competition.ui.components.ResultFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
