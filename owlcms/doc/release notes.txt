@@ -1,5 +1,10 @@
 #summary Release Notes
 
+== Release 1.9.1 ==
+  * Spurious need for refresh on spreadsheets worked around (new behavior with dev versions of Chrome and Vaadin)
+  * CSS interference between plates popup and notification popup fixed.
+  * Language of user being notified used in notification popup instead of language of notifier.
+
 == Release 1.9.0 ==
   * Release candidate for referee decision handling.
   * Result board shows decisions
