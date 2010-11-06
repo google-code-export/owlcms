@@ -25,10 +25,10 @@ import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.utils.ItemAdapter;
 
 import com.vaadin.data.hbnutil.HbnContainer;
-import com.vaadin.ui.Select;
+import com.vaadin.ui.ListSelect;
 
 @SuppressWarnings("unchecked")
-public class PlatformSelect extends Select implements Serializable {
+public class PlatformSelect extends ListSelect implements Serializable {
 
     private static final long serialVersionUID = -5471881649385421098L;
     HbnContainer<Platform> dataSource;
@@ -40,14 +40,14 @@ public class PlatformSelect extends Select implements Serializable {
      * @return
      */
     public PlatformSelect() {
-        final Select PlatformSelect = this;
+        final PlatformSelect platformSelect = this;
         app = CompetitionApplication.getCurrent();
         dataSource = new HbnContainer<Platform>(Platform.class, app);
-        PlatformSelect.setContainerDataSource(dataSource);
-        PlatformSelect.setItemCaptionPropertyId("name"); //$NON-NLS-1$
-        PlatformSelect.setImmediate(true);
-        PlatformSelect.setNullSelectionAllowed(true);
-        PlatformSelect.setNullSelectionItemId(null);
+        platformSelect.setContainerDataSource(dataSource);
+        platformSelect.setItemCaptionPropertyId("name"); //$NON-NLS-1$
+        platformSelect.setImmediate(true);
+        platformSelect.setNullSelectionAllowed(true);
+        platformSelect.setNullSelectionItemId(null);
     }
 
 	@Override

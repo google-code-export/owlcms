@@ -25,10 +25,10 @@ import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.utils.ItemAdapter;
 
 import com.vaadin.data.hbnutil.HbnContainer;
-import com.vaadin.ui.Select;
+import com.vaadin.ui.ListSelect;
 
 @SuppressWarnings("unchecked")
-public class CategorySelect extends Select implements Serializable {
+public class CategorySelect extends ListSelect implements Serializable {
 
     private static final long serialVersionUID = -5471881649385421098L;
     HbnContainer<Category> dataSource;
@@ -40,7 +40,7 @@ public class CategorySelect extends Select implements Serializable {
      * @return
      */
     public CategorySelect() {
-        final Select categorySelect = this;
+        final ListSelect categorySelect = this;
         app = CompetitionApplication.getCurrent();
         dataSource = new HbnContainer<Category>(Category.class, app);
         categorySelect.setContainerDataSource(dataSource);
