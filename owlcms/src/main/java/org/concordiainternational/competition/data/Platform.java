@@ -324,7 +324,7 @@ public class Platform implements Serializable {
 	}
 
 	public Boolean getShowDecisionLights() {
-		return showDecisionLights;
+		return showDecisionLights == null ? false : showDecisionLights;
 	}
 
 	public void setShowDecisionLights(Boolean showDecisionLights) {

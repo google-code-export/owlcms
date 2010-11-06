@@ -17,6 +17,7 @@
 package org.concordiainternational.competition.ui;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CompetitionSession;
@@ -482,10 +483,11 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
 
 
 	public void displayNotification(Mode mode2, TimeStoppedNotificationReason reason) {
+		Locale locale = app.getLocale();
 		String message = MessageFormat.format(
-				Messages.getString("TimeStoppedNotificationReason.NotificationFormat", CompetitionApplication.getCurrentLocale()),
-				Messages.getString("LiftList."+mode2.name(), CompetitionApplication.getCurrentLocale()),
-				Messages.getString("TimeStoppedNotificationReason."+reason.name(), CompetitionApplication.getCurrentLocale()));
+				Messages.getString("TimeStoppedNotificationReason.NotificationFormat", locale),
+				Messages.getString("LiftList."+mode2.name(), locale),
+				Messages.getString("TimeStoppedNotificationReason."+reason.name(),locale));
 		notifications.add((Resource)null,message,true,Notifique.Styles.VAADIN_ORANGE,true);
 	}
 }
