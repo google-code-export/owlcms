@@ -22,8 +22,8 @@ import java.util.TimerTask;
 
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
 import org.concordiainternational.competition.ui.SessionData;
+import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
 import org.concordiainternational.competition.utils.EventHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
