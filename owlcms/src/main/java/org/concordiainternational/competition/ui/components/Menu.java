@@ -607,8 +607,12 @@ public class Menu extends MenuBar implements Serializable {
     }
 
     public void closeLoadComputerWindow() {
-        getApplication().getMainWindow().removeWindow(getLoadComputerWindow());
-        getLoadComputerWindow().close();
+    	LoadWindow loadComputerWindow2 = getLoadComputerWindow();
+    	getApplication().getMainWindow().removeWindow(loadComputerWindow2);
+        loadComputerWindow2 = getLoadComputerWindow();
+		if (loadComputerWindow2 != null) {
+			loadComputerWindow2.close();			
+		}
         setLoadComputerWindow(null);
     }
 
