@@ -142,7 +142,8 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
 	/**
      * @param locale
      */
-    private void display(final Locale locale) {
+    @SuppressWarnings("serial")
+	private void display(final Locale locale) {
         CompetitionApplication app1 = CompetitionApplication.getCurrent();
         Platform platform = masterData.getPlatform();
         logger.debug("diplaying platform {} {}",platform.getName(),platform);
@@ -160,8 +161,6 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
 
             final Button resizeButton = new Button();
             resizeButton.addListener(new Button.ClickListener() {
-
-                private static final long serialVersionUID = 2123748315541447492L;
 
                 @Override
                 public void buttonClick(ClickEvent event) {
@@ -190,6 +189,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
             top.setExpandRatio(imageArea, 100);
             this.addComponent(root);
             this.addStyleName("light");
+            this.addStyleName("platesPopup");
         }
         app1.push();
     }

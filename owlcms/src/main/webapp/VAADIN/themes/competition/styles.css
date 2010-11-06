@@ -548,6 +548,9 @@ textarea.v-textarea-fixedFont {
 	font-family: monospace;
 }
 
-.popupContent .v-label {
+.platesPopup .popupContent .v-label {
+	font-size: small;
+}
+.v-customoverlay .popupContent .v-label {
 	font-size: x-large;
 }
