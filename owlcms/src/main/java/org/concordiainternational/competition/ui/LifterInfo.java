@@ -25,6 +25,7 @@ import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
+import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.TimerControls;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.concordiainternational.competition.ui.generators.TryFormatter;
@@ -514,9 +515,14 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
         	CompetitionApplication receivingApp = app;
 			if (receivingApp.components.currentView instanceof AnnouncerView && reason != TimeStoppedNotificationReason.UNKNOWN) {
 				AnnouncerView receivingView = (AnnouncerView) receivingApp.components.currentView;
-				AnnouncerView originatingView = (AnnouncerView)originatingApp.components.currentView;
-				if (originatingView.mode != Mode.TIMEKEEPER) {
-					receivingView.displayNotification(originatingView.mode,reason);
+				ApplicationView originatingAppView = originatingApp.components.currentView;
+				if (originatingAppView instanceof AnnouncerView) {
+					AnnouncerView originatingView = (AnnouncerView)originatingAppView;
+					if (originatingView.mode != Mode.TIMEKEEPER) {
+						receivingView.displayNotification(originatingView.mode,reason);
+					}
+				} else {
+					receivingView.displayNotification(null,reason);
 				}
         	}
         }

@@ -114,6 +114,7 @@ public class DecisionController implements CountdownTimerListener {
             // the test on allDecisionsMadeTime ensures we don't send the down
             // signal twice.
             if (pros == 2 || cons == 2) {
+            	groupData.downSignal();
                 fireEvent(new DecisionEvent(this, DecisionEvent.Type.DOWN, currentTimeMillis, refereeDecisions));
             } else {
                 fireEvent(new DecisionEvent(this, DecisionEvent.Type.WAITING, currentTimeMillis, refereeDecisions));

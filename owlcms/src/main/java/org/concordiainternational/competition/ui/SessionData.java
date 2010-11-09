@@ -996,6 +996,20 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         Session session = app.getHbnSession();
         session.merge(currentLifter2);
     }
+    
+	public void downSignal() {
+		timerStoppedByReferee();
+	}
+
+	/**
+	 * 
+	 */
+	private void timerStoppedByReferee() {
+		CountdownTimer timer2 = getTimer();
+		if (timer2.isRunning()) {
+			timer2.stop(TimeStoppedNotificationReason.REFEREE_DECISION);
+		}
+	}
 
     public void setAnnouncerEnabled(boolean b) {
         announcerEnabled = b;
@@ -1132,6 +1146,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 	public void setPlatform(Platform platform) {
 		this.platform = platform;
 	}
+
+
 	
 //	public void setPublicAddressTimer(PublicAddressCountdownTimer publicAddressTimer) {
 //		this.publicAddressTimer = publicAddressTimer;
