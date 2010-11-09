@@ -494,10 +494,16 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
 
 	public void displayNotification(Mode mode2, TimeStoppedNotificationReason reason) {
 		Locale locale = app.getLocale();
-		String message = MessageFormat.format(
-				Messages.getString("TimeStoppedNotificationReason.NotificationFormat", locale),
-				Messages.getString("LiftList."+mode2.name(), locale),
-				Messages.getString("TimeStoppedNotificationReason."+reason.name(),locale));
+		String message;
+		if (mode2 == null) {
+			message = Messages.getString("TimeStoppedNotificationReason."+reason.name(),locale);
+		} else {
+			message = MessageFormat.format(
+					Messages.getString("TimeStoppedNotificationReason.NotificationFormat", locale),
+					Messages.getString("LiftList."+mode2.name(), locale),
+					Messages.getString("TimeStoppedNotificationReason."+reason.name(),locale));
+		}
 		notifications.add((Resource)null,message,true,Notifique.Styles.VAADIN_ORANGE,true);
+		
 	}
 }
