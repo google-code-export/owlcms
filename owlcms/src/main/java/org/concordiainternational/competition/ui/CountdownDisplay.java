@@ -90,7 +90,12 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
 
                 @Override
                 public void updateEvent(UpdateEvent updateEvent) {
-                    display(platformName1, masterData1);
+                    new Thread(new Runnable() {
+						@Override
+						public void run() {
+							display(platformName1, masterData1);
+						}
+					}).start();
                 }
 
             };
@@ -272,36 +277,40 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
     
 
     @Override
-    public void updateEvent(DecisionEvent updateEvent) {
-        synchronized (app) {
-            switch (updateEvent.getType()) {
-            case DOWN:
-            	logger.info("received DOWN event");
-            	showLights(updateEvent);
-            	break;
-            case SHOW:
-                // if window is not up, show it.
-            	logger.info("received SHOW event");
-                showLights(updateEvent);
-                break;
-                
-            case RESET:
-            	// we are done
-            	logger.info("received RESET event");
-                hideLights(updateEvent);
-                break;
-                
-                
-            case WAITING:
-            	logger.info("ignoring WAITING event");
-            	break;
-            case UPDATE:
-            	// do nothing, lifter should not see that referees are changing their minds.
-            	logger.info("ignoring UPDATE event");
-            	break;
-            }
-        }
-        app.push();
+    public void updateEvent(final DecisionEvent updateEvent) {
+        new Thread(new Runnable() {
+			@Override
+			public void run() {
+				synchronized (app) {
+					switch (updateEvent.getType()) {
+					case DOWN:
+						logger.info("received DOWN event");
+						showLights(updateEvent);
+						break;
+					case SHOW:
+						// if window is not up, show it.
+						logger.info("received SHOW event");
+						showLights(updateEvent);
+						break;
+
+					case RESET:
+						// we are done
+						logger.info("received RESET event");
+						hideLights(updateEvent);
+						break;
+
+					case WAITING:
+						logger.info("ignoring WAITING event");
+						break;
+					case UPDATE:
+						// do nothing, lifter should not see that referees are changing their minds.
+						logger.info("ignoring UPDATE event");
+						break;
+					}
+				}
+				app.push();
+			}
+		}).start();
     }
 
     

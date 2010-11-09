@@ -325,32 +325,41 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
      * @see org.concordiainternational.competition.ui.SessionData.UpdateEventListener#updateEvent(org.concordiainternational.competition.ui.SessionData.UpdateEvent)
      */
     @Override
-    public void updateEvent(SessionData.UpdateEvent updateEvent) {
-        synchronized (app) {
-            if (updateEvent.getForceRefresh()) {
-                logger.debug(
-                    "updateEvent() received in {} view -- forced refresh. ----------------------------------", mode); //$NON-NLS-1$
-                refresh();
-            } else {
-                logger.debug(
-                    "updateEvent() received in {} view  first is now: {}", this, updateEvent.getCurrentLifter()); //$NON-NLS-1$
+    public void updateEvent(final SessionData.UpdateEvent updateEvent) {
+        new Thread(new Runnable() {
+			@Override
+			public void run() {
+				synchronized (app) {
+					if (updateEvent.getForceRefresh()) {
+						logger.debug(
+								"updateEvent() received in {} view -- forced refresh. ----------------------------------", mode); //$NON-NLS-1$
+						refresh();
+					} else {
+						logger.debug(
+								"updateEvent() received in {} view  first is now: {}", AnnouncerView.this, updateEvent.getCurrentLifter()); //$NON-NLS-1$
 
-                liftList.updateTable();
-                loadFirstLifterInfo(masterData, WebApplicationConfiguration.DEFAULT_STICKINESS);
+						liftList.updateTable();
+						loadFirstLifterInfo(masterData,
+								WebApplicationConfiguration.DEFAULT_STICKINESS);
 
-                // update the info on the left side of the bottom part. This
-                // depends on the liftList info
-                // which has just changed.
-                if (lifterCardEditor != null && lifterCardEditor.lifterCardIdentification != null && !stickyEditor) {
-                    lifterCardEditor.lifterCardIdentification.loadLifter(updateEvent.getCurrentLifter(), liftList
-                            .getGroupData());
-                }
+						// update the info on the left side of the bottom part. This
+						// depends on the liftList info
+						// which has just changed.
+						if (lifterCardEditor != null
+								&& lifterCardEditor.lifterCardIdentification != null
+								&& !stickyEditor) {
+							lifterCardEditor.lifterCardIdentification
+									.loadLifter(updateEvent.getCurrentLifter(),
+											liftList.getGroupData());
+						}
 
-                // updateLifterEditor(updateEvent.getCurrentLifter(),
-                // liftList.getFirstLifterItem());
-            }
-        }
-        app.push();
+						// updateLifterEditor(updateEvent.getCurrentLifter(),
+						// liftList.getFirstLifterItem());
+					}
+				}
+				app.push();
+			}
+		}).start();
     }
 
     /**

@@ -161,10 +161,16 @@ public class ResultFrame extends VerticalLayout implements
 
                 @Override
                 public void updateEvent(UpdateEvent updateEvent) {
-                	logger.warn("request to display {}",ResultFrame.this);
-                	if (!waitingForDecisionLightsReset) {
-	                    display(platformName1, masterData1);
-                	}
+                	new Thread(new Runnable() {
+						@Override
+						public void run() {
+							logger.warn("request to display {}",
+									ResultFrame.this);
+							if (!waitingForDecisionLightsReset) {
+								display(platformName1, masterData1);
+							}
+						}
+					}).start();
                 }
 
             };
@@ -609,37 +615,42 @@ public class ResultFrame extends VerticalLayout implements
 	 * @see org.concordiainternational.competition.decision.DecisionController.DecisionEventListener#updateEvent(org.concordiainternational.competition.decision.DecisionEvent)
 	 */
 	@Override
-	public void updateEvent(DecisionEvent updateEvent) {
-		synchronized (app) {
-			switch (updateEvent.getType()) {
-			case DOWN:
-				waitingForDecisionLightsReset = true;
-				decisionLights.setVisible(false);
-				break;
-			case SHOW:
-				// if window is not up, show it.
-				waitingForDecisionLightsReset = true;
-				decisionLights.setVisible(true);
-				break;
-			case RESET:
-				// we are done
-				waitingForDecisionLightsReset = false;
-				decisionLights.setVisible(false);
-				display(platformName, masterData);
-				break;
-			case WAITING:
-				waitingForDecisionLightsReset = true;
-				decisionLights.setVisible(false);
-				break;
-			case UPDATE:
-				// change is made during 3 seconds where refs
-				// can change their mind privately.
-				waitingForDecisionLightsReset = true;
-				decisionLights.setVisible(false);
-				break;
+	public void updateEvent(final DecisionEvent updateEvent) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				synchronized (app) {
+					switch (updateEvent.getType()) {
+					case DOWN:
+						waitingForDecisionLightsReset = true;
+						decisionLights.setVisible(false);
+						break;
+					case SHOW:
+						// if window is not up, show it.
+						waitingForDecisionLightsReset = true;
+						decisionLights.setVisible(true);
+						break;
+					case RESET:
+						// we are done
+						waitingForDecisionLightsReset = false;
+						decisionLights.setVisible(false);
+						display(platformName, masterData);
+						break;
+					case WAITING:
+						waitingForDecisionLightsReset = true;
+						decisionLights.setVisible(false);
+						break;
+					case UPDATE:
+						// change is made during 3 seconds where refs
+						// can change their mind privately.
+						waitingForDecisionLightsReset = true;
+						decisionLights.setVisible(false);
+						break;
+					}
+				}
+				app.push();
 			}
-		}
-		app.push();
+		}).start();
 	}
 
 	

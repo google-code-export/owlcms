@@ -318,17 +318,22 @@ public class Blackboard {
     // be taken into account when the next event fires.
     HashSet<Listener> iterationListeners = new HashSet<Listener>(listenersForClass);
     for (final Listener listener : iterationListeners) {
-      try {
-        Log.log("  triggering " + listener);
+    	new Thread(new Runnable() {
+    		@Override
+			public void run() {
+    			try {
+    				Log.log("  triggering " + listener);
 
-        listenerMethod.invoke(listener, event);
-      } catch (final IllegalArgumentException e) {
-        e.printStackTrace();
-      } catch (final IllegalAccessException e) {
-        e.printStackTrace();
-      } catch (final InvocationTargetException e) {
-        e.printStackTrace();
-      }
+    				listenerMethod.invoke(listener, event);
+    			} catch (final IllegalArgumentException e) {
+    				e.printStackTrace();
+    			} catch (final IllegalAccessException e) {
+    				e.printStackTrace();
+    			} catch (final InvocationTargetException e) {
+    				e.printStackTrace();
+    			}
+    		}
+    	}).start();
     }
 
     Log.logEmptyLine();

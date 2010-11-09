@@ -157,52 +157,59 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
     }
 
     @Override
-    public void updateEvent(DecisionEvent updateEvent) {
-        synchronized (app) {
-            Decision[] decisions = updateEvent.getDecisions();
-            switch (updateEvent.getType()) {
-            case DOWN:
-                logger.debug("received DOWN event");
-                if (juryMode) {
-                    showLights(decisions);
-                } else {
-                    decisionLights[1].setStyleName("decisionLight");
-                    decisionLights[1].addStyleName("undecided");    
-                }
-                decisionLights[1].addStyleName("down");
+    public void updateEvent(final DecisionEvent updateEvent) {
+        new Thread(new Runnable() {
+			@Override
+			public void run() {
+				synchronized (app) {
+					Decision[] decisions = updateEvent.getDecisions();
+					switch (updateEvent.getType()) {
+					case DOWN:
+						logger.debug("received DOWN event");
+						if (juryMode) {
+							showLights(decisions);
+						} else {
+							decisionLights[1].setStyleName("decisionLight");
+							decisionLights[1].addStyleName("undecided");
+						}
+						decisionLights[1].addStyleName("down");
 
-                for (int i = 0; i < decisions.length; i++) {
-                    if (decisions[i].accepted == null) {
-                        ((Label) bottom.getComponent(i, 0)).setValue("decision required");
-                    }
-                }
-                break;
-            case WAITING:
-                logger.debug("received WAITING event");
-                for (int i = 0; i < decisions.length; i++) {
-                    if (decisions[i].accepted == null) {
-                        ((Label) bottom.getComponent(i, 0)).setValue("decision required");
-                    }
-                }
-                break;
-            case UPDATE:
-                logger.debug("received UPDATE event");
-                if (juryMode) {
-                    showLights(decisions);
-                }
-                break;
-            case SHOW:
-                logger.debug("received SHOW event");
-                showLights(decisions);
-                break;
-            case RESET:
-                logger.debug("received RESET event");
-                resetLights();
-                resetBottom();
-                break;
-            }
-        }
-        app.push();
+						for (int i = 0; i < decisions.length; i++) {
+							if (decisions[i].accepted == null) {
+								((Label) bottom.getComponent(i, 0))
+										.setValue("decision required");
+							}
+						}
+						break;
+					case WAITING:
+						logger.debug("received WAITING event");
+						for (int i = 0; i < decisions.length; i++) {
+							if (decisions[i].accepted == null) {
+								((Label) bottom.getComponent(i, 0))
+										.setValue("decision required");
+							}
+						}
+						break;
+					case UPDATE:
+						logger.debug("received UPDATE event");
+						if (juryMode) {
+							showLights(decisions);
+						}
+						break;
+					case SHOW:
+						logger.debug("received SHOW event");
+						showLights(decisions);
+						break;
+					case RESET:
+						logger.debug("received RESET event");
+						resetLights();
+						resetBottom();
+						break;
+					}
+				}
+				app.push();
+			}
+		}).start();
     }
 
     /**

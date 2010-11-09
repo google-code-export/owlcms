@@ -119,7 +119,12 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
         groupDataListener = new SessionData.UpdateEventListener() {
             @Override
             public void updateEvent(UpdateEvent updateEvent) {
-                display(locale);
+                new Thread(new Runnable() {
+					@Override
+					public void run() {
+						display(locale);
+					}
+				}).start();
             }
         };
         masterData.addListener(groupDataListener);
