@@ -170,9 +170,14 @@ public class AttemptBoardView extends VerticalLayout implements
 
     @Override
     public void updateEvent(SessionData.UpdateEvent updateEvent) {
-    	if (!decisionDisplayInProgress) {
-	        doDisplay();
-    	}
+    	new Thread(new Runnable() {
+			@Override
+			public void run() {
+				if (!decisionDisplayInProgress) {
+					doDisplay();
+				}
+			}
+		}).start();
     }
 
 
@@ -300,37 +305,42 @@ public class AttemptBoardView extends VerticalLayout implements
 	 * @see org.concordiainternational.competition.decision.DecisionController.DecisionEventListener#updateEvent(org.concordiainternational.competition.decision.DecisionEvent)
 	 */
 	@Override
-	public void updateEvent(DecisionEvent updateEvent) {
-		synchronized (app) {
-			switch (updateEvent.getType()) {
-			case DOWN:
-				decisionDisplayInProgress = true;
-				decisionArea.setVisible(false);
-				break;
-			case SHOW:
-				// if window is not up, show it.
-				decisionDisplayInProgress = true;
-				decisionArea.setVisible(true);
-				break;
-			case RESET:
-				// we are done
-				decisionDisplayInProgress = false;
-				decisionArea.setVisible(false);
-				doDisplay();
-				break;
-			case WAITING:
-				decisionDisplayInProgress = true;
-				decisionArea.setVisible(false);
-				break;
-			case UPDATE:
-				// change is made during 3 seconds where refs
-				// can change their mind privately.
-				decisionDisplayInProgress = true;
-				decisionArea.setVisible(false);
-				break;
+	public void updateEvent(final DecisionEvent updateEvent) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				synchronized (app) {
+					switch (updateEvent.getType()) {
+					case DOWN:
+						decisionDisplayInProgress = true;
+						decisionArea.setVisible(false);
+						break;
+					case SHOW:
+						// if window is not up, show it.
+						decisionDisplayInProgress = true;
+						decisionArea.setVisible(true);
+						break;
+					case RESET:
+						// we are done
+						decisionDisplayInProgress = false;
+						decisionArea.setVisible(false);
+						doDisplay();
+						break;
+					case WAITING:
+						decisionDisplayInProgress = true;
+						decisionArea.setVisible(false);
+						break;
+					case UPDATE:
+						// change is made during 3 seconds where refs
+						// can change their mind privately.
+						decisionDisplayInProgress = true;
+						decisionArea.setVisible(false);
+						break;
+					}
+				}
+				app.push();
 			}
-		}
-		app.push();
+		}).start();
 	}
 
 }

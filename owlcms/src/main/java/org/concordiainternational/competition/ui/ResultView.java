@@ -267,29 +267,37 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
      * @see org.concordiainternational.competition.ui.SessionData.UpdateEventListener#updateEvent(org.concordiainternational.competition.ui.SessionData.UpdateEvent)
      */
     @Override
-    public void updateEvent(SessionData.UpdateEvent updateEvent) {
-        synchronized (app) {
-            if (updateEvent.getForceRefresh()) {
-                logger.trace("updateEvent() received in Result view -- refreshing. ----------------------------------"); //$NON-NLS-1$
-                refresh();
-                return;
-            }
-            logger.trace("updateEvent() received in ResultView"); //$NON-NLS-1$
+    public void updateEvent(final SessionData.UpdateEvent updateEvent) {
+        new Thread(new Runnable() {
+			@Override
+			public void run() {
+				synchronized (app) {
+					if (updateEvent.getForceRefresh()) {
+						logger.trace("updateEvent() received in Result view -- refreshing. ----------------------------------"); //$NON-NLS-1$
+						refresh();
+						return;
+					}
+					logger.trace("updateEvent() received in ResultView"); //$NON-NLS-1$
 
-            resultList.updateTable();
-            // loadFirstLifterInfo(groupData,WebApplicationConfiguration.DEFAULT_STICKINESS);
+					resultList.updateTable();
+					// loadFirstLifterInfo(groupData,WebApplicationConfiguration.DEFAULT_STICKINESS);
 
-            // update the info on the left side of the bottom part. This depends
-            // on the liftList info
-            // which has just changed.
-            if (lifterCardEditor != null && lifterCardEditor.lifterCardIdentification != null && !stickyEditor) {
-                lifterCardEditor.lifterCardIdentification.loadLifter(lifterCardEditor.getLifter(), resultList
-                        .getGroupData());
-            }
-            // updateLifterEditor(updateEvent.getCurrentLifter(),
-            // liftList.getFirstLifterItem());
-        }
-        app.push();
+					// update the info on the left side of the bottom part. This depends
+					// on the liftList info
+					// which has just changed.
+					if (lifterCardEditor != null
+							&& lifterCardEditor.lifterCardIdentification != null
+							&& !stickyEditor) {
+						lifterCardEditor.lifterCardIdentification.loadLifter(
+								lifterCardEditor.getLifter(),
+								resultList.getGroupData());
+					}
+					// updateLifterEditor(updateEvent.getCurrentLifter(),
+					// liftList.getFirstLifterItem());
+				}
+				app.push();
+			}
+		}).start();
     }
 
     /**

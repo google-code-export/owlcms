@@ -149,36 +149,45 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
 
 
     @Override
-    public void updateEvent(DecisionEvent updateEvent) {
-        synchronized (app) {
-            Decision[] decisions = updateEvent.getDecisions();
-            switch (updateEvent.getType()) {
-            case DOWN:
-                if (decisions[refereeIndex].accepted == null) {
-                    logger.warn("referee #{} decision required after DOWN", refereeIndex+1);
-                    requireDecision();
-                }
-                break;
-            case WAITING:
-                if (decisions[refereeIndex].accepted == null) {
-                    logger.warn("referee #{} decision required WAITING", refereeIndex+1);
-                    requireDecision();
-                }
-                break;
-            case UPDATE:
-                break;
-            case SHOW:
-                // decisions are shown to the public; prevent refs from changing.
-                top.setEnabled(false);
-                break;
-            case RESET:
-                logger.warn("referee #{} RESET", refereeIndex+1);
-                resetTop();
-                resetBottom();
-                break;
-            }
-        }
-        app.push();
+    public void updateEvent(final DecisionEvent updateEvent) {
+        new Thread(new Runnable() {
+			@Override
+			public void run() {
+				synchronized (app) {
+					Decision[] decisions = updateEvent.getDecisions();
+					switch (updateEvent.getType()) {
+					case DOWN:
+						if (decisions[refereeIndex].accepted == null) {
+							logger.warn(
+									"referee #{} decision required after DOWN",
+									refereeIndex + 1);
+							requireDecision();
+						}
+						break;
+					case WAITING:
+						if (decisions[refereeIndex].accepted == null) {
+							logger.warn(
+									"referee #{} decision required WAITING",
+									refereeIndex + 1);
+							requireDecision();
+						}
+						break;
+					case UPDATE:
+						break;
+					case SHOW:
+						// decisions are shown to the public; prevent refs from changing.
+						top.setEnabled(false);
+						break;
+					case RESET:
+						logger.warn("referee #{} RESET", refereeIndex + 1);
+						resetTop();
+						resetBottom();
+						break;
+					}
+				}
+				app.push();
+			}
+		}).start();
     }
 
     /**

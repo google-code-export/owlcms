@@ -70,55 +70,60 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
 	}
 
     @Override
-    public void updateEvent(DecisionEvent updateEvent) {
-        synchronized (app) {
-            Decision[] decisions = updateEvent.getDecisions();
-            switch (updateEvent.getType()) {
-            case DOWN:
-                logger.debug("received DOWN event");
-                if (juryMode) {
-                    showLights(decisions);
-                } else {
-                    decisionLights[1].setStyleName("decisionLight");
-                    decisionLights[1].addStyleName("undecided");    
-                }
-                this.addStyleName("down");
-                decisionLights[1].addStyleName("down");
+    public void updateEvent(final DecisionEvent updateEvent) {
+        new Thread(new Runnable() {
+			@Override
+			public void run() {
+				synchronized (app) {
+					Decision[] decisions = updateEvent.getDecisions();
+					switch (updateEvent.getType()) {
+					case DOWN:
+						logger.debug("received DOWN event");
+						if (juryMode) {
+							showLights(decisions);
+						} else {
+							decisionLights[1].setStyleName("decisionLight");
+							decisionLights[1].addStyleName("undecided");
+						}
+						DecisionLightsWindow.this.addStyleName("down");
+						decisionLights[1].addStyleName("down");
 
-                for (int i = 0; i < decisions.length; i++) {
-                    if (decisions[i].accepted == null) {
-                    	// do nothing; maybe show in yellow in Jury Mode ?
-                    }
-                }
-                break;
-            case WAITING:
-                logger.debug("received WAITING event");
-                for (int i = 0; i < decisions.length; i++) {
-                    if (decisions[i].accepted == null) {
-                        // do nothing; maybe show in yellow in Jury Mode ?
-                    }
-                }
-                break;
-            case UPDATE:
-                logger.debug("received UPDATE event");
-                this.removeStyleName("down");
-                if (juryMode) {
-                    showLights(decisions);
-                }
-                break;
-            case SHOW:
-                logger.debug("received SHOW event");
-                this.removeStyleName("down");
-                showLights(decisions);
-                break;
-            case RESET:
-                logger.debug("received RESET event");
-                this.removeStyleName("down");
-                resetLights();
-                break;
-            }
-        }
-        app.push();
+						for (int i = 0; i < decisions.length; i++) {
+							if (decisions[i].accepted == null) {
+								// do nothing; maybe show in yellow in Jury Mode ?
+							}
+						}
+						break;
+					case WAITING:
+						logger.debug("received WAITING event");
+						for (int i = 0; i < decisions.length; i++) {
+							if (decisions[i].accepted == null) {
+								// do nothing; maybe show in yellow in Jury Mode ?
+							}
+						}
+						break;
+					case UPDATE:
+						logger.debug("received UPDATE event");
+						DecisionLightsWindow.this.removeStyleName("down");
+						if (juryMode) {
+							showLights(decisions);
+						}
+						break;
+					case SHOW:
+						logger.debug("received SHOW event");
+						DecisionLightsWindow.this.removeStyleName("down");
+						showLights(decisions);
+						break;
+					case RESET:
+						logger.debug("received RESET event");
+						DecisionLightsWindow.this.removeStyleName("down");
+						resetLights();
+						break;
+					}
+				}
+				app.push();
+			}
+		}).start();
     }
 
     /**
