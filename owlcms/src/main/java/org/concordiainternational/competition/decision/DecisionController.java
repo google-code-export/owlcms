@@ -67,6 +67,8 @@ public class DecisionController implements CountdownTimerListener {
     int decisionsMade = 0;
     private EventRouter eventRouter;
 
+	private boolean downSignaled = false;
+
     public void reset() {
         for (int i = 0; i < refereeDecisions.length; i++) {
             refereeDecisions[i].accepted = null;
@@ -74,6 +76,7 @@ public class DecisionController implements CountdownTimerListener {
         }
         allDecisionsMadeTime = 0L; // all 3 referees have pressed
         decisionsMade = 0;
+        downSignaled = false;
         groupData.setAnnouncerEnabled(true);
         fireEvent(new DecisionEvent(this, DecisionEvent.Type.RESET, System.currentTimeMillis(), refereeDecisions));
     }
@@ -105,28 +108,13 @@ public class DecisionController implements CountdownTimerListener {
         }
         // Jury sees all changes
         fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
-        
-        if (decisionsMade >= 2 && allDecisionsMadeTime == 0L) {
-            // the platform display should display the "down" signal and sound.
-            // each referee console gets the event, the console for the last
-            // outstanding
-            // referee must signal that it is being waited upon.
-            // the test on allDecisionsMadeTime ensures we don't send the down
-            // signal twice.
-            if (pros == 2 || cons == 2) {
-            	groupData.downSignal();
-                fireEvent(new DecisionEvent(this, DecisionEvent.Type.DOWN, currentTimeMillis, refereeDecisions));
-            } else {
-                fireEvent(new DecisionEvent(this, DecisionEvent.Type.WAITING, currentTimeMillis, refereeDecisions));
-            }
-        }
+
         if (decisionsMade == 3) {
         	// save the decision
             groupData.majorityDecision(refereeDecisions);
             
             // broadcast the decision
             if (allDecisionsMadeTime == 0L) {
-
                 // all 3 referees have just made a choice; schedule the display
                 // in 3 seconds
                 allDecisionsMadeTime = System.currentTimeMillis();
@@ -139,6 +127,23 @@ public class DecisionController implements CountdownTimerListener {
                 fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
             }
         }
+        // test for this must come after 3 decisions so allDecisionsMade is set
+        if (decisionsMade >= 2) {
+            // the platform display should display the "down" signal and sound.
+            // each referee console gets the event, the console for the last
+            // outstanding
+            // referee must signal that it is being waited upon.
+            if (pros == 2 || cons == 2) {
+            	if (!downSignaled) {
+	            	groupData.downSignal();
+	                fireEvent(new DecisionEvent(this, DecisionEvent.Type.DOWN, currentTimeMillis, refereeDecisions));
+	                downSignaled = true;
+            	}
+            } else {
+                fireEvent(new DecisionEvent(this, DecisionEvent.Type.WAITING, currentTimeMillis, refereeDecisions));
+            }
+        }
+
     }
 
     /**

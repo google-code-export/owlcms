@@ -16,11 +16,14 @@
 
 package org.concordiainternational.competition.ui;
 
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Locale;
 
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
+import org.concordiainternational.competition.decision.DecisionController.DecisionEventListener;
+import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
@@ -38,12 +41,16 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.terminal.ClassResource;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 
 /**
  * Display information regarding the current lifter
@@ -55,7 +62,12 @@ import com.vaadin.ui.VerticalLayout;
  * @author jflamy
  * 
  */
-public class LifterInfo extends VerticalLayout implements CountdownTimerListener {
+public class LifterInfo extends VerticalLayout implements 
+	CountdownTimerListener,
+	DecisionEventListener,
+	CloseListener,
+	URIHandler
+	{
     static final Logger logger = LoggerFactory.getLogger(LifterInfo.class);
     static final Logger timingLogger = LoggerFactory
             .getLogger("org.concordiainternational.competition.timer.TimingLogger"); //$NON-NLS-1$
@@ -107,6 +119,8 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
                 }
             }
         });
+        
+        registerAsListener();
     }
 
     @Override
@@ -129,8 +143,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
 			// since the buttons trigger changes within the data (e.g.
 			// successfulLift)
 			if (parentView instanceof AnnouncerView) {
-				if ((((AnnouncerView) parentView).mode == Mode.ANNOUNCER && identifier
-						.startsWith("top"))) { //$NON-NLS-1$
+				if ((((AnnouncerView) parentView).mode == Mode.ANNOUNCER && isTop())) { //$NON-NLS-1$
 					groupData1.trackEditors(lifter1, this.lifter, this);
 				}
 			}
@@ -161,7 +174,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
 			this.setSpacing(true);
 			if (done)
 				return; // lifter has already performed all lifts.
-			if (lifter1.isCurrentLifter() && identifier.startsWith("top")) { //$NON-NLS-1$
+			if (lifter1.isCurrentLifter() && isTop()) { //$NON-NLS-1$
 				topDisplayOptions(lifter1, groupData1);
 			} else if (lifter1.isCurrentLifter()
 					&& identifier.startsWith("bottom")) { //$NON-NLS-1$
@@ -224,7 +237,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
      */
     private void updateDisplayBoard(final Lifter lifter1, final SessionData groupData1) {
         logger.trace("loadLifter prior to updateNEC {} {} {} ", new Object[] { identifier, parentView, mode }); //$NON-NLS-1$
-        if (identifier.startsWith("top") && parentView == groupData1.getAnnouncerView() && mode == Mode.ANNOUNCER) { //$NON-NLS-1$
+        if (isTop() && parentView == groupData1.getAnnouncerView() && mode == Mode.ANNOUNCER) { //$NON-NLS-1$
             updateNECOnWeightChange(lifter1, groupData1);
         }
         logger.trace("loadLifter after updateNEC"); //$NON-NLS-1$
@@ -264,7 +277,7 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
         actAsTimekeeper.setImmediate(true);
         automaticStartTime.setImmediate(true);
         automaticStartTime.setVisible(showTimerControls);
-        actAsTimekeeper.addListener(new ValueChangeListener() {
+		actAsTimekeeper.addListener(new ValueChangeListener() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -294,13 +307,14 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
                     groupData.startTimeAutomatically(false);
                 }
             }
-
         });
+
         options.setWidth("30ex"); //$NON-NLS-1$
         options.addComponent(actAsTimekeeper);
         options.addComponent(automaticStartTime);
         return options;
     }
+
 
     TimerControls buttons;
     private boolean blocked = true;
@@ -360,16 +374,9 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
             timerDisplay.setValue(TimeFormatter.formatAsSeconds(timeAllowed));
             timerDisplay.setEnabled(false); // greyed out.
         }
-
-        CompetitionApplication masterApplication = groupData1.getMasterApplication();
-//        logger.warn("masterApplication = {}, app={}", masterApplication, app);
-        if (masterApplication == app) {
-            timer.setMasterBuzzer(this);
-        } else {
-            timer.addListener(this);
-        }
         this.addComponent(timerDisplay);
     }
+
 
     int prevTimeRemaining = 0;
 
@@ -619,4 +626,79 @@ public class LifterInfo extends VerticalLayout implements CountdownTimerListener
         sb.append("<div class='" + cssClass + "'>") //$NON-NLS-1$ //$NON-NLS-2$
                 .append(string).append("</div>"); //$NON-NLS-1$
     }
+
+	@Override
+	public void updateEvent(DecisionEvent updateEvent) {
+		switch (updateEvent.getType()) {
+		case DOWN:
+			logger.warn("Down audible signal***");
+	        synchronized (app) {
+                final ClassResource resource = new ClassResource("/sounds/down.mp3", app); //$NON-NLS-1$
+                playSound(resource);
+	        }
+	        app.push();			
+			break;
+		}
+	}
+
+	/**
+	 * Register as listener to various events.
+	 */
+	private void registerAsListener() {
+		// window close
+		logger.warn("register");
+        app.getMainWindow().addListener(this);
+        
+		final CompetitionApplication masterApplication = groupData.getMasterApplication();
+		CountdownTimer timer = groupData.getTimer();
+		if (masterApplication == app && isTop()) {
+			// down signal (for buzzer)
+			groupData.getDecisionController().addListener(this);
+			// timer will buzz on this console
+			if (timer != null) timer.setMasterBuzzer(this);
+        }
+		// timer countdown events
+        if (timer != null) timer.addListener(this);
+
+	}
+
+	/**
+	 * @return
+	 */
+	private boolean isTop() {
+		return identifier
+				.startsWith("top");
+	}
+	
+	private void unregisterAsListener() {
+		// window close
+		app.getMainWindow().removeListener(this);
+		
+		final CompetitionApplication masterApplication = groupData.getMasterApplication();
+		CountdownTimer timer = groupData.getTimer();
+		// if several instances of lifter information, only top one buzzes.
+		if (masterApplication == app && isTop()) {
+			// down signal will no longer buzz
+			groupData.getDecisionController().removeListener(this);
+			// no more timer buzz
+			if (timer != null) timer.setMasterBuzzer(null);
+        }
+		// timer countdown events
+		if (timer != null) timer.removeListener(this);
+	}
+
+
+	@Override
+	public void windowClose(CloseEvent e) {
+		unregisterAsListener();
+	}
+
+	@Override
+	public DownloadStream handleURI(URL context, String relativeUri) {
+		// called on refresh
+		registerAsListener();
+		return null;
+	}
+
+
 }
