@@ -251,7 +251,7 @@ public class CountdownTimer implements Serializable {
         listeners.add(timerListener);
     }
 
-    public void removeAllListeners(CountdownTimerListener timerListener) {
+    public void removeAllListeners() {
         listeners.clear();
     }
 

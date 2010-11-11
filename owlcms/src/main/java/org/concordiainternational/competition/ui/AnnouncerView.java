@@ -16,6 +16,7 @@
 
 package org.concordiainternational.competition.ui;
 
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Locale;
 
@@ -34,13 +35,16 @@ import org.vaadin.notifique.Notifique.Message;
 import org.vaadin.overlay.CustomOverlay;
 
 import com.vaadin.data.Item;
+import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.Sizeable;
+import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.CloseEvent;
 
 /**
  * This class defines the screen layout for the announcer.
@@ -63,7 +67,13 @@ import com.vaadin.ui.Window;
  * @author jflamy
  * 
  */
-public class AnnouncerView extends VerticalSplitPanel implements ApplicationView, SessionData.UpdateEventListener, EditingView {
+public class AnnouncerView extends VerticalSplitPanel implements
+	ApplicationView,
+	SessionData.UpdateEventListener,
+	EditingView,
+	Window.CloseListener,
+	URIHandler
+	{
     private static final long serialVersionUID = 7881028819569705161L;
     private static final Logger logger = LoggerFactory.getLogger(AnnouncerView.class);
     public static final boolean PUSHING = true;
@@ -158,7 +168,7 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
 			adjustSplitBarLocation();
 			// we are now fully initialized
 			masterData.setAllowAll(false);
-			masterData.addListener(this);
+			registerAsListener();
 			if (masterData.lifters.isEmpty()) {
 				logger.debug(
 						"switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
@@ -172,7 +182,6 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
 		}
 		app.push();
     }
-
 
 
 	/**
@@ -240,13 +249,14 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
             // no current lifter, hide bottom part if present.
             if (lifterCardEditor != null) {
                 setSecondComponent(new Label("")); //$NON-NLS-1$
-                masterData.getTimer().removeAllListeners(lifterCardEditor.lifterCardIdentification);
+                masterData.noCurrentLifter();
                 lifterCardEditor = null;
             }
         }
     }
 
-    /*
+
+	/*
      * (non-Javadoc)
      * 
      * @see org.concordiainternational.competition.ui.Refreshable#refresh()
@@ -505,5 +515,33 @@ public class AnnouncerView extends VerticalSplitPanel implements ApplicationView
 		}
 		notifications.add((Resource)null,message,true,Notifique.Styles.VAADIN_ORANGE,true);
 		
+	}
+	
+	/**
+	 * Register all handlers that listen to model or outside events.
+	 */
+	private void registerAsListener() {
+		masterData.addListener(this);
+	}
+	
+	/**
+	 * 
+	 */
+	private void unregisterAsListener() {
+		masterData.removeListener(this);
+	}
+
+
+
+	@Override
+	public void windowClose(CloseEvent e) {
+		unregisterAsListener();	
+	}
+
+
+	@Override
+	public DownloadStream handleURI(URL context, String relativeUri) {
+		registerAsListener();
+		return null;
 	}
 }

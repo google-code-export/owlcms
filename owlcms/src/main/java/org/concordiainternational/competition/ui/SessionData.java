@@ -1147,6 +1147,11 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 		this.platform = platform;
 	}
 
+	void noCurrentLifter() {
+		// most likely completely obsolete.
+		//getTimer().removeAllListeners();
+	}
+
 
 	
 //	public void setPublicAddressTimer(PublicAddressCountdownTimer publicAddressTimer) {
