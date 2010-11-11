@@ -20,8 +20,8 @@ import java.net.MalformedURLException;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.RuleViolationException;
-import org.concordiainternational.competition.decision.DecisionController.DecisionEventListener;
 import org.concordiainternational.competition.decision.DecisionEvent;
+import org.concordiainternational.competition.decision.DecisionEventListener;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;

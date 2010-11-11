@@ -17,8 +17,8 @@
 package org.concordiainternational.competition.ui.components;
 
 import org.concordiainternational.competition.decision.DecisionController.Decision;
-import org.concordiainternational.competition.decision.DecisionController.DecisionEventListener;
 import org.concordiainternational.competition.decision.DecisionEvent;
+import org.concordiainternational.competition.decision.DecisionEventListener;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.slf4j.Logger;

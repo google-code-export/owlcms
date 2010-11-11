@@ -93,7 +93,10 @@ public class CountdownTimer implements Serializable {
             masterBuzzer.start(startTime);
         }
         for (CountdownTimerListener curListener : listeners2) {
-            curListener.start(startTime);
+        	// avoid duplicate notifications
+        	if (curListener != masterBuzzer) {
+        		curListener.start(startTime);
+        	}
         }
     }
 
@@ -133,6 +136,7 @@ public class CountdownTimer implements Serializable {
             masterBuzzer.pause(startTime, CompetitionApplication.getCurrent(), reason);
         }
         for (CountdownTimerListener curListener : getListeners()) {
+        	// avoid duplicate notifications
         	if (curListener != masterBuzzer) {
         		curListener.pause(startTime, CompetitionApplication.getCurrent(), reason);
         	}
@@ -163,7 +167,10 @@ public class CountdownTimer implements Serializable {
             masterBuzzer.stop(startTime, CompetitionApplication.getCurrent(), reason);
         }
         for (CountdownTimerListener curListener : getListeners()) {
-            curListener.stop(startTime, CompetitionApplication.getCurrent(), reason);
+        	// avoid duplicate notifications
+        	if (curListener != masterBuzzer) {
+        		curListener.stop(startTime, CompetitionApplication.getCurrent(), reason);
+        	}
         }
     }
 
@@ -191,7 +198,10 @@ public class CountdownTimer implements Serializable {
             masterBuzzer.forceTimeRemaining(startTime, CompetitionApplication.getCurrent(), reason);
         }
         for (CountdownTimerListener curListener : getListeners()) {
-            curListener.forceTimeRemaining(getTimeRemaining(), CompetitionApplication.getCurrent(), reason);
+        	// avoid duplicate notifications
+        	if (curListener != masterBuzzer) {
+        		curListener.forceTimeRemaining(getTimeRemaining(), CompetitionApplication.getCurrent(), reason);
+        	}
         }
     }
 

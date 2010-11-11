@@ -28,8 +28,8 @@ import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.DecisionController;
-import org.concordiainternational.competition.decision.DecisionController.DecisionEventListener;
 import org.concordiainternational.competition.decision.DecisionEvent;
+import org.concordiainternational.competition.decision.DecisionEventListener;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent;
 import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener;
@@ -612,7 +612,7 @@ public class ResultFrame extends VerticalLayout implements
 	/**
 	 * Process a decision regarding the current lifter.
 	 * Make sure that the name of the lifter does not change until after the decision has been shown.
-	 * @see org.concordiainternational.competition.decision.DecisionController.DecisionEventListener#updateEvent(org.concordiainternational.competition.decision.DecisionEvent)
+	 * @see org.concordiainternational.competition.decision.DecisionEventListener#updateEvent(org.concordiainternational.competition.decision.DecisionEvent)
 	 */
 	@Override
 	public void updateEvent(final DecisionEvent updateEvent) {
