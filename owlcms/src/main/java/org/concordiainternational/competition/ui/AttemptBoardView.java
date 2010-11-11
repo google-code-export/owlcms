@@ -160,6 +160,7 @@ public class AttemptBoardView extends VerticalLayout implements
 	        doDisplay();
 		} finally {
 			app.setPusherDisabled(prevPusherDisabled);
+			logger.warn("init pusherDisabled = {}",app.getPusherDisabled());
 		}
     }
 
@@ -214,7 +215,8 @@ public class AttemptBoardView extends VerticalLayout implements
 	        
 			imageArea.setVisible(false);
 			if (ie || !done) {
-	            plates.computeImageArea(masterData, platform);
+				logger.warn("recomputing image area: pusherDisabled = {}",app.getPusherDisabled());
+	            plates.computeImageArea(masterData, masterData.getPlatform());
 				imageArea.setVisible(true);
 				horLayout.setComponentAlignment(imageArea, Alignment.MIDDLE_CENTER);
 				horLayout.setExpandRatio(imageArea, 40);
@@ -264,6 +266,7 @@ public class AttemptBoardView extends VerticalLayout implements
 
 	@Override
 	public void plateLoadingUpdate(PlatesInfoEvent event) {
+		logger.warn("plateLoadingUpdate");
 		doDisplay();
 	}
 

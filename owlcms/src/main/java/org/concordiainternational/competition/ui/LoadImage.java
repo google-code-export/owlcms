@@ -18,6 +18,8 @@ package org.concordiainternational.competition.ui;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vaadin.weelayout.WeeLayout;
 
 import com.vaadin.ui.Alignment;
@@ -26,7 +28,7 @@ import com.vaadin.ui.Window;
 
 public class LoadImage extends WeeLayout {
 
-
+	private static final Logger logger = LoggerFactory.getLogger(LoadImage.class);
 	private static final long serialVersionUID = 8340222363211435843L;
 
     private int weight;
@@ -71,6 +73,7 @@ public class LoadImage extends WeeLayout {
         addPlates(1, "bar", barWeight);
         addPlates(1, "barInner", 0);
         final Integer collarAvailable = platform.getNbC_2_5();
+        logger.warn("collars available = {}",collarAvailable);
         boolean useCollar = false;
         
         final int nonBarWeight = weight;
