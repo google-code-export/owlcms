@@ -461,24 +461,6 @@ public class LifterCardEditor extends Panel implements
         ignoreChanges = false;
     }
 
-    // /**
-    // * Register the editor as a listener to the lifter.
-    // * @param lifter
-    // * @param previousLifter
-    // */
-    // private void manageListeners(Lifter lifter, final Lifter previousLifter)
-    // {
-    // // if we are reloading the same lifter, leave listener in place.
-    // if (previousLifter != null && previousLifter != lifter) {
-    // previousLifter.removeListener(Lifter.UpdateEvent.class, this);
-    //			if (DEBUG) System.err.println("LifterCardEditor(): removed listener from "+System.identityHashCode(lifter)+" "+lifter.getLastName()+" "+lifter.getFirstName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    // }
-    // // if we need a new listener, create one.
-    // if (previousLifter != lifter && lifter != null) {
-    // lifter.addListener((Lifter.UpdateEventListener)this);
-    //			if (DEBUG) System.err.println("LifterCardEditor(): adding listener to "+System.identityHashCode(lifter)+" "+lifter.getLastName()+" "+lifter.getFirstName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    // }
-    // }
 
     /**
      * Utility routine to associate a grid cell with a Pojo field through a
@@ -602,21 +584,6 @@ public class LifterCardEditor extends Panel implements
         field.setPropertyDataSource(dataSource);
     }
 
-    // /* Event received from the lift list after it has sorted the users, to
-    // tell us about the
-    // * current lifter.
-    // * (non-Javadoc)
-    // * @see
-    // org.concordiainternational.competition.ui.LiftList.UpdateEventListener#updateEvent(org.concordiainternational.competition.ui.LiftList.UpdateEvent)
-    // */
-    // @Override
-    // public void updateEvent(LiftList.UpdateEvent event) {
-    // //clearFocus();
-    // // check whether the "sticky" checkbox is selected
-    // if (!announcerView.isStickyEditor()) {
-    // loadLifter(event.currentLifter, event.currentLifterItem);
-    // }
-    // }
 
     // Have the unmodified Enter key cause an event
     Action action_ok = new ShortcutAction("Default key", //$NON-NLS-1$
