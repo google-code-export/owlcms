@@ -56,7 +56,7 @@ public class NotificationManager<Listener extends EventListener, Editable extend
 
     Map<Editable, Set<Editor>> editorMap = new HashMap<Editable, Set<Editor>>();
 
-    public void addEditor(Editable editable, Editor editor) {
+    synchronized public void addEditor(Editable editable, Editor editor) {
         Set<Editor> set = editorMap.get(editable);
         if (set == null) {
             set = new HashSet<Editor>();
@@ -69,7 +69,7 @@ public class NotificationManager<Listener extends EventListener, Editable extend
         logger.debug(dump());
     }
 
-    public void removeEditor(Editable editable, Editor editor) {
+    synchronized public void removeEditor(Editable editable, Editor editor) {
         Set<Editor> set = editorMap.get(editable);
         if (set == null) {
             // nothing to do.
