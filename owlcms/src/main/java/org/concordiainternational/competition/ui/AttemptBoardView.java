@@ -215,7 +215,7 @@ public class AttemptBoardView extends VerticalLayout implements
 	        
 			imageArea.setVisible(false);
 			if (ie || !done) {
-				logger.warn("recomputing image area: pusherDisabled = {}",app.getPusherDisabled());
+				//logger.warn("recomputing image area: pusherDisabled = {}",app.getPusherDisabled());
 	            plates.computeImageArea(masterData, masterData.getPlatform());
 				imageArea.setVisible(true);
 				horLayout.setComponentAlignment(imageArea, Alignment.MIDDLE_CENTER);
@@ -266,7 +266,7 @@ public class AttemptBoardView extends VerticalLayout implements
 
 	@Override
 	public void plateLoadingUpdate(PlatesInfoEvent event) {
-		logger.warn("plateLoadingUpdate");
+		//logger.warn("plateLoadingUpdate");
 		doDisplay();
 	}
 
@@ -296,7 +296,7 @@ public class AttemptBoardView extends VerticalLayout implements
 
 	@Override
 	public DownloadStream handleURI(URL context, String relativeUri) {
-		logger.warn("re-registering handlers for {} {}",this,relativeUri);
+		//logger.warn("re-registering handlers for {} {}",this,relativeUri);
 		registerAsListener();
 		return null;
 	}

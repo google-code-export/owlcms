@@ -644,6 +644,15 @@ public class LifterInfo extends VerticalLayout implements
 	}
 
 	/**
+	 * @return
+	 */
+	private boolean isTop() {
+		return identifier
+				.startsWith("top");
+	}
+	
+	
+	/**
 	 * Register as listener to various events.
 	 */
 	private void registerAsListener() {
@@ -664,14 +673,6 @@ public class LifterInfo extends VerticalLayout implements
 
 	}
 
-	/**
-	 * @return
-	 */
-	private boolean isTop() {
-		return identifier
-				.startsWith("top");
-	}
-	
 	private void unregisterAsListener() {
 		// window close
 		app.getMainWindow().removeListener(this);
