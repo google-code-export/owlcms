@@ -28,6 +28,7 @@ import com.vaadin.ui.Window;
 
 public class LoadImage extends WeeLayout {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(LoadImage.class);
 	private static final long serialVersionUID = 8340222363211435843L;
 
@@ -73,7 +74,6 @@ public class LoadImage extends WeeLayout {
         addPlates(1, "bar", barWeight);
         addPlates(1, "barInner", 0);
         final Integer collarAvailable = platform.getNbC_2_5();
-        logger.warn("collars available = {}",collarAvailable);
         boolean useCollar = false;
         
         final int nonBarWeight = weight;
