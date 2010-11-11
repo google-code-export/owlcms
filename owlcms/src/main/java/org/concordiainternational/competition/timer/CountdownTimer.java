@@ -133,7 +133,9 @@ public class CountdownTimer implements Serializable {
             masterBuzzer.pause(startTime, CompetitionApplication.getCurrent(), reason);
         }
         for (CountdownTimerListener curListener : getListeners()) {
-            curListener.pause(startTime, CompetitionApplication.getCurrent(), reason);
+        	if (curListener != masterBuzzer) {
+        		curListener.pause(startTime, CompetitionApplication.getCurrent(), reason);
+        	}
         }
 	}
 

@@ -518,7 +518,9 @@ public class LifterInfo extends VerticalLayout implements
 	 */
 	private void showNotification(CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
 
-		if (app != originatingApp) {
+		if (isTop() && app != originatingApp) {
+//			logger.warn("showNotification in {}",this);
+//			LoggerUtils.logException(logger, new Exception("where"));
         	CompetitionApplication receivingApp = app;
 			if (receivingApp.components.currentView instanceof AnnouncerView && reason != TimeStoppedNotificationReason.UNKNOWN) {
 				AnnouncerView receivingView = (AnnouncerView) receivingApp.components.currentView;

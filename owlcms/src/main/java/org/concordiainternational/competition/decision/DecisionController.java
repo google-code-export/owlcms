@@ -67,7 +67,7 @@ public class DecisionController implements CountdownTimerListener {
     int decisionsMade = 0;
     private EventRouter eventRouter;
 
-	private boolean downSignaled = false;
+	private Boolean downSignaled = false;
 
     public void reset() {
         for (int i = 0; i < refereeDecisions.length; i++) {
@@ -107,7 +107,9 @@ public class DecisionController implements CountdownTimerListener {
             }
         }
         // Jury sees all changes
-        fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
+        synchronized (downSignaled) {
+        	fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
+        }
 
         if (decisionsMade == 3) {
         	// save the decision
@@ -135,9 +137,13 @@ public class DecisionController implements CountdownTimerListener {
             // referee must signal that it is being waited upon.
             if (pros == 2 || cons == 2) {
             	if (!downSignaled) {
-	            	groupData.downSignal();
-	                fireEvent(new DecisionEvent(this, DecisionEvent.Type.DOWN, currentTimeMillis, refereeDecisions));
-	                downSignaled = true;
+	            	synchronized (downSignaled) {
+						groupData.downSignal();
+						fireEvent(new DecisionEvent(this,
+								DecisionEvent.Type.DOWN, currentTimeMillis,
+								refereeDecisions));
+						downSignaled = true;
+					}
             	}
             } else {
                 fireEvent(new DecisionEvent(this, DecisionEvent.Type.WAITING, currentTimeMillis, refereeDecisions));
