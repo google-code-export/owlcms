@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DecisionTester implements DecisionController.DecisionEventListener {
+public class DecisionTester implements DecisionEventListener {
 
     private Logger logger = LoggerFactory.getLogger(DecisionTester.class);
 

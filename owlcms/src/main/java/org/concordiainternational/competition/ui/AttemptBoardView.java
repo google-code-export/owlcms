@@ -20,8 +20,8 @@ import java.net.URL;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.Platform;
-import org.concordiainternational.competition.decision.DecisionController.DecisionEventListener;
 import org.concordiainternational.competition.decision.DecisionEvent;
+import org.concordiainternational.competition.decision.DecisionEventListener;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.ui.PlatesInfoEvent.PlatesInfoListener;
 import org.concordiainternational.competition.ui.components.ApplicationView;
@@ -305,7 +305,7 @@ public class AttemptBoardView extends VerticalLayout implements
 	/**
 	 * Process a decision regarding the current lifter.
 	 * Make sure that the name of the lifter does not change until after the decision has been shown.
-	 * @see org.concordiainternational.competition.decision.DecisionController.DecisionEventListener#updateEvent(org.concordiainternational.competition.decision.DecisionEvent)
+	 * @see org.concordiainternational.competition.decision.DecisionEventListener#updateEvent(org.concordiainternational.competition.decision.DecisionEvent)
 	 */
 	@Override
 	public void updateEvent(final DecisionEvent updateEvent) {
