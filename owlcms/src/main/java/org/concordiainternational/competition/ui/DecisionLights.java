@@ -51,6 +51,8 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
     private String platformName;
     private String viewName;
 
+	private boolean downShown;
+
     DecisionLights(boolean initFromFragment, String viewName, boolean juryMode, boolean publicFacing) {
         if (initFromFragment) {
             setParametersFromFragment();
@@ -166,6 +168,7 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
 					switch (updateEvent.getType()) {
 					case DOWN:
 						logger.debug("received DOWN event");
+						downShown = true;
 						if (juryMode) {
 							showLights(decisions);
 						} else {
@@ -194,6 +197,7 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
 						logger.debug("received UPDATE event");
 						if (juryMode) {
 							showLights(decisions);
+							if (downShown) decisionLights[1].addStyleName("down");
 						}
 						break;
 					case SHOW:
@@ -235,6 +239,7 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
 				decisionLights[i].setContentMode(Label.CONTENT_XHTML);
 				decisionLights[i].setValue("&nbsp;");
 			}
+			downShown = false;
 		}
 		app.push();
     }
