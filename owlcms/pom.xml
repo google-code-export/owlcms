@@ -208,6 +208,7 @@
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin</artifactId>
+			<!-- works >version>6.5-20101105.010657-27</version  -->
 			<version>6.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -388,5 +389,6 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
+
 	</dependencies>
 </project>
