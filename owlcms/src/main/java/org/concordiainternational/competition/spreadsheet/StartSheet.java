@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.concordiainternational.competition.data.Category;
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.CompetitionSession;
@@ -94,7 +95,8 @@ public class StartSheet extends ResultSheet {
         final Integer ageGroup = lifter.getAgeGroup();
         final String endOfAgeGroup = endOfGroup(ageGroup, lifter.getGender());
         workSheet.getCell(rownum, 7).setVal(ageGroup + endOfAgeGroup);
-        workSheet.getCell(rownum, 8).setVal(lifter.getRegistrationCategory().getName());
+        final Category registrationCategory = lifter.getRegistrationCategory();
+		workSheet.getCell(rownum, 8).setVal(registrationCategory!= null ? registrationCategory.getName() : null);
         workSheet.getCell(rownum, 9).setVal(SheetUtils.fixValue(lifter.getQualifyingTotal()));
 
         rownum++;
