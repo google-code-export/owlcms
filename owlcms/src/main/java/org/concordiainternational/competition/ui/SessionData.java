@@ -994,7 +994,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
         // record the decision.
         Session session = app.getHbnSession();
-        session.merge(currentLifter2);
+        if (currentLifter2 != null) session.merge(currentLifter2);
     }
     
 	public void downSignal() {
