@@ -443,6 +443,10 @@ button.yesButton {
 	background-size: contain;
 }
 
+.juryLight {
+	padding: 3px;
+}
+
 .largeCountdown {
 	font-size: 500px;
 	line-height: 500px;
