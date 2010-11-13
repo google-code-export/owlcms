@@ -55,7 +55,7 @@ public class CompetitionApplicationComponents {
     public static final String TIMEKEEPER_VIEW = "timekeeperView"; //$NON-NLS-1$
     public static final String UPLOAD_VIEW = "uploadView"; //$NON-NLS-1$
     public static final String WEIGH_IN_LIST = "weighInList"; //$NON-NLS-1$
-    public static final String DECISION_LIGHTS = "decisionLights"; //$NON-NLS-1$
+    public static final String REFEREE_TESTING = "decisionLights"; //$NON-NLS-1$
     public static final String JURY_LIGHTS = "juryLights"; //$NON-NLS-1$
     public static final String COUNTDOWN_DISPLAY = "countdownDisplay"; //$NON-NLS-1$
     public static final String SPREADSHEET_UPLOADER = "spreadsheetUpload";
@@ -84,7 +84,7 @@ public class CompetitionApplicationComponents {
         urlFragmentToView.put(CHANGES_VIEW, new ChangesViewComponent());
         urlFragmentToView.put(COMPETITION_EDITOR, competitionEditorComponent);
         urlFragmentToView.put(COUNTDOWN_DISPLAY, new CountdownDisplayComponent());
-        urlFragmentToView.put(DECISION_LIGHTS, new DecisionLightsComponent());
+        urlFragmentToView.put(REFEREE_TESTING, new RefereeTestingComponent());
         urlFragmentToView.put(JURY_LIGHTS, new JuryLightsComponent());
         urlFragmentToView.put(GROUP_LIST, new GroupListComponent());
         urlFragmentToView.put(ATTEMPT_BOARD_VIEW, new AttemptBoardComponent());
@@ -189,12 +189,12 @@ public class CompetitionApplicationComponents {
     /**
      * Lazy builder for Decision Lights
      */
-    private class DecisionLightsComponent implements CompetitionApplicationComponent {
-        private DecisionLights decisionLights = null;
+    private class RefereeTestingComponent implements CompetitionApplicationComponent {
+        private RefereeTesting decisionLights = null;
 
         @Override
 		public ApplicationView get(boolean initFromFragment, String viewName) {
-            this.decisionLights = (new DecisionLights(initFromFragment, viewName, false, false));
+            this.decisionLights = (new RefereeTesting(initFromFragment, viewName, false, false));
             return decisionLights;
         }
     }
@@ -203,12 +203,12 @@ public class CompetitionApplicationComponents {
      * Lazy builder for Jury Lights
      */
     private class JuryLightsComponent implements CompetitionApplicationComponent {
-        private DecisionLights decisionLights = null;
+        private JuryLights juryLights = null;
 
         @Override
 		public ApplicationView get(boolean initFromFragment, String viewName) {
-            this.decisionLights = (new DecisionLights(initFromFragment, viewName, true, false));
-            return decisionLights;
+            this.juryLights = (new JuryLights(initFromFragment, viewName, false));
+            return juryLights;
         }
     }
 

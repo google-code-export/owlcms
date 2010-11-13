@@ -72,12 +72,13 @@ public class Menu extends MenuBar implements Serializable {
         createLoadComputerMenuItem(menu, competitionApplication, locale);
 
         MenuItem decisions = createDecisionMenuItem(menu, competitionApplication, locale);
-        createDecisionLightsMenuItem(decisions, competitionApplication, locale);
-        createJuryLightsMenuItem(decisions, competitionApplication, locale);
-        decisions.addSeparator();
         createRefereeMenuItem(decisions, competitionApplication, locale, 0);
         createRefereeMenuItem(decisions, competitionApplication, locale, 1);
         createRefereeMenuItem(decisions, competitionApplication, locale, 2);
+        decisions.addSeparator();
+        createJuryLightsMenuItem(decisions, competitionApplication, locale);
+        decisions.addSeparator();
+        createRefereeTestingMenuItem(decisions, competitionApplication, locale);
 
         createResultsMenuItem(menu, competitionApplication, locale);
 
@@ -480,7 +481,7 @@ public class Menu extends MenuBar implements Serializable {
             null);
     }
 
-    private MenuItem createDecisionLightsMenuItem(MenuItem item, final CompetitionApplication competitionApplication,
+    private MenuItem createRefereeTestingMenuItem(MenuItem item, final CompetitionApplication competitionApplication,
             Locale locale) {
         return item.addItem(Messages.getString("CompetitionApplication.DecisionLights", locale), //$NON-NLS-1$
             null, // new ThemeResource("icons/32/document.png"),
@@ -489,7 +490,7 @@ public class Menu extends MenuBar implements Serializable {
 
                 @Override
                 public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.DECISION_LIGHTS);
+                    competitionApplication.doDisplay(CompetitionApplicationComponents.REFEREE_TESTING);
                 }
             });
     }

@@ -20,40 +20,33 @@ import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.DecisionController.Decision;
 import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionEventListener;
-import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.incubator.dashlayout.ui.HorDashLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.NativeButton;
-import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.Panel;
 
-public class DecisionLights extends VerticalSplitPanel implements DecisionEventListener, ApplicationView {
+public class JuryLights extends Panel implements DecisionEventListener, ApplicationView {
 
-    private static final String CELL_WIDTH = "8em";
 
     private static final long serialVersionUID = 1L;
 
-    HorizontalLayout top = new HorizontalLayout();
+    HorDashLayout top = new HorDashLayout();
     Label[] decisionLights = new Label[3];
-    GridLayout bottom;
     SessionData masterData;
     CompetitionApplication app = CompetitionApplication.getCurrent();
 
-    private Logger logger = LoggerFactory.getLogger(DecisionLights.class);
+    private Logger logger = LoggerFactory.getLogger(JuryLights.class);
 
-    private boolean juryMode = false;
     private String platformName;
     private String viewName;
 
+	@SuppressWarnings("unused")
 	private boolean downShown;
 
-    DecisionLights(boolean initFromFragment, String viewName, boolean juryMode, boolean publicFacing) {
+    JuryLights(boolean initFromFragment, String viewName, boolean publicFacing) {
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
@@ -68,20 +61,16 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
         } else if (app.getPlatform() == null) {
         	app.setPlatformByName(platformName);
         }
-        this.juryMode = juryMode;
         
         createLights();
 
-        top.setMargin(true);
-        top.setSpacing(true);
+        top.setMargin(false);
+        top.setSpacing(false);
 
-        this.setFirstComponent(top);
-        bottom = createDecisionButtons();
-        this.setSecondComponent(bottom);
-        setSplitPosition(650, UNITS_PIXELS);
+        this.setContent(top);
+        this.setSizeFull();
         
         resetLights();
-        resetBottom();
 
     }
 
@@ -97,66 +86,12 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
             decisionLights[i] = new Label();
             decisionLights[i].setSizeFull();
             decisionLights[i].setStyleName("decisionLight");
+            decisionLights[i].addStyleName("juryLight");
             top.addComponent(decisionLights[i]);
             top.setExpandRatio(decisionLights[i], 100.0F / decisionLights.length);
         }
 	}
 
-    private GridLayout createDecisionButtons() {
-        GridLayout bottom1 = new GridLayout(3, 3);
-        bottom1.setMargin(true);
-        bottom1.setSpacing(true);
-
-        createLabel(bottom1, refereeLabel(0));
-        createLabel(bottom1, refereeLabel(1));
-        createLabel(bottom1, refereeLabel(2));
-
-        for (int i = 0; i < decisionLights.length; i++) {
-            final int j = i;
-            final NativeButton yesButton = new NativeButton("oui", new ClickListener() {
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    masterData.getDecisionController().decisionMade(j, true);
-                }
-
-            });
-            yesButton.addStyleName("referee"); //$NON-NLS-1$
-            yesButton.addStyleName("yesButton"); //$NON-NLS-1$
-            yesButton.setWidth(CELL_WIDTH);
-            bottom1.addComponent(yesButton);
-        }
-        for (int i = 0; i < decisionLights.length; i++) {
-            final int j = i;
-            final NativeButton noButton = new NativeButton("non", new ClickListener() {
-                private static final long serialVersionUID = 1L;
-
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    masterData.getDecisionController().decisionMade(j, false);
-                }
-
-            });
-            noButton.addStyleName("referee"); //$NON-NLS-1$
-            noButton.addStyleName("noButton"); //$NON-NLS-1$
-            noButton.setWidth(CELL_WIDTH);
-            bottom1.addComponent(noButton);
-        }
-        return bottom1;
-    }
-
-    /**
-     * @param bottom1
-     * @param width
-     */
-    private void createLabel(GridLayout bottom1, String caption) {
-        final Label ref1Label = new Label("");
-        ref1Label.setCaption(caption);
-        ref1Label.setWidth(CELL_WIDTH);
-        ref1Label.addStyleName("refereeButtonLabel");
-        bottom1.addComponent(ref1Label);
-    }
 
     @Override
     public void updateEvent(final DecisionEvent updateEvent) {
@@ -169,36 +104,16 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
 					case DOWN:
 						logger.debug("received DOWN event");
 						downShown = true;
-						if (juryMode) {
-							showLights(decisions);
-						} else {
-							decisionLights[1].setStyleName("decisionLight");
-							decisionLights[1].addStyleName("undecided");
-						}
-						decisionLights[1].addStyleName("down");
-
-						for (int i = 0; i < decisions.length; i++) {
-							if (decisions[i].accepted == null) {
-								((Label) bottom.getComponent(i, 0))
-										.setValue("decision required");
-							}
-						}
+						showLights(decisions);
+						//decisionLights[1].addStyleName("down");
 						break;
 					case WAITING:
 						logger.debug("received WAITING event");
-						for (int i = 0; i < decisions.length; i++) {
-							if (decisions[i].accepted == null) {
-								((Label) bottom.getComponent(i, 0))
-										.setValue("decision required");
-							}
-						}
 						break;
 					case UPDATE:
 						logger.debug("received UPDATE event");
-						if (juryMode) {
-							showLights(decisions);
-							if (downShown) decisionLights[1].addStyleName("down");
-						}
+						showLights(decisions);
+						//if (downShown) decisionLights[1].addStyleName("down");
 						break;
 					case SHOW:
 						logger.debug("received SHOW event");
@@ -207,7 +122,6 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
 					case RESET:
 						logger.debug("received RESET event");
 						resetLights();
-						resetBottom();
 						break;
 					}
 				}
@@ -244,27 +158,10 @@ public class DecisionLights extends VerticalSplitPanel implements DecisionEventL
 		app.push();
     }
 
-    private void resetBottom() {
-        synchronized (app) {
-			for (int i = 0; i < decisionLights.length; i++) {
-				((Label) bottom.getComponent(i, 0)).setValue(" ");
-			}
-		}
-		app.push();
-    }
-
     @Override
 	public void refresh() {
     }
 
-    /**
-     * @param refereeIndex2
-     * @return
-     */
-    private String refereeLabel(int refereeIndex2) {
-        return Messages.getString("RefereeConsole.Referee", CompetitionApplication.getCurrentLocale()) + " "
-            + (refereeIndex2 + 1);
-    }
 
     /* (non-Javadoc)
      * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()
