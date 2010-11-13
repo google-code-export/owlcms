@@ -444,7 +444,8 @@ button.yesButton {
 }
 
 .largeCountdown {
-	font-size: 65ex;
+	font-size: 500px;
+	line-height: 500px;
 	font-weight: bold;
 	vertical-align: middle;
 }
