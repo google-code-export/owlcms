@@ -156,6 +156,9 @@ public class AttemptBoardView extends VerticalLayout implements
 	        
 	        // we are now fully initialized
 	        announcerInfo.loadLifter(currentLifter, masterData);
+	        
+			// URI handler must remain, so is not part of the register/unRegister paire
+			app.getMainWindow().addURIHandler(this);
 	        registerAsListener();
 	        doDisplay();
 		} finally {

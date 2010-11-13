@@ -120,6 +120,8 @@ public class LifterInfo extends VerticalLayout implements
             }
         });
         
+		// URI handler must remain, so is not part of the register/unRegister pair
+		app.getMainWindow().addURIHandler(this);
         registerAsListener();
     }
 
@@ -166,7 +168,7 @@ public class LifterInfo extends VerticalLayout implements
 			updateDisplayBoard(lifter1, groupData1);
 			StringBuilder sb = new StringBuilder();
 			boolean done = getHTMLLifterInfo(lifter1,
-					identifier.startsWith("bottom"), sb); //$NON-NLS-1$
+					isBottom(), sb); //$NON-NLS-1$
 			final Label label = new Label(sb.toString(), Label.CONTENT_XHTML);
 			label.addStyleName("zoomable");
 			label.setData("lifter");
@@ -177,9 +179,9 @@ public class LifterInfo extends VerticalLayout implements
 			if (lifter1.isCurrentLifter() && isTop()) { //$NON-NLS-1$
 				topDisplayOptions(lifter1, groupData1);
 			} else if (lifter1.isCurrentLifter()
-					&& identifier.startsWith("bottom")) { //$NON-NLS-1$
+					&& isBottom()) { //$NON-NLS-1$
 				bottomDisplayOptions(lifter1, groupData1);
-			} else if (identifier.startsWith("display")) { //$NON-NLS-1$
+			} else if (isDisplay()) { //$NON-NLS-1$
 				currentLifterDisplayOptions(lifter1, groupData1);
 			}
 		}
@@ -188,6 +190,7 @@ public class LifterInfo extends VerticalLayout implements
         this.lifter = lifter1;
         logger.debug("LifterInfo.loadLifter() end: " + lifter1.getLastName()); //$NON-NLS-1$
     }
+
 
     /**
      * @param sb
@@ -647,17 +650,30 @@ public class LifterInfo extends VerticalLayout implements
 	 * @return
 	 */
 	private boolean isTop() {
-		return identifier
-				.startsWith("top");
+		return identifier.startsWith("top");
 	}
 	
+	/**
+	 * @return
+	 */
+	private boolean isBottom() {
+		return identifier.startsWith("bottom");
+	}
+
+	/**
+	 * @return
+	 */
+	private boolean isDisplay() {
+		return identifier.startsWith("display");
+	}
+
 	
 	/**
 	 * Register as listener to various events.
 	 */
 	private void registerAsListener() {
 		// window close
-		logger.warn("register");
+		logger.trace("register for {}",identifier);
         app.getMainWindow().addListener(this);
         
 		final CompetitionApplication masterApplication = groupData.getMasterApplication();
@@ -668,13 +684,14 @@ public class LifterInfo extends VerticalLayout implements
 			// timer will buzz on this console
 			if (timer != null) timer.setMasterBuzzer(this);
         }
-		// timer countdown events
-        if (timer != null) timer.addListener(this);
+		// timer countdown events; bottom information does not show timer.
+        if (timer != null && ! isBottom()) timer.addListener(this);
 
 	}
 
 	private void unregisterAsListener() {
 		// window close
+		logger.trace("unregister for {}",identifier);
 		app.getMainWindow().removeListener(this);
 		
 		final CompetitionApplication masterApplication = groupData.getMasterApplication();
@@ -698,6 +715,7 @@ public class LifterInfo extends VerticalLayout implements
 
 	@Override
 	public DownloadStream handleURI(URL context, String relativeUri) {
+		logger.warn("registering listeners");
 		// called on refresh
 		registerAsListener();
 		return null;

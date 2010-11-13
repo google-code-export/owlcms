@@ -168,7 +168,11 @@ public class AnnouncerView extends VerticalSplitPanel implements
 			adjustSplitBarLocation();
 			// we are now fully initialized
 			masterData.setAllowAll(false);
+			
+			// URI handler must remain, so is not part of the register/unRegister paire
+			app.getMainWindow().addURIHandler(this);
 			registerAsListener();
+			
 			if (masterData.lifters.isEmpty()) {
 				logger.debug(
 						"switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
@@ -541,6 +545,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
 
 	@Override
 	public DownloadStream handleURI(URL context, String relativeUri) {
+		logger.warn("registering listeners");
 		registerAsListener();
 		return null;
 	}

@@ -17,6 +17,7 @@
 package org.concordiainternational.competition.ui;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.RuleViolationException;
@@ -25,18 +26,29 @@ import org.concordiainternational.competition.decision.DecisionEventListener;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
+import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.DecisionLightsWindow;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 
-public class CountdownDisplay extends VerticalLayout implements ApplicationView, CountdownTimerListener, DecisionEventListener {
+public class CountdownDisplay extends VerticalLayout implements 
+	ApplicationView,  
+	CountdownTimerListener,
+	DecisionEventListener, 
+	CloseListener,
+	URIHandler
+	{
     public final static Logger logger = LoggerFactory.getLogger(CountdownDisplay.class);
     private static final long serialVersionUID = 1437157542240297372L;
 
@@ -48,6 +60,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
     private String viewName;
 	private Window popUp = null;
 	private DecisionLightsWindow content;
+	private UpdateEventListener updateEventListener;
 
     public CountdownDisplay(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
@@ -71,8 +84,10 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         		app.setPusherDisabled(true);
         		create(app, platformName);
         		masterData = app.getMasterData(platformName);
-        		registerAsGroupDataListener(platformName, masterData);
-        		masterData.getDecisionController().addListener(this);
+        		
+        		app.getMainWindow().addURIHandler(this);
+        		
+        		registerAsListener();
         		display(platformName, masterData);
         	} finally {
         		app.setPusherDisabled(prevDisabled);
@@ -80,13 +95,14 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         }
     }
 
+
     private void registerAsGroupDataListener(final String platformName1, final SessionData masterData1) {
         // locate the current group data for the platformName
         if (masterData1 != null) {
             logger.debug("{} listening to: {}", platformName1, masterData1); //$NON-NLS-1$	
             //masterData.addListener(SessionData.UpdateEvent.class, this, "update"); //$NON-NLS-1$
 
-            SessionData.UpdateEventListener listener = new SessionData.UpdateEventListener() {
+             updateEventListener = new SessionData.UpdateEventListener() {
 
                 @Override
                 public void updateEvent(UpdateEvent updateEvent) {
@@ -99,7 +115,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
                 }
 
             };
-            masterData1.addListener(listener); //$NON-NLS-1$		
+            masterData1.addListener(updateEventListener); //$NON-NLS-1$		
 
         } else {
             logger.debug("{} NOT listening to:  = {}", platformName1, masterData1); //$NON-NLS-1$	
@@ -128,6 +144,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
     private Label createTimeDisplay() {
         Label timeDisplay1 = new Label();
         timeDisplay1.setSizeUndefined();
+        timeDisplay1.setHeight("500px");
         timeDisplay1.addStyleName("largeCountdown");
         return timeDisplay1;
     }
@@ -174,11 +191,7 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
         // we set the value to the time allowed for the current lifter as
         // computed by groupData
         int timeAllowed = groupData.getTimeAllowed();
-        final CountdownTimer timer = groupData.getTimer();
         pushTime(timeAllowed);
-
-        // timer.addListener(this);
-        timer.setCountdownDisplay(this);
     }
 
     @Override
@@ -347,11 +360,45 @@ public class CountdownDisplay extends VerticalLayout implements ApplicationView,
 			content.updateEvent(updateEvent);
 		}
 		
-		
 		// close window
 		if (popUp != null) {
 			popUp.setVisible(false);
 		}
+	}
+
+	
+	/**
+	 * Resister to all necessary listening events
+	 */
+	private void registerAsListener() {
+		app.getMainWindow().addListener((CloseListener)this);
+		registerAsGroupDataListener(platformName, masterData);
+		masterData.getDecisionController().addListener(this);
+        final CountdownTimer timer = masterData.getTimer();
+        timer.setCountdownDisplay(this);
+	}
+	
+	/**
+	 * Undo what registerAsListener did.
+	 */
+	private void unregisterAsListener() {
+		app.getMainWindow().removeListener((CloseListener)this);
+		masterData.removeListener(updateEventListener);
+		masterData.getDecisionController().removeListener(this);
+        final CountdownTimer timer = masterData.getTimer();
+        timer.setCountdownDisplay(null);
+	}
+	
+	
+	@Override
+	public DownloadStream handleURI(URL context, String relativeUri) {
+		registerAsListener();
+		return null;
+	}
+
+	@Override
+	public void windowClose(CloseEvent e) {
+		unregisterAsListener();
 	}
 
 
