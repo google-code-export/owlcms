@@ -116,7 +116,7 @@ public class ResultFrame extends VerticalLayout implements
 
 			create(app);
 			masterData = app.getMasterData(platformName);
-			app.getMainWindow().addURIHandler(this);
+			
 			
 			// we cannot call push() at this point
 			synchronized (app) {
@@ -130,6 +130,9 @@ public class ResultFrame extends VerticalLayout implements
 			    }
 			    logger.debug("browser panel: push disabled = {}",app.getPusherDisabled());
 			}
+			
+			// URI handler must remain, so is not part of the register/unRegister paire
+			app.getMainWindow().addURIHandler(this);
 			registerHandlers(viewName);
 		} finally {
 			app.setPusherDisabled(prevDisabledPush);
