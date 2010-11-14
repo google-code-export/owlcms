@@ -1,5 +1,17 @@
 #summary Release Notes
 
+== Release 2.0.0 ==
+  * Tested with Android 2.1 device as referee console (Archos 28)
+  * Tested with iPod and Android as small jury console to visualize referee decisions
+  * Down signal sound tested
+  * Lighter colors for Result Screen, for DLP projectors
+  * Multiple notifications to other consoles fixed
+  * Handle missing information gracefully when producing start sheet
+  * Better formatting of time countdown
+  * Fixes to changes in plate information not being shown on attempt board (first change)
+  * Quicker response to events by implementing threads
+  * General clean-up of listeners, so that refresh does not leave any behind
+
 == Release 1.9.1 ==
   * Spurious need for refresh on spreadsheets worked around (new behavior with dev versions of Chrome and Vaadin)
   * CSS interference between plates popup and notification popup fixed.
