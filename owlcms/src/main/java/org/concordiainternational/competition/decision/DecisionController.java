@@ -110,6 +110,26 @@ public class DecisionController implements CountdownTimerListener {
         synchronized (downSignaled) {
         	fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
         }
+        
+        if (decisionsMade >= 2) {
+            // the lifter-facing display should display the "down" signal and sound.
+        	// also, downSignal() signals timeKeeper that time has been stopped if they
+        	// had not stopped it manually.
+            if (pros == 2 || cons == 2) {
+            	if (!downSignaled) {
+	            	synchronized (downSignaled) {
+						groupData.downSignal();
+						downSignaled = true;
+						fireEvent(new DecisionEvent(this,
+								DecisionEvent.Type.DOWN, currentTimeMillis,
+								refereeDecisions));
+
+					}
+            	}
+            } else {
+                fireEvent(new DecisionEvent(this, DecisionEvent.Type.WAITING, currentTimeMillis, refereeDecisions));
+            }
+        }
 
         if (decisionsMade == 3) {
         	// save the decision
@@ -129,27 +149,8 @@ public class DecisionController implements CountdownTimerListener {
                 fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
             }
         }
-        // test for this must come after 3 decisions so allDecisionsMade is set
-        if (decisionsMade >= 2) {
-            // the platform display should display the "down" signal and sound.
-            // each referee console gets the event, the console for the last
-            // outstanding
-            // referee must signal that it is being waited upon.
-            if (pros == 2 || cons == 2) {
-            	if (!downSignaled) {
-	            	synchronized (downSignaled) {
-						groupData.downSignal();
-						downSignaled = true;
-						fireEvent(new DecisionEvent(this,
-								DecisionEvent.Type.DOWN, currentTimeMillis,
-								refereeDecisions));
 
-					}
-            	}
-            } else {
-                fireEvent(new DecisionEvent(this, DecisionEvent.Type.WAITING, currentTimeMillis, refereeDecisions));
-            }
-        }
+
 
     }
 
