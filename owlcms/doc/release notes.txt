@@ -1,0 +1,68 @@
+#summary Release Notes
+
+== Release 2.0.1 ==
+  * Stop time if time is still running when down is signaled.
+  
+== Release 2.0.0 ==
+  * Tested with Android 2.1 device as referee console (Archos 28)
+  * Tested with iPod and Android as small jury console to visualize referee decisions
+  * Down signal sound tested
+  * Lighter colors for Result Screen, for DLP projectors
+  * Multiple notifications to other consoles fixed
+  * Handle missing information gracefully when producing start sheet
+  * Better formatting of time countdown
+  * Fixes to changes in plate information not being shown on attempt board (first change)
+  * Quicker response to events by implementing threads
+  * General clean-up of listeners, so that refresh does not leave any behind
+
+== Release 1.9.1 ==
+  * Spurious need for refresh on spreadsheets worked around (new behavior with dev versions of Chrome and Vaadin)
+  * CSS interference between plates popup and notification popup fixed.
+  * Language of user being notified used in notification popup instead of language of notifier.
+
+== Release 1.9.0 ==
+  * Release candidate for referee decision handling.
+  * Result board shows decisions
+  * Attempt board waits for decision display to reset prior to switching to next lifter.
+  * Consoles are notified when someone else stops time (e.g. marshall console receiving weight change for current lifter whose time has started).
+
+== Release 1.8.7 ==
+  * Attempt board shows referee decisions.
+  * Public Message button added to all consoles, including Results.
+  * Results pane now correctly shows the selected group on first invocation and through URL fragment.
+    * same fix corrects behavior of Team Points and Rankings buttons (selector showed no group, but a group was in fact selected, resulting in a truncated report)
+  
+== Release 1.8.6 ==
+  * Changes made to plate loading information are propagated to all plate loading subwindows and to attempt board.
+  * This release was used for Québec Senior Championships 2010 (84 athletes).
+  
+== Release 1.8.5 ==
+  * (1.8.5-a) Fixed Exception in Start Sheet when a group had no start or end time
+  * (1.8.5-a) Fixed default communication port for NEC display.
+  * Location of team templates moved to a team sub-directory, only name shown in dropdown
+  * Restored Points and Ranking button on results page (fixed regression introduced in 1.8.2)
+  * Fix for obscure bug with 2-minute rule that only showed up if announcer acts as timekeeper ("start time on announce" option).
+  * Clean-up of push behavior so that the push() method is not called involuntarily in constructors.
+  * Removal of all vestiges of polling.
+  * Documentation reorganized.
+  * merged jetty and tomcat configurations (widgetset located in Maven src instead of target)
+
+== Release 1.8.4 ==
+  * Improved behavior when refreshing public address display (cleanup of listeners)
+  * Support for Vaadin 6.5
+
+== Release 1.8.3 ==
+  * Display public message on demand, overlaid over result boards.  Typically used between sessions or during pauses.
+  * Fixed Jetty configuration issue relative to serial communication native library.
+  * Cosmetic fixes to Start List
+
+== Release 1.8.2 ==
+  * Show officials on result sheet.
+  * Editing competition session information, officials in particular
+  * Can again reload competition data from old spreadsheets.
+  * Further Maven changes to follow testing conventions
+
+== Release 1.8.1 ==
+  * Change in source layout to run under Maven
+  * Small fixes to run under Maven jetty:run plugin (ICEpush causes exception if called in class constructor)
+  * Time display now shows referee decisions after 3 seconds.
