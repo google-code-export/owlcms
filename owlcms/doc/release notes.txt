@@ -1,7 +1,7 @@
 #summary Release Notes
 
 == Release 2.0.1 ==
-  * Minor improvement if time was not stopped by timekeeper but down is signaled.
+  * Stop time if time is still running when down is signaled.
   
 == Release 2.0.0 ==
   * Tested with Android 2.1 device as referee console (Archos 28)
