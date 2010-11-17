@@ -16,6 +16,8 @@
 
 package org.concordiainternational.competition.ui;
 
+import java.net.URL;
+
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.DecisionController;
 import org.concordiainternational.competition.decision.DecisionController.Decision;
@@ -28,19 +30,27 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UriFragmentUtility;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 
 /**
  * Yes/No buttons for each referee.
  * 
  * @author jflamy
  */
+/**
+ * @author jflamy
+ *
+ */
 @SuppressWarnings("serial")
-public class RefereeConsole extends VerticalLayout implements DecisionEventListener, ApplicationView {
+public class RefereeConsole extends VerticalLayout implements DecisionEventListener, ApplicationView, CloseListener, URIHandler {
 
     private static final long serialVersionUID = 1L;
 
@@ -60,6 +70,8 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
 
     private String viewName;
 
+	private DecisionController decisionController;
+
 
     RefereeConsole(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
@@ -78,8 +90,10 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
         }
         
         masterData = app.getMasterData(platformName);
-        final DecisionController decisionController = masterData.getDecisionController();
-        decisionController.addListener(this);
+        decisionController = masterData.getDecisionController();
+        
+        app.getMainWindow().addURIHandler(this);
+        registerAsListener();
         
         this.setSizeFull();
         this.addStyleName("refereePad");
@@ -91,6 +105,8 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
         this.setExpandRatio(top, 80.0F);
         this.setExpandRatio(bottom, 20.0F);
     }
+
+
 
     /**
      * @param decisionController
@@ -297,5 +313,43 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
 
     
 
+	/**
+	 * Register all listeners for this app.
+	 * Exception: do not register the URIHandler here.
+	 */
+	private void registerAsListener() {
+		app.getMainWindow().addListener((CloseListener)this);
+		decisionController.addListener(this);
+	}
+	
+
+	/**
+	 * Undo all registrations in {@link #registerAsListener()}.
+	 */
+	private void unregisterAsListener() {
+		app.getMainWindow().removeListener((CloseListener)this);
+		decisionController.removeListener(this);
+	}
+
+
+	/* Will be called when page is loaded.
+	 * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
+	 */
+	@Override
+	public DownloadStream handleURI(URL context, String relativeUri) {
+		registerAsListener();
+		return null;
+	}
+
+
+	/* Will be called when page is unloaded (including on refresh).
+	 * @see com.vaadin.ui.Window.CloseListener#windowClose(com.vaadin.ui.Window.CloseEvent)
+	 */
+	@Override
+	public void windowClose(CloseEvent e) {
+		unregisterAsListener();
+	}
+	
+	
 
 }
