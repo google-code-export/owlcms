@@ -2,7 +2,8 @@
 
 == Release 2.0.1 ==
   * Stop time if time is still running when down is signaled.
-  * Referee console does not leave listeners around when closed or refreshed
+  * Notification to other officials if new weight for current lifter is typed directly
+  * Fix: Referee console does not leave listeners around when closed or refreshed
   
 == Release 2.0.0 ==
   * Tested with Android 2.1 device as referee console (Archos 28)
