@@ -281,7 +281,11 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             // button had been used
             final CountdownTimer timer2 = getTimer();
             if (timer2 != null && timer2.isRunning()) {
-                timer2.pause();
+            	if (currentLifter == priorLifter) {
+            		timer2.pause(TimeStoppedNotificationReason.CURRENT_LIFTER_CHANGE);
+            	} else {
+            		timer2.pause();
+            	}
             } // stop time something is happening.
             setTimeAllowed(timeAllowed(currentLifter));
             needToUpdateNEC = true;
