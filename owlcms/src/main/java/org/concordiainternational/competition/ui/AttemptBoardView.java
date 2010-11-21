@@ -33,6 +33,7 @@ import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.URIHandler;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window.CloseEvent;
@@ -106,7 +107,10 @@ public class AttemptBoardView extends VerticalLayout implements
             masterData = app.getMasterData(platformName);
             if (app != masterData.getMasterApplication()) {
                 // we are not the master application; hide the menu bar.
-                app.components.menu.setVisible(false);
+                Component menuComponent = app.components.menu;
+				if (menuComponent != null) menuComponent.setVisible(false);
+				menuComponent = app.mobileMenu;
+				if (menuComponent != null) menuComponent.setVisible(false);
             }
             platform = Platform.getByName(platformName);
 	        Lifter currentLifter = masterData.getCurrentLifter();

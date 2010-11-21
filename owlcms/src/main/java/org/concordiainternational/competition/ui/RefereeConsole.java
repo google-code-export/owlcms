@@ -73,7 +73,7 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
 	private DecisionController decisionController;
 
 
-    RefereeConsole(boolean initFromFragment, String viewName) {
+    public RefereeConsole(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
             setParametersFromFragment();
         } else {

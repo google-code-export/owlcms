@@ -30,6 +30,7 @@ import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.Menu;
 import org.concordiainternational.competition.ui.components.ResultFrame;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,13 +77,12 @@ public class CompetitionApplicationComponents {
         this.menu = menu;
         this.setPlatformByName(platformName);
 
-        final CompetitionEditorComponent competitionEditorComponent = new CompetitionEditorComponent();
-        urlFragmentToView.put(HOME, competitionEditorComponent);
+        urlFragmentToView.put(HOME, new EmptyComponent());
         urlFragmentToView.put(ANNOUNCER_VIEW, new AnnouncerViewComponent());
         urlFragmentToView.put(SUMMARY_LIFT_ORDER_VIEW, new SummaryLiftOrderViewComponent());
         urlFragmentToView.put(CATEGORY_LIST, new CategoryListComponent());
         urlFragmentToView.put(CHANGES_VIEW, new ChangesViewComponent());
-        urlFragmentToView.put(COMPETITION_EDITOR, competitionEditorComponent);
+        urlFragmentToView.put(COMPETITION_EDITOR, new CompetitionEditorComponent());
         urlFragmentToView.put(COUNTDOWN_DISPLAY, new CountdownDisplayComponent());
         urlFragmentToView.put(REFEREE_TESTING, new RefereeTestingComponent());
         urlFragmentToView.put(JURY_LIGHTS, new JuryLightsComponent());
@@ -385,6 +385,19 @@ public class CompetitionApplicationComponents {
             return new AttemptBoardView(initFromFragment, viewName);
         }
     }
+    
+    /**
+     * Lazy builder for competition editor.
+     */
+    private class EmptyComponent implements CompetitionApplicationComponent {
+        private EmptyView emptyView = null;
+
+        @Override
+		public EmptyView get(boolean initFromFragment, String viewName) {
+            emptyView = (new EmptyView());
+            return emptyView;
+        }
+    }
 
     public ApplicationView getViewByName(String fragment, boolean initFromFragment)  {
         int where = fragment.indexOf("/");
@@ -395,6 +408,8 @@ public class CompetitionApplicationComponents {
         final CompetitionApplicationComponent component = urlFragmentToView.get(viewName);
         if (component != null) {
             final ApplicationView applicationView = component.get(initFromFragment,viewName);
+            LoggerUtils.logException(logger, new Exception("fragment "+fragment));
+            logger.warn("getViewByName returning {}",applicationView);
             return applicationView;
         } else {
             throw new RuntimeException(Messages.getString(

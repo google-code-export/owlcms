@@ -57,7 +57,20 @@ public class PushServlet extends ApplicationServlet {
         // the following is mobile safari specific (iPod).  does not harm other browsers.
         // there is no easy way to make this conditional without overriding the whole 
         // writeAjaxPage method, which is not worth it at this stage.
-        page.write("<meta name='viewport' content='width=device-width' />");
-        page.write("<meta name='apple-mobile-web-app-capable' content='yes' />");
+//        page.write("<meta name='viewport' content='width=device-width' />");
+//        page.write("<meta name='apple-mobile-web-app-capable' content='yes' />");
+        
+        page.append("<meta name=\"viewport\" content="
+                + "\"user-scalable=no, width=device-width, "
+                + "initial-scale=1.0, maximum-scale=1.0;\" />");
+        page.append("<meta name=\"apple-touch-fullscreen\" content=\"yes\" />");
+        page.append("<meta name=\"apple-mobile-web-app-capable\" "
+                + "content=\"yes\" />");
+        page.append("<meta name=\"apple-mobile-web-app-status-bar-style\" "
+                + "content=\"black\" />");
+        page.append("<link rel=\"apple-touch-icon\" "
+                + "href=\"TouchKit/VAADIN/themes/touch/img/icon.png\" />");
+        page.append("<link rel=\"apple-touch-startup-image\" "
+                + "href=\"TouchKit/VAADIN/themes/touch/img/startup.png\" />");
     }
 }

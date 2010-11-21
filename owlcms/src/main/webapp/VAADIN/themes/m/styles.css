@@ -1,0 +1,111 @@
+@import url(../touch/styles.css);
+
+.mobileMenu {
+	zoom: 130%;
+}
+.refereePad .red {
+	background-color: red;
+	border-style: solid;
+	border-width: thin;
+	border-color: black;
+}
+
+.refereePad .white {
+	background-color: white;
+	border-style: solid;
+	border-width: thin;
+	border-color: black;
+}
+
+.refereePad .refereeReminder {
+	background-color: yellow;
+	border-style: solid;
+	border-width: thin;
+	border-color: black;
+	font-size: x-large;
+	font-weight: bold;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.refereePad .refereeOk {
+	background-color: white;
+	border-style: solid;
+	border-width: thin;
+	border-color: black;
+	font-size: larger;
+	font-weight: bold;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.decisionLight {
+	border-style: solid;
+	border-width: thin;
+	height: 10ex;
+}
+
+.decisionLight.undecided {
+	background-color: silver;
+	background-image: none;
+}
+
+.decisionLight.lift {
+	background-color: white;
+	background-image: none;
+}
+
+.decisionLight.nolift {
+	background-color: red;
+	background-image: none;
+}
+
+.decisionLight.down {
+	background-image: url("images/down.png");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: contain;
+}
+
+.juryLight {
+	padding: 3px;
+}
+
+.largeCountdown {
+	font-size: 500px;
+	line-height: 500px;
+	font-weight: bold;
+	vertical-align: middle;
+}
+
+.decisionLightsWindow .v-window-outerheader {
+	display: none;
+}
+
+.decisionLightsWindow .v-window-footer {
+	display: none;
+}
+
+.decisionLightsWindow .v-window-closebox {
+	display: none;
+}
+
+.decisionLightsWindow .v-window-contents {
+	background-color: black;
+	color: white;
+}
+
+.decisionLightsWindow .down {
+	background-color: black;
+	background-image: url("images/down.png");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: contain;
+}
+
+.decisionLightsWindow .down .undecided {
+	border-style: none;
+	display: none;
+}

@@ -26,9 +26,9 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.incubator.dashlayout.ui.HorDashLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.VerticalLayout;
 
-public class JuryLights extends Panel implements DecisionEventListener, ApplicationView {
+public class JuryLights extends VerticalLayout implements DecisionEventListener, ApplicationView {
 
 
     private static final long serialVersionUID = 1L;
@@ -46,7 +46,7 @@ public class JuryLights extends Panel implements DecisionEventListener, Applicat
 	@SuppressWarnings("unused")
 	private boolean downShown;
 
-    JuryLights(boolean initFromFragment, String viewName, boolean publicFacing) {
+    public JuryLights(boolean initFromFragment, String viewName, boolean publicFacing) {
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
@@ -67,8 +67,10 @@ public class JuryLights extends Panel implements DecisionEventListener, Applicat
         top.setMargin(false);
         top.setSpacing(false);
 
-        this.setContent(top);
         this.setSizeFull();
+        this.addComponent(top);
+        this.setExpandRatio(top,1);
+        this.setMargin(false);
         
         resetLights();
 

@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.net.SocketException;
+import java.net.URL;
 import java.util.Locale;
 
 import javax.servlet.ServletContext;
@@ -32,11 +33,13 @@ import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.LocalizedSystemMessages;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.mobile.MobileMenu;
 import org.concordiainternational.competition.spreadsheet.OutputSheet;
 import org.concordiainternational.competition.spreadsheet.OutputSheetStreamSource;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.Menu;
 import org.concordiainternational.competition.utils.Localized;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -53,6 +56,7 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 import com.vaadin.event.ListenerMethod;
 import com.vaadin.service.ApplicationContext;
 import com.vaadin.service.ApplicationContext.TransactionListener;
+import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.ErrorMessage;
 import com.vaadin.terminal.ParameterHandler;
 import com.vaadin.terminal.StreamResource;
@@ -77,9 +81,10 @@ import com.vaadin.ui.Window.Notification;
 public class CompetitionApplication extends Application implements HbnSessionManager, UserActions, Serializable  {
     private static final long serialVersionUID = -1774806616519381075L;
 
-    private static boolean USE_BROWSER_LANGUAGE = true; // ignore preferences
-                                                         // received from
-                                                         // browser
+    /**
+     * if true, use the language set in the browser
+     */
+    final private static boolean USE_BROWSER_LANGUAGE = true;
 
     private static Logger logger = LoggerFactory.getLogger(CompetitionApplication.class);
     public static XLogger traceLogger = XLoggerFactory.getXLogger("Tracing"); //$NON-NLS-1$
@@ -92,6 +97,13 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     public CompetitionApplication() {
 		super();
         current.set(this);
+        logger.debug("new application {}",this);
+	}
+    
+    public CompetitionApplication(String suffix) {
+		super();
+        current.set(this);
+        setAppSuffix(suffix);
         logger.debug("new application {}",this);
 	}
     
@@ -186,7 +198,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
     transient public CompetitionApplicationComponents components;
 
-    private UriFragmentUtility uriFragmentUtility = new UriFragmentUtility();
+    protected UriFragmentUtility uriFragmentUtility = new UriFragmentUtility();
 
     /*
      * Display views
@@ -194,17 +206,27 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
     private SoundPlayer buzzer = new SoundPlayer();
 
-    private ICEPush pusher = null;
+    protected ICEPush pusher = null;
 
-	private TransactionListener httpRequestListener;
+	protected TransactionListener httpRequestListener;
 
-	private boolean pusherDisabled = false;
+	protected boolean pusherDisabled = false;
+
+	private String appSuffix = "/app/";
+
+	private Panel mobilePanel;
+
+	private boolean layoutCreated;
+
+	MobileMenu mobileMenu;
+
+	protected String contextURI;
 
     public void displayRefereeConsole(int refereeIndex) {
         final RefereeConsole view = (RefereeConsole) components
                 .getViewByName(CompetitionApplicationComponents.REFEREE_CONSOLE, false);
         view.setRefereeIndex(refereeIndex);
-        setMainLayoutContent(view);
+        setMainLayoutContent(view);	
         uriFragmentUtility.setFragment(view.getFragment(), false);
     }
 
@@ -212,7 +234,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @param viewName
      */
     public void doDisplay(String viewName) {
-    	logger.debug("doDisplay {}",viewName);
+    	logger.warn("doDisplay {}",viewName);
         ApplicationView view = components.getViewByName(viewName, false);
         setMainLayoutContent(view);
         uriFragmentUtility.setFragment(view.getFragment(), false);
@@ -221,7 +243,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     /**
      * @return
      */
-    private ICEPush ensurePusher() {
+    protected ICEPush ensurePusher() {
         if (pusher == null) {
             pusher = new ICEPush();
             getMainWindow().addComponent(pusher);
@@ -356,8 +378,18 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
 
     @Override
-    public void init() {    	
-        // ignore the preference received from the browser.
+    public void init() {
+        sharedInit();
+
+        // create the initial look.
+        buildMainLayout();
+    }
+
+	/**
+	 * 
+	 */
+	public void sharedInit() {
+		// ignore the preference received from the browser.
         if (!USE_BROWSER_LANGUAGE) this.setLocale(getDefaultLocale());
 
         if (components == null) {
@@ -373,10 +405,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         if (httpRequestListener == null) {
         	httpRequestListener = attachHttpRequestListener();
         }
-
-        // create the initial look.
-        buildMainLayout();
-    }
+	}
 
     /**
      * @param streamSource
@@ -385,8 +414,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     @Override
 	public void openSpreadsheet(OutputSheetStreamSource<? extends OutputSheet> streamSource, final String filename) {
         StreamResource streamResource = new StreamResource(streamSource, filename + ".xls", this); //$NON-NLS-1$
-        streamResource.setCacheTime(5000); // no cache (<=0) does not work with
-                                           // IE8
+        streamResource.setCacheTime(5000); // no cache (<=0) does not work with IE8
         streamResource.setMIMEType("application/x-msexcel"); //$NON-NLS-1$
         WebApplicationContext webAppContext = (WebApplicationContext)this.getContext();
         if (webAppContext.getBrowser().isChrome()) {
@@ -427,11 +455,17 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
 
     public void setMainLayoutContent(ApplicationView c) {
-    	logger.trace(">>>>> setting app view for {} -- view {}",this,c);
-        this.components.currentView = c;
         boolean needsMenu = c.needsMenu();
-		this.components.menu.setVisible(needsMenu);
-        this.components.mainPanel.setContent(c);
+    	logger.warn(">>>>> setting app view for {} -- view {}",this,c);
+        if (this.mobilePanel == null) {
+            this.components.currentView = c;
+    		final Menu menu = this.components.menu;
+    		if (menu != null) menu.setVisible(needsMenu);
+            this.components.mainPanel.setContent(c);
+        } else {
+        	mobileMenu.setVisible(needsMenu);
+        	mobilePanel.setContent(c);
+        }
     }
 
     /*
@@ -544,7 +578,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * Vaadin "transaction" equals "http request". This method fires for all
      * servlets in the session.
      */
-    private TransactionListener attachHttpRequestListener() {
+    protected TransactionListener attachHttpRequestListener() {
         TransactionListener listener = new TransactionListener() {
             private static final long serialVersionUID = -2365336986843262181L;
 
@@ -573,31 +607,73 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     /**
      * Create the main layout.
      */
-    private void buildMainLayout() {
+    @SuppressWarnings("serial")
+	private void buildMainLayout() {
         components.mainWindow = new Window(Messages.getString("CompetitionApplication.Title", getLocale())); //$NON-NLS-1$
         setMainWindow(components.mainWindow);
-
-        setTheme("competition"); //$NON-NLS-1$
-        VerticalLayout mainLayout = new VerticalLayout();
+        final VerticalLayout mainLayout = new VerticalLayout();
 
         // back and bookmark processing -- look at the presence of a fragment in
         // the URL
         mainLayout.addComponent(uriFragmentUtility);
-        uriFragmentUtility.setFragment("competitionEditor");
+
         uriFragmentUtility.addListener(new FragmentChangedListener() {
             private static final long serialVersionUID = 1L;
 
             @Override
             public void fragmentChanged(FragmentChangedEvent source) {
-                logger.debug("fragment {}",source.getUriFragmentUtility().getFragment());
+                logger.warn("fragmentChanged {}",source.getUriFragmentUtility().getFragment());
                 String frag = source.getUriFragmentUtility().getFragment();
                 displayView(frag);
             }
-
         });
+        
+        components.mainWindow.addURIHandler(new URIHandler() {
+			@Override
+			public DownloadStream handleURI(URL context, String relativeUri) {
+				final String externalForm = context.toExternalForm();
+				contextURI = externalForm;
+				logger.warn("handleURI uris: {} {}",externalForm,contextURI);
+				if (layoutCreated) {
+					logger.warn("layout exists, skipping");
+					return null; // already created layout
+				} else {
+					logger.warn("creating layout");
+				}
+
+				if (contextURI.endsWith("/app/")){
+					LoggerUtils.logException(logger, new Exception("creating app layout !"+externalForm+" "+contextURI));
+					logger.warn("creating app layout");
+					createAppLayout(mainLayout);
+					if (relativeUri.isEmpty()) {
+						setMainLayoutContent(components.getViewByName("competitionEditor", false));
+					}
+				} else if (contextURI.endsWith("/m/")) {
+					LoggerUtils.logException(logger, new Exception("creating mobile layout !"+externalForm+" "+contextURI));
+					createMobileLayout(mainLayout);
+					if (relativeUri.isEmpty()) {
+						setMainLayoutContent(components.getViewByName("", false));
+					}
+				} else {
+					throw new RuntimeException(Messages.getString("CompetitionApplication.invalidURL", getLocale()));
+				}
+				layoutCreated = true;
+				return null;
+			}});
 
 
-        // include a sound player
+    }
+
+
+
+	/**
+	 * @param mainLayout
+	 */
+	private void createAppLayout(VerticalLayout mainLayout) {
+		mobilePanel = null;
+        setTheme("competition"); //$NON-NLS-1$
+        
+		// include a sound player
         mainLayout.addComponent(buzzer);
 
         mainLayout.setSizeFull();
@@ -606,18 +682,43 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         components.menu = new Menu();
         mainLayout.addComponent(components.menu);
         components.menu.setVisible(false);
+        
         mainLayout.addComponent(components.mainPanel);
         mainLayout.setExpandRatio(components.mainPanel, 1);
         components.mainPanel.setSizeFull();
+        
         getMainWindow().setContent(mainLayout);
-    }
+	}
+	
+	/**
+	 * @param mainLayout
+	 */
+	protected void createMobileLayout(VerticalLayout mainLayout) {
+		components.mainPanel = null;
+        setTheme("m");
+        
+        mainLayout.setMargin(false,false,false,false);
+        mainLayout.setSizeFull();
+        
+        mobileMenu = new MobileMenu();
+        mobileMenu.setSizeUndefined();
+        mainLayout.addComponent(mobileMenu);
+        mainLayout.setExpandRatio(mobileMenu, 0);
 
+        mobilePanel = new Panel();
+        mainLayout.addComponent(mobilePanel);
+        mainLayout.setExpandRatio(mobilePanel, 1);
+        mobilePanel.setSizeFull();
+        
+        getMainWindow().setContent(mainLayout);		
+	}
+	
     /**
      * @param uri
      * 
      */
     private void checkURI(String uri) {
-        if (!uri.contains("/app/")) {
+		if (uri.endsWith("/app") || uri.endsWith("/m")) {
             logger.error("missing trailing / after app : {}", uri);
             getMainWindow().showNotification(
                 Messages.getString("CompetitionApplication.invalidURL", getLocale()) + "<br>", //$NON-NLS-1$
@@ -654,6 +755,22 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         ApplicationView view = components.getViewByName(frag, true); // initialize from URI fragment
         setMainLayoutContent(view);
     }
+
+	public String getAppSuffix() {
+		return appSuffix;
+	}
+
+	public void setAppSuffix(String appSuffix) {
+		this.appSuffix = appSuffix;
+	}
+
+	public void setPusher(ICEPush pusher) {
+		this.pusher = pusher;
+	}
+
+	public ICEPush getPusher() {
+		return pusher;
+	}
     
 }
 
