@@ -222,6 +222,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
 	protected String contextURI;
 
+	private VerticalLayout mainLayout;
+
     public void displayRefereeConsole(int refereeIndex) {
         final RefereeConsole view = (RefereeConsole) components
                 .getViewByName(CompetitionApplicationComponents.REFEREE_CONSOLE, false);
@@ -234,7 +236,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @param viewName
      */
     public void doDisplay(String viewName) {
-    	logger.warn("doDisplay {}",viewName);
+//    	logger.warn("doDisplay {}",viewName);
         ApplicationView view = components.getViewByName(viewName, false);
         setMainLayoutContent(view);
         uriFragmentUtility.setFragment(view.getFragment(), false);
@@ -336,7 +338,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      */
     public InputStream getResourceAsStream(String path) throws IOException {
         InputStream resourceAsStream;
-        logger.warn("classpath: {}",System.getProperty("java.class.path"));
+//        logger.warn("classpath: {}",System.getProperty("java.class.path"));
               
         // first, search using class loader
         resourceAsStream = this.getClass().getResourceAsStream(path); //$NON-NLS-1$
@@ -454,19 +456,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         }
     }
 
-    public void setMainLayoutContent(ApplicationView c) {
-        boolean needsMenu = c.needsMenu();
-    	logger.warn(">>>>> setting app view for {} -- view {}",this,c);
-        if (this.mobilePanel == null) {
-            this.components.currentView = c;
-    		final Menu menu = this.components.menu;
-    		if (menu != null) menu.setVisible(needsMenu);
-            this.components.mainPanel.setContent(c);
-        } else {
-        	mobileMenu.setVisible(needsMenu);
-        	mobilePanel.setContent(c);
-        }
-    }
+
 
     /*
      * (non-Javadoc)
@@ -611,7 +601,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 	private void buildMainLayout() {
         components.mainWindow = new Window(Messages.getString("CompetitionApplication.Title", getLocale())); //$NON-NLS-1$
         setMainWindow(components.mainWindow);
-        final VerticalLayout mainLayout = new VerticalLayout();
+        mainLayout = new VerticalLayout();
 
         // back and bookmark processing -- look at the presence of a fragment in
         // the URL
@@ -622,7 +612,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
             @Override
             public void fragmentChanged(FragmentChangedEvent source) {
-                logger.warn("fragmentChanged {}",source.getUriFragmentUtility().getFragment());
+                logger.trace("fragmentChanged {}",source.getUriFragmentUtility().getFragment());
                 String frag = source.getUriFragmentUtility().getFragment();
                 displayView(frag);
             }
@@ -633,17 +623,17 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 			public DownloadStream handleURI(URL context, String relativeUri) {
 				final String externalForm = context.toExternalForm();
 				contextURI = externalForm;
-				logger.warn("handleURI uris: {} {}",externalForm,contextURI);
+//				logger.warn("handleURI uris: {} {}",externalForm,contextURI);
 				if (layoutCreated) {
-					logger.warn("layout exists, skipping");
+//					logger.warn("layout exists, skipping");
 					return null; // already created layout
 				} else {
-					logger.warn("creating layout");
+//					logger.warn("creating layout");
 				}
 
 				if (contextURI.endsWith("/app/")){
-					LoggerUtils.logException(logger, new Exception("creating app layout !"+externalForm+" "+contextURI));
-					logger.warn("creating app layout");
+//					LoggerUtils.logException(logger, new Exception("creating app layout !"+externalForm+" "+contextURI));
+//					logger.warn("creating app layout");
 					createAppLayout(mainLayout);
 					if (relativeUri.isEmpty()) {
 						setMainLayoutContent(components.getViewByName("competitionEditor", false));
@@ -667,52 +657,68 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
 
 	/**
-	 * @param mainLayout
+	 * @param mainLayout1
 	 */
-	private void createAppLayout(VerticalLayout mainLayout) {
+	private void createAppLayout(VerticalLayout mainLayout1) {
 		mobilePanel = null;
         setTheme("competition"); //$NON-NLS-1$
         
 		// include a sound player
-        mainLayout.addComponent(buzzer);
+        mainLayout1.addComponent(buzzer);
 
-        mainLayout.setSizeFull();
-        mainLayout.setStyleName("blue"); //$NON-NLS-1$
+        mainLayout1.setSizeFull();
+        mainLayout1.setStyleName("blue"); //$NON-NLS-1$
 
         components.menu = new Menu();
-        mainLayout.addComponent(components.menu);
+        mainLayout1.addComponent(components.menu);
         components.menu.setVisible(false);
         
-        mainLayout.addComponent(components.mainPanel);
-        mainLayout.setExpandRatio(components.mainPanel, 1);
+        mainLayout1.addComponent(components.mainPanel);
+        mainLayout1.setExpandRatio(components.mainPanel, 1);
         components.mainPanel.setSizeFull();
         
-        getMainWindow().setContent(mainLayout);
+        getMainWindow().setContent(mainLayout1);
 	}
 	
 	/**
-	 * @param mainLayout
+	 * @param mainLayout1
 	 */
-	protected void createMobileLayout(VerticalLayout mainLayout) {
+	protected void createMobileLayout(VerticalLayout mainLayout1) {
 		components.mainPanel = null;
         setTheme("m");
         
-        mainLayout.setMargin(false,false,false,false);
-        mainLayout.setSizeFull();
+        mainLayout1.setMargin(false,false,false,false);
+        mainLayout1.setSizeFull();
         
         mobileMenu = new MobileMenu();
-        mobileMenu.setSizeUndefined();
-        mainLayout.addComponent(mobileMenu);
-        mainLayout.setExpandRatio(mobileMenu, 0);
+        mobileMenu.setSizeFull();
+        mainLayout1.addComponent(mobileMenu);
 
         mobilePanel = new Panel();
-        mainLayout.addComponent(mobilePanel);
-        mainLayout.setExpandRatio(mobilePanel, 1);
+        mainLayout1.addComponent(mobilePanel);
         mobilePanel.setSizeFull();
+        mobilePanel.setVisible(false);
         
-        getMainWindow().setContent(mainLayout);		
+        getMainWindow().setContent(mainLayout1);		
 	}
 	
+    public void setMainLayoutContent(ApplicationView c) {
+        boolean needsMenu = c.needsMenu();
+    	//logger.warn(">>>>> setting app view for {} -- view {}",this,c);
+        if (this.mobilePanel == null) {
+            this.components.currentView = c;
+    		final Menu menu = this.components.menu;
+    		if (menu != null) menu.setVisible(needsMenu);
+            this.components.mainPanel.setContent(c);
+        } else {
+        	mobileMenu.setVisible(needsMenu);
+        	mobileMenu.setSizeUndefined();
+        	mobilePanel.setVisible(true);
+        	mobilePanel.setContent(c);
+        	mainLayout.setExpandRatio(mobileMenu,0);
+        	mainLayout.setExpandRatio(mobilePanel,100);
+        }
+    }
     /**
      * @param uri
      * 

@@ -30,7 +30,6 @@ import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.Menu;
 import org.concordiainternational.competition.ui.components.ResultFrame;
-import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -408,8 +407,8 @@ public class CompetitionApplicationComponents {
         final CompetitionApplicationComponent component = urlFragmentToView.get(viewName);
         if (component != null) {
             final ApplicationView applicationView = component.get(initFromFragment,viewName);
-            LoggerUtils.logException(logger, new Exception("fragment "+fragment));
-            logger.warn("getViewByName returning {}",applicationView);
+//            LoggerUtils.logException(logger, new Exception("fragment "+fragment));
+//            logger.warn("getViewByName returning {}",applicationView);
             return applicationView;
         } else {
             throw new RuntimeException(Messages.getString(
