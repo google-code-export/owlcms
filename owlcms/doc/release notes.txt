@@ -1,5 +1,8 @@
 #summary Release Notes
 
+== Release 2.1.0 ==
+  * http://host/m/ brings up a menu for mobile devices (Android, iPod)
+  
 == Release 2.0.1 ==
   * Stop time if time is still running when down is signaled.
   * Notification to other officials if new weight for current lifter is typed directly
