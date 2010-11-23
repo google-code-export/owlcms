@@ -72,6 +72,10 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
 
 	private DecisionController decisionController;
 
+	private Label red;
+
+	private Label white;
+
 
     public RefereeConsole(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
@@ -116,10 +120,10 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
         top.setMargin(true);
         top.setSpacing(true);
         
-        final Label red = new Label();
+        red = new Label();
         red.setSizeFull();
         red.addStyleName("red");
-        final Label white = new Label();
+        white = new Label();
         white.addStyleName("white");
         white.setSizeFull();
         top.addComponent(red);
@@ -171,9 +175,11 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
 			public void run() {
 				synchronized (app) {
 					Decision[] decisions = updateEvent.getDecisions();
+										
+					final Boolean accepted = decisions[refereeIndex].accepted;
 					switch (updateEvent.getType()) {
 					case DOWN:
-						if (decisions[refereeIndex].accepted == null) {
+						if (accepted == null) {
 							logger.warn(
 									"referee #{} decision required after DOWN",
 									refereeIndex + 1);
@@ -181,7 +187,7 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
 						}
 						break;
 					case WAITING:
-						if (decisions[refereeIndex].accepted == null) {
+						if (accepted == null) {
 							logger.warn(
 									"referee #{} decision required WAITING",
 									refereeIndex + 1);
@@ -189,13 +195,30 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
 						}
 						break;
 					case UPDATE:
+						if (accepted != null) {
+							if (accepted) {
+								white.addStyleName("decisionSelected");
+								white.removeStyleName("decisionUnselected");
+								red.addStyleName("decisionUnselected");
+								red.removeStyleName("decisionSelected");
+							} else {
+								red.addStyleName("decisionSelected");
+								red.removeStyleName("decisionUnselected");
+								white.addStyleName("decisionUnselected");
+								white.removeStyleName("decisionSelected");
+							}
+						}
 						break;
 					case SHOW:
 						// decisions are shown to the public; prevent refs from changing.
-						top.setEnabled(false);
+						white.setEnabled(false);
+						red.setEnabled(false);
+						//top.setEnabled(false);
 						break;
 					case RESET:
 						logger.warn("referee #{} RESET", refereeIndex + 1);
+						white.setStyleName("white");
+						red.setStyleName("red");
 						resetTop();
 						resetBottom();
 						break;
@@ -217,7 +240,8 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
 				allDecisionsIn = allDecisionsIn
 						&& (decisions[i].accepted != null);
 			}
-			top.setEnabled(!allDecisionsIn);
+			white.setEnabled(!allDecisionsIn);
+			red.setEnabled(!allDecisionsIn);
 		}
 		app.push();
     }
@@ -235,7 +259,8 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
      * reset styles for top part
      */
     private void resetTop() { 
-        top.setEnabled(true);
+        white.setEnabled(true);
+        red.setEnabled(true);
     }
 
     @Override
