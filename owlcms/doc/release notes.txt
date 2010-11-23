@@ -1,5 +1,8 @@
 #summary Release Notes
 
+== Release 2.1.1 ==
+  * improved visual feedback for referees on mobile devices (Android, iPod)
+  
 == Release 2.1.0 ==
   * http://host/m/ brings up a menu for mobile devices (Android, iPod)
   
