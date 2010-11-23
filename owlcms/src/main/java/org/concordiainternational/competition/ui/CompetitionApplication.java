@@ -39,7 +39,6 @@ import org.concordiainternational.competition.spreadsheet.OutputSheetStreamSourc
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.Menu;
 import org.concordiainternational.competition.utils.Localized;
-import org.concordiainternational.competition.utils.LoggerUtils;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -639,7 +638,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 						setMainLayoutContent(components.getViewByName("competitionEditor", false));
 					}
 				} else if (contextURI.endsWith("/m/")) {
-					LoggerUtils.logException(logger, new Exception("creating mobile layout !"+externalForm+" "+contextURI));
+//					LoggerUtils.logException(logger, new Exception("creating mobile layout !"+externalForm+" "+contextURI));
 					createMobileLayout(mainLayout);
 					if (relativeUri.isEmpty()) {
 						setMainLayoutContent(components.getViewByName("", false));
