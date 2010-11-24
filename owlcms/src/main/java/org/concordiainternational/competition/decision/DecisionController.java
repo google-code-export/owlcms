@@ -116,15 +116,15 @@ public class DecisionController implements CountdownTimerListener {
         	// also, downSignal() signals timeKeeper that time has been stopped if they
         	// had not stopped it manually.
             if (pros == 2 || cons == 2) {
-            	if (!downSignaled) {
-	            	synchronized (downSignaled) {
-						groupData.downSignal();
-						downSignaled = true;
-						fireEvent(new DecisionEvent(this,
-								DecisionEvent.Type.DOWN, currentTimeMillis,
-								refereeDecisions));
+            	synchronized (groupData.getTimer()) {
+            		if (!downSignaled) {
+            			groupData.downSignal();
+            			downSignaled = true;
+            			fireEvent(new DecisionEvent(this,
+            					DecisionEvent.Type.DOWN, currentTimeMillis,
+            					refereeDecisions));
 
-					}
+            		}
             	}
             } else {
                 fireEvent(new DecisionEvent(this, DecisionEvent.Type.WAITING, currentTimeMillis, refereeDecisions));

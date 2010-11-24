@@ -1008,7 +1008,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 	/**
 	 * 
 	 */
-	private void timerStoppedByReferee() {
+	synchronized private void timerStoppedByReferee() {
 		CountdownTimer timer2 = getTimer();
 		if (timer2.isRunning()) {
 			timer2.stop(TimeStoppedNotificationReason.REFEREE_DECISION);
