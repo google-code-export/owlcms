@@ -229,6 +229,7 @@ public class ResultFrame extends VerticalLayout implements
             	logger.debug("lifter null");
                 name.setValue(getWaitingMessage()); //$NON-NLS-1$
                 top.addComponent(name, "name"); //$NON-NLS-1$
+        		displayDecision(true);
                 attempt.setValue(""); //$NON-NLS-1$
                 top.addComponent(attempt, "attempt"); //$NON-NLS-1$
                 attempt.setWidth(ATTEMPT_WIDTH); //$NON-NLS-1$
