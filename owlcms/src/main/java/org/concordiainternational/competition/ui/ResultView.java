@@ -32,7 +32,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalSplitPanel;
 
 /**
- * This class defines the screen layout for the announcer.
+ * This class defines the screen layout for the competition secretary.
  * <p>
  * <ul>
  * The top part shows the current lifter information and the lifters in lifting
@@ -41,11 +41,6 @@ import com.vaadin.ui.VerticalSplitPanel;
  * <ul>
  * Clicking in the lift list selects a lifter, whose detail in shown in the
  * bottom part.
- * </ul>
- * <ul>
- * Editing the bottom part triggers recalculation of the lifting order; this in
- * turn triggers an update event to all layouts that display a lifter list
- * (including this one).
  * </ul>
  * </p>
  * 
