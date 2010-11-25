@@ -1,7 +1,12 @@
 #summary Release Notes
 
+== Release 2.1.2 ==
+  * hide url bar for referee display on refresh.
+  * avoid duplicate decision listeners when referee display is reset.
+  
 == Release 2.1.1 ==
   * improved visual feedback for referees on mobile devices (Android, iPod)
+  * able to test decision lights on main display without having selected a platform
   
 == Release 2.1.0 ==
   * http://host/m/ brings up a menu for mobile devices (Android, iPod)
