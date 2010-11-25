@@ -22,6 +22,7 @@ import java.util.TimerTask;
 
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.ui.RefereeConsole;
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
 import org.concordiainternational.competition.utils.EventHelper;
@@ -48,6 +49,7 @@ public class DecisionController implements CountdownTimerListener {
     Logger logger = LoggerFactory.getLogger(DecisionController.class);
 
     Decision[] refereeDecisions = new Decision[3];
+    DecisionEventListener[] listeners = new DecisionEventListener[3];
 
     private SessionData groupData;
 
@@ -241,68 +243,6 @@ public class DecisionController implements CountdownTimerListener {
      * how the listener can register/unregister itself.
      */
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.vaadin.event.MethodEventSource#addListener(java.lang.Class,
-     * java.lang.Object, java.lang.reflect.Method)
-     */
-    public void addListener(Class<DecisionEvent> eventType, Object object, Method method) {
-        getEventRouter().addListener(eventType, object, method);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.vaadin.event.MethodEventSource#addListener(java.lang.Class,
-     * java.lang.Object, java.lang.String)
-     */
-    public void addListener(Class<DecisionEvent> eventType, Object object, String methodName) {
-        getEventRouter().addListener(eventType, object, methodName);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class,
-     * java.lang.Object)
-     */
-    public void removeListener(Class<DecisionEvent> eventType, Object target) {
-        if (eventRouter != null) {
-            eventRouter.removeListener(eventType, target);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class,
-     * java.lang.Object, java.lang.reflect.Method)
-     */
-    public void removeListener(Class<DecisionEvent> eventType, Object target, Method method) {
-        if (eventRouter != null) {
-            eventRouter.removeListener(eventType, target, method);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class,
-     * java.lang.Object, java.lang.String)
-     */
-    public void removeListener(Class<DecisionEvent> eventType, Object target, String methodName) {
-        if (eventRouter != null) {
-            eventRouter.removeListener(eventType, target, methodName);
-        }
-    }
-
-    public void removeAllListeners() {
-        if (eventRouter != null) {
-            eventRouter.removeAllListeners();
-        }
-    }
-
     /**
      * @return the object's event router.
      */
@@ -347,5 +287,12 @@ public class DecisionController implements CountdownTimerListener {
     @Override
     public void stop(int timeRemaining, CompetitionApplication app, TimeStoppedNotificationReason reason) {
     }
+
+	public void addListener(RefereeConsole refereeConsole, int refereeIndex) {
+		if (listeners[refereeIndex] != null) {
+			removeListener(listeners[refereeIndex]);
+		}
+		addListener(refereeConsole);
+	}
 
 }
