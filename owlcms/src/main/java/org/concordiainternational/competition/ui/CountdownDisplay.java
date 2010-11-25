@@ -144,7 +144,7 @@ public class CountdownDisplay extends VerticalLayout implements
     private Label createTimeDisplay() {
         Label timeDisplay1 = new Label();
         timeDisplay1.setSizeUndefined();
-        timeDisplay1.setHeight("500px");
+        timeDisplay1.setHeight("600px");
         timeDisplay1.addStyleName("largeCountdown");
         return timeDisplay1;
     }
