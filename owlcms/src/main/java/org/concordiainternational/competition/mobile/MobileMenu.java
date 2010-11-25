@@ -48,6 +48,7 @@ public class MobileMenu extends VerticalLayout {
 		this.setStyleName("mobileMenu");
 		this.setSpacing(true);
 		this.setMargin(true);
+		app.getMainWindow().executeJavaScript("scrollTo(0,1)");
 	}
 
 	public class MRefereeDecisions extends HorizontalLayout {
