@@ -586,7 +586,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
                 current.set(CompetitionApplication.this); // make the application available via ThreadLocal
                 HttpServletRequest request = (HttpServletRequest) transactionData;
                 checkURI(request.getRequestURI());
-                request.getSession(true).setMaxInactiveInterval(3600);
+                request.getSession(true).setMaxInactiveInterval(-1);
             }
         };
 		getContext().addTransactionListener(listener);
