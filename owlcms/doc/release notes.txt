@@ -1,5 +1,9 @@
 #summary Release Notes
 
+== Release 2.1.3 ==
+  * Referee decision display tested with iPod Mercury Lite browser (free) alternative to Mobile Safari; this browser allows removal of all decorations on the screen.
+  * Made sure that jury display session never expires.
+
 == Release 2.1.2 ==
   * hide url bar for referee display on refresh.
   * avoid duplicate decision listeners when referee display is reset.

@@ -585,8 +585,13 @@ public class CompetitionApplication extends Application implements HbnSessionMan
                 ((LocalizedSystemMessages) getSystemMessages()).setThreadLocale(getLocale());
                 current.set(CompetitionApplication.this); // make the application available via ThreadLocal
                 HttpServletRequest request = (HttpServletRequest) transactionData;
-                checkURI(request.getRequestURI());
-                request.getSession(true).setMaxInactiveInterval(-1);
+                final String requestURI = request.getRequestURI();
+				checkURI(requestURI);
+                if (requestURI.contains("juryDisplay")) {
+                	request.getSession(true).setMaxInactiveInterval(-1);
+                } else {
+                	request.getSession(true).setMaxInactiveInterval(3600);
+                }
             }
         };
 		getContext().addTransactionListener(listener);
