@@ -47,6 +47,7 @@ import org.concordiainternational.competition.publicAddress.PublicAddressTimerEv
 import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent.MessageTimerListener;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.ui.PlatesInfoEvent.PlatesInfoListener;
+import org.concordiainternational.competition.ui.components.DecisionLightsWindow;
 import org.concordiainternational.competition.utils.EventHelper;
 import org.concordiainternational.competition.utils.IdentitySet;
 import org.concordiainternational.competition.utils.LoggerUtils;
@@ -1002,6 +1003,10 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     }
     
 	public void downSignal() {
+		final DecisionLightsWindow decisionLightsWindow = (DecisionLightsWindow)getTimer().getCountdownDisplay();
+		if (decisionLightsWindow != null) {
+			decisionLightsWindow.doDown();
+		}
 		timerStoppedByReferee();
 	}
 

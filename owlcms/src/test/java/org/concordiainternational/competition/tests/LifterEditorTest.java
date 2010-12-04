@@ -59,7 +59,7 @@ public class LifterEditorTest {
         // use false
         // on the constructor to disable exclusion of incomplete data.
         hbnLifters = new LifterContainer(new CompetitionApplication(), false);
-        lifters = new BeanItemContainer<Lifter>(hbnLifters.getAllPojos());
+        lifters = new BeanItemContainer<Lifter>(Lifter.class,hbnLifters.getAllPojos());
     }
 
     @After

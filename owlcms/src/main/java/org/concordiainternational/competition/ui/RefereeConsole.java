@@ -149,9 +149,17 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
 				Component child = event.getChildComponent();
 				if (child == red) {
 					decisionController.decisionMade(refereeIndex, false);
+					white.removeStyleName("decisionSelected");
+					red.removeStyleName("decisionUnselected");
+					white.addStyleName("decisionUnselected");
+					red.addStyleName("decisionSelected");
 					resetBottom();
 				} else if (child == white) {
 					decisionController.decisionMade(refereeIndex, true);
+					white.removeStyleName("decisionUnselected");
+					red.removeStyleName("decisionSelected");
+					white.addStyleName("decisionSelected");
+					red.addStyleName("decisionUnselected");
 					resetBottom();
 				}
 			}
@@ -210,19 +218,6 @@ public class RefereeConsole extends VerticalLayout implements DecisionEventListe
 						}
 						break;
 					case UPDATE:
-						if (accepted != null) {
-							if (accepted) {
-								white.addStyleName("decisionSelected");
-								white.removeStyleName("decisionUnselected");
-								red.addStyleName("decisionUnselected");
-								red.removeStyleName("decisionSelected");
-							} else {
-								red.addStyleName("decisionSelected");
-								red.removeStyleName("decisionUnselected");
-								white.addStyleName("decisionUnselected");
-								white.removeStyleName("decisionSelected");
-							}
-						}
 						break;
 					case SHOW:
 						// decisions are shown to the public; prevent refs from changing.

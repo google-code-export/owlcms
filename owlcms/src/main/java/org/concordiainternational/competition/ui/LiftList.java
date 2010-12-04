@@ -296,7 +296,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
         logger.debug("data={}", data); //$NON-NLS-1$
         List<Lifter> lifters = data.getAttemptOrder();
         if (lifters != null && !lifters.isEmpty()) {
-            final BeanItemContainer<Lifter> cont = new BeanItemContainer<Lifter>(lifters);
+            final BeanItemContainer<Lifter> cont = new BeanItemContainer<Lifter>(Lifter.class,lifters);
             table.setContainerDataSource(cont);
         }
     }

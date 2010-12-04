@@ -375,7 +375,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
     protected void loadData() {
         List<Lifter> lifters = data.getResultOrder();
         if (lifters != null && !lifters.isEmpty()) {
-            final BeanItemContainer<Lifter> cont = new BeanItemContainer<Lifter>(lifters);
+            final BeanItemContainer<Lifter> cont = new BeanItemContainer<Lifter>(Lifter.class,lifters);
             table.setContainerDataSource(cont);
         }
     }

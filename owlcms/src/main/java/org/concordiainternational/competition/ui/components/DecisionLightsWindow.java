@@ -85,8 +85,7 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
 							decisionLights[1].setStyleName("decisionLight");
 							decisionLights[1].addStyleName("undecided");
 						}
-						DecisionLightsWindow.this.addStyleName("down");
-						decisionLights[1].addStyleName("down");
+						doDown();
 
 						for (int i = 0; i < decisions.length; i++) {
 							if (decisions[i].accepted == null) {
@@ -123,9 +122,19 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
 				}
 				app.push();
 			}
+
+
 		}).start();
     }
 
+	/**
+	 * show down signal in window.
+	 */
+	public void doDown() {
+		this.addStyleName("down");
+		decisionLights[1].addStyleName("down");
+	}
+	
     /**
      * @param decisions
      */

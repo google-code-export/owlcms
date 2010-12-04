@@ -311,7 +311,7 @@ public class CountdownDisplay extends VerticalLayout implements
 						logger.info("received RESET event");
 						hideLights(updateEvent);
 						break;
-
+						
 					case WAITING:
 						logger.info("ignoring WAITING event");
 						break;
