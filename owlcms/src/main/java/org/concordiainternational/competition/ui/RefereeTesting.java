@@ -201,8 +201,11 @@ public class RefereeTesting extends VerticalSplitPanel implements DecisionEventL
 						}
 						break;
 					case SHOW:
-						logger.debug("received SHOW event");
+						logger.warn("received SHOW event");
 						showLights(decisions);
+						for (int i = 0; i < decisions.length; i++) {
+							((Label) bottom.getComponent(i, 0)).setValue("blocked");
+						}
 						break;
 					case RESET:
 						logger.debug("received RESET event");

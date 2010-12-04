@@ -634,22 +634,23 @@ public class LifterInfo extends VerticalLayout implements
 
 	@Override
 	public void updateEvent(final DecisionEvent updateEvent) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				switch (updateEvent.getType()) {
-				case DOWN:
-					logger.warn("Down audible signal***");
-					synchronized (app) {
-						final ClassResource resource = new ClassResource(
-								"/sounds/down.mp3", app); //$NON-NLS-1$
-						playSound(resource);
-					}
-					app.push();
-					break;
-				}
-			}
-		}).start();
+		// Down signal now done on main computer.
+//		new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+//				switch (updateEvent.getType()) {
+//				case DOWN:
+//					logger.warn("Down audible signal***");
+//					synchronized (app) {
+//						final ClassResource resource = new ClassResource(
+//								"/sounds/down.mp3", app); //$NON-NLS-1$
+//						playSound(resource);
+//					}
+//					app.push();
+//					break;
+//				}
+//			}
+//		}).start();
 	}
 
 	/**

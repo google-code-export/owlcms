@@ -61,7 +61,7 @@ public abstract class GenericBeanList<T extends Serializable> extends GenericLis
     protected void loadData() {
         final HbnContainer<T> hbnCont = new HbnContainer<T>(parameterizedClass, (HbnSessionManager) app);
         allPojos = hbnCont.getAllPojos();
-        final BeanItemContainer<T> cont = new BeanItemContainer<T>(allPojos);
+        final BeanItemContainer<T> cont = new BeanItemContainer<T>(parameterizedClass,allPojos);
         table.setContainerDataSource(cont);
     }
 

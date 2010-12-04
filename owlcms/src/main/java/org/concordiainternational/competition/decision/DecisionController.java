@@ -38,13 +38,17 @@ import com.vaadin.event.EventRouter;
  */
 public class DecisionController implements CountdownTimerListener {
 
-    private static final int RESET_DELAY = 5000;
+    private static final int RESET_DELAY = 4000;
 
-    private static final int DECISION_REVERSAL_DELAY = 3000; // 3 seconds to
-                                                             // change one's
-                                                             // mind after all
-                                                             // referees have
-                                                             // pressed
+    /**
+     * 3 seconds to change decision (after all refs have selected)
+     */
+    private static final int DECISION_REVERSAL_DELAY = 3000;
+
+	/**
+	 * Time before displaying decision once all referees have pressed.
+	 */
+	private static final int DECISION_DISPLAY_DELAY = 1000;
 
     Logger logger = LoggerFactory.getLogger(DecisionController.class);
 
@@ -70,7 +74,12 @@ public class DecisionController implements CountdownTimerListener {
     private EventRouter eventRouter;
 
 	private Boolean downSignaled = false;
+	
+	Tone downSignal = new Tone(1600,1000,1.0);
 
+    /**
+     * TODO call DecisionController.reset() when timer starts running.
+     */
     public void reset() {
         for (int i = 0; i < refereeDecisions.length; i++) {
             refereeDecisions[i].accepted = null;
@@ -83,6 +92,11 @@ public class DecisionController implements CountdownTimerListener {
         fireEvent(new DecisionEvent(this, DecisionEvent.Type.RESET, System.currentTimeMillis(), refereeDecisions));
     }
 
+    /**
+     * TODO ignore decisions until announcer has announced or clock has started running.
+     * @param refereeNo
+     * @param accepted
+     */
     public synchronized void decisionMade(int refereeNo, boolean accepted) {
         final long currentTimeMillis = System.currentTimeMillis();
         long deltaTime = currentTimeMillis - allDecisionsMadeTime;
@@ -108,28 +122,37 @@ public class DecisionController implements CountdownTimerListener {
                 else cons++;
             }
         }
-        // Jury sees all changes
-        synchronized (downSignaled) {
-        	fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
-        }
+
         
         if (decisionsMade >= 2) {
-            // the lifter-facing display should display the "down" signal and sound.
+        	// audible down signal is emitted right away by the main computer.
+            // request lifter-facing display should display the "down" signal.
         	// also, downSignal() signals timeKeeper that time has been stopped if they
         	// had not stopped it manually.
             if (pros == 2 || cons == 2) {
             	synchronized (groupData.getTimer()) {
             		if (!downSignaled) {
-            			groupData.downSignal();
-            			downSignaled = true;
+            			new Thread(new Runnable() {
+							@Override
+							public void run() {
+								downSignal.emit();
+								groupData.downSignal();
+							}
+						}).start();
+            			logger.warn("*** audible down signal");
+						downSignaled = true;
             			fireEvent(new DecisionEvent(this,
             					DecisionEvent.Type.DOWN, currentTimeMillis,
             					refereeDecisions));
-
             		}
             	}
             } else {
                 fireEvent(new DecisionEvent(this, DecisionEvent.Type.WAITING, currentTimeMillis, refereeDecisions));
+            }
+        } else {
+            // Jury sees all changes, other displays will ignore this.
+            synchronized (downSignaled) {
+            	fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
             }
         }
 
@@ -168,7 +191,7 @@ public class DecisionController implements CountdownTimerListener {
                 fireEvent(new DecisionEvent(DecisionController.this, DecisionEvent.Type.SHOW, currentTimeMillis,
                         refereeDecisions));
             }
-        }, DECISION_REVERSAL_DELAY);
+        }, DECISION_DISPLAY_DELAY);
     }
 
     /**
