@@ -33,21 +33,21 @@ public class TouchKitHome //extends TouchLayout
 //			menu.addItem("1", new TouchCommand() {
 //				@Override
 //				public void itemTouched(TouchMenuItem selectedItem) {
-//					RefereeConsole refConsole = createRefConsole();
+//					ORefereeConsole refConsole = createRefConsole();
 //					TouchKitHome.this.fixLayout(refConsole);
 //					refConsole.setRefereeIndex(0);
 //				}});
 //			menu.addItem("2", new TouchCommand() {
 //				@Override
 //				public void itemTouched(TouchMenuItem selectedItem) {
-//					RefereeConsole refConsole = createRefConsole();
+//					ORefereeConsole refConsole = createRefConsole();
 //					TouchKitHome.this.fixLayout(refConsole);
 //					refConsole.setRefereeIndex(1);
 //				}});
 //			menu.addItem("3", new TouchCommand() {
 //				@Override
 //				public void itemTouched(TouchMenuItem selectedItem) {
-//					RefereeConsole refConsole = createRefConsole();
+//					ORefereeConsole refConsole = createRefConsole();
 //					TouchKitHome.this.fixLayout(refConsole);
 //					refConsole.setRefereeIndex(2);
 //				}});
@@ -109,8 +109,8 @@ public class TouchKitHome //extends TouchLayout
 //	/**
 //	 * @return
 //	 */
-//	private RefereeConsole createRefConsole() {
-//		RefereeConsole refConsole = new RefereeConsole(false, "Refereeing");
+//	private ORefereeConsole createRefConsole() {
+//		ORefereeConsole refConsole = new ORefereeConsole(false, "Refereeing");
 //		return refConsole;
 //	}
 //	
