@@ -127,7 +127,7 @@ public class MobileMenu extends VerticalLayout {
 			final NativeButton button1 = new NativeButton("1", new Button.ClickListener() {			
 				@Override
 				public void buttonClick(ClickEvent event) {
-					CompetitionApplication.getCurrent().displayRefereeConsole(0);
+					CompetitionApplication.getCurrent().displayMRefereeConsole(0);
 				}
 			});
 			button1.setWidth(BUTTON_WIDTH);
@@ -137,7 +137,7 @@ public class MobileMenu extends VerticalLayout {
 			final NativeButton button2 = new NativeButton("2", new Button.ClickListener() {			
 				@Override
 				public void buttonClick(ClickEvent event) {
-					CompetitionApplication.getCurrent().displayRefereeConsole(1);
+					CompetitionApplication.getCurrent().displayMRefereeConsole(1);
 				}
 			});
 			button2.setWidth(BUTTON_WIDTH);
@@ -147,7 +147,7 @@ public class MobileMenu extends VerticalLayout {
 			final NativeButton button3 = new NativeButton("3", new Button.ClickListener() {			
 				@Override
 				public void buttonClick(ClickEvent event) {
-					CompetitionApplication.getCurrent().displayRefereeConsole(2);
+					CompetitionApplication.getCurrent().displayMRefereeConsole(2);
 				}
 			});
 			button3.setWidth(BUTTON_WIDTH);
@@ -163,8 +163,8 @@ public class MobileMenu extends VerticalLayout {
 	//	/**
 	//	 * @return
 	//	 */
-	//	private RefereeConsole createRefConsole() {
-	//		RefereeConsole refConsole = new RefereeConsole(false, "Refereeing");
+	//	private ORefereeConsole createRefConsole() {
+	//		ORefereeConsole refConsole = new ORefereeConsole(false, "Refereeing");
 	//		return refConsole;
 	//	}
 

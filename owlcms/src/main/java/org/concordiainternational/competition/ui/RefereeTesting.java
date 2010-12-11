@@ -265,7 +265,7 @@ public class RefereeTesting extends VerticalSplitPanel implements DecisionEventL
      * @return
      */
     private String refereeLabel(int refereeIndex2) {
-        return Messages.getString("RefereeConsole.Referee", CompetitionApplication.getCurrentLocale()) + " "
+        return Messages.getString("ORefereeConsole.Referee", CompetitionApplication.getCurrentLocale()) + " "
             + (refereeIndex2 + 1);
     }
 
