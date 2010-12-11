@@ -59,7 +59,7 @@ public class CountdownDisplay extends VerticalLayout implements
     private int lastTimeRemaining;
     private String viewName;
 	private Window popUp = null;
-	private DecisionLightsWindow content;
+	private DecisionLightsWindow decisionLights;
 	private UpdateEventListener updateEventListener;
 
     public CountdownDisplay(boolean initFromFragment, String viewName) {
@@ -336,17 +336,17 @@ public class CountdownDisplay extends VerticalLayout implements
 		if (popUp == null) {
 			logger.debug("creating window");
 			Window mainWindow = app.getMainWindow();
-			content = new DecisionLightsWindow(false, false);
+			decisionLights = new DecisionLightsWindow(false, false);
 			popUp = new Window(platformName);
 			popUp.addStyleName("decisionLightsWindow");
 			popUp.setSizeFull();
 			mainWindow.addWindow(popUp);
-			popUp.setContent(content);
+			popUp.setContent(decisionLights);
 		}
 		popUp.setVisible(true);
 		
 		// relay the event
-		content.updateEvent(updateEvent);
+		decisionLights.updateEvent(updateEvent);
 		
 	}
 	
@@ -356,8 +356,8 @@ public class CountdownDisplay extends VerticalLayout implements
 	 */
 	private void hideLights(DecisionEvent updateEvent) {
 		// relay the event (just in case)
-		if (content != null) {
-			content.updateEvent(updateEvent);
+		if (decisionLights != null) {
+			decisionLights.updateEvent(updateEvent);
 		}
 		
 		// close window
@@ -399,6 +399,16 @@ public class CountdownDisplay extends VerticalLayout implements
 	@Override
 	public void windowClose(CloseEvent e) {
 		unregisterAsListener();
+	}
+
+
+	public DecisionLightsWindow getDecisionLights() {
+		return decisionLights;
+	}
+
+
+	public void setDecisionLights(DecisionLightsWindow decisionLights) {
+		this.decisionLights = decisionLights;
 	}
 
 

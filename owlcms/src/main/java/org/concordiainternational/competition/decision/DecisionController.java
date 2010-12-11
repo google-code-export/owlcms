@@ -22,7 +22,7 @@ import java.util.TimerTask;
 
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.ui.RefereeConsole;
+import org.concordiainternational.competition.ui.IRefereeConsole;
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
 import org.concordiainternational.competition.utils.EventHelper;
@@ -75,7 +75,7 @@ public class DecisionController implements CountdownTimerListener {
 
 	private Boolean downSignaled = false;
 	
-	Tone downSignal = new Tone(1600,1000,1.0);
+	Tone downSignal = new Tone(1100,1200,1.0);
 
     /**
      * TODO call DecisionController.reset() when timer starts running.
@@ -151,7 +151,8 @@ public class DecisionController implements CountdownTimerListener {
             }
         } else {
             // Jury sees all changes, other displays will ignore this.
-            synchronized (downSignaled) {
+            synchronized (groupData.getTimer()) {
+            	logger.warn("broadcasting");
             	fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
             }
         }
@@ -311,11 +312,14 @@ public class DecisionController implements CountdownTimerListener {
     public void stop(int timeRemaining, CompetitionApplication app, TimeStoppedNotificationReason reason) {
     }
 
-	public void addListener(RefereeConsole refereeConsole, int refereeIndex) {
+	public void addListener(IRefereeConsole refereeConsole, int refereeIndex) {
 		if (listeners[refereeIndex] != null) {
+			logger.trace("removing previous ORefereeConsole listener {}",listeners[refereeIndex]);
 			removeListener(listeners[refereeIndex]);
 		}
 		addListener(refereeConsole);
+		listeners[refereeIndex] = refereeConsole;
+		logger.trace("adding new ORefereeConsole listener {}",listeners[refereeIndex]);
 	}
 
 }

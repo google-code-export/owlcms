@@ -224,8 +224,16 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 	private VerticalLayout mainLayout;
 
     public void displayRefereeConsole(int refereeIndex) {
-        final RefereeConsole view = (RefereeConsole) components
-                .getViewByName(CompetitionApplicationComponents.REFEREE_CONSOLE, false);
+        final ORefereeConsole view = (ORefereeConsole) components
+                .getViewByName(CompetitionApplicationComponents.OREFEREE_CONSOLE, false);
+        view.setRefereeIndex(refereeIndex);
+        setMainLayoutContent(view);	
+        uriFragmentUtility.setFragment(view.getFragment(), false);
+    }
+    
+    public void displayMRefereeConsole(int refereeIndex) {
+        final MRefereeConsole view = (MRefereeConsole) components
+                .getViewByName(CompetitionApplicationComponents.MREFEREE_CONSOLE, false);
         view.setRefereeIndex(refereeIndex);
         setMainLayoutContent(view);	
         uriFragmentUtility.setFragment(view.getFragment(), false);

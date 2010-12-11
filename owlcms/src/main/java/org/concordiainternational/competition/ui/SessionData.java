@@ -1003,9 +1003,14 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     }
     
 	public void downSignal() {
-		final DecisionLightsWindow decisionLightsWindow = (DecisionLightsWindow)getTimer().getCountdownDisplay();
-		if (decisionLightsWindow != null) {
-			decisionLightsWindow.doDown();
+		final CountdownDisplay countDownDisplay = (CountdownDisplay)getTimer().getCountdownDisplay();
+		if (countDownDisplay != null) {
+			DecisionLightsWindow dl = countDownDisplay.getDecisionLights();
+			if (dl != null) {
+				dl.doDown();
+			} else {
+				logger.warn("dl is null");
+			}
 		}
 		timerStoppedByReferee();
 	}

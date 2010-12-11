@@ -82,8 +82,8 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
 						if (juryMode) {
 							showLights(decisions);
 						} else {
-							decisionLights[1].setStyleName("decisionLight");
-							decisionLights[1].addStyleName("undecided");
+//							decisionLights[1].setStyleName("decisionLight");
+//							decisionLights[1].addStyleName("undecided");
 						}
 						doDown();
 
@@ -109,7 +109,7 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
 						}
 						break;
 					case SHOW:
-						logger.debug("received SHOW event");
+						logger.debug("received SHOW event, removing down");
 						DecisionLightsWindow.this.removeStyleName("down");
 						showLights(decisions);
 						break;
@@ -132,7 +132,7 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
 	 */
 	public void doDown() {
 		this.addStyleName("down");
-		decisionLights[1].addStyleName("down");
+		//decisionLights[1].addStyleName("down");
 	}
 	
     /**
@@ -179,7 +179,7 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
      */
     @SuppressWarnings("unused")
 	private String refereeLabel(int refereeIndex2) {
-        return Messages.getString("RefereeConsole.Referee", CompetitionApplication.getCurrentLocale()) + " "
+        return Messages.getString("ORefereeConsole.Referee", CompetitionApplication.getCurrentLocale()) + " "
             + (refereeIndex2 + 1);
     }
 

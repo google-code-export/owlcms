@@ -111,6 +111,7 @@ public class JuryLights extends VerticalLayout implements DecisionEventListener,
 						break;
 					case WAITING:
 						logger.debug("received WAITING event");
+						showLights(decisions);
 						break;
 					case UPDATE:
 						logger.debug("received UPDATE event");
