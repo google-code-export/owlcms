@@ -115,6 +115,7 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
 		sessionSelect.setValue(selectedId);
 		logger.warn("selected {}",selectedId);
 		sessionSelect.addListener(listener);
+		CompetitionApplication.getCurrent().push();
 	}
     
     public Item getSelectedItem() {
