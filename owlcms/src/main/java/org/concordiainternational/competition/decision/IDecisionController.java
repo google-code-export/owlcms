@@ -9,6 +9,9 @@ public interface IDecisionController {
 	/**
 	 * TODO call RefereeDecisionController.reset() when timer starts running.
 	 */
+	public abstract boolean isBlocked();
+	public void setBlocked(boolean blocked);
+	
 	public abstract void reset();
 
 	/**

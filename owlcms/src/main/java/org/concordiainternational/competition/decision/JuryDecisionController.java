@@ -64,6 +64,8 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
     long allDecisionsMadeTime = 0L; // all 3 referees have pressed
     int decisionsMade = 0;
     private EventRouter eventRouter;
+
+	private boolean blocked = true;
     
     /**
      * TODO call JuryDecisionController.reset() when timer starts running.
@@ -86,6 +88,8 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
      */
     @Override
 	public synchronized void decisionMade(int refereeNo, boolean accepted) {
+    	if (isBlocked()) return;
+    	
         final long currentTimeMillis = System.currentTimeMillis();
         long deltaTime = currentTimeMillis - allDecisionsMadeTime;
         if (decisionsMade == 3 && deltaTime > DECISION_REVERSAL_DELAY) {
@@ -153,6 +157,7 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
             @Override
             public void run() {
             	fireEvent(new DecisionEvent(JuryDecisionController.this, DecisionEvent.Type.BLOCK, System.currentTimeMillis(), juryDecisions));
+            	setBlocked(true);
             }
         }, DECISION_REVERSAL_DELAY);
     }
@@ -281,6 +286,17 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
 		addListener(refereeConsole);
 		listeners[refereeIndex] = refereeConsole;
 		logger.trace("adding new JuryConsole listener {}",listeners[refereeIndex]);
+	}
+
+	@Override
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
+	}
+
+	@Override
+	public boolean isBlocked() {
+		//return blocked &&  (groupData.getCurrentSession() != null);
+		return false; // does not matter for jury
 	}
 
 }

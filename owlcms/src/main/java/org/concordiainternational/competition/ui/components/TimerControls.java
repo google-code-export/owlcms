@@ -261,6 +261,7 @@ public class TimerControls extends GridLayout {
                     lifterInfo.setBlocked(false); // !!!!
                     timer.restart();
                     groupData.setLifterAsHavingStarted(lifter);
+                    groupData.getRefereeDecisionController().setBlocked(false);
                 }
                 // announce.setEnabled(false);
                 // changeWeight.setEnabled(false);
@@ -394,6 +395,7 @@ public class TimerControls extends GridLayout {
                 stopStart.setEnabled(true);
                 announce.setEnabled(false);
                 changeWeight.setEnabled(true);
+                groupData.getRefereeDecisionController().setBlocked(false);
                 // okLift.setEnabled(true);
                 // failedLift.setEnabled(true);
             }
