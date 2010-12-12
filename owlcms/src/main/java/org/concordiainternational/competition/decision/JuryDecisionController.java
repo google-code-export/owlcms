@@ -111,17 +111,9 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
             }
         }
 
-        if (decisionsMade >= 2) {
-            if (pros == 2 || cons == 2) {
-            	//fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, juryDecisions));
-            } else {
+        if (decisionsMade == 2) {
                 fireEvent(new DecisionEvent(this, DecisionEvent.Type.WAITING, currentTimeMillis, juryDecisions));
-            }
-        } else {
-            // We are the jury, so we don't show each other's decisions
-        }
-
-        if (decisionsMade == 3) {
+        } else if (decisionsMade == 3) {
             // broadcast the decision
             if (allDecisionsMadeTime == 0L) {
                 // all 3 referees have just made a choice; schedule the display
@@ -130,10 +122,9 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
                 scheduleDisplay(currentTimeMillis);
                 scheduleBlock();
                 scheduleReset();
-            } else {
-                // referees have changed their mind
-                fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, juryDecisions));
             }
+            // referees have changed their mind
+            fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, juryDecisions));
         }
     }
 

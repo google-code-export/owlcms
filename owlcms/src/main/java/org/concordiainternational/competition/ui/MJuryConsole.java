@@ -252,6 +252,7 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 						// decisions are shown to the public; prevent refs from changing.
 						white.setEnabled(false);
 						red.setEnabled(false);
+						juryReminder.setStyleName("blocked");
 						//top.setEnabled(false);
 						break;
 					case RESET:
@@ -290,7 +291,7 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 	 */
 	private void requireDecision() {
 		juryReminder.setValue(Messages.getString("RefereeConsole.decisionRequired", CompetitionApplication.getCurrentLocale()));
-		juryReminder.setStyleName("juryReminder");
+		juryReminder.setStyleName("refereeReminder");
 		//CompetitionApplication.getCurrent().getMainWindow().executeJavaScript("alert('wakeup')");
 	}
 
