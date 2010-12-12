@@ -69,7 +69,7 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
 	private boolean blocked = true;
     
     /**
-     * TODO call JuryDecisionController.reset() when timer starts running.
+     * Enable jury devices.
      */
     @Override
 	public void reset() {
@@ -82,10 +82,9 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
         fireEvent(new DecisionEvent(this, DecisionEvent.Type.RESET, System.currentTimeMillis(), juryDecisions));
     }
 
-    /**
-     * TODO ignore decisions until announcer has announced or clock has started running.
-     * @param refereeNo
-     * @param accepted
+
+    /* (non-Javadoc)
+     * @see org.concordiainternational.competition.decision.IDecisionController#decisionMade(int, boolean)
      */
     @Override
 	public synchronized void decisionMade(int refereeNo, boolean accepted) {
