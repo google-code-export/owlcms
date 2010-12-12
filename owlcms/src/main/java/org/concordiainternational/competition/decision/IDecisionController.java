@@ -7,7 +7,8 @@ import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
 public interface IDecisionController {
 
 	/**
-	 * TODO call RefereeDecisionController.reset() when timer starts running.
+	 * Need to block decisions if a session is underway, unblocking when lifter is announced
+	 * or time has started.
 	 */
 	public abstract boolean isBlocked();
 	public void setBlocked(boolean blocked);
@@ -15,7 +16,7 @@ public interface IDecisionController {
 	public abstract void reset();
 
 	/**
-	 * TODO ignore decisions until announcer has announced or clock has started running.
+	 * Record a decision made by the officials, broacasting to the listeners.
 	 * @param refereeNo
 	 * @param accepted
 	 */
