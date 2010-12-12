@@ -116,28 +116,35 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 					Decision[] decisions = updateEvent.getDecisions();
 					switch (updateEvent.getType()) {
 					case DOWN:
-						logger.debug("received DOWN event");
+						logger.debug("received DOWN event juryMode={}",juryMode);
 						downShown = true;
-						if (!juryMode) showLights(decisions);
-						//decisionLights[1].addStyleName("down");
+						if (!juryMode) {
+							showLights(decisions);
+							decisionLights[1].removeStyleName("undecided");
+							decisionLights[1].addStyleName("down");
+						}
 						break;
 					case WAITING:
 						logger.debug("received WAITING event");
 						if (!juryMode) showLights(decisions);
 						break;
 					case UPDATE:
-						logger.warn("received UPDATE event {} && {}",juryMode,shown);
+						logger.debug("received UPDATE event {} && {}",juryMode,shown);
 						if ((juryMode && shown) || !juryMode) showLights(decisions);
-						//if (downShown) decisionLights[1].addStyleName("down");
+						if (!juryMode && downShown) decisionLights[1].addStyleName("down");
 						break;
 					case SHOW:
-						logger.warn("received SHOW event");
+						logger.debug("received SHOW event");
 						showLights(decisions);
+						if (!juryMode && downShown) decisionLights[1].addStyleName("down");
 						shown = true;
 						break;
 					case RESET:
 						logger.debug("received RESET event");
 						resetLights();
+						break;
+					case BLOCK:
+						if (!juryMode && downShown) decisionLights[1].removeStyleName("down");
 						break;
 					}
 				}
