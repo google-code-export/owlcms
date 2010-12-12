@@ -18,6 +18,7 @@ package org.concordiainternational.competition.ui;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EventObject;
@@ -55,6 +56,7 @@ import org.concordiainternational.competition.utils.IdentitySet;
 import org.concordiainternational.competition.utils.LoggerUtils;
 import org.concordiainternational.competition.utils.NotificationManager;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.StaleObjectStateException;
 import org.slf4j.ext.XLogger;
@@ -1007,9 +1009,26 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         }
 
         // record the decision.
-        Session session = app.getHbnSession();
-        if (currentLifter2 != null) session.merge(currentLifter2);
+        if (currentLifter2 != null) {
+            saveLifter(currentLifter2);
+        } else {
+        	logger.warn("current lifter is null");
+        }
     }
+
+	/**
+	 * @param currentLifter2
+	 */
+	private void saveLifter(final Lifter currentLifter2) {
+		Session session = app.getHbnSession();
+		session.merge(currentLifter2);
+		session.flush();
+		try {
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
     
 	public void downSignal() {
 		final CountdownDisplay countDownDisplay = (CountdownDisplay)getTimer().getCountdownDisplay();
