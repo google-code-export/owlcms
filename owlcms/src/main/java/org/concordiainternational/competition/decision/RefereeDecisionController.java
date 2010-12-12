@@ -136,11 +136,11 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 								groupData.downSignal();
 							}
 						}).start();
-            			logger.warn("*** audible down signal");
 						downSignaled = true;
             			fireEvent(new DecisionEvent(this,
             					DecisionEvent.Type.DOWN, currentTimeMillis,
             					refereeDecisions));
+            			logger.warn("*** audible down signal");
             		}
             	}
             } else {
@@ -149,7 +149,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
         } else {
             // Jury sees all changes, other displays will ignore this.
             synchronized (groupData.getTimer()) {
-            	logger.warn("broadcasting");
+//            	logger.warn("broadcasting");
             	fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
             }
         }
