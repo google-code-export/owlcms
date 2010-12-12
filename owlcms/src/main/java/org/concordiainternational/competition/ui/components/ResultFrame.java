@@ -413,6 +413,7 @@ public class ResultFrame extends VerticalLayout implements
     private String viewName;
 	private PublicAddressOverlay overlayContent;
 	private Window overlay;
+	protected boolean shown;
 
     @Override
     public void normalTick(int timeRemaining) {
@@ -632,12 +633,14 @@ public class ResultFrame extends VerticalLayout implements
 					case SHOW:
 						// if window is not up, show it.
 						waitingForDecisionLightsReset = true;
+						shown = true;
 						decisionLights.setVisible(true);
 						break;
 					case RESET:
 						// we are done
 						waitingForDecisionLightsReset = false;
 						decisionLights.setVisible(false);
+						shown = false;
 						display(platformName, masterData);
 						break;
 					case WAITING:
@@ -645,14 +648,17 @@ public class ResultFrame extends VerticalLayout implements
 						decisionLights.setVisible(false);
 						break;
 					case UPDATE:
-						// change is made during 3 seconds where refs
-						// can change their mind privately.
+						// show change only if the lights are already on.
 						waitingForDecisionLightsReset = true;
-						decisionLights.setVisible(false);
+						if (shown) {
+							decisionLights.setVisible(true);
+						}
 						break;
+					case BLOCK:
+						waitingForDecisionLightsReset = true;
+						decisionLights.setVisible(true);
 					}
 				}
-				app.push();
 			}
 		}).start();
 	}

@@ -36,15 +36,17 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
 
     private Logger logger = LoggerFactory.getLogger(DecisionLightsWindow.class);
 
-    private boolean juryMode = false;
+    private boolean immediateMode = false;
 
 	private boolean publicFacing;
 
-    public DecisionLightsWindow(boolean juryMode, boolean publicFacing) {
+	private boolean shown = false;
+
+    public DecisionLightsWindow(boolean immediateMode, boolean publicFacing) {
         
         this.app = CompetitionApplication.getCurrent();
         this.publicFacing = publicFacing;
-        this.juryMode = juryMode;
+        this.immediateMode = immediateMode;
         
         createLights();
 
@@ -79,13 +81,15 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
 					switch (updateEvent.getType()) {
 					case DOWN:
 						logger.debug("received DOWN event");
-						if (juryMode) {
+						doDown();
+						if (immediateMode) {
 							showLights(decisions);
+//							decisionLights[1].addStyleName("down");
 						} else {
 //							decisionLights[1].setStyleName("decisionLight");
 //							decisionLights[1].addStyleName("undecided");
 						}
-						doDown();
+
 
 						for (int i = 0; i < decisions.length; i++) {
 							if (decisions[i].accepted == null) {
@@ -104,12 +108,17 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
 					case UPDATE:
 						logger.debug("received UPDATE event");
 						DecisionLightsWindow.this.removeStyleName("down");
-						if (juryMode) {
+						if (immediateMode || shown) {
 							showLights(decisions);
 						}
 						break;
 					case SHOW:
 						logger.debug("received SHOW event, removing down");
+						DecisionLightsWindow.this.removeStyleName("down");
+						showLights(decisions);
+						break;
+					case BLOCK:
+						logger.debug("received BLOCK event, removing down");
 						DecisionLightsWindow.this.removeStyleName("down");
 						showLights(decisions);
 						break;
@@ -155,6 +164,7 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
                 decisionLights[i].addStyleName("undecided");
             }
         }
+        shown = true;
     }
 
     private void resetLights() {
@@ -166,6 +176,7 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
     			decisionLights[i].setValue("&nbsp;");
     		}
     	}
+    	shown = false;
         app.push();
     }
 
