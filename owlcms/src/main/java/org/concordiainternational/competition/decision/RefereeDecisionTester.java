@@ -21,9 +21,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DecisionTester implements DecisionEventListener {
+public class RefereeDecisionTester implements DecisionEventListener {
 
-    private Logger logger = LoggerFactory.getLogger(DecisionTester.class);
+    private Logger logger = LoggerFactory.getLogger(RefereeDecisionTester.class);
 
     @Override
     public void updateEvent(DecisionEvent updateEvent) {
@@ -32,7 +32,7 @@ public class DecisionTester implements DecisionEventListener {
 
     @Test
     public void runTest() {
-        DecisionController decisionController = new DecisionController(new SessionData(null));
+        IDecisionController decisionController = new RefereeDecisionController(new SessionData(null));
         decisionController.addListener(this);
         decisionController.reset();
         try {

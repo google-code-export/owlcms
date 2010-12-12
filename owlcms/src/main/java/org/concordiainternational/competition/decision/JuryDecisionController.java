@@ -36,60 +36,47 @@ import com.vaadin.event.EventRouter;
  * 
  * @author jflamy
  */
-public class DecisionController implements CountdownTimerListener {
+public class JuryDecisionController implements IDecisionController, CountdownTimerListener {
 
-    private static final int RESET_DELAY = 4000;
+    private static final int RESET_DELAY = 5000;
 
     /**
      * 3 seconds to change decision (after all refs have selected)
      */
-    private static final int DECISION_REVERSAL_DELAY = 3000;
+    private static final int DECISION_REVERSAL_DELAY = 4000;
 
 	/**
 	 * Time before displaying decision once all referees have pressed.
 	 */
 	private static final int DECISION_DISPLAY_DELAY = 1000;
 
-    Logger logger = LoggerFactory.getLogger(DecisionController.class);
+    Logger logger = LoggerFactory.getLogger(JuryDecisionController.class);
 
-    Decision[] refereeDecisions = new Decision[3];
+    Decision[] juryDecisions = new Decision[3];
     DecisionEventListener[] listeners = new DecisionEventListener[3];
 
-    private SessionData groupData;
-
-    public DecisionController(SessionData groupData) {
-        this.groupData = groupData;
-        for (int i = 0; i < refereeDecisions.length; i++) {
-            refereeDecisions[i] = new Decision();
+    public JuryDecisionController(SessionData groupData) {
+        for (int i = 0; i < juryDecisions.length; i++) {
+            juryDecisions[i] = new Decision();
         }
-    }
-
-    public class Decision {
-        public Boolean accepted = null;
-        Long time;
     }
 
     long allDecisionsMadeTime = 0L; // all 3 referees have pressed
     int decisionsMade = 0;
     private EventRouter eventRouter;
-
-	private Boolean downSignaled = false;
-	
-	Tone downSignal = new Tone(1100,1200,1.0);
-
+    
     /**
-     * TODO call DecisionController.reset() when timer starts running.
+     * TODO call JuryDecisionController.reset() when timer starts running.
      */
-    public void reset() {
-        for (int i = 0; i < refereeDecisions.length; i++) {
-            refereeDecisions[i].accepted = null;
-            refereeDecisions[i].time = 0L;
+    @Override
+	public void reset() {
+        for (int i = 0; i < juryDecisions.length; i++) {
+            juryDecisions[i].accepted = null;
+            juryDecisions[i].time = 0L;
         }
         allDecisionsMadeTime = 0L; // all 3 referees have pressed
         decisionsMade = 0;
-        downSignaled = false;
-        groupData.setAnnouncerEnabled(true);
-        fireEvent(new DecisionEvent(this, DecisionEvent.Type.RESET, System.currentTimeMillis(), refereeDecisions));
+        fireEvent(new DecisionEvent(this, DecisionEvent.Type.RESET, System.currentTimeMillis(), juryDecisions));
     }
 
     /**
@@ -97,25 +84,26 @@ public class DecisionController implements CountdownTimerListener {
      * @param refereeNo
      * @param accepted
      */
-    public synchronized void decisionMade(int refereeNo, boolean accepted) {
+    @Override
+	public synchronized void decisionMade(int refereeNo, boolean accepted) {
         final long currentTimeMillis = System.currentTimeMillis();
         long deltaTime = currentTimeMillis - allDecisionsMadeTime;
         if (decisionsMade == 3 && deltaTime > DECISION_REVERSAL_DELAY) {
             // too late to reverse decision
-            logger.info("decision ignored from referee {}: {} (too late by {} ms)", new Object[] { refereeNo + 1,
+            logger.info("decision ignored from jury {}: {} (too late by {} ms)", new Object[] { refereeNo + 1,
                     (accepted ? "lift" : "no lift"), deltaTime - DECISION_REVERSAL_DELAY });
             return;
         }
 
-        refereeDecisions[refereeNo].accepted = accepted;
-        refereeDecisions[refereeNo].time = currentTimeMillis;
-        logger.info("decision by referee {}: {}", refereeNo + 1, (accepted ? "lift" : "no lift"));
+        juryDecisions[refereeNo].accepted = accepted;
+        juryDecisions[refereeNo].time = currentTimeMillis;
+        logger.info("decision by jury {}: {}", refereeNo + 1, (accepted ? "lift" : "no lift"));
 
         decisionsMade = 0;
         int pros = 0;
         int cons = 0;
-        for (int i = 0; i < refereeDecisions.length; i++) {
-            final Boolean accepted2 = refereeDecisions[i].accepted;
+        for (int i = 0; i < juryDecisions.length; i++) {
+            final Boolean accepted2 = juryDecisions[i].accepted;
             if (accepted2 != null) {
                 decisionsMade++;
                 if (accepted2) pros++;
@@ -123,62 +111,32 @@ public class DecisionController implements CountdownTimerListener {
             }
         }
 
-        
         if (decisionsMade >= 2) {
-        	// audible down signal is emitted right away by the main computer.
-            // request lifter-facing display should display the "down" signal.
-        	// also, downSignal() signals timeKeeper that time has been stopped if they
-        	// had not stopped it manually.
             if (pros == 2 || cons == 2) {
-            	synchronized (groupData.getTimer()) {
-            		if (!downSignaled) {
-            			new Thread(new Runnable() {
-							@Override
-							public void run() {
-								downSignal.emit();
-								groupData.downSignal();
-							}
-						}).start();
-            			logger.warn("*** audible down signal");
-						downSignaled = true;
-            			fireEvent(new DecisionEvent(this,
-            					DecisionEvent.Type.DOWN, currentTimeMillis,
-            					refereeDecisions));
-            		}
-            	}
+            	//fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, juryDecisions));
             } else {
-                fireEvent(new DecisionEvent(this, DecisionEvent.Type.WAITING, currentTimeMillis, refereeDecisions));
+                fireEvent(new DecisionEvent(this, DecisionEvent.Type.WAITING, currentTimeMillis, juryDecisions));
             }
         } else {
-            // Jury sees all changes, other displays will ignore this.
-            synchronized (groupData.getTimer()) {
-            	logger.warn("broadcasting");
-            	fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
-            }
+            // We are the jury, so we don't show each other's decisions
         }
 
         if (decisionsMade == 3) {
-        	// save the decision
-            groupData.majorityDecision(refereeDecisions);
-            
             // broadcast the decision
             if (allDecisionsMadeTime == 0L) {
                 // all 3 referees have just made a choice; schedule the display
                 // in 3 seconds
                 allDecisionsMadeTime = System.currentTimeMillis();
-                logger.info("all decisions made {}", allDecisionsMadeTime);
-                groupData.setAnnouncerEnabled(false);
                 scheduleDisplay(currentTimeMillis);
+                scheduleBlock();
                 scheduleReset();
             } else {
                 // referees have changed their mind
-                fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
+                fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, juryDecisions));
             }
         }
-
-
-
     }
+
 
     /**
      * @param currentTimeMillis
@@ -189,13 +147,27 @@ public class DecisionController implements CountdownTimerListener {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                fireEvent(new DecisionEvent(DecisionController.this, DecisionEvent.Type.SHOW, currentTimeMillis,
-                        refereeDecisions));
+                fireEvent(new DecisionEvent(JuryDecisionController.this, DecisionEvent.Type.SHOW, currentTimeMillis,
+                        juryDecisions));
             }
         }, DECISION_DISPLAY_DELAY);
     }
-
+    
     /**
+     * 
+     */
+    private void scheduleBlock() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+            	fireEvent(new DecisionEvent(JuryDecisionController.this, DecisionEvent.Type.BLOCK, System.currentTimeMillis(), juryDecisions));
+            }
+        }, DECISION_REVERSAL_DELAY);
+    }
+
+
+	/**
      * 
      */
     private void scheduleReset() {
@@ -212,12 +184,8 @@ public class DecisionController implements CountdownTimerListener {
      * This method is the Java object for the method in the Listener interface.
      * It allows the framework to know how to pass the event information.
      */
-    private static final Method DECISION_EVENT_METHOD = EventHelper.findMethod(DecisionEvent.class, // when
-                                                                                                    // receiving
-                                                                                                    // this
-                                                                                                    // type
-                                                                                                    // of
-                                                                                                    // event
+    private static final Method DECISION_EVENT_METHOD = EventHelper.findMethod(DecisionEvent.class, 
+    		// when receiving this type of event
         DecisionEventListener.class, // an object implementing this interface...
         "updateEvent"); // ... will be called with this method. //$NON-NLS-1$;
 
@@ -243,7 +211,8 @@ public class DecisionController implements CountdownTimerListener {
      * 
      * @param listener
      */
-    public void addListener(DecisionEventListener listener) {
+    @Override
+	public void addListener(DecisionEventListener listener) {
         logger.debug("add listener {}", listener); //$NON-NLS-1$
         getEventRouter().addListener(DecisionEvent.class, listener, DECISION_EVENT_METHOD);
     }
@@ -253,7 +222,8 @@ public class DecisionController implements CountdownTimerListener {
      * 
      * @param listener
      */
-    public void removeListener(DecisionEventListener listener) {
+    @Override
+	public void removeListener(DecisionEventListener listener) {
         if (eventRouter != null) {
             logger.debug("hide listener {}", listener); //$NON-NLS-1$
             eventRouter.removeListener(DecisionEvent.class, listener, DECISION_EVENT_METHOD);
@@ -273,8 +243,7 @@ public class DecisionController implements CountdownTimerListener {
     private EventRouter getEventRouter() {
         if (eventRouter == null) {
             eventRouter = new EventRouter();
-            logger
-                    .trace("new event router for DecisionController " + System.identityHashCode(this) + " = " + System.identityHashCode(eventRouter)); //$NON-NLS-1$ //$NON-NLS-2$
+            logger.trace("new event router for JuryDecisionController " + System.identityHashCode(this) + " = " + System.identityHashCode(eventRouter)); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return eventRouter;
     }
@@ -312,14 +281,15 @@ public class DecisionController implements CountdownTimerListener {
     public void stop(int timeRemaining, CompetitionApplication app, TimeStoppedNotificationReason reason) {
     }
 
+	@Override
 	public void addListener(IRefereeConsole refereeConsole, int refereeIndex) {
 		if (listeners[refereeIndex] != null) {
-			logger.trace("removing previous ORefereeConsole listener {}",listeners[refereeIndex]);
+			logger.trace("removing previous JuryConsole listener {}",listeners[refereeIndex]);
 			removeListener(listeners[refereeIndex]);
 		}
 		addListener(refereeConsole);
 		listeners[refereeIndex] = refereeConsole;
-		logger.trace("adding new ORefereeConsole listener {}",listeners[refereeIndex]);
+		logger.trace("adding new JuryConsole listener {}",listeners[refereeIndex]);
 	}
 
 }

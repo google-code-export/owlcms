@@ -17,7 +17,7 @@
 package org.concordiainternational.competition.ui;
 
 import org.concordiainternational.competition.data.RuleViolationException;
-import org.concordiainternational.competition.decision.DecisionController.Decision;
+import org.concordiainternational.competition.decision.Decision;
 import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionEventListener;
 import org.concordiainternational.competition.ui.components.ApplicationView;
@@ -28,7 +28,7 @@ import com.vaadin.incubator.dashlayout.ui.HorDashLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
-public class JuryLights extends VerticalLayout implements DecisionEventListener, ApplicationView {
+public class RefereeDecisions extends VerticalLayout implements DecisionEventListener, ApplicationView {
 
 
     private static final long serialVersionUID = 1L;
@@ -38,7 +38,7 @@ public class JuryLights extends VerticalLayout implements DecisionEventListener,
     SessionData masterData;
     CompetitionApplication app = CompetitionApplication.getCurrent();
 
-    private Logger logger = LoggerFactory.getLogger(JuryLights.class);
+    private Logger logger = LoggerFactory.getLogger(RefereeDecisions.class);
 
     private String platformName;
     private String viewName;
@@ -46,12 +46,16 @@ public class JuryLights extends VerticalLayout implements DecisionEventListener,
 	@SuppressWarnings("unused")
 	private boolean downShown;
 
-    public JuryLights(boolean initFromFragment, String viewName, boolean publicFacing) {
+	private boolean juryMode;
+
+    public RefereeDecisions(boolean initFromFragment, String viewName, boolean publicFacing, boolean juryMode) {
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
             this.viewName = viewName;
         }
+        
+        this.juryMode = juryMode;
         
         this.app = CompetitionApplication.getCurrent();
         
@@ -81,7 +85,12 @@ public class JuryLights extends VerticalLayout implements DecisionEventListener,
 	 */
 	private void createLights() {
 		masterData = app.getMasterData(platformName);
-        masterData.getDecisionController().addListener(this);
+		if (juryMode) {
+			masterData.getJuryDecisionController().addListener(this);
+		} else {
+			masterData.getRefereeDecisionController().addListener(this);
+		}
+		
         top.setSizeFull();
 
         for (int i = 0; i < decisionLights.length; i++) {
@@ -98,6 +107,8 @@ public class JuryLights extends VerticalLayout implements DecisionEventListener,
     @Override
     public void updateEvent(final DecisionEvent updateEvent) {
         new Thread(new Runnable() {
+			private boolean shown;
+
 			@Override
 			public void run() {
 				synchronized (app) {
@@ -106,25 +117,27 @@ public class JuryLights extends VerticalLayout implements DecisionEventListener,
 					case DOWN:
 						logger.debug("received DOWN event");
 						downShown = true;
-						showLights(decisions);
+						if (!juryMode) showLights(decisions);
 						//decisionLights[1].addStyleName("down");
 						break;
 					case WAITING:
 						logger.debug("received WAITING event");
-						showLights(decisions);
+						if (!juryMode) showLights(decisions);
 						break;
 					case UPDATE:
 						logger.debug("received UPDATE event");
-						showLights(decisions);
+						if (juryMode && shown) showLights(decisions);
 						//if (downShown) decisionLights[1].addStyleName("down");
 						break;
 					case SHOW:
 						logger.debug("received SHOW event");
 						showLights(decisions);
+						shown = true;
 						break;
 					case RESET:
 						logger.debug("received RESET event");
 						resetLights();
+						shown = false;
 						break;
 					}
 				}

@@ -50,7 +50,7 @@ import com.vaadin.ui.Window.CloseListener;
  *
  */
 @SuppressWarnings("serial")
-public class ORefereeConsole extends VerticalLayout implements DecisionEventListener, ApplicationView, CloseListener, URIHandler, IRefereeConsole {
+public class OJuryConsole extends VerticalLayout implements DecisionEventListener, ApplicationView, CloseListener, URIHandler, IRefereeConsole {
 
 	private static final long serialVersionUID = 1L;
 
@@ -60,7 +60,7 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 	private SessionData masterData;
 	private CompetitionApplication app = CompetitionApplication.getCurrent();
 
-	private Logger logger = LoggerFactory.getLogger(ORefereeConsole.class);
+	private Logger logger = LoggerFactory.getLogger(OJuryConsole.class);
 
 	private Integer refereeIndex = null;
 
@@ -77,7 +77,7 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 	private Label white;
 
 
-	public ORefereeConsole(boolean initFromFragment, String viewName) {
+	public OJuryConsole(boolean initFromFragment, String viewName) {
 		if (initFromFragment) {
 			setParametersFromFragment();
 		} else {

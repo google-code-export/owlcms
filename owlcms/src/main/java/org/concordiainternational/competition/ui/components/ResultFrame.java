@@ -27,7 +27,7 @@ import java.util.Locale;
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.RuleViolationException;
-import org.concordiainternational.competition.decision.DecisionController;
+import org.concordiainternational.competition.decision.IDecisionController;
 import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionEventListener;
 import org.concordiainternational.competition.i18n.Messages;
@@ -558,7 +558,7 @@ public class ResultFrame extends VerticalLayout implements
         }
         
         // listen to decisions
-        DecisionController decisionController = masterData.getDecisionController();
+        IDecisionController decisionController = masterData.getRefereeDecisionController();
         if (decisionController != null) {
     		decisionController.addListener(decisionLights);
     		decisionController.addListener(this);
@@ -586,7 +586,7 @@ public class ResultFrame extends VerticalLayout implements
         }
         
         // stop listening to decisions
-        DecisionController decisionController = masterData.getDecisionController();
+        IDecisionController decisionController = masterData.getRefereeDecisionController();
         if (decisionController != null) {
         	decisionController.removeListener(decisionLights);
         	decisionController.removeListener(this);

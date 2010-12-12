@@ -36,8 +36,10 @@ import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter.Ranking;
-import org.concordiainternational.competition.decision.DecisionController;
-import org.concordiainternational.competition.decision.DecisionController.Decision;
+import org.concordiainternational.competition.decision.Decision;
+import org.concordiainternational.competition.decision.IDecisionController;
+import org.concordiainternational.competition.decision.RefereeDecisionController;
+import org.concordiainternational.competition.decision.JuryDecisionController;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.nec.NECDisplay;
 import org.concordiainternational.competition.publicAddress.PublicAddressCountdownTimer;
@@ -104,7 +106,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     private int timeAllowed;
     private int liftsDone;
 
-    private DecisionController decisionController = new DecisionController(this);
+    private RefereeDecisionController refereeDecisionController = new RefereeDecisionController(this);
+    private JuryDecisionController juryDecisionController = new JuryDecisionController(this);
 
     boolean allowAll = false; // allow null group to mean all lifters.
     // will be set to true if the Timekeeping button is pressed.
@@ -465,7 +468,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
         displayLifterInfo(lifter);
 
-        decisionController.reset(); 
+        refereeDecisionController.reset(); 
+        juryDecisionController.reset();
 
         if (startTimeAutomatically) {
             startTimer(lifter,this,getTimer());
@@ -977,9 +981,14 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         this.allowAll = allowAll;
     }
 
-    public DecisionController getDecisionController() {
-        return decisionController;
+    public IDecisionController getRefereeDecisionController() {
+        return refereeDecisionController;
     }
+    
+	public IDecisionController getJuryDecisionController() {
+		return juryDecisionController;
+	}
+
 
     public void majorityDecision(Decision[] refereeDecisions) {
         final Lifter currentLifter2 = getCurrentLifter();
@@ -1165,7 +1174,6 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 		// most likely completely obsolete.
 		//getTimer().removeAllListeners();
 	}
-
 
 	
 //	public void setPublicAddressTimer(PublicAddressCountdownTimer publicAddressTimer) {

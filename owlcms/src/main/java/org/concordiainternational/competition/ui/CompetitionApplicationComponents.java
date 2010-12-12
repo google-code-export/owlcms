@@ -50,7 +50,9 @@ public class CompetitionApplicationComponents {
     public static final String REGISTRATION_LIST = "registrationList"; //$NON-NLS-1$
     public static final String RESULT_BOARD = "resultBoard"; //$NON-NLS-1$
     public static final String OREFEREE_CONSOLE = "oRefereeConsole"; //$NON-NLS-1$
-    public static final String MREFEREE_CONSOLE = "refereeConsole"; //$NON-NLS-1$
+    public static final String MREFEREE_CONSOLE = "juryConsole"; //$NON-NLS-1$
+    public static final String OJURY_CONSOLE = "oJuryConsole"; //$NON-NLS-1$
+    public static final String MJURY_CONSOLE = "juryConsole"; //$NON-NLS-1$
     public static final String SIMPLE_RESULT_BOARD = "simpleResultBoard"; //$NON-NLS-1$
     public static final String RESULT_VIEW = "resultView"; //$NON-NLS-1$
     public static final String TIMEKEEPER_VIEW = "timekeeperView"; //$NON-NLS-1$
@@ -96,6 +98,8 @@ public class CompetitionApplicationComponents {
         urlFragmentToView.put(RESULT_VIEW, new ResultViewComponent());
         urlFragmentToView.put(OREFEREE_CONSOLE, new RefereeConsoleComponent(false));
         urlFragmentToView.put(MREFEREE_CONSOLE, new RefereeConsoleComponent(true));
+        urlFragmentToView.put(OJURY_CONSOLE, new JuryConsoleComponent(false));
+        urlFragmentToView.put(MJURY_CONSOLE, new JuryConsoleComponent(true));
         urlFragmentToView.put(TIMEKEEPER_VIEW, new TimekeeperViewComponent());
         urlFragmentToView.put(UPLOAD_VIEW, new SpreadsheetUploaderComponent());
         urlFragmentToView.put(WEIGH_IN_LIST, new WeighInListComponent());
@@ -204,11 +208,11 @@ public class CompetitionApplicationComponents {
      * Lazy builder for Jury Lights
      */
     private class JuryLightsComponent implements CompetitionApplicationComponent {
-        private JuryLights juryLights = null;
+        private RefereeDecisions juryLights = null;
 
         @Override
 		public ApplicationView get(boolean initFromFragment, String viewName) {
-            this.juryLights = (new JuryLights(initFromFragment, viewName, false));
+            this.juryLights = (new RefereeDecisions(initFromFragment, viewName, false, true));
             return juryLights;
         }
     }
@@ -232,6 +236,29 @@ public class CompetitionApplicationComponents {
 				this.refereeConsole = (new ORefereeConsole(initFromFragment, viewName));
 			}
             return (ApplicationView)refereeConsole;
+        }
+    }
+    
+
+    /**
+     * Lazy builder for Referee buttons
+     */
+    private class JuryConsoleComponent implements CompetitionApplicationComponent {
+        private IRefereeConsole juryConsole = null;
+		private boolean mobile;
+
+        public JuryConsoleComponent(boolean mobile) {
+			this.mobile = mobile;
+		}
+
+		@Override
+		public ApplicationView get(boolean initFromFragment, String viewName) {
+			if (mobile) {
+				this.juryConsole = (new MJuryConsole(initFromFragment, viewName));
+			} else {
+				this.juryConsole = (new OJuryConsole(initFromFragment, viewName));
+			}
+            return (ApplicationView)juryConsole;
         }
     }
 
