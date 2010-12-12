@@ -373,7 +373,7 @@ public class CountdownDisplay extends VerticalLayout implements
 	private void registerAsListener() {
 		app.getMainWindow().addListener((CloseListener)this);
 		registerAsGroupDataListener(platformName, masterData);
-		masterData.getDecisionController().addListener(this);
+		masterData.getRefereeDecisionController().addListener(this);
         final CountdownTimer timer = masterData.getTimer();
         timer.setCountdownDisplay(this);
 	}
@@ -384,7 +384,7 @@ public class CountdownDisplay extends VerticalLayout implements
 	private void unregisterAsListener() {
 		app.getMainWindow().removeListener((CloseListener)this);
 		masterData.removeListener(updateEventListener);
-		masterData.getDecisionController().removeListener(this);
+		masterData.getRefereeDecisionController().removeListener(this);
         final CountdownTimer timer = masterData.getTimer();
         timer.setCountdownDisplay(null);
 	}

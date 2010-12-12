@@ -18,8 +18,6 @@ package org.concordiainternational.competition.decision;
 
 import java.util.EventObject;
 
-import org.concordiainternational.competition.decision.DecisionController.Decision;
-
 public class DecisionEvent extends EventObject {
     private static final long serialVersionUID = 2789988074894824591L;
 
@@ -27,17 +25,17 @@ public class DecisionEvent extends EventObject {
         DOWN, // two refs have given the same decision, lifter can put weight
               // down
         WAITING, // two refs have given different decisions, waiting for third
-        UPDATE, // during 3 second period where refs can change their decision
-        SHOW, // 3 seconds period is over, public sees decision
+        UPDATE, // any change during 3 second period where refs can change their decision
+        SHOW, // all referees have given decisions, public sees decision
+        BLOCK, // cannot change decision after 3 seconds
         RESET, // after 5 seconds, or if announced
     }
 
     private Type type;
     private long when;
-    private Decision[] decisions;;
+    private Decision[] decisions;
 
-    public DecisionEvent(DecisionController source, Type down, long currentTimeMillis,
-            DecisionController.Decision[] refereeDecisions) {
+    public DecisionEvent(IDecisionController source, Type down, long currentTimeMillis, Decision[] refereeDecisions) {
         super(source);
         this.type = down;
         this.when = currentTimeMillis;

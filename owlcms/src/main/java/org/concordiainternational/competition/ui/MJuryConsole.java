@@ -27,12 +27,12 @@ import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.touchdiv.TouchDiv;
+import org.vaadin.touchdiv.TouchDiv.TouchEvent;
+import org.vaadin.touchdiv.TouchDiv.TouchListener;
 
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.URIHandler;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UriFragmentUtility;
@@ -50,7 +50,7 @@ import com.vaadin.ui.Window.CloseListener;
  *
  */
 @SuppressWarnings("serial")
-public class ORefereeConsole extends VerticalLayout implements DecisionEventListener, ApplicationView, CloseListener, URIHandler, IRefereeConsole {
+public class MJuryConsole extends VerticalLayout implements DecisionEventListener, ApplicationView, CloseListener, URIHandler, IRefereeConsole {
 
 	private static final long serialVersionUID = 1L;
 
@@ -60,11 +60,11 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 	private SessionData masterData;
 	private CompetitionApplication app = CompetitionApplication.getCurrent();
 
-	private Logger logger = LoggerFactory.getLogger(ORefereeConsole.class);
+	private Logger logger = LoggerFactory.getLogger(MJuryConsole.class);
 
-	private Integer refereeIndex = null;
+	private Integer juryIndex = null;
 
-	private Label refereeReminder = new Label();
+	private Label juryReminder = new Label();
 
 	private String platformName;
 
@@ -72,12 +72,12 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 
 	private IDecisionController decisionController;
 
-	private Label red;
+	private TouchDiv red;
 
-	private Label white;
+	private TouchDiv white;
 
 
-	public ORefereeConsole(boolean initFromFragment, String viewName) {
+	public MJuryConsole(boolean initFromFragment, String viewName) {
 		if (initFromFragment) {
 			setParametersFromFragment();
 		} else {
@@ -120,7 +120,7 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 			app = CompetitionApplication.getCurrent();
 			masterData = app.getMasterData(platformName);
 		}
-		return masterData.getRefereeDecisionController();
+		return masterData.getJuryDecisionController();
 	}
 
 
@@ -133,75 +133,76 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 		top.setMargin(true);
 		top.setSpacing(true);
 
-		red = new Label();
+		red = new TouchDiv("");
 		red.setSizeFull();
 		red.addStyleName("red");
-		white = new Label();
+		red.addListener(new TouchListener(){
+
+			@Override
+			public void onTouch(TouchEvent event) {
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						decisionController.decisionMade(juryIndex, false);
+					}
+				}).start();
+				redSelected();
+			}});
+		
+		white = new TouchDiv("");
 		white.addStyleName("white");
 		white.setSizeFull();
+		white.addListener(new TouchListener(){
+
+			@Override
+			public void onTouch(TouchEvent event) {
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						decisionController
+								.decisionMade(juryIndex, true);
+					}
+				}).start();
+				whiteSelected();
+			}});
+		
 		top.addComponent(red);
 		top.addComponent(white);
 		top.setExpandRatio(red,50.0F);
-		top.setExpandRatio(white,50.0F);        
-		top.addListener(new LayoutClickListener() {           
-			@Override
-			public void layoutClick(LayoutClickEvent event) {
-				Component child = event.getChildComponent();
-				if (child == red) {
-					new Thread(new Runnable() {
-						@Override
-						public void run() {
-							decisionController
-									.decisionMade(refereeIndex, false);
-						}
-					}).start();
-					redSelected();
-				} else if (child == white) {
-					new Thread(new Runnable() {
-						@Override
-						public void run() {
-							decisionController.decisionMade(refereeIndex, true);
-						}
-					}).start();
-					whiteSelected();
-				}
-			}
-
-			/**
-			 * 
-			 */
-			private void whiteSelected() {
-				white.removeStyleName("decisionUnselected");
-				red.removeStyleName("decisionSelected");
-				white.addStyleName("decisionSelected");
-				red.addStyleName("decisionUnselected");
-				resetBottom();
-			}
-
-			/**
-			 * 
-			 */
-			private void redSelected() {
-				white.removeStyleName("decisionSelected");
-				red.removeStyleName("decisionUnselected");
-				white.addStyleName("decisionUnselected");
-				red.addStyleName("decisionSelected");
-				resetBottom();
-			}
-		});
-		
+		top.setExpandRatio(white,50.0F);
+	}
+	
+	/**
+	 * 
+	 */
+	private void whiteSelected() {
+		white.removeStyleName("decisionUnselected");
+		red.removeStyleName("decisionSelected");
+		white.addStyleName("decisionSelected");
+		red.addStyleName("decisionUnselected");
+		resetBottom();
 	}
 
+	/**
+	 * 
+	 */
+	private void redSelected() {
+		white.removeStyleName("decisionSelected");
+		red.removeStyleName("decisionUnselected");
+		white.addStyleName("decisionUnselected");
+		red.addStyleName("decisionSelected");
+		resetBottom();
+	}
 	/**
 	 * 
 	 */
 	private void setupBottom() {
 		bottom.setSizeFull();
 		bottom.setMargin(false);
-		refereeReminder.setValue(refereeLabel(refereeIndex));
-		refereeReminder.setSizeFull();
-		bottom.addComponent(refereeReminder);
-		refereeReminder.setStyleName("refereeOk");
+		juryReminder.setValue(juryLabel(juryIndex));
+		juryReminder.setSizeFull();
+		bottom.addComponent(juryReminder);
+		juryReminder.setStyleName("refereeOk");
 	}
 
 
@@ -209,13 +210,16 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 	 * @param refereeIndex2
 	 * @return
 	 */
-	private String refereeLabel(Integer refereeIndex2) {
+	private String juryLabel(Integer refereeIndex2) {
 		if (refereeIndex2 == null) refereeIndex2 = 0;
-		return Messages.getString("RefereeConsole.Referee", CompetitionApplication.getCurrentLocale()) + " "
+		return Messages.getString("RefereeConsole.Jury", CompetitionApplication.getCurrentLocale()) + " "
 		+ (refereeIndex2 + 1);
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.concordiainternational.competition.ui.IRefereeConsole#updateEvent(org.concordiainternational.competition.decision.DecisionEvent)
+	 */
 	@Override
 	public void updateEvent(final DecisionEvent updateEvent) {
 		new Thread(new Runnable() {
@@ -224,21 +228,21 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 				synchronized (app) {
 					Decision[] decisions = updateEvent.getDecisions();
 
-					final Boolean accepted = decisions[refereeIndex].accepted;
+					final Boolean accepted = decisions[juryIndex].accepted;
 					switch (updateEvent.getType()) {
 					case DOWN:
 						if (accepted == null) {
 							logger.warn(
-									"referee #{} decision required after DOWN",
-									refereeIndex + 1);
+									"jury #{} decision required after DOWN",
+									juryIndex + 1);
 							requireDecision();
 						}
 						break;
 					case WAITING:
 						if (accepted == null) {
 							logger.warn(
-									"referee #{} decision required WAITING",
-									refereeIndex + 1);
+									"jury #{} decision required WAITING",
+									juryIndex + 1);
 							requireDecision();
 						}
 						break;
@@ -251,7 +255,7 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 						//top.setEnabled(false);
 						break;
 					case RESET:
-						logger.warn("referee #{} RESET", refereeIndex + 1);
+						logger.warn("jury #{} RESET", juryIndex + 1);
 						white.setStyleName("white");
 						red.setStyleName("red");
 						resetTop();
@@ -285,8 +289,8 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 	 * 
 	 */
 	private void requireDecision() {
-		refereeReminder.setValue(Messages.getString("RefereeConsole.decisionRequired", CompetitionApplication.getCurrentLocale()));
-		refereeReminder.setStyleName("refereeReminder");
+		juryReminder.setValue(Messages.getString("RefereeConsole.decisionRequired", CompetitionApplication.getCurrentLocale()));
+		juryReminder.setStyleName("juryReminder");
 		//CompetitionApplication.getCurrent().getMainWindow().executeJavaScript("alert('wakeup')");
 	}
 
@@ -298,6 +302,9 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 		red.setEnabled(true);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.concordiainternational.competition.ui.IRefereeConsole#refresh()
+	 */
 	@Override
 	public void refresh() {
 	}
@@ -305,21 +312,21 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 
 	private void resetBottom() {
 		synchronized (app) {
-			refereeReminder.setValue(refereeLabel(refereeIndex));
-			refereeReminder.setStyleName("refereeOk");
+			juryReminder.setValue(juryLabel(juryIndex));
+			juryReminder.setStyleName("refereeOk");
 		}
 		app.push();
 	}
 
 
-	/**
-	 * @param refereeIndex
+	/* (non-Javadoc)
+	 * @see org.concordiainternational.competition.ui.IRefereeConsole#setRefereeIndex(int)
 	 */
 	@Override
 	public void setIndex(int refereeIndex) {
 		synchronized (app) {
-			this.refereeIndex = refereeIndex;
-			refereeReminder.setValue(refereeLabel(refereeIndex));
+			this.juryIndex = refereeIndex;
+			juryReminder.setValue(juryLabel(refereeIndex));
 			UriFragmentUtility uriFragmentUtility = CompetitionApplication.getCurrent().getUriFragmentUtility();
 			uriFragmentUtility.setFragment(getFragment(), false);
 		}
@@ -331,22 +338,25 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 	/* (non-Javadoc)
 	 * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()
 	 */
+	/* (non-Javadoc)
+	 * @see org.concordiainternational.competition.ui.IRefereeConsole#needsMenu()
+	 */
 	@Override
 	public boolean needsMenu() {
 		return false;
 	}
 
-	/**
-	 * @return
+	/* (non-Javadoc)
+	 * @see org.concordiainternational.competition.ui.IRefereeConsole#getFragment()
 	 */
 	@Override
 	public String getFragment() {
-		return viewName+"/"+(platformName == null ? "" : platformName)+"/"+((int)this.refereeIndex+1);
+		return viewName+"/"+(platformName == null ? "" : platformName)+"/"+((int)this.juryIndex+1);
 	}
 
 
 	/* (non-Javadoc)
-	 * @see org.concordiainternational.competition.ui.components.ApplicationView#setParametersFromFragment(java.lang.String)
+	 * @see org.concordiainternational.competition.ui.IRefereeConsole#setParametersFromFragment()
 	 */
 	@Override
 	public void setParametersFromFragment() {
@@ -379,8 +389,8 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 	private void registerAsListener() {
 		logger.warn("registering as listener");
 		app.getMainWindow().addListener((CloseListener)this);
-		if (refereeIndex != null) {
-			setIndex(refereeIndex);
+		if (juryIndex != null) {
+			setIndex(juryIndex);
 		}
 	}
 
@@ -398,6 +408,9 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 	/* Will be called when page is loaded.
 	 * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
 	 */
+	/* (non-Javadoc)
+	 * @see org.concordiainternational.competition.ui.IRefereeConsole#handleURI(java.net.URL, java.lang.String)
+	 */
 	@Override
 	public DownloadStream handleURI(URL context, String relativeUri) {
 		registerAsListener();
@@ -408,6 +421,9 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 
 	/* Will be called when page is unloaded (including on refresh).
 	 * @see com.vaadin.ui.Window.CloseListener#windowClose(com.vaadin.ui.Window.CloseEvent)
+	 */
+	/* (non-Javadoc)
+	 * @see org.concordiainternational.competition.ui.IRefereeConsole#windowClose(com.vaadin.ui.Window.CloseEvent)
 	 */
 	@Override
 	public void windowClose(CloseEvent e) {

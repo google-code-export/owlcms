@@ -97,7 +97,7 @@ public class TouchKitHome //extends TouchLayout
 //
 //			@Override
 //			public void itemTouched(TouchMenuItem selectedItem) {
-//				final JuryLights refDecisions = createRefereeDecisions();
+//				final RefereeDecisions refDecisions = createRefereeDecisions();
 //				addComponent(refDecisions);
 //				TouchKitHome.this.fixLayout(refDecisions);
 //			}
@@ -118,8 +118,8 @@ public class TouchKitHome //extends TouchLayout
 //	 * @param refIndex
 //	 * @return
 //	 */
-//	private JuryLights createRefereeDecisions() {
-//		JuryLights decisionLights = new JuryLights(false, "DecisionLights", false);
+//	private RefereeDecisions createRefereeDecisions() {
+//		RefereeDecisions decisionLights = new RefereeDecisions(false, "DecisionLights", false);
 //		return decisionLights;
 //	}
 //

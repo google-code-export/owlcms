@@ -17,7 +17,7 @@
 package org.concordiainternational.competition.ui;
 
 import org.concordiainternational.competition.data.RuleViolationException;
-import org.concordiainternational.competition.decision.DecisionController.Decision;
+import org.concordiainternational.competition.decision.Decision;
 import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionEventListener;
 import org.concordiainternational.competition.i18n.Messages;
@@ -90,7 +90,7 @@ public class RefereeTesting extends VerticalSplitPanel implements DecisionEventL
 	 */
 	private void createLights() {
 		masterData = app.getMasterData(platformName);
-        masterData.getDecisionController().addListener(this);
+        masterData.getRefereeDecisionController().addListener(this);
         top.setSizeFull();
 
         for (int i = 0; i < decisionLights.length; i++) {
@@ -118,7 +118,7 @@ public class RefereeTesting extends VerticalSplitPanel implements DecisionEventL
 
                 @Override
                 public void buttonClick(ClickEvent event) {
-                    masterData.getDecisionController().decisionMade(j, true);
+                    masterData.getRefereeDecisionController().decisionMade(j, true);
                 }
 
             });
@@ -134,7 +134,7 @@ public class RefereeTesting extends VerticalSplitPanel implements DecisionEventL
 
                 @Override
                 public void buttonClick(ClickEvent event) {
-                    masterData.getDecisionController().decisionMade(j, false);
+                    masterData.getRefereeDecisionController().decisionMade(j, false);
                 }
 
             });
@@ -265,7 +265,7 @@ public class RefereeTesting extends VerticalSplitPanel implements DecisionEventL
      * @return
      */
     private String refereeLabel(int refereeIndex2) {
-        return Messages.getString("ORefereeConsole.Referee", CompetitionApplication.getCurrentLocale()) + " "
+        return Messages.getString("RefereeConsole.Referee", CompetitionApplication.getCurrentLocale()) + " "
             + (refereeIndex2 + 1);
     }
 

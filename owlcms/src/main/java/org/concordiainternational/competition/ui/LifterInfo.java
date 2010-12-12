@@ -687,7 +687,7 @@ public class LifterInfo extends VerticalLayout implements
 		CountdownTimer timer = groupData.getTimer();
 		if (masterApplication == app && isTop()) {
 			// down signal (for buzzer)
-			groupData.getDecisionController().addListener(this);
+			groupData.getRefereeDecisionController().addListener(this);
 			// timer will buzz on this console
 			if (timer != null) timer.setMasterBuzzer(this);
         }
@@ -706,7 +706,7 @@ public class LifterInfo extends VerticalLayout implements
 		// if several instances of lifter information, only top one buzzes.
 		if (masterApplication == app && isTop()) {
 			// down signal will no longer buzz
-			groupData.getDecisionController().removeListener(this);
+			groupData.getRefereeDecisionController().removeListener(this);
 			// no more timer buzz
 			if (timer != null) timer.setMasterBuzzer(null);
         }

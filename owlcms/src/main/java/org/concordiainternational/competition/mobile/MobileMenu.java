@@ -6,7 +6,7 @@ import java.util.List;
 import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.ui.AttemptBoardView;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.ui.JuryLights;
+import org.concordiainternational.competition.ui.RefereeDecisions;
 import org.concordiainternational.competition.ui.SessionData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ import com.vaadin.ui.VerticalLayout;
 public class MobileMenu extends VerticalLayout {
 
 	public static final String BUTTON_WIDTH = "6em";
-
+	public static final String BUTTON_NARROW_WIDTH = "4em";
 	public static final String BUTTON_HEIGHT = "3em";
 
 	private CompetitionApplication app;
@@ -43,8 +43,13 @@ public class MobileMenu extends VerticalLayout {
 		this.addComponent(refereeSelection);
 		final MRefereeDecisions refereeDecisions = new MRefereeDecisions();
 		this.addComponent(refereeDecisions);
-		final MPlatesInfo platesInfo = new MPlatesInfo();
-		this.addComponent(platesInfo);
+		
+		final MJurySelect jurySelection = new MJurySelect();
+		this.addComponent(jurySelection);
+		final MJuryDecisions juryDecisions = new MJuryDecisions();
+		this.addComponent(juryDecisions);
+//		final MPlatesInfo platesInfo = new MPlatesInfo();
+//		this.addComponent(platesInfo);
 		this.setStyleName("mobileMenu");
 		this.setSpacing(true);
 		this.setMargin(true);
@@ -60,7 +65,26 @@ public class MobileMenu extends VerticalLayout {
 			final NativeButton button = new NativeButton("Afficher", new Button.ClickListener() {			
 				@Override
 				public void buttonClick(ClickEvent event) {
-					JuryLights refereeDecisions = createRefereeDecisions();
+					RefereeDecisions refereeDecisions = createRefereeDecisions();
+					app.setMainLayoutContent(refereeDecisions);
+				}
+			});
+			button.setWidth(BUTTON_WIDTH);
+			button.setHeight(BUTTON_HEIGHT);
+			this.addComponent(button);
+		}
+	}
+	
+	public class MJuryDecisions extends HorizontalLayout {
+		public MJuryDecisions() {
+			this.setSpacing(true);
+			final Label label = new Label("Décisions du jury");
+			this.addComponent(label);
+			this.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
+			final NativeButton button = new NativeButton("Afficher", new Button.ClickListener() {			
+				@Override
+				public void buttonClick(ClickEvent event) {
+					RefereeDecisions refereeDecisions = createJuryDecisions();
 					app.setMainLayoutContent(refereeDecisions);
 				}
 			});
@@ -130,7 +154,7 @@ public class MobileMenu extends VerticalLayout {
 					CompetitionApplication.getCurrent().displayMRefereeConsole(0);
 				}
 			});
-			button1.setWidth(BUTTON_WIDTH);
+			button1.setWidth(BUTTON_NARROW_WIDTH);
 			button1.setHeight(BUTTON_HEIGHT);
 			this.addComponent(button1);
 
@@ -140,7 +164,7 @@ public class MobileMenu extends VerticalLayout {
 					CompetitionApplication.getCurrent().displayMRefereeConsole(1);
 				}
 			});
-			button2.setWidth(BUTTON_WIDTH);
+			button2.setWidth(BUTTON_NARROW_WIDTH);
 			button2.setHeight(BUTTON_HEIGHT);
 			this.addComponent(button2);
 
@@ -150,14 +174,50 @@ public class MobileMenu extends VerticalLayout {
 					CompetitionApplication.getCurrent().displayMRefereeConsole(2);
 				}
 			});
-			button3.setWidth(BUTTON_WIDTH);
+			button3.setWidth(BUTTON_NARROW_WIDTH);
 			button3.setHeight(BUTTON_HEIGHT);
 			this.addComponent(button3);
 		}
 	}
+	
+	public class MJurySelect extends HorizontalLayout {
 
+		MJurySelect() {
+			this.setSpacing(true);
+			final Label label = new Label("Jury");
+			this.addComponent(label);
+			this.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
+			final NativeButton button1 = new NativeButton("1", new Button.ClickListener() {			
+				@Override
+				public void buttonClick(ClickEvent event) {
+					CompetitionApplication.getCurrent().displayMJuryConsole(0);
+				}
+			});
+			button1.setWidth(BUTTON_NARROW_WIDTH);
+			button1.setHeight(BUTTON_HEIGHT);
+			this.addComponent(button1);
 
+			final NativeButton button2 = new NativeButton("2", new Button.ClickListener() {			
+				@Override
+				public void buttonClick(ClickEvent event) {
+					CompetitionApplication.getCurrent().displayMJuryConsole(1);
+				}
+			});
+			button2.setWidth(BUTTON_NARROW_WIDTH);
+			button2.setHeight(BUTTON_HEIGHT);
+			this.addComponent(button2);
 
+			final NativeButton button3 = new NativeButton("3", new Button.ClickListener() {			
+				@Override
+				public void buttonClick(ClickEvent event) {
+					CompetitionApplication.getCurrent().displayMJuryConsole(2);
+				}
+			});
+			button3.setWidth(BUTTON_NARROW_WIDTH);
+			button3.setHeight(BUTTON_HEIGHT);
+			this.addComponent(button3);
+		}
+	}
 
 
 	//	/**
@@ -172,8 +232,17 @@ public class MobileMenu extends VerticalLayout {
 	 * @param refIndex
 	 * @return
 	 */
-	private JuryLights createRefereeDecisions() {
-		JuryLights decisionLights = new JuryLights(false, "DecisionLights", false);
+	private RefereeDecisions createRefereeDecisions() {
+		RefereeDecisions decisionLights = new RefereeDecisions(false, "DecisionLights", false, false);
+		return decisionLights;
+	}
+
+	/**
+	 * @param refIndex
+	 * @return
+	 */
+	private RefereeDecisions createJuryDecisions() {
+		RefereeDecisions decisionLights = new RefereeDecisions(false, "DecisionLights", false, true);
 		return decisionLights;
 	}
 

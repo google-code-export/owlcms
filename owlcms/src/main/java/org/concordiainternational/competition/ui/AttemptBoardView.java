@@ -288,15 +288,15 @@ public class AttemptBoardView extends VerticalLayout implements
 
 	private void registerAsListener() {
         masterData.addListener(this);
-        masterData.getDecisionController().addListener(this);
-        masterData.getDecisionController().addListener(decisionArea);
+        masterData.getRefereeDecisionController().addListener(this);
+        masterData.getRefereeDecisionController().addListener(decisionArea);
         masterData.addBlackBoardListener(this);
 	}
 	
 	private void unregisterAsListener() {
 		masterData.removeListener(this);
-		masterData.getDecisionController().removeListener(this);
-		masterData.getDecisionController().removeListener(decisionArea);
+		masterData.getRefereeDecisionController().removeListener(this);
+		masterData.getRefereeDecisionController().removeListener(decisionArea);
 		masterData.removeBlackBoardListener(this);
 	}
 

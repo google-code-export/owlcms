@@ -19,10 +19,10 @@ package org.concordiainternational.competition.ui;
 import java.net.URL;
 
 import org.concordiainternational.competition.data.RuleViolationException;
-import org.concordiainternational.competition.decision.DecisionController;
-import org.concordiainternational.competition.decision.DecisionController.Decision;
+import org.concordiainternational.competition.decision.Decision;
 import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionEventListener;
+import org.concordiainternational.competition.decision.IDecisionController;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.slf4j.Logger;
@@ -70,7 +70,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 
 	private String viewName;
 
-	private DecisionController decisionController;
+	private IDecisionController decisionController;
 
 	private TouchDiv red;
 
@@ -115,12 +115,12 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 	/**
 	 * @return
 	 */
-	private DecisionController getDecisionController() {
+	private IDecisionController getDecisionController() {
 		if (masterData == null) {
 			app = CompetitionApplication.getCurrent();
 			masterData = app.getMasterData(platformName);
 		}
-		return masterData.getDecisionController();
+		return masterData.getRefereeDecisionController();
 	}
 
 
@@ -128,7 +128,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 	/**
 	 * @param decisionController
 	 */
-	private void setupTop(final DecisionController decisionController) {
+	private void setupTop(final IDecisionController decisionController) {
 		top.setSizeFull();
 		top.setMargin(true);
 		top.setSpacing(true);
@@ -248,7 +248,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 						break;
 					case UPDATE:
 						break;
-					case SHOW:
+					case BLOCK:
 						// decisions are shown to the public; prevent refs from changing.
 						white.setEnabled(false);
 						red.setEnabled(false);
@@ -323,7 +323,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 	 * @see org.concordiainternational.competition.ui.IRefereeConsole#setRefereeIndex(int)
 	 */
 	@Override
-	public void setRefereeIndex(int refereeIndex) {
+	public void setIndex(int refereeIndex) {
 		synchronized (app) {
 			this.refereeIndex = refereeIndex;
 			refereeReminder.setValue(refereeLabel(refereeIndex));
@@ -375,7 +375,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 		}
 
 		if (params.length >= 3) {
-			setRefereeIndex(Integer.parseInt(params[2])-1);
+			setIndex(Integer.parseInt(params[2])-1);
 		} else {
 			throw new RuleViolationException("Error.RefereeNumberIsMissing");
 		}
@@ -390,7 +390,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 		logger.warn("registering as listener");
 		app.getMainWindow().addListener((CloseListener)this);
 		if (refereeIndex != null) {
-			setRefereeIndex(refereeIndex);
+			setIndex(refereeIndex);
 		}
 	}
 

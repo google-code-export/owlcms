@@ -18,7 +18,7 @@ public interface IRefereeConsole extends DecisionEventListener {
 	/**
 	 * @param refereeIndex
 	 */
-	public abstract void setRefereeIndex(int refereeIndex);
+	public abstract void setIndex(int refereeIndex);
 
 	/* (non-Javadoc)
 	 * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()

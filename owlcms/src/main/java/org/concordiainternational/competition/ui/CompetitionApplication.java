@@ -226,7 +226,15 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     public void displayRefereeConsole(int refereeIndex) {
         final ORefereeConsole view = (ORefereeConsole) components
                 .getViewByName(CompetitionApplicationComponents.OREFEREE_CONSOLE, false);
-        view.setRefereeIndex(refereeIndex);
+        view.setIndex(refereeIndex);
+        setMainLayoutContent(view);	
+        uriFragmentUtility.setFragment(view.getFragment(), false);
+    }
+    
+    public void displayOJuryConsole(int refereeIndex) {
+        final ORefereeConsole view = (ORefereeConsole) components
+                .getViewByName(CompetitionApplicationComponents.OJURY_CONSOLE, false);
+        view.setIndex(refereeIndex);
         setMainLayoutContent(view);	
         uriFragmentUtility.setFragment(view.getFragment(), false);
     }
@@ -234,7 +242,15 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     public void displayMRefereeConsole(int refereeIndex) {
         final MRefereeConsole view = (MRefereeConsole) components
                 .getViewByName(CompetitionApplicationComponents.MREFEREE_CONSOLE, false);
-        view.setRefereeIndex(refereeIndex);
+        view.setIndex(refereeIndex);
+        setMainLayoutContent(view);	
+        uriFragmentUtility.setFragment(view.getFragment(), false);
+    }
+    
+    public void displayMJuryConsole(int refereeIndex) {
+        final MJuryConsole view = (MJuryConsole) components
+                .getViewByName(CompetitionApplicationComponents.MJURY_CONSOLE, false);
+        view.setIndex(refereeIndex);
         setMainLayoutContent(view);	
         uriFragmentUtility.setFragment(view.getFragment(), false);
     }
