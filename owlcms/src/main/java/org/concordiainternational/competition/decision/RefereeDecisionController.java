@@ -74,6 +74,8 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 	
 	Tone downSignal = new Tone(1100,1200,1.0);
 
+	private boolean blocked = true;
+
     /* (non-Javadoc)
 	 * @see org.concordiainternational.competition.decision.IDecisionController#reset()
 	 */
@@ -95,6 +97,8 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 	 */
     @Override
 	public synchronized void decisionMade(int refereeNo, boolean accepted) {
+    	if (isBlocked()) return;
+    	
         final long currentTimeMillis = System.currentTimeMillis();
         long deltaTime = currentTimeMillis - allDecisionsMadeTime;
         if (decisionsMade == 3 && deltaTime > DECISION_REVERSAL_DELAY) {
@@ -202,6 +206,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
             @Override
             public void run() {
             	fireEvent(new DecisionEvent(RefereeDecisionController.this, DecisionEvent.Type.BLOCK, System.currentTimeMillis(), refereeDecisions));
+            	setBlocked(true);
             }
         }, DECISION_REVERSAL_DELAY);
     }
@@ -355,4 +360,13 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 		logger.trace("adding new ORefereeConsole listener {}",listeners[refereeIndex]);
 	}
 
+	@Override
+	public void setBlocked(boolean blocked) {
+		this.blocked = blocked;
+	}
+
+	@Override
+	public boolean isBlocked() {
+		return blocked &&  (groupData.getCurrentSession() != null);
+	}
 }

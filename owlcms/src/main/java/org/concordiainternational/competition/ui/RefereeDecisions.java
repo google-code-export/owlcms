@@ -43,7 +43,6 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
     private String platformName;
     private String viewName;
 
-	@SuppressWarnings("unused")
 	private boolean downShown;
 
 	private boolean juryMode;
