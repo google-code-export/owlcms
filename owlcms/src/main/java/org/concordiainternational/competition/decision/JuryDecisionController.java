@@ -65,6 +65,7 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
     int decisionsMade = 0;
     private EventRouter eventRouter;
 
+	@SuppressWarnings("unused")
 	private boolean blocked = true;
     
     /**
