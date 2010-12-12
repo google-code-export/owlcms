@@ -82,7 +82,7 @@ public class ResultFrame extends VerticalLayout implements
     private SessionData masterData;
     private CustomLayout top;
     private CompetitionApplication app;
-    private Label name = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
+    private Label name = new Label("<br>", Label.CONTENT_XHTML); //$NON-NLS-1$
     private Label attempt = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
     private Label timeDisplay = new Label();
     private Label weight = new Label();
