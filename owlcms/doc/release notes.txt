@@ -1,8 +1,20 @@
 #summary Release Notes
 
+== Release 2.2.0 ==
+  * Added support for 3-person Jury: a dedicated display (iPod) is used for displaying the
+    jury decisions.  5-person Jury is doable, but not needed at this time.
+  * The referee decisions are now sent as soon as the refereeing device is touched.  Touch devices
+    wait 400ms before sending "onClick"; this has been worked around by a custom-built GWT widget
+    that triggers on the touchStart event.
+  * The *down* signal is emitted by the main computer, to further reduce latency.  This currently means
+    that in 2-platform competitions only one can use the computerized refereeing system (though both
+    can use the Jury).  Support for the old "in browser" approach will need to be tested again now that
+    we have fixed the touchstart issue; otherwise we will need websockets and HTML5 sound to reduce latency.
+  * Long names are handled better by the main display.
+
 == Release 2.1.3 ==
   * Referee decision display tested with iPod Mercury Lite browser (free) alternative to Mobile Safari; this browser allows removal of all decorations on the screen.
-  * Made sure that jury display session never expires.
+  * Made sure that referee decision display session never expires.
 
 == Release 2.1.2 ==
   * hide url bar for referee display on refresh.
