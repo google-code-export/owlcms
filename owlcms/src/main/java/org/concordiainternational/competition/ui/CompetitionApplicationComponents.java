@@ -50,7 +50,7 @@ public class CompetitionApplicationComponents {
     public static final String REGISTRATION_LIST = "registrationList"; //$NON-NLS-1$
     public static final String RESULT_BOARD = "resultBoard"; //$NON-NLS-1$
     public static final String OREFEREE_CONSOLE = "oRefereeConsole"; //$NON-NLS-1$
-    public static final String MREFEREE_CONSOLE = "juryConsole"; //$NON-NLS-1$
+    public static final String MREFEREE_CONSOLE = "refereeConsole"; //$NON-NLS-1$
     public static final String OJURY_CONSOLE = "oJuryConsole"; //$NON-NLS-1$
     public static final String MJURY_CONSOLE = "juryConsole"; //$NON-NLS-1$
     public static final String SIMPLE_RESULT_BOARD = "simpleResultBoard"; //$NON-NLS-1$

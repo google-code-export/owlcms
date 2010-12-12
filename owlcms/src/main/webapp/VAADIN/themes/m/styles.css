@@ -23,6 +23,11 @@
 	border-width: thin;
 }
 
+.refereePad .v-horizontallayout-margin-left   {padding-left:   5px;}
+.refereePad .v-horizontallayout-margin-right  {padding-right:  5px;}
+.refereePad .v-horizontallayout-margin-top    {padding-top:    5px; }
+.refereePad .v-horizontallayout-margin-bottom {padding-bottom: 5px; }
+
 .refereePad .refereeReminder {
 	background-color: yellow;
 	border-style: solid;
@@ -35,12 +40,26 @@
 	vertical-align: middle;
 }
 
-.refereePad .refereeOk {
-	background-color: white;
+.refereePad .blocked {
+	background-color: red;
+	color: black;
 	border-style: solid;
 	border-width: thin;
 	border-color: black;
 	font-size: larger;
+	font-weight: normal;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.refereePad .refereeOk {
+	background-color: navy;
+	color: white;
+	border-style: solid;
+	border-width: thin;
+	border-color: black;
+	font-size: x-large;
 	font-weight: bold;
 	text-align: center;
 	display: table-cell;

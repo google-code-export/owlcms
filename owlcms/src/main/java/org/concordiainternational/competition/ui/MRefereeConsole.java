@@ -252,6 +252,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 						// decisions are shown to the public; prevent refs from changing.
 						white.setEnabled(false);
 						red.setEnabled(false);
+						refereeReminder.setStyleName("blocked");
 						//top.setEnabled(false);
 						break;
 					case RESET:

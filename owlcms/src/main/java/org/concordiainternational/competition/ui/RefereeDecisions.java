@@ -48,6 +48,8 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 
 	private boolean juryMode;
 
+	private boolean shown;
+
     public RefereeDecisions(boolean initFromFragment, String viewName, boolean publicFacing, boolean juryMode) {
         if (initFromFragment) {
             setParametersFromFragment();
@@ -107,7 +109,6 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
     @Override
     public void updateEvent(final DecisionEvent updateEvent) {
         new Thread(new Runnable() {
-			private boolean shown;
 
 			@Override
 			public void run() {
@@ -125,19 +126,18 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 						if (!juryMode) showLights(decisions);
 						break;
 					case UPDATE:
-						logger.debug("received UPDATE event");
-						if (juryMode && shown) showLights(decisions);
+						logger.warn("received UPDATE event {} && {}",juryMode,shown);
+						if ((juryMode && shown) || !juryMode) showLights(decisions);
 						//if (downShown) decisionLights[1].addStyleName("down");
 						break;
 					case SHOW:
-						logger.debug("received SHOW event");
+						logger.warn("received SHOW event");
 						showLights(decisions);
 						shown = true;
 						break;
 					case RESET:
 						logger.debug("received RESET event");
 						resetLights();
-						shown = false;
 						break;
 					}
 				}
@@ -170,6 +170,7 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 				decisionLights[i].setValue("&nbsp;");
 			}
 			downShown = false;
+			shown = false;
 		}
 		app.push();
     }
