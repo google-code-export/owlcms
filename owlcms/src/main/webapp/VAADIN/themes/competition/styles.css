@@ -128,8 +128,7 @@
 
 .projectorTop {
 	font-weight: bold;
-	font-size: x-large;
-	line-height: 2em;
+	font-size: 24px;
 	vertical-align: baseline;
 	background-color: black;
 	color: white;
@@ -139,6 +138,12 @@
 
 .projectorTop td {
 	text-align: left;
+	vertical-align: baseline;
+}
+
+.projectorTop td.name .v-label{
+	text-align: left;
+	line-height: 110%;
 	vertical-align: baseline;
 }
 
