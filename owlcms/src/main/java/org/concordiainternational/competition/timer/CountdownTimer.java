@@ -29,6 +29,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.Application;
+import com.vaadin.ui.AbstractComponent;
+
 /**
  * Master stopwatch for a competition session.
  * 
@@ -115,6 +118,7 @@ public class CountdownTimer implements Serializable {
     	pause(TimeStoppedNotificationReason.UNKNOWN);
     }
     
+	@SuppressWarnings("unchecked")
 	public void pause(TimeStoppedNotificationReason reason) {
         logger.debug("enter pause {} {}", getTimeRemaining()); //$NON-NLS-1$
         if (countdownTask != null) {
@@ -135,10 +139,25 @@ public class CountdownTimer implements Serializable {
         if (masterBuzzer != null) {
             masterBuzzer.pause(startTime, CompetitionApplication.getCurrent(), reason);
         }
-        for (CountdownTimerListener curListener : getListeners()) {
+        
+        final HashSet<CountdownTimerListener> listenerSet = (HashSet<CountdownTimerListener>) getListeners();
+		for (CountdownTimerListener curListener : (HashSet<CountdownTimerListener>)listenerSet.clone()) {
         	// avoid duplicate notifications
-        	if (curListener != masterBuzzer) {
-        		curListener.pause(startTime, CompetitionApplication.getCurrent(), reason);
+        	if (curListener != masterBuzzer && curListener != countdownDisplay) {
+        		
+        		// avoid notifying orphaned listeners
+        		if (curListener instanceof AbstractComponent) {
+        			AbstractComponent curComponent = (AbstractComponent)curListener;
+        			Application curApp = curComponent.getApplication();
+        			if (curApp == null) {
+        				// application is null, the listener is an orphan
+        				listenerSet.remove(curListener);
+        			} else {
+        				curListener.pause(startTime, CompetitionApplication.getCurrent(), reason);
+        			}
+        		} else {
+        			curListener.pause(startTime, CompetitionApplication.getCurrent(), reason);
+        		}
         	}
         }
 	}
@@ -168,8 +187,15 @@ public class CountdownTimer implements Serializable {
         }
         for (CountdownTimerListener curListener : getListeners()) {
         	// avoid duplicate notifications
-        	if (curListener != masterBuzzer) {
-        		curListener.stop(startTime, CompetitionApplication.getCurrent(), reason);
+        	if (curListener != masterBuzzer && curListener != countdownDisplay) {
+        		if (curListener instanceof AbstractComponent) {
+        			final Application application = ((AbstractComponent) curListener).getApplication();
+					if (application != null) {
+						curListener.stop(startTime, CompetitionApplication.getCurrent(), reason);
+					}
+        		} else {
+        			curListener.stop(startTime, CompetitionApplication.getCurrent(), reason);
+        		}
         	}
         }
     }
@@ -197,10 +223,18 @@ public class CountdownTimer implements Serializable {
         if (masterBuzzer != null) {
             masterBuzzer.forceTimeRemaining(startTime, CompetitionApplication.getCurrent(), reason);
         }
+        
         for (CountdownTimerListener curListener : getListeners()) {
         	// avoid duplicate notifications
-        	if (curListener != masterBuzzer) {
-        		curListener.forceTimeRemaining(getTimeRemaining(), CompetitionApplication.getCurrent(), reason);
+        	if (curListener != masterBuzzer && curListener != countdownDisplay) {
+        		if (curListener instanceof AbstractComponent) {
+        			final Application application = ((AbstractComponent) curListener).getApplication();
+					if (application != null) {
+						curListener.forceTimeRemaining(getTimeRemaining(), CompetitionApplication.getCurrent(), reason);
+					}
+        		} else {
+        			curListener.forceTimeRemaining(getTimeRemaining(), CompetitionApplication.getCurrent(), reason);
+        		}
         	}
         }
     }

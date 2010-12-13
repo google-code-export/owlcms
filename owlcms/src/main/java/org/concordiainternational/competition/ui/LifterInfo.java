@@ -492,6 +492,7 @@ public class LifterInfo extends VerticalLayout implements
             timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
             setBlocked(false);
         }
+        
         showNotification(originatingApp, reason);
         app.push();
 
@@ -522,22 +523,42 @@ public class LifterInfo extends VerticalLayout implements
 	private void showNotification(CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
 
 		if (isTop() && app != originatingApp) {
-//			logger.warn("showNotification in {}",this);
-//			LoggerUtils.logException(logger, new Exception("where"));
-        	CompetitionApplication receivingApp = app;
+			CompetitionApplication receivingApp = app;
+			
+
+			
+			// defensive
+			String originatingPlatformName = originatingApp.components.getPlatformName();
+			String receivingPlatformName = receivingApp.components.getPlatformName();
+			if (! originatingPlatformName.equals(receivingPlatformName)) {
+				logger.error("event from platform {} sent to {}",originatingPlatformName, receivingPlatformName);
+				traceBack(originatingApp);
+			}
+        	
 			if (receivingApp.components.currentView instanceof AnnouncerView && reason != TimeStoppedNotificationReason.UNKNOWN) {
 				AnnouncerView receivingView = (AnnouncerView) receivingApp.components.currentView;
 				ApplicationView originatingAppView = originatingApp.components.currentView;
 				if (originatingAppView instanceof AnnouncerView) {
 					AnnouncerView originatingView = (AnnouncerView)originatingAppView;
-					if (originatingView.mode != Mode.TIMEKEEPER) {
+					if (originatingView.mode != receivingView.mode 
+							&& originatingView.mode != Mode.TIMEKEEPER) {
+						traceBack(originatingApp);
 						receivingView.displayNotification(originatingView.mode,reason);
 					}
 				} else {
+					traceBack(originatingApp);
 					receivingView.displayNotification(null,reason);
 				}
         	}
         }
+	}
+
+	/**
+	 * @param originatingApp
+	 */
+	private void traceBack(CompetitionApplication originatingApp) {
+//		logger.warn("showNotification in {} from {}",app,originatingApp);
+//		LoggerUtils.logException(logger, new Exception("where"));
 	}
 
     @Override
