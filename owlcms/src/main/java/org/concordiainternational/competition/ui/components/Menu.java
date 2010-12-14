@@ -58,7 +58,9 @@ public class Menu extends MenuBar implements Serializable {
         createTimeKeeperMenuItem(console, locale);
 
         MenuItem projectors = createProjectorsMenuItem(menu, competitionApplication, locale);
-        createDisplayMenuItem(projectors, competitionApplication, locale);
+        createDisplayMenuItem(projectors, competitionApplication, locale, "dlp");
+        createDisplayMenuItem(projectors, competitionApplication, locale, "lcd");
+        createDisplayMenuItem(projectors, competitionApplication, locale, "pale");
         createSimpleDisplayMenuItem(projectors, competitionApplication, locale);
         projectors.addSeparator();
         createLiftOrderMenuItem(projectors, competitionApplication, locale);
@@ -231,15 +233,18 @@ public class Menu extends MenuBar implements Serializable {
      * @return
      */
     private MenuItem createDisplayMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
-            final Locale locale) {
-        return projectors.addItem(Messages.getString("CompetitionApplication.Display", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/folder-add.png"),
+            final Locale locale, final String stylesheet) {
+        return projectors.addItem(
+        		Messages.getString("CompetitionApplication.Display",locale)//$NON-NLS-1$
+        		+ " - "
+        		+ Messages.getString("CompetitionApplication.Display."+stylesheet,locale), //$NON-NLS-1$
+        		null, // new ThemeResource("icons/32/folder-add.png"),
             new Command() {
                 private static final long serialVersionUID = -4179990860181438187L;
 
                 @Override
                 public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.RESULT_BOARD);
+                    competitionApplication.displayProjector(CompetitionApplicationComponents.RESULT_BOARD, stylesheet);
                 }
             });
     }

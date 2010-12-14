@@ -13,6 +13,13 @@
 	}
 	pageContext.setAttribute("platform", platform);
 	
+	String style = request.getParameter("style");
+	if (style == null) {
+		out.println("Style parameter expected. URL must include ?style=X");
+		return;
+	}
+	pageContext.setAttribute("style", style);
+	
 	ServletContext sCtx = this.getServletContext();
 	SessionData groupData = (SessionData)sCtx.getAttribute(SessionData.MASTER_KEY+platform);
 	if (groupData == null) return;
@@ -42,8 +49,8 @@
 	}
 %>
 <title>Résultats - Results</title>
-<link rel="stylesheet" type="text/css" href="result.css" />
-<style type="text/css">
+<link rel="stylesheet" type="text/css" href="${style}" />
+<!--  style type="text/css">
 .requestedWeight {
 	color: navy;
 	font-size: medium;
@@ -52,7 +59,7 @@
 	text-align: center;
 	width: 7%;
 }
-</style>
+</style  -->
 </head>
 <body>
 <div class="title">

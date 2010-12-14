@@ -38,6 +38,7 @@ import org.concordiainternational.competition.spreadsheet.OutputSheet;
 import org.concordiainternational.competition.spreadsheet.OutputSheetStreamSource;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.Menu;
+import org.concordiainternational.competition.ui.components.ResultFrame;
 import org.concordiainternational.competition.utils.Localized;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.hibernate.HibernateException;
@@ -262,6 +263,18 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 //    	logger.warn("doDisplay {}",viewName);
         ApplicationView view = components.getViewByName(viewName, false);
         setMainLayoutContent(view);
+        uriFragmentUtility.setFragment(view.getFragment(), false);
+    }
+    
+    /**
+     * @param viewName
+     */
+    public void displayProjector(String viewName, String stylesheet) {
+//    	logger.warn("doDisplay {}",viewName);
+        ResultFrame view = (ResultFrame) components.getViewByName(viewName, false);
+        setMainLayoutContent(view);
+        view.setStylesheet(stylesheet);
+        view.refresh();
         uriFragmentUtility.setFragment(view.getFragment(), false);
     }
 

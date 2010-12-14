@@ -217,6 +217,7 @@ public class ResultFrame extends VerticalLayout implements
     private void display(final String platformName1, final SessionData masterData1) throws RuntimeException {
         synchronized (app) {
             URL url = computeUrl(platformName1);
+            logger.warn("display {}",url);
             iframe.setSource(new ExternalResource(url));
             final Lifter currentLifter = masterData1.getCurrentLifter();
             if (currentLifter != null) {
@@ -262,17 +263,26 @@ public class ResultFrame extends VerticalLayout implements
         } catch (UnsupportedEncodingException e1) {
             throw new RuntimeException(e1);
         }
-        final String spec = appUrlString + urlString + encodedPlatformName + "&time=" + System.currentTimeMillis(); //$NON-NLS-1$
+        String styleSheet = getStylesheet();
+        if (styleSheet == null || styleSheet.isEmpty()) {
+        	styleSheet = "";
+        } else {
+        	styleSheet = "&style=" + getStylesheet() + ".css";
+        }
+        final String spec = appUrlString + urlString + encodedPlatformName + styleSheet +"&time=" + System.currentTimeMillis(); //$NON-NLS-1$
         try {
             url = new URL(spec);
-            // System.err.println(url.toExternalForm());
+            logger.warn("url={}",url.toExternalForm());
         } catch (MalformedURLException e) {
             throw new RuntimeException(e); // can't happen.
         }
         return url;
     }
 
-    /**
+
+
+
+	/**
      * @return message used when Announcer has not selected a group
      */
     private String getWaitingMessage() {
@@ -414,6 +424,7 @@ public class ResultFrame extends VerticalLayout implements
 	private PublicAddressOverlay overlayContent;
 	private Window overlay;
 	protected boolean shown;
+	private String stylesheetName;
 
     @Override
     public void normalTick(int timeRemaining) {
@@ -456,7 +467,7 @@ public class ResultFrame extends VerticalLayout implements
      */
     @Override
 	public String getFragment() {
-        return viewName+"/"+platformName;
+        return viewName+"/"+platformName+(stylesheetName != null ? "/"+stylesheetName : "");
     }
     
 
@@ -475,6 +486,11 @@ public class ResultFrame extends VerticalLayout implements
         
         if (params.length >= 2) {
             platformName = params[1];
+        }
+        
+        if (params.length >= 3) {
+            stylesheetName = params[2];
+            logger.warn("setting stylesheetName to {}",stylesheetName);
         }
     }
 
@@ -662,6 +678,17 @@ public class ResultFrame extends VerticalLayout implements
 			}
 		}).start();
 	}
+
+
+	public void setStylesheet(String stylesheetName) {
+		this.stylesheetName = stylesheetName;
+	}
+	
+    private String getStylesheet() {
+		return stylesheetName;
+	}
+
+
 
 	
 
