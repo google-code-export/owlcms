@@ -1,5 +1,8 @@
 #summary Release Notes
 
+== Release 2.2.2 ==
+  * Column alignment was broken by a recent Vaadin upgrade.
+
 == Release 2.2.1 ==
   * Can now choose 3 styles for main display (bright colors DLP which tends to be less saturated, LCD with darker colors,
     and pale which is less punchy but works with a wider range of displays)
