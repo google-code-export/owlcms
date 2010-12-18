@@ -16,11 +16,18 @@
 	font-family: Arial;
 }
 
-/*
-.v-table-cell-content {
-	padding: 3px 3px 3px 3px;
+.v-table-table .v-table-cell-wrapper {
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
-*/
+
+table.v-table-table .v-table-row .v-table-cell-content,
+table.v-table-table .v-table-row-odd .v-table-cell-content,
+table.v-table-table .v-table-row .v-table-cell-content-sorted,
+table.v-table-table .v-table-row-odd .v-table-cell-content-sorted
+{
+	vertical-align: middle;
+}
 
 .toolbar {
 	
