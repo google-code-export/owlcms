@@ -1,7 +1,7 @@
 #summary Release Notes
 
 == Release 2.2.2 ==
-  * Column alignment was broken by a recent Vaadin upgrade.
+  * Column alignment and cell padding was broken by a recent Vaadin change to the stylesheets. 
 
 == Release 2.2.1 ==
   * Can now choose 3 styles for main display (bright colors DLP which tends to be less saturated, LCD with darker colors,
