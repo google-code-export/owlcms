@@ -48,14 +48,13 @@ public class TryFormatter {
         final Lifter firstLifter = lifters.get(0);
         if (firstLifter.getAttemptsDone() < 3 && lifter.getAttemptsDone() >= 3) {
             // the current lifter is done snatch whereas the top lifter on the
-            // board is stil
-            // doing snatch.
+            // board is still doing snatch.
             suffix = Messages.getString("TryFormatter.shortCleanJerk", locale); //$NON-NLS-1$
         }
         final int currentTry = 1 + (lifter.getAttemptsDone() >= 3 ? lifter.getCleanJerkAttemptsDone() : lifter
                 .getSnatchAttemptsDone());
         if (currentTry > 3) {
-            return Messages.getString("LifterInfo.Done", locale); //$NON-NLS-1$
+            return Messages.getString("TryFormatter.Done", locale); //$NON-NLS-1$
         } else {
             String tryInfo = currentTry + suffix;
             return tryInfo;
