@@ -1,11 +1,16 @@
 #summary Release Notes
 
+== Release 2.2.3 ==
+  * Plate loading information can be tracked from mobile device.
+  * Same message for "session done" was being reused inappropriately in the result frame
+    title and in the lifting order board; they are now distinct.
+
 == Release 2.2.2 ==
   * Column alignment and cell padding was broken by a recent Vaadin change to the stylesheets. 
 
 == Release 2.2.1 ==
-  * Can now choose 3 styles for main display (bright colors DLP which tends to be less saturated, LCD with darker colors,
-    and pale which is less punchy but works with a wider range of displays)
+  * Can now choose between 3 styles for main display (bright colors for DLP, darker colors for LCD,
+    and a pale setting which is less punchy but works with a wide range of displays)
 
 == Release 2.2.0 ==
   * Added support for 3-person Jury: a dedicated display (iPod) is used for displaying the
