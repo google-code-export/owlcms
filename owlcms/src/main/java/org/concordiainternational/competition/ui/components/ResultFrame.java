@@ -334,7 +334,7 @@ public class ResultFrame extends VerticalLayout implements
     	} else {
 
     		name.setValue(MessageFormat.format(
-    				Messages.getString("LifterInfo.Done", locale), masterData.getCurrentSession().getName())); //$NON-NLS-1$
+    				Messages.getString("ResultFrame.Done", locale), masterData.getCurrentSession().getName())); //$NON-NLS-1$
     		top.addComponent(name, "name"); //$NON-NLS-1$
     	}
 
