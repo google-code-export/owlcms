@@ -53,6 +53,7 @@ public class CompetitionApplicationComponents {
     public static final String MREFEREE_CONSOLE = "refereeConsole"; //$NON-NLS-1$
     public static final String OJURY_CONSOLE = "oJuryConsole"; //$NON-NLS-1$
     public static final String MJURY_CONSOLE = "juryConsole"; //$NON-NLS-1$
+    public static final String MPLATES_INFO = "platesInfo"; //$NON-NLS-1$
     public static final String SIMPLE_RESULT_BOARD = "simpleResultBoard"; //$NON-NLS-1$
     public static final String RESULT_VIEW = "resultView"; //$NON-NLS-1$
     public static final String TIMEKEEPER_VIEW = "timekeeperView"; //$NON-NLS-1$
@@ -100,6 +101,7 @@ public class CompetitionApplicationComponents {
         urlFragmentToView.put(MREFEREE_CONSOLE, new RefereeConsoleComponent(true));
         urlFragmentToView.put(OJURY_CONSOLE, new JuryConsoleComponent(false));
         urlFragmentToView.put(MJURY_CONSOLE, new JuryConsoleComponent(true));
+        urlFragmentToView.put(MPLATES_INFO, new PlatesInfoComponent());
         urlFragmentToView.put(TIMEKEEPER_VIEW, new TimekeeperViewComponent());
         urlFragmentToView.put(UPLOAD_VIEW, new SpreadsheetUploaderComponent());
         urlFragmentToView.put(WEIGH_IN_LIST, new WeighInListComponent());
@@ -241,7 +243,7 @@ public class CompetitionApplicationComponents {
     
 
     /**
-     * Lazy builder for Referee buttons
+     * Lazy builder for Jury Decision display
      */
     private class JuryConsoleComponent implements CompetitionApplicationComponent {
         private IRefereeConsole juryConsole = null;
@@ -259,6 +261,19 @@ public class CompetitionApplicationComponents {
 				this.juryConsole = (new OJuryConsole(initFromFragment, viewName));
 			}
             return (ApplicationView)juryConsole;
+        }
+    }
+    
+    /**
+     * Lazy builder for Referee buttons
+     */
+    private class PlatesInfoComponent implements CompetitionApplicationComponent {
+        private MPlatesInfoView platesInfoConsole = null;
+        
+        @Override
+		public ApplicationView get(boolean initFromFragment, String viewName) {
+			this.platesInfoConsole = (new MPlatesInfoView(initFromFragment, viewName));
+            return (ApplicationView)platesInfoConsole;
         }
     }
 
