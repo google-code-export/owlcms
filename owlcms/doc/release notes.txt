@@ -1,5 +1,13 @@
 #summary Release Notes
 
+== Release 2.3.0 ==
+  * Jury and Referee decision displays now highlight which person who has not given decision
+  * Jury decision display shows decision as soon as all decisions are in.
+  * Checkmark on referee/jury pad is now shown using a character instead of an image; this
+    avoids prompt to download image that happened when a ref would leave finger on device.
+  * Referee names now shown on start list
+  * May now edit referee names and session details from the weigh-in page.
+
 == Release 2.2.3 ==
   * Plate loading information can be tracked from mobile device.
   * Same message for "session done" was being reused inappropriately in the result frame
