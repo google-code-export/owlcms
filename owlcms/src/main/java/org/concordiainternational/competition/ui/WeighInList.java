@@ -53,6 +53,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
     private static final long serialVersionUID = -6455130090728823622L;
     private boolean admin = false;
     private String viewName;
+	private SessionSelect sessionSelect;
 
     public WeighInList(boolean initFromFragment, String viewName, boolean admin) {
         super(CompetitionApplication.getCurrent(), Messages.getString(
@@ -106,8 +107,8 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
     @Override
     protected void createToolbarButtons(HorizontalLayout tableToolbar1) {
 
-        SessionSelect groupSelect = new SessionSelect((CompetitionApplication) app, app.getLocale());
-        tableToolbar1.addComponent(groupSelect);
+        sessionSelect = new SessionSelect((CompetitionApplication) app, app.getLocale());
+        tableToolbar1.addComponent(sessionSelect);
         super.createToolbarButtons(tableToolbar1);
 
         final Locale locale = app.getLocale();
@@ -131,23 +132,13 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
             tableToolbar1.addComponent(drawLotsButton);
 
             // produce start list for technical meeting, includes all lifters.
-            final Button startListButton = startListButton(locale, false); // false
-                                                                           // =
-                                                                           // do
-                                                                           // not
-                                                                           // hide
-                                                                           // unweighed
-                                                                           // lifters
+            // false = show unweighed lifters
+            final Button startListButton = startListButton(locale, false);
             tableToolbar1.addComponent(startListButton);
 
             // produce start list for technical meeting, includes all lifters.
-            final Button lifterCardsButton = lifterCardsButton(locale, false); // false
-                                                                               // =
-                                                                               // do
-                                                                               // not
-                                                                               // hide
-                                                                               // unweighed
-                                                                               // lifters
+            // false = show unweighed lifters
+            final Button lifterCardsButton = lifterCardsButton(locale, false);
             tableToolbar1.addComponent(lifterCardsButton);
 
             // clear all lifters.
@@ -165,20 +156,26 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
             tableToolbar1.addComponent(clearAllButton);
         } else {
             // produce list of lifters that were actually weighed-in.
-            final Button weighInListButton = weighInListButton(locale, true); // true
-                                                                              // =
-                                                                              // exclude
-                                                                              // unweighed
-                                                                              // lifters
+        	// true = exclude unweighed lifters
+            final Button weighInListButton = weighInListButton(locale, true); 
             tableToolbar1.addComponent(weighInListButton);
 
             // produce list of lifters that were actually weighed-in.
-            final Button juryListButton = juryListButton(locale, true); // true
-                                                                        // =
-                                                                        // exclude
-                                                                        // unweighed
-                                                                        // lifters
+            // true = exclude unweighed lifters
+            final Button juryListButton = juryListButton(locale, true);
             tableToolbar1.addComponent(juryListButton);
+            
+            final Button editButton = new Button(Messages.getString("ResultList.edit", locale)); //$NON-NLS-1$
+            final Button.ClickListener editClickListener = new Button.ClickListener() { //$NON-NLS-1$
+                private static final long serialVersionUID = 7744958942977063130L;
+
+                @Override
+    			public void buttonClick(ClickEvent event) {
+                	editCompetitionSession(sessionSelect.getSelectedId(),sessionSelect.getSelectedItem());
+                }
+            };
+            editButton.addListener(editClickListener);
+            tableToolbar1.addComponent(editButton);
         }
 
     }

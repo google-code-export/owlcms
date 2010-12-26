@@ -19,12 +19,16 @@ package org.concordiainternational.competition.ui.list;
 import java.util.Iterator;
 
 import org.concordiainternational.competition.data.CategoryLookup;
+import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.ui.SessionForm;
 import org.concordiainternational.competition.ui.generators.CommonFieldFactory;
 import org.concordiainternational.competition.ui.generators.FieldTable;
+import org.concordiainternational.competition.utils.ItemAdapter;
 
 import com.vaadin.Application;
+import com.vaadin.data.Item;
 import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
@@ -35,6 +39,8 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 
 public abstract class GenericList<T> extends VerticalLayout {
 
@@ -339,5 +345,28 @@ public abstract class GenericList<T> extends VerticalLayout {
 	    	
 	    }
 	}
+	
+	protected void editCompetitionSession(Object itemId, Item item) {
+    	if (itemId == null) {
+    		CompetitionApplication.getCurrent().getMainWindow().showNotification(
+    			Messages.getString("ResultList.sessionNotSelected", CompetitionApplication.getCurrentLocale()),
+    			Notification.TYPE_ERROR_MESSAGE);
+    		return;
+    	}
+        SessionForm form = new SessionForm();
+        
+        form.setItemDataSource(item);
+        form.setReadOnly(false);
+
+        CompetitionSession competitionSession = (CompetitionSession) ItemAdapter.getObject(item);
+        //logger.warn("retrieved session {} {}",System.identityHashCode(competitionSession), competitionSession.getReferee3());
+		Window editingWindow = new Window(competitionSession.getName());
+        form.setWindow(editingWindow);
+        form.setParentList(this);
+        editingWindow.getContent().addComponent(form);
+        app.getMainWindow().addWindow(editingWindow);
+        editingWindow.setWidth("40em");
+        editingWindow.center();
+    }
 
 }
