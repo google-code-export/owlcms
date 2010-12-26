@@ -33,6 +33,8 @@ import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.LocalizedSystemMessages;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.mobile.MJuryConsole;
+import org.concordiainternational.competition.mobile.MRefereeConsole;
 import org.concordiainternational.competition.mobile.MobileMenu;
 import org.concordiainternational.competition.spreadsheet.OutputSheet;
 import org.concordiainternational.competition.spreadsheet.OutputSheetStreamSource;
@@ -218,7 +220,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
 	private boolean layoutCreated;
 
-	MobileMenu mobileMenu;
+	private MobileMenu mobileMenu;
 
 	protected String contextURI;
 
@@ -731,9 +733,9 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         mainLayout1.setMargin(false,false,false,false);
         mainLayout1.setSizeFull();
         
-        mobileMenu = new MobileMenu();
-        mobileMenu.setSizeFull();
-        mainLayout1.addComponent(mobileMenu);
+        setMobileMenu(new MobileMenu());
+        getMobileMenu().setSizeFull();
+        mainLayout1.addComponent(getMobileMenu());
 
         mobilePanel = new Panel();
         mainLayout1.addComponent(mobilePanel);
@@ -752,11 +754,11 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     		if (menu != null) menu.setVisible(needsMenu);
             this.components.mainPanel.setContent(c);
         } else {
-        	mobileMenu.setVisible(needsMenu);
-        	mobileMenu.setSizeUndefined();
+        	getMobileMenu().setVisible(needsMenu);
+        	getMobileMenu().setSizeUndefined();
         	mobilePanel.setVisible(true);
         	mobilePanel.setContent(c);
-        	mainLayout.setExpandRatio(mobileMenu,0);
+        	mainLayout.setExpandRatio(getMobileMenu(),0);
         	mainLayout.setExpandRatio(mobilePanel,100);
         }
     }
@@ -817,6 +819,14 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
 	public ICEPush getPusher() {
 		return pusher;
+	}
+
+	public void setMobileMenu(MobileMenu mobileMenu) {
+		this.mobileMenu = mobileMenu;
+	}
+
+	public MobileMenu getMobileMenu() {
+		return mobileMenu;
 	}
     
 }

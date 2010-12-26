@@ -109,7 +109,7 @@ public class AttemptBoardView extends VerticalLayout implements
                 // we are not the master application; hide the menu bar.
                 Component menuComponent = app.components.menu;
 				if (menuComponent != null) menuComponent.setVisible(false);
-				menuComponent = app.mobileMenu;
+				menuComponent = app.getMobileMenu();
 				if (menuComponent != null) menuComponent.setVisible(false);
             }
             platform = Platform.getByName(platformName);
