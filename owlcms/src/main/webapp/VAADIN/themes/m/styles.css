@@ -119,11 +119,18 @@
 
 .refereePad .decisionSelected {
 	border-style: solid;
-	border-width: 1.2em;
+
 	border-color: black;
-	background-image: url("images/checkmarkSmall.png");
+	font: "Arial Unicode MS";
+	font-size: 8em;
+	border-width: 0.2em;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle; 
+	
+	/* background-image: url("images/checkmarkSmall.png"); 
 	background-repeat: no-repeat;
-	background-position: 50% 50%;
+	background-position: 50% 50%; */
 }
 
 .refereePad .decisionUnselected {

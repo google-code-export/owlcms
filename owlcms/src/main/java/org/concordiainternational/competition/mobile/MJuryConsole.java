@@ -181,8 +181,13 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 	private void whiteSelected() {
 		white.removeStyleName("decisionUnselected");
 		red.removeStyleName("decisionSelected");
+
 		white.addStyleName("decisionSelected");
 		red.addStyleName("decisionUnselected");
+		
+		white.setValue("\u2714"); // heavy checkmark
+		red.setValue("");
+		
 		resetBottom();
 	}
 
@@ -192,10 +197,16 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 	private void redSelected() {
 		white.removeStyleName("decisionSelected");
 		red.removeStyleName("decisionUnselected");
+
 		white.addStyleName("decisionUnselected");
 		red.addStyleName("decisionSelected");
+		
+		white.setValue("");
+		red.setValue("\u2714"); // heavy checkmark
+		
 		resetBottom();
 	}
+	
 	/**
 	 * 
 	 */
@@ -304,6 +315,8 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 	private void resetTop() { 
 		white.setEnabled(true);
 		red.setEnabled(true);
+		white.setValue("");
+		red.setValue("");
 	}
 
 	/* (non-Javadoc)
