@@ -14,14 +14,19 @@
  * the License.
  */
 
-package org.concordiainternational.competition.ui;
+package org.concordiainternational.competition.mobile;
 
 import java.net.URL;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
+import org.concordiainternational.competition.ui.LoadImage;
+import org.concordiainternational.competition.ui.PlatesInfoEvent;
 import org.concordiainternational.competition.ui.PlatesInfoEvent.PlatesInfoListener;
+import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.slf4j.Logger;
@@ -93,7 +98,7 @@ public class MPlatesInfoView extends VerticalLayout implements
                 // we are not the master application; hide the menu bar.
                 Component menuComponent = app.components.menu;
 				if (menuComponent != null) menuComponent.setVisible(false);
-				menuComponent = app.mobileMenu;
+				menuComponent = app.getMobileMenu();
 				if (menuComponent != null) menuComponent.setVisible(false);
             }
             Platform.getByName(platformName);
