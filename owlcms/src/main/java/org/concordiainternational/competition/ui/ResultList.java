@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.concordiainternational.competition.data.Competition;
-import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.lifterSort.WinningOrderComparator;
 import org.concordiainternational.competition.i18n.Messages;
@@ -35,7 +34,6 @@ import org.concordiainternational.competition.ui.components.SessionSelect;
 import org.concordiainternational.competition.ui.generators.CommonColumnGenerator;
 import org.concordiainternational.competition.ui.generators.LiftCellStyleGenerator;
 import org.concordiainternational.competition.ui.list.GenericBeanList;
-import org.concordiainternational.competition.utils.ItemAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,8 +48,6 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.Window;
-import com.vaadin.ui.Window.Notification;
 
 /**
  * This class displays the winning order for lifters.
@@ -420,27 +416,6 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
         // this.clearSelection();
     }
     
-    private void editCompetitionSession(Object itemId, Item item) {
-    	if (itemId == null) {
-    		CompetitionApplication.getCurrent().getMainWindow().showNotification(
-    			Messages.getString("ResultList.sessionNotSelected", CompetitionApplication.getCurrentLocale()),
-    			Notification.TYPE_ERROR_MESSAGE);
-    		return;
-    	}
-        SessionForm form = new SessionForm();
-        
-        form.setItemDataSource(item);
-        form.setReadOnly(false);
 
-        CompetitionSession competitionSession = (CompetitionSession) ItemAdapter.getObject(item);
-        logger.warn("retrieved session {} {}",System.identityHashCode(competitionSession), competitionSession.getReferee3());
-		Window editingWindow = new Window(competitionSession.getName());
-        form.setWindow(editingWindow);
-        form.setParentList(this);
-        editingWindow.getContent().addComponent(form);
-        app.getMainWindow().addWindow(editingWindow);
-        editingWindow.setWidth("40em");
-        editingWindow.center();
-    }
 
 }

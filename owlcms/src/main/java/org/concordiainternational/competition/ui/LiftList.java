@@ -342,4 +342,5 @@ public class LiftList extends GenericBeanList<Lifter> implements
         this.clearSelection();
     }
 
+
 }
