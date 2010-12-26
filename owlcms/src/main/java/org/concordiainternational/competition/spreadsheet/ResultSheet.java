@@ -185,7 +185,7 @@ public class ResultSheet extends OutputSheet implements InputSheet, LifterReader
 		super.writeHeader(workSheet);
 		
 		if (competitionSession != null) {
-			logger.warn("writeHeader {} {}",System.identityHashCode(competitionSession),competitionSession.getReferee3());
+			//logger.warn("writeHeader {} {}",System.identityHashCode(competitionSession),competitionSession.getReferee3());
 			String announcer = competitionSession.getAnnouncer();
 			workSheet.getCell("C10").setVal(announcer != null ? announcer : ""); //$NON-NLS-1$
 			String timeKeeper = competitionSession.getTimeKeeper();
