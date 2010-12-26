@@ -1,7 +1,7 @@
 package org.concordiainternational.competition.decision;
 
+import org.concordiainternational.competition.mobile.IRefereeConsole;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.ui.IRefereeConsole;
 import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
 
 public interface IDecisionController {

@@ -14,17 +14,22 @@
  * the License.
  */
 
-package org.concordiainternational.competition.ui;
+package org.concordiainternational.competition.mobile;
 
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.Decision;
 import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionEventListener;
+import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
+import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.incubator.dashlayout.ui.HorDashLayout;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
@@ -35,6 +40,8 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 
     HorDashLayout top = new HorDashLayout();
     Label[] decisionLights = new Label[3];
+    HorizontalLayout bottom = new HorizontalLayout();
+    
     SessionData masterData;
     CompetitionApplication app = CompetitionApplication.getCurrent();
 
@@ -57,6 +64,7 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
         }
         
         this.juryMode = juryMode;
+        this.setStyleName("decisionPad");
         
         this.app = CompetitionApplication.getCurrent();
         
@@ -71,10 +79,13 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 
         top.setMargin(false);
         top.setSpacing(false);
+        setupBottom();
 
         this.setSizeFull();
         this.addComponent(top);
-        this.setExpandRatio(top,1);
+        this.addComponent(bottom);
+		this.setExpandRatio(top, 90.0F);
+		this.setExpandRatio(bottom, 10.0F);
         this.setMargin(false);
         
         resetLights();
@@ -104,6 +115,15 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
         }
 	}
 
+	private void setupBottom() {
+		bottom.setSizeFull();
+		Label bottomLabel = new Label(juryMode ? "Jury" : "Arbitres");
+		bottom.setStyleName(juryMode ? "juryDecisionsLabel" : "refereeDecisionsLabel");
+		bottomLabel.setSizeUndefined();
+		bottomLabel.setStyleName("refereeOk");
+		bottom.addComponent(bottomLabel);
+		bottom.setComponentAlignment(bottomLabel, Alignment.MIDDLE_CENTER);
+	}
 
     @Override
     public void updateEvent(final DecisionEvent updateEvent) {
@@ -117,24 +137,23 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 					case DOWN:
 						logger.debug("received DOWN event juryMode={}",juryMode);
 						downShown = true;
+						showLights(decisions, true, juryMode);
 						if (!juryMode) {
-							showLights(decisions);
-							decisionLights[1].removeStyleName("undecided");
 							decisionLights[1].addStyleName("down");
 						}
 						break;
 					case WAITING:
 						logger.debug("received WAITING event");
-						if (!juryMode) showLights(decisions);
+						showLights(decisions, true, juryMode);
 						break;
 					case UPDATE:
 						logger.debug("received UPDATE event {} && {}",juryMode,shown);
-						if ((juryMode && shown) || !juryMode) showLights(decisions);
+						if ((juryMode && shown) || !juryMode) showLights(decisions, false, false);
 						if (!juryMode && downShown) decisionLights[1].addStyleName("down");
 						break;
 					case SHOW:
 						logger.debug("received SHOW event");
-						showLights(decisions);
+						showLights(decisions, true, false);
 						if (!juryMode && downShown) decisionLights[1].addStyleName("down");
 						shown = true;
 						break;
@@ -154,12 +173,16 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 
     /**
      * @param decisions
+     * @param showWaiting TODO
+     * @param doNotShowDecisions TODO
      */
-    private void showLights(Decision[] decisions) {
+    private void showLights(Decision[] decisions, boolean showWaiting, boolean doNotShowDecisions) {
         for (int i = 0; i < decisionLights.length; i++) {
             decisionLights[i].setStyleName("decisionLight");
             Boolean accepted = decisions[i].accepted;
-            if (decisions[i] != null && accepted != null) {
+            if (accepted == null && showWaiting) {
+            	decisionLights[i].addStyleName("waiting");
+            } else if (accepted != null && (!doNotShowDecisions || !showWaiting)) {
                 decisionLights[i].addStyleName(accepted ? "lift" : "nolift");
             } else {
                 decisionLights[i].addStyleName("undecided");

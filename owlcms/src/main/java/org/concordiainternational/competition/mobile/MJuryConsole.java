@@ -26,7 +26,6 @@ import org.concordiainternational.competition.decision.IDecisionController;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
-import org.concordiainternational.competition.ui.IRefereeConsole;
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.slf4j.Logger;
@@ -206,7 +205,7 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 		juryReminder.setValue(juryLabel(juryIndex));
 		juryReminder.setSizeFull();
 		bottom.addComponent(juryReminder);
-		juryReminder.setStyleName("refereeOk");
+		juryReminder.setStyleName("juryOk");
 	}
 
 
@@ -318,7 +317,7 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 	private void resetBottom() {
 		synchronized (app) {
 			juryReminder.setValue(juryLabel(juryIndex));
-			juryReminder.setStyleName("refereeOk");
+			juryReminder.setStyleName("juryOk");
 		}
 		app.push();
 	}
