@@ -6,7 +6,6 @@ import java.util.List;
 import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.ui.RefereeDecisions;
 import org.concordiainternational.competition.ui.SessionData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

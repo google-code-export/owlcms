@@ -1,4 +1,4 @@
-package org.concordiainternational.competition.ui;
+package org.concordiainternational.competition.mobile;
 
 import java.net.URL;
 

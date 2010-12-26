@@ -20,9 +20,9 @@ import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.concordiainternational.competition.mobile.IRefereeConsole;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.ui.IRefereeConsole;
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
 import org.concordiainternational.competition.utils.EventHelper;
@@ -48,7 +48,7 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
 	/**
 	 * Time before displaying decision once all referees have pressed.
 	 */
-	private static final int DECISION_DISPLAY_DELAY = 1000;
+	//private static final int DECISION_DISPLAY_DELAY = 1000;
 
     Logger logger = LoggerFactory.getLogger(JuryDecisionController.class);
 
@@ -138,14 +138,17 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
      * @param goodLift
      */
     private void scheduleDisplay(final long currentTimeMillis) {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                fireEvent(new DecisionEvent(JuryDecisionController.this, DecisionEvent.Type.SHOW, currentTimeMillis,
-                        juryDecisions));
-            }
-        }, DECISION_DISPLAY_DELAY);
+    	// display right away
+    	fireEvent(new DecisionEvent(JuryDecisionController.this, DecisionEvent.Type.SHOW, currentTimeMillis,
+              juryDecisions));
+//       Timer timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                fireEvent(new DecisionEvent(JuryDecisionController.this, DecisionEvent.Type.SHOW, currentTimeMillis,
+//                        juryDecisions));
+//            }
+//        }, DECISION_DISPLAY_DELAY);
     }
     
     /**

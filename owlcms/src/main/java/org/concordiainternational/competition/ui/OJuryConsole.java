@@ -24,6 +24,7 @@ import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionEventListener;
 import org.concordiainternational.competition.decision.IDecisionController;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.mobile.IRefereeConsole;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

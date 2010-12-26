@@ -54,7 +54,7 @@
 }
 
 .refereePad .refereeOk {
-	background-color: navy;
+	background-color: #3333CC;
 	color: white;
 	border-style: solid;
 	border-width: thin;
@@ -66,14 +66,33 @@
 	vertical-align: middle;
 }
 
+.refereePad .juryOk {
+	background-color: #339900;
+	color: white;
+	border-style: solid;
+	border-width: thin;
+	border-color: black;
+	font-size: x-large;
+	font-weight: bold;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+
 .decisionLight {
 	border-style: solid;
 	border-width: thin;
 	height: 10ex;
 }
 
+.decisionLight.waiting {
+	background-color: yellow;
+	background-image: none;
+}
+
 .decisionLight.undecided {
-	background-color: grey;
+	background-color: #333333;
 	background-image: none;
 }
 
@@ -98,43 +117,6 @@
 	padding: 3px;
 }
 
-.largeCountdown {
-	font-size: 500px;
-	line-height: 500px;
-	font-weight: bold;
-	vertical-align: middle;
-}
-
-.decisionLightsWindow .v-window-outerheader {
-	display: none;
-}
-
-.decisionLightsWindow .v-window-footer {
-	display: none;
-}
-
-.decisionLightsWindow .v-window-closebox {
-	display: none;
-}
-
-.decisionLightsWindow .v-window-contents {
-	background-color: black;
-	color: white;
-}
-
-.decisionLightsWindow .down {
-	background-color: black;
-	background-image: url("images/down.png");
-	background-repeat: no-repeat;
-	background-position: 50% 50%;
-	background-size: contain;
-}
-
-.decisionLightsWindow .down .undecided {
-	border-style: none;
-	display: none;
-}
-
 .refereePad .decisionSelected {
 	border-style: solid;
 	border-width: 1.2em;
@@ -153,6 +135,21 @@
 .refereeHasChosen {
 	background-color: green;
 }
+
+.juryDecisionsLabel {
+	font-size: large;
+	font-weight: bolder;
+	color: white;
+	background-color: #339900;
+}
+
+.refereeDecisionsLabel {
+	font-size: large;
+	font-weight: bolder;
+	color: white;
+	background-color: #3333CC;
+}
+
 
 .v-caption-loadChart {
 	font-size: 2em;
