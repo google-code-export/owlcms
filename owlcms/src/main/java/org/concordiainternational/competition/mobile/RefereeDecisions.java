@@ -182,7 +182,7 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
             Boolean accepted = decisions[i].accepted;
             if (accepted == null && showWaiting) {
             	decisionLights[i].addStyleName("waiting");
-            } else if (accepted != null && (!doNotShowDecisions || !showWaiting)) {
+            } else if (accepted != null && (!doNotShowDecisions)) {
                 decisionLights[i].addStyleName(accepted ? "lift" : "nolift");
             } else {
                 decisionLights[i].addStyleName("undecided");

@@ -16,15 +16,17 @@
 
 package org.concordiainternational.competition.ui;
 
+import java.net.URL;
+
 import org.concordiainternational.competition.data.RuleViolationException;
-import org.concordiainternational.competition.decision.Decision;
-import org.concordiainternational.competition.decision.DecisionEvent;
-import org.concordiainternational.competition.decision.DecisionEventListener;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
+import org.concordiainternational.competition.ui.components.DecisionLightsWindow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.GridLayout;
@@ -32,26 +34,27 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 
-public class RefereeTesting extends VerticalSplitPanel implements DecisionEventListener, ApplicationView {
+public class RefereeTesting extends VerticalSplitPanel implements ApplicationView, CloseListener, URIHandler {
 
     private static final String CELL_WIDTH = "8em";
 
     private static final long serialVersionUID = 1L;
 
-    HorizontalLayout top = new HorizontalLayout();
-    Label[] decisionLights = new Label[3];
     GridLayout bottom;
     SessionData masterData;
     CompetitionApplication app = CompetitionApplication.getCurrent();
 
-    private Logger logger = LoggerFactory.getLogger(RefereeTesting.class);
+    @SuppressWarnings("unused")
+	private Logger logger = LoggerFactory.getLogger(RefereeTesting.class);
 
-    private boolean juryMode = false;
     private String platformName;
     private String viewName;
 
-	private boolean downShown;
+
+	private DecisionLightsWindow decisionArea;
 
     RefereeTesting(boolean initFromFragment, String viewName, boolean juryMode, boolean publicFacing) {
         if (initFromFragment) {
@@ -68,21 +71,22 @@ public class RefereeTesting extends VerticalSplitPanel implements DecisionEventL
         } else if (app.getPlatform() == null) {
         	app.setPlatformByName(platformName);
         }
-        this.juryMode = juryMode;
         
         createLights();
 
-        top.setMargin(true);
-        top.setSpacing(true);
-
+        HorizontalLayout top = new HorizontalLayout();
+        top.setSizeFull();
+        top.setStyleName("decisionLightsWindow");
+        top.addComponent(decisionArea);
         this.setFirstComponent(top);
         bottom = createDecisionButtons();
         this.setSecondComponent(bottom);
         setSplitPosition(75);
         
-        resetLights();
         resetBottom();
-
+		// URI handler must remain, so is not part of the register/unRegister paire
+		app.getMainWindow().addURIHandler(this);
+        registerAsListener();
     }
 
 	/**
@@ -90,16 +94,12 @@ public class RefereeTesting extends VerticalSplitPanel implements DecisionEventL
 	 */
 	private void createLights() {
 		masterData = app.getMasterData(platformName);
-        masterData.getRefereeDecisionController().addListener(this);
-        top.setSizeFull();
+		decisionArea = new DecisionLightsWindow(false, true);
+        masterData.getRefereeDecisionController().addListener(decisionArea);
 
-        for (int i = 0; i < decisionLights.length; i++) {
-            decisionLights[i] = new Label();
-            decisionLights[i].setSizeFull();
-            decisionLights[i].setStyleName("decisionLight");
-            top.addComponent(decisionLights[i]);
-            top.setExpandRatio(decisionLights[i], 100.0F / decisionLights.length);
-        }
+		decisionArea.setSizeFull(); //$NON-NLS-1$
+		//decisionArea.setHeight("35em");
+
 	}
 
     private GridLayout createDecisionButtons() {
@@ -111,7 +111,7 @@ public class RefereeTesting extends VerticalSplitPanel implements DecisionEventL
         createLabel(bottom1, refereeLabel(1));
         createLabel(bottom1, refereeLabel(2));
 
-        for (int i = 0; i < decisionLights.length; i++) {
+        for (int i = 0; i < 3; i++) {
             final int j = i;
             final NativeButton yesButton = new NativeButton("oui", new ClickListener() {
                 private static final long serialVersionUID = 1L;
@@ -127,7 +127,7 @@ public class RefereeTesting extends VerticalSplitPanel implements DecisionEventL
             yesButton.setWidth(CELL_WIDTH);
             bottom1.addComponent(yesButton);
         }
-        for (int i = 0; i < decisionLights.length; i++) {
+        for (int i = 0; i < 3; i++) {
             final int j = i;
             final NativeButton noButton = new NativeButton("non", new ClickListener() {
                 private static final long serialVersionUID = 1L;
@@ -158,98 +158,10 @@ public class RefereeTesting extends VerticalSplitPanel implements DecisionEventL
         bottom1.addComponent(ref1Label);
     }
 
-    @Override
-    public void updateEvent(final DecisionEvent updateEvent) {
-        new Thread(new Runnable() {
-			@Override
-			public void run() {
-				synchronized (app) {
-					Decision[] decisions = updateEvent.getDecisions();
-					switch (updateEvent.getType()) {
-					case DOWN:
-						logger.debug("received DOWN event");
-						downShown = true;
-						if (juryMode) {
-							showLights(decisions);
-						} else {
-							decisionLights[1].setStyleName("decisionLight");
-							decisionLights[1].addStyleName("undecided");
-						}
-						decisionLights[1].addStyleName("down");
-
-						for (int i = 0; i < decisions.length; i++) {
-							if (decisions[i].accepted == null) {
-								((Label) bottom.getComponent(i, 0))
-										.setValue("decision required");
-							}
-						}
-						break;
-					case WAITING:
-						logger.debug("received WAITING event");
-						for (int i = 0; i < decisions.length; i++) {
-							if (decisions[i].accepted == null) {
-								((Label) bottom.getComponent(i, 0))
-										.setValue("decision required");
-							}
-						}
-						break;
-					case UPDATE:
-						logger.debug("received UPDATE event");
-						if (juryMode) {
-							showLights(decisions);
-							if (downShown) decisionLights[1].addStyleName("down");
-						}
-						break;
-					case SHOW:
-						logger.warn("received SHOW event");
-						showLights(decisions);
-						for (int i = 0; i < decisions.length; i++) {
-							((Label) bottom.getComponent(i, 0)).setValue("blocked");
-						}
-						break;
-					case RESET:
-						logger.debug("received RESET event");
-						resetLights();
-						resetBottom();
-						break;
-					}
-				}
-				app.push();
-			}
-		}).start();
-    }
-
-    /**
-     * @param decisions
-     */
-    private void showLights(Decision[] decisions) {
-        for (int i = 0; i < decisionLights.length; i++) {
-            decisionLights[i].setStyleName("decisionLight");
-            Boolean accepted = decisions[i].accepted;
-            if (decisions[i] != null && accepted != null) {
-                decisionLights[i].addStyleName(accepted ? "lift" : "nolift");
-            } else {
-                decisionLights[i].addStyleName("undecided");
-            }
-        }
-    }
-
-    private void resetLights() {
-        synchronized (app) {
-			for (int i = 0; i < decisionLights.length; i++) {
-				decisionLights[i].setStyleName("decisionLight");
-				decisionLights[i].addStyleName("undecided");
-				decisionLights[i].setContentMode(Label.CONTENT_XHTML);
-				decisionLights[i].setValue("&nbsp;");
-			}
-			downShown = false;
-		}
-		app.push();
-    }
 
     private void resetBottom() {
         synchronized (app) {
-			for (int i = 0; i < decisionLights.length; i++) {
+			for (int i = 0; i < 3; i++) {
 				((Label) bottom.getComponent(i, 0)).setValue(" ");
 			}
 		}
@@ -305,5 +217,29 @@ public class RefereeTesting extends VerticalSplitPanel implements DecisionEventL
         	platformName = CompetitionApplicationComponents.initPlatformName();
         }
     }
+    
+    
+	private void registerAsListener() {
+        masterData.getRefereeDecisionController().addListener(decisionArea);
+	}
+	
+	private void unregisterAsListener() {
+		masterData.getRefereeDecisionController().removeListener(decisionArea);
+	}
+	
+	/* Unregister listeners when window is closed.
+	 * @see com.vaadin.ui.Window.CloseListener#windowClose(com.vaadin.ui.Window.CloseEvent)
+	 */
+	@Override
+	public void windowClose(CloseEvent e) {
+		unregisterAsListener();
+	}
+	
+	@Override
+	public DownloadStream handleURI(URL context, String relativeUri) {
+		//logger.warn("re-registering handlers for {} {}",this,relativeUri);
+		registerAsListener();
+		return null;
+	}
     
 }
