@@ -498,6 +498,15 @@ button.yesButton {
 	display: none;
 }
 
+.v-horizontallayout-decisionLightsWindow {
+	background-color: black;
+}
+
+.v-horizontallayout-decisionLightsWindow .undecided {
+	background-color: black;
+}
+	
+
 .v-panel-content .largeCountdownBackground {
 	background-color: black;
 	color: white;

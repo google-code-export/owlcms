@@ -103,7 +103,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
         long deltaTime = currentTimeMillis - allDecisionsMadeTime;
         if (decisionsMade == 3 && deltaTime > DECISION_REVERSAL_DELAY) {
             // too late to reverse decision
-            logger.info("decision ignored from referee {}: {} (too late by {} ms)", new Object[] { refereeNo + 1,
+            logger.warn("decision ignored from referee {}: {} (too late by {} ms)", new Object[] { refereeNo + 1,
                     (accepted ? "lift" : "no lift"), deltaTime - DECISION_REVERSAL_DELAY });
             return;
         }
