@@ -131,9 +131,11 @@
 			</url>
 			<releases>
 				<enabled>false</enabled>
+				<updatePolicy>daily</updatePolicy>
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
 			</snapshots>
 		</repository>
 		<repository>
@@ -229,7 +231,7 @@
 		<dependency>
 			<groupId>org.icepush</groupId>
 			<artifactId>icepush</artifactId>
-			<version>2.0-Beta2</version>
+			<version>2.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
