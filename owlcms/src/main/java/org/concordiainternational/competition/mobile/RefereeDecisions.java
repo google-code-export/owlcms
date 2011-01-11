@@ -173,8 +173,8 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 
     /**
      * @param decisions
-     * @param showWaiting TODO
-     * @param doNotShowDecisions TODO
+     * @param showWaiting show lights while waiting for last referee
+     * @param doNotShowDecisions do not show the decisions as they are made
      */
     private void showLights(Decision[] decisions, boolean showWaiting, boolean doNotShowDecisions) {
         for (int i = 0; i < decisionLights.length; i++) {
