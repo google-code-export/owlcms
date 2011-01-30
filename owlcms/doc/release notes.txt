@@ -1,5 +1,8 @@
 #summary Release Notes
 
+== Release 2.3.1 ==
+  * Added template for provincial Jeux du Québec games scoring system
+
 == Release 2.3.0 ==
   * Jury and Referee decision displays now highlight which person who has not given decision
   * Jury decision display shows decision as soon as all decisions are in.

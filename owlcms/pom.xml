@@ -5,7 +5,7 @@
 	<groupId>org.concordiainternational</groupId>
 	<artifactId>owlcms</artifactId>
 	<packaging>war</packaging>
-	<version>2.3.0</version>
+	<version>2.3.1</version>
 	<name>Olympic Weightlifting Competition Management System</name>
 
 	<properties>
@@ -382,8 +382,6 @@
 			<artifactId>gwt-sound</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<!-- <dependency> <groupId>org.icepush</groupId> <artifactId>icepush</artifactId> 
-			<version>1.0</version> </dependency> -->
 		<dependency>
 			<groupId>org.icepush</groupId>
 			<artifactId>icepush-gwt</artifactId>
@@ -401,9 +399,6 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-
-
-
 		<dependency>
 			<groupId>org.concordiainternational</groupId>
 			<artifactId>touchdiv</artifactId>
