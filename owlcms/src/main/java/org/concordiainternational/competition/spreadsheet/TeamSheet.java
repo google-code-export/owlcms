@@ -173,4 +173,44 @@ public class TeamSheet extends ResultSheet {
 
     }
 
+
+	public void writeTeamSheetAll(List<Lifter> lifters, WorkSheetHandle workSheet, Ranking rankingType, TreeSet<String> clubs,
+            String gender) throws Exception {
+
+        setFooterLeft(workSheet);
+
+        logger.warn("writing snatch");
+        previousGender = null;
+        previousClub = null;
+        lifterRankWithinTeam = 0;
+        int i = 0;
+        for (Lifter curLifter : lifters) {
+            if (gender == null || gender.equals(curLifter.getGender())) {
+                writeTeamLifter(curLifter, workSheet, categoryLookup, i++, Ranking.SNATCH);
+            }
+        }
+        
+        logger.warn("writing clean-and-jerk");
+        previousGender = null;
+        previousClub = null;
+        lifterRankWithinTeam = 0;
+        for (Lifter curLifter : lifters) {
+            if (gender == null || gender.equals(curLifter.getGender())) {
+                writeTeamLifter(curLifter, workSheet, categoryLookup, i++, Ranking.CLEANJERK);
+            }
+        }
+        
+        logger.warn("writing total");
+        previousGender = null;
+        previousClub = null;
+        lifterRankWithinTeam = 0;
+        for (Lifter curLifter : lifters) {
+            if (gender == null || gender.equals(curLifter.getGender())) {
+                writeTeamLifter(curLifter, workSheet, categoryLookup, i++, Ranking.TOTAL);
+            }
+        }
+
+        writeClubs(workSheet, clubs);
+	}
+
 }

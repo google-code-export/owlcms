@@ -115,6 +115,7 @@
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<version>1.1</version>
 				<configuration>
+					<port>80</port>
 					<systemProperties>
 						<net.sf.ehcache.skipUpdateCheck>true</net.sf.ehcache.skipUpdateCheck>
 					</systemProperties>

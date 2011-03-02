@@ -456,12 +456,12 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         StreamResource streamResource = new StreamResource(streamSource, filename + ".xls", this); //$NON-NLS-1$
         streamResource.setCacheTime(5000); // no cache (<=0) does not work with IE8
         streamResource.setMIMEType("application/x-msexcel"); //$NON-NLS-1$
-        WebApplicationContext webAppContext = (WebApplicationContext)this.getContext();
-        if (webAppContext.getBrowser().isChrome()) {
-            this.getMainWindow().open(streamResource, "_blank"); //$NON-NLS-1$
-        } else {
+//        WebApplicationContext webAppContext = (WebApplicationContext)this.getContext();
+//        if (webAppContext.getBrowser().isChrome()) {
+//            this.getMainWindow().open(streamResource, "_blank"); //$NON-NLS-1$
+//        } else {
             this.getMainWindow().open(streamResource, "_top"); //$NON-NLS-1$        	
-        }
+//    }
 
     }
     
