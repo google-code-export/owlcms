@@ -369,7 +369,9 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
      */
     @Override
     protected void loadData() {
+    	
         List<Lifter> lifters = data.getResultOrder();
+//        logger.warn("loading data lifters={}",lifters);
         if (lifters != null && !lifters.isEmpty()) {
             final BeanItemContainer<Lifter> cont = new BeanItemContainer<Lifter>(Lifter.class,lifters);
             table.setContainerDataSource(cont);
