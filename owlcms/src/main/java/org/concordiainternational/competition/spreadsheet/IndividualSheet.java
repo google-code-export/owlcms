@@ -45,6 +45,8 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
  * 
  */
 public class IndividualSheet extends ResultSheet {
+	
+	String templateName = SheetUtils.getCompetition().getResultTemplateFileName();
 
     public IndividualSheet(HbnSessionManager hbnSessionManager) {
 		super(hbnSessionManager);
@@ -100,20 +102,28 @@ public class IndividualSheet extends ResultSheet {
         workSheet.getCell(rownum, 9).setVal(SheetUtils.fixValue(lifter.getSnatch1ActualLift()));
         workSheet.getCell(rownum, 10).setVal(SheetUtils.fixValue(lifter.getSnatch2ActualLift()));
         workSheet.getCell(rownum, 11).setVal(SheetUtils.fixValue(lifter.getSnatch3ActualLift()));
-        workSheet.getCell(rownum, 13).setVal(SheetUtils.fixRank(lifter.getSnatchRank()));
+        final Integer snatchRank = lifter.getSnatchRank();
+		workSheet.getCell(rownum, 13).setVal(SheetUtils.fixRank(snatchRank));
 
         workSheet.getCell(rownum, 14).setVal(SheetUtils.fixValue(lifter.getCleanJerk1ActualLift()));
         workSheet.getCell(rownum, 15).setVal(SheetUtils.fixValue(lifter.getCleanJerk2ActualLift()));
         workSheet.getCell(rownum, 16).setVal(SheetUtils.fixValue(lifter.getCleanJerk3ActualLift()));
-        workSheet.getCell(rownum, 18).setVal(SheetUtils.fixRank(lifter.getCleanJerkRank()));
+        final Integer cleanJerkRank = lifter.getCleanJerkRank();
+		workSheet.getCell(rownum, 18).setVal(SheetUtils.fixRank(cleanJerkRank));
 
         workSheet.getCell(rownum, 19).setVal(SheetUtils.fixValue(lifter.getTotal()));
-        workSheet.getCell(rownum, 20).setVal(SheetUtils.fixRank(lifter.getRank()));
-        workSheet.getCell(rownum, 21).setVal(lifter.getSinclair());
-        workSheet.getCell(rownum, INDIVIDUAL_COLS - 1).setVal(lifter.getCategorySinclair());
-        // final Group group = lifter.getGroup();
-        // workSheet.getCell(rownum,22).setVal((group != null ? group.getName()
-        // : null));
+        final Integer rank = lifter.getRank();
+		workSheet.getCell(rownum, 20).setVal(SheetUtils.fixRank(rank));
+
+        // FIXME: replace this with a lookup or copy correctly formula from spreadsheet.
+        if (templateName.endsWith("JeuxQuebec.xls")) {
+        	workSheet.getCell(rownum, 21).setVal(58-snatchRank + 58-cleanJerkRank + 58-rank);
+        	workSheet.getCell(rownum, 22).setVal(lifter.getCategorySinclair());
+        } else {
+            workSheet.getCell(rownum, 21).setVal(lifter.getSinclair());
+            workSheet.getCell(rownum, 22).setVal(lifter.getCategorySinclair());        	
+        }
+        
         rownum++;
     }
 

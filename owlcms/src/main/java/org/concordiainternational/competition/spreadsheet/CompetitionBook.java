@@ -201,6 +201,14 @@ public class CompetitionBook extends ResultSheet {
                 LoggerUtils.logException(logger, e);
             }
 
+            // Team Sum ranking
+            try {
+                workSheet = workBookHandle.getWorkSheet("Somme équipes");
+                new TeamSheet(hbnSessionManager).writeTeamSheetAll(teamRankingLifters, workSheet, Ranking.ALL, clubs, null);
+            } catch (WorkSheetNotFoundException wnf) {
+            } catch (Exception e) {
+                LoggerUtils.logException(logger, e);
+            }
             // write out
             writeWorkBook(workBookHandle, out);
         } finally {

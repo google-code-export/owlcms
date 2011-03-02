@@ -45,7 +45,7 @@ public class LifterSorter implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(LifterSorter.class);
 
     public enum Ranking {
-        SNATCH, CLEANJERK, TOTAL, COMBINED, SINCLAIR
+        SNATCH, CLEANJERK, TOTAL, COMBINED, SINCLAIR, ALL
     }
 
     /**

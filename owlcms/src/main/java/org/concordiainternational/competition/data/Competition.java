@@ -34,7 +34,8 @@ import org.slf4j.LoggerFactory;
 @Entity
 public class Competition implements Serializable {
     private static final long serialVersionUID = -2817516132425565754L;
-    private static final Logger logger = LoggerFactory.getLogger(Competition.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = LoggerFactory.getLogger(Competition.class);
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -149,7 +150,7 @@ public class Competition implements Serializable {
     }
 
     public String getResultTemplateFileName() {
-    	logger.warn("getResultTemplateFileName {}",resultTemplateFileName);
+    	//logger.warn("getResultTemplateFileName {}",resultTemplateFileName);
         if (resultTemplateFileName != null && new File(resultTemplateFileName).exists()) {
             return resultTemplateFileName;
         } else {
