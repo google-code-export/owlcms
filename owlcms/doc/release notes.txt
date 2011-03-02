@@ -1,5 +1,9 @@
 #summary Release Notes
 
+== Release 2.3.2 ==
+  * Fixed scoring for provincial Jeux du Québec games
+  * Work-around for results not being shown immediately when selecting Results page
+
 == Release 2.3.1 ==
   * Added template for provincial Jeux du Québec games scoring system
 
