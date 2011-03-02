@@ -263,9 +263,11 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
      */
     @Override
     public void updateEvent(final SessionData.UpdateEvent updateEvent) {
-        new Thread(new Runnable() {
-			@Override
-			public void run() {
+    	// FIXME: this throws an IllegalStateException
+    	// Strange because this pattern is used everywhere else
+//        new Thread(new Runnable() {
+//			@Override
+//			public void run() {
 				synchronized (app) {
 					if (updateEvent.getForceRefresh()) {
 						logger.trace("updateEvent() received in Result view -- refreshing. ----------------------------------"); //$NON-NLS-1$
@@ -292,8 +294,8 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
 				}
 				app.push();
 			}
-		}).start();
-    }
+//		}).start();
+//    }
 
     /**
      * Reload data according to this session's (CompetitionApplication) current
