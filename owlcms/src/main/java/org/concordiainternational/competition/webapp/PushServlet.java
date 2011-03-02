@@ -50,8 +50,8 @@ public class PushServlet extends ApplicationServlet {
     }
 
     @Override
-    protected void writeAjaxPageHtmlHeader(BufferedWriter page, String title, String themeUri) throws IOException {
-        super.writeAjaxPageHtmlHeader(page, title, themeUri);
+    protected void writeAjaxPageHtmlHeader(BufferedWriter page, String title, String themeUri, HttpServletRequest req) throws IOException {
+        super.writeAjaxPageHtmlHeader(page, title, themeUri, req);
         
         // REFACTOR: detect browser
         // the following is mobile safari specific (iPod).  does not harm other browsers.
