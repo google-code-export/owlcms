@@ -1,6 +1,6 @@
 #summary Release Notes
 
-== Releases 2.3.2, 2.3.3, 2.3.4 ==
+== Releases 2.3.2, 2.3.3, 2.3.4, 2.3.5 ==
   * Scoring subtleties for provincial Jeux du Québec games
   * Work-around for results not being shown immediately when selecting Results page
 
