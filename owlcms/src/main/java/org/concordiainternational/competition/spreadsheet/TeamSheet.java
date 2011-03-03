@@ -179,7 +179,7 @@ public class TeamSheet extends ResultSheet {
 
         setFooterLeft(workSheet);
 
-        logger.warn("writing snatch");
+//        logger.warn("writing snatch");
         previousGender = null;
         previousClub = null;
         lifterRankWithinTeam = 0;
@@ -190,7 +190,7 @@ public class TeamSheet extends ResultSheet {
             }
         }
         
-        logger.warn("writing clean-and-jerk");
+//        logger.warn("writing clean-and-jerk");
         previousGender = null;
         previousClub = null;
         lifterRankWithinTeam = 0;
@@ -200,7 +200,7 @@ public class TeamSheet extends ResultSheet {
             }
         }
         
-        logger.warn("writing total");
+//        logger.warn("writing total");
         previousGender = null;
         previousClub = null;
         lifterRankWithinTeam = 0;

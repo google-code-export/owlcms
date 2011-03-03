@@ -117,7 +117,14 @@ public class IndividualSheet extends ResultSheet {
 
         // FIXME: replace this with a lookup or copy correctly formula from spreadsheet.
         if (templateName.endsWith("JeuxQuebec.xls")) {
-        	workSheet.getCell(rownum, 21).setVal(58-snatchRank + 58-cleanJerkRank + 58-rank);
+        	final int bestSnatch = lifter.getBestSnatch();
+        	final int sr = (bestSnatch > 0 ? 58-snatchRank : 0);
+        	
+        	final int bestCJ = lifter.getBestCleanJerk();
+        	final int cjr = (bestCJ > 0 ? 58-cleanJerkRank : 0);
+        	
+        	final int tr = (bestSnatch > 0 && bestCJ > 0 ? 58 - rank : 0);
+			workSheet.getCell(rownum, 21).setVal(sr + cjr + tr);
         	workSheet.getCell(rownum, 22).setVal(lifter.getCategorySinclair());
         } else {
             workSheet.getCell(rownum, 21).setVal(lifter.getSinclair());
