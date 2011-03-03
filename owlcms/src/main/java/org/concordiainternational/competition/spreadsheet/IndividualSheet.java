@@ -124,7 +124,11 @@ public class IndividualSheet extends ResultSheet {
         	final int cjr = (bestCJ > 0 ? 58-cleanJerkRank : 0);
         	
         	final int tr = (bestSnatch > 0 && bestCJ > 0 ? 58 - rank : 0);
-			workSheet.getCell(rownum, 21).setVal(sr + cjr + tr);
+        	if (!lifter.isInvited()) {
+        		workSheet.getCell(rownum, 21).setVal(sr + cjr + tr);
+        	} else {
+        		workSheet.getCell(rownum, 21).setVal(Messages.getString("Lifter.InvitedAbbreviated", CompetitionApplication.getCurrentLocale()));
+        	}
         	workSheet.getCell(rownum, 22).setVal(lifter.getCategorySinclair());
         } else {
             workSheet.getCell(rownum, 21).setVal(lifter.getSinclair());
