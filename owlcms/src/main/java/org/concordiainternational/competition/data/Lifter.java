@@ -1977,8 +1977,8 @@ public class Lifter implements MethodEventSource, Notifier {
         String catString;
         String gender1 = getGender().toUpperCase();
         final String mastersAgeCategory = getMastersAgeGroup(gender1);
-        final String displayCategory = getShortCategory(gender1);
-        catString = mastersAgeCategory + " " + displayCategory;
+        final String shortCategory = getShortCategory(gender1);
+        catString = mastersAgeCategory + " " + shortCategory;
         return catString;
     }
 
@@ -2018,15 +2018,25 @@ public class Lifter implements MethodEventSource, Notifier {
      * @return
      */
     public String getShortCategory(String gender1) {
-        final Double catMin = getCategory().getMinimumWeight();
-        Double catMax = getCategory().getMaximumWeight();
-        final String weightPlus = (("M".equals(gender1) && catMin > 104.999) || ("F".equals(gender1) && catMin > 74.999) ? ">"
-                : "");
-        if (catMax > 125) {
-            catMax = catMin;
+//        final Double catMin = getCategory().getMinimumWeight();
+//        Double catMax = getCategory().getMaximumWeight();
+//        final String weightPlus = (("M".equals(gender1) && catMin > 104.999) || ("F".equals(gender1) && catMin > 74.999) ? ">"
+//                : "");
+//        if (catMax > 125) {
+//            catMax = catMin;
+//        }
+//        final String shortCategory = weightPlus + catMax.intValue();
+//        return shortCategory;
+        final Category category = getCategory();
+        if (category == null) return "";
+        
+        String shortCategory = category.getName();
+        int gtPos = shortCategory.indexOf(">");
+        if (gtPos > 0) {
+        	return shortCategory.substring(gtPos);
+        } else {
+        	return shortCategory.substring(1);
         }
-        final String displayCategory = weightPlus + catMax.intValue();
-        return displayCategory;
     }
 
     /**

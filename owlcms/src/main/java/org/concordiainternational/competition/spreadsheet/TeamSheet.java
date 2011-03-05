@@ -79,6 +79,8 @@ public class TeamSheet extends ResultSheet {
         workSheet.add(gender, lifterIndex, 3);
         workSheet.add(lifter.getBodyWeight(), lifterIndex, 4);
 
+        logger.warn("lifter {}  lifterIndex {}", lifter.getLastName(),lifterIndex);
+        
         workSheet.add(club + "_" + gender, lifterIndex, 5);
         switch (rankingType) {
         case SNATCH: {
@@ -96,9 +98,10 @@ public class TeamSheet extends ResultSheet {
         }
 
         if (lifter.isInvited()) {
-            workSheet.add(Messages.getString(
-                "ResultSheet.InvitedAbbreviation", CompetitionApplication.getCurrentLocale()), lifterIndex, 6); //$NON-NLS-1$
-            workSheet.add(0, lifterIndex, 9);
+            final String message = Messages.getString(
+                "ResultSheet.InvitedAbbreviation", CompetitionApplication.getCurrentLocale());
+			workSheet.add(message, lifterIndex, 6); //$NON-NLS-1$
+            //workSheet.add((Integer)0, lifterIndex, 9);
         } else {
             final Integer rank = LifterSorter.getRank(lifter, rankingType);
             if (rank <= 0) {
