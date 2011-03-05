@@ -1,11 +1,13 @@
 #summary Release Notes
 
-== Releases 2.3.2, 2.3.3, 2.3.4, 2.3.5 ==
-  * Scoring subtleties for provincial Jeux du Québec games
+== Releases 2.3.2 to 2.3.7 ==
+  * Many team scoring subtleties for provincial "Jeux du Québec" games
   * Work-around for results not being shown immediately when selecting Results page
+  * Fix for category display on result board for youth competitions (e.g. >85) -- fixes regression
+    introduced by Masters category display.
 
 == Release 2.3.1 ==
-  * Added template for provincial Jeux du Québec games scoring system
+  * Added template for provincial "Jeux du Québec" games scoring system
 
 == Release 2.3.0 ==
   * Jury and Referee decision displays now highlight which person who has not given decision
