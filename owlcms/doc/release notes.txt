@@ -1,4 +1,6 @@
 #summary Release Notes
+== Release 2.4.0
+  * Fixed Lifter-facing display when referees change their decision.
 
 == Releases 2.3.2 to 2.3.7 ==
   * Many team scoring subtleties for provincial "Jeux du Québec" games
