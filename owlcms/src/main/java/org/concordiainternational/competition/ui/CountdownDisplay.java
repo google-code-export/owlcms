@@ -316,8 +316,8 @@ public class CountdownDisplay extends VerticalLayout implements
 						logger.info("ignoring WAITING event");
 						break;
 					case UPDATE:
-						// do nothing, lifter should not see that referees are changing their minds.
-						logger.info("ignoring UPDATE event");
+						// we need to show that referees have changed their mind.
+						showLights(updateEvent);
 						break;
 					}
 				}
