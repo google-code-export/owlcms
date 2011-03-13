@@ -60,6 +60,7 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
 	 * Create the red/white display rectangles for decisions.
 	 */
 	private void createLights() {
+		logger.debug("createLights");
         this.setSizeFull();
 
         for (int i = 0; i < decisionLights.length; i++) {
@@ -109,7 +110,10 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
 						logger.debug("received UPDATE event");
 						DecisionLightsWindow.this.removeStyleName("down");
 						if (immediateMode || shown) {
+							logger.debug("showing immediateMode={} shown={}",immediateMode, shown);
 							showLights(decisions);
+						} else {
+							logger.debug("not showing",immediateMode, shown);
 						}
 						break;
 					case SHOW:
