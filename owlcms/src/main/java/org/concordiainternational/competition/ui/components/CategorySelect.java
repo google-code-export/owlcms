@@ -48,6 +48,7 @@ public class CategorySelect extends ListSelect implements Serializable {
         categorySelect.setImmediate(true);
         categorySelect.setNullSelectionAllowed(true);
         categorySelect.setNullSelectionItemId(null);
+        categorySelect.setRows(6);
     }
 
 	@Override

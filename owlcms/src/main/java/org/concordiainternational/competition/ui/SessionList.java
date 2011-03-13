@@ -207,6 +207,7 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
         form.setParentList(this);
         editingWindow.getContent().addComponent(form);
         app.getMainWindow().addWindow(editingWindow);
+        editingWindow.setHeight("90%");
         editingWindow.setWidth("40em");
         editingWindow.center();
     }

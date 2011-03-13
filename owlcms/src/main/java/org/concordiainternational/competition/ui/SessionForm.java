@@ -84,6 +84,7 @@ public class SessionForm extends Form  {
             orderedProperties.add("platform");
             orderedProperties.add("categories");
             orderedProperties.add("announcer");
+            orderedProperties.add("marshall");
             orderedProperties.add("timeKeeper");
             orderedProperties.add("technicalController");
             orderedProperties.add("referee1");
