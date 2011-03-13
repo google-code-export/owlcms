@@ -83,7 +83,7 @@ public class ResultSheet extends OutputSheet implements InputSheet, LifterReader
         workSheet.getCell(rownum, 2).setVal(lifter.getLastName());
         workSheet.getCell(rownum, 3).setVal(lifter.getFirstName());
         final String gender = lifter.getGender();
-        logger.warn("lifter {} gender <{}>",lifter,gender);
+        //logger.warn("lifter {} gender <{}>",lifter,gender);
         workSheet.getCell(rownum, 4).setVal((gender != null ? gender.toString() : null));
         workSheet.getCell(rownum, 5).setVal(lifter.getDisplayCategory());
         workSheet.getCell(rownum, 6).setVal(lifter.getBodyWeight());
@@ -187,17 +187,19 @@ public class ResultSheet extends OutputSheet implements InputSheet, LifterReader
 		if (competitionSession != null) {
 			//logger.warn("writeHeader {} {}",System.identityHashCode(competitionSession),competitionSession.getReferee3());
 			String announcer = competitionSession.getAnnouncer();
-			workSheet.getCell("C10").setVal(announcer != null ? announcer : ""); //$NON-NLS-1$
+			workSheet.getCell("C11").setVal(announcer != null ? announcer : ""); //$NON-NLS-1$
+			String marshall = competitionSession.getMarshall();
+			workSheet.getCell("G11").setVal(marshall != null ? marshall : ""); //$NON-NLS-1$
 			String timeKeeper = competitionSession.getTimeKeeper();
-			workSheet.getCell("I10").setVal(timeKeeper != null ? timeKeeper : ""); //$NON-NLS-1$
+			workSheet.getCell("M11").setVal(timeKeeper != null ? timeKeeper : ""); //$NON-NLS-1$
 			String technicalController = competitionSession.getTechnicalController();
-			workSheet.getCell("Q10").setVal(technicalController != null ? technicalController : ""); //$NON-NLS-1$
+			workSheet.getCell("S11").setVal(technicalController != null ? technicalController : ""); //$NON-NLS-1$
 			String referee1 = competitionSession.getReferee1();
-			workSheet.getCell("C13").setVal(referee1 != null ? referee1 : ""); //$NON-NLS-1$
+			workSheet.getCell("C14").setVal(referee1 != null ? referee1 : ""); //$NON-NLS-1$
 			String referee2 = competitionSession.getReferee2();
-			workSheet.getCell("I13").setVal(referee2 != null ? referee2 : ""); //$NON-NLS-1$
+			workSheet.getCell("G14").setVal(referee2 != null ? referee2 : ""); //$NON-NLS-1$
 			String referee3 = competitionSession.getReferee3();
-			workSheet.getCell("Q13").setVal(referee3 != null ? referee3 : ""); //$NON-NLS-1$
+			workSheet.getCell("M14").setVal(referee3 != null ? referee3 : ""); //$NON-NLS-1$
 			writeGroup(workSheet);
 		}
 	}

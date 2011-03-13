@@ -48,6 +48,7 @@ public class PlatformSelect extends ListSelect implements Serializable {
         platformSelect.setImmediate(true);
         platformSelect.setNullSelectionAllowed(true);
         platformSelect.setNullSelectionItemId(null);
+        platformSelect.setRows(1);
     }
 
 	@Override

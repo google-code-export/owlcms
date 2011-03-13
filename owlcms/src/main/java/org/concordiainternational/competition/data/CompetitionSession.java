@@ -55,6 +55,7 @@ public class CompetitionSession implements Serializable {
     Date weighInTime;
     Date competitionTime;
     String announcer;
+    String marshall;
     String timeKeeper;
     String technicalController;
     String referee1;
@@ -168,6 +169,14 @@ public class CompetitionSession implements Serializable {
 		this.announcer = announcer;
 	}
 
+    public String getMarshall() {
+		return marshall;
+	}
+
+	public void setMarshall(String announcer) {
+		this.marshall = announcer;
+	}
+	
 	public String getTimeKeeper() {
 		return timeKeeper;
 	}
