@@ -409,4 +409,19 @@
 			<type>jar</type>
 		</dependency>
 	</dependencies>
+
+	<distributionManagement>
+		<!-- use the following if you're not using a snapshot version. -->
+		<repository>
+			<id>owlcms.googlecode.releases</id>
+			<name>owlcms.googlecode.releases</name>
+			<url>dav:https://owlcms.googlecode.com/hg/</url>
+		</repository>
+		<!-- use the following if you ARE using a snapshot version. -->
+		<snapshotRepository>
+			<id>owlcms.googlecode.snapshots</id>
+			<name>owlcms.googlecode.snapshots</name>
+			<url>dav:https://owlcms.googlecode.com/hg/maven2-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
