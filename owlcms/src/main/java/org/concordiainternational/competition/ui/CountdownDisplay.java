@@ -292,6 +292,8 @@ public class CountdownDisplay extends VerticalLayout implements
     @Override
     public void updateEvent(final DecisionEvent updateEvent) {
         new Thread(new Runnable() {
+			private boolean shown;
+
 			@Override
 			public void run() {
 				synchronized (app) {
@@ -300,9 +302,11 @@ public class CountdownDisplay extends VerticalLayout implements
 						logger.info("received DOWN event");
 						showLights(updateEvent);
 						break;
+						
 					case SHOW:
 						// if window is not up, show it.
 						logger.info("received SHOW event");
+						shown = true;
 						showLights(updateEvent);
 						break;
 
@@ -310,14 +314,18 @@ public class CountdownDisplay extends VerticalLayout implements
 						// we are done
 						logger.info("received RESET event");
 						hideLights(updateEvent);
+						shown = false;
 						break;
 						
 					case WAITING:
 						logger.info("ignoring WAITING event");
 						break;
+						
 					case UPDATE:
 						// we need to show that referees have changed their mind.
-						showLights(updateEvent);
+						if (shown) {
+							showLights(updateEvent);
+						}
 						break;
 					}
 				}
@@ -334,7 +342,7 @@ public class CountdownDisplay extends VerticalLayout implements
 	private void showLights(DecisionEvent updateEvent) {
 		// create window
 		if (popUp == null) {
-			logger.debug("creating window");
+			logger.warn("creating window");
 			Window mainWindow = app.getMainWindow();
 			decisionLights = new DecisionLightsWindow(false, false);
 			popUp = new Window(platformName);
