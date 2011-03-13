@@ -148,19 +148,20 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
             		}
             	}
             } else {
+            	logger.debug("no majority");
                 fireEvent(new DecisionEvent(this, DecisionEvent.Type.WAITING, currentTimeMillis, refereeDecisions));
             }
         } else {
             // Jury sees all changes, other displays will ignore this.
             synchronized (groupData.getTimer()) {
-//            	logger.warn("broadcasting");
+            	logger.debug("broadcasting");
             	fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
             }
         }
 
         if (decisionsMade == 3) {
-        	// save the decision
-            groupData.majorityDecision(refereeDecisions);
+        	// NOTE: we wait for referee keypads to be blocked (see scheduleBlock)
+        	// before sending the decision to groupData.
             
             // broadcast the decision
             if (allDecisionsMadeTime == 0L) {
@@ -174,6 +175,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
                 scheduleReset();
             } else {
                 // referees have changed their mind
+            	logger.debug("three + change");
                 fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
             }
         }
@@ -205,6 +207,9 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+            	// save the decision
+                groupData.majorityDecision(refereeDecisions);
+                
             	fireEvent(new DecisionEvent(RefereeDecisionController.this, DecisionEvent.Type.BLOCK, System.currentTimeMillis(), refereeDecisions));
             	setBlocked(true);
             }
