@@ -1,5 +1,9 @@
 #summary Release Notes
 
+== Release 2.5.0
+  * Moved LifterCard generation to JXSL package (and Apache POI) to give end users more control 
+    on look&feel
+
 == Release 2.4.1
   * Wait until all referee keypads are blocked to register decision.
   
