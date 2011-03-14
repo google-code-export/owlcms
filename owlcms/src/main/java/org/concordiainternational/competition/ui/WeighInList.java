@@ -27,8 +27,8 @@ import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource;
 import org.concordiainternational.competition.spreadsheet.JurySheet;
-import org.concordiainternational.competition.spreadsheet.LifterCardSheet;
 import org.concordiainternational.competition.spreadsheet.OutputSheetStreamSource;
 import org.concordiainternational.competition.spreadsheet.StartList;
 import org.concordiainternational.competition.spreadsheet.WeighInSheet;
@@ -192,8 +192,9 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
             @Override
 			public void buttonClick(ClickEvent event) {
                 lifterCardsButton.setComponentError(null);
-                final OutputSheetStreamSource<LifterCardSheet> streamSource = new OutputSheetStreamSource<LifterCardSheet>(
-                        LifterCardSheet.class, (CompetitionApplication) app, excludeNotWeighed);
+                final JXLSWorkbookStreamSource streamSource = new JXLSWorkbookStreamSource();
+//                final OutputSheetStreamSource<LifterCardSheet> streamSource = new OutputSheetStreamSource<LifterCardSheet>(
+//                        LifterCardSheet.class, (CompetitionApplication) app, excludeNotWeighed);
                 if (streamSource.size() == 0) {
                     lifterCardsButton.setComponentError(new SystemError(Messages.getString(
                         "WeighInList.NoLifters", locale))); //$NON-NLS-1$

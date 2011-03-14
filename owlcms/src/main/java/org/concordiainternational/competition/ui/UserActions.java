@@ -17,8 +17,8 @@
 package org.concordiainternational.competition.ui;
 
 import org.concordiainternational.competition.data.CompetitionSession;
-import org.concordiainternational.competition.spreadsheet.OutputSheet;
-import org.concordiainternational.competition.spreadsheet.OutputSheetStreamSource;
+
+import com.vaadin.terminal.StreamResource;
 
 /**
  * This interface defines the actions that are managed by the application
@@ -38,7 +38,7 @@ public interface UserActions {
      * @param streamSource
      * @param filename
      */
-    public abstract void openSpreadsheet(OutputSheetStreamSource<? extends OutputSheet> streamSource,
+    public abstract void openSpreadsheet(StreamResource.StreamSource streamSource,
             final String filename);
 
 }

@@ -408,6 +408,11 @@
 			<version>1.0.1</version>
 			<type>jar</type>
 		</dependency>
+		<dependency>
+			<groupId>net.sf.jxls</groupId>
+			<artifactId>jxls-core</artifactId>
+			<version>1.0-RC-1</version>
+		</dependency>
 	</dependencies>
 
 	<distributionManagement>

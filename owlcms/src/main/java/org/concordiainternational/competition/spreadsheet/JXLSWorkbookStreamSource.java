@@ -16,14 +16,22 @@
 
 package org.concordiainternational.competition.spreadsheet;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.util.HashMap;
 import java.util.List;
 
+import net.sf.jxls.transformer.XLSTransformer;
+
+import org.apache.poi.ss.usermodel.Workbook;
 import org.concordiainternational.competition.data.CategoryLookup;
+import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.Lifter;
+import org.concordiainternational.competition.data.LifterContainer;
+import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
@@ -40,48 +48,69 @@ import com.vaadin.terminal.StreamResource;
  * input stream that the vaadin framework can consume.
  */
 @SuppressWarnings("serial")
-public class OutputSheetStreamSource<T extends OutputSheet> implements StreamResource.StreamSource {
-    private final static Logger logger = LoggerFactory.getLogger(OutputSheetStreamSource.class);
-    private final T outputSheet;
-    private List<Lifter> lifters;
+public class JXLSWorkbookStreamSource implements StreamResource.StreamSource {
+    private final static Logger logger = LoggerFactory.getLogger(JXLSWorkbookStreamSource.class);
+    
+    protected static final String TEMPLATE_XLS = "/LifterCardTemplate_"+CompetitionApplication.getDefaultLocale().getLanguage()+".xls"; //$NON-NLS-1$
+    
+    protected CategoryLookup categoryLookup;
+    protected CompetitionApplication app;
+	private List<Lifter> lifters;
 
-    public OutputSheetStreamSource(Class<T> parameterizedClass, CompetitionApplication app, boolean excludeNotWeighed) {
-        CategoryLookup categoryLookup = new CategoryLookup(app);
-        try {
-            this.outputSheet = parameterizedClass.newInstance();
-        } catch (Exception t) {
-            throw new RuntimeException(t);
-        }
-        outputSheet.init(categoryLookup, app, app.getCurrentCompetitionSession());
-        this.lifters = outputSheet.getLifters(excludeNotWeighed);
+	private HashMap<String, Object> beans;
+
+    public JXLSWorkbookStreamSource() {
+    	this.app = CompetitionApplication.getCurrent();
+    	init();
     }
 
+    protected void init() {
+        this.lifters = LifterSorter.registrationOrderCopy(new LifterContainer(app, false).getAllPojos());
+        beans = new HashMap<String,Object>();
+        beans.put("lifters",lifters);
+        beans.put("masters",Competition.isMasters());
+	}
+
+    
     @Override
     public InputStream getStream() {
         try {
             PipedInputStream in = new PipedInputStream();
             final PipedOutputStream out = new PipedOutputStream(in);
-            logger.debug("starting getStream"); //$NON-NLS-1$
+            
             new Thread(new Runnable() {
                 @Override
 				public void run() {
                     try {
-                        outputSheet.writeLifters(lifters, out);
+                    	XLSTransformer transformer = new XLSTransformer();
+                        Workbook workbook = transformer.transformXLS(getTemplate(),beans);
+                        workbook.write(out);
                     } catch (Throwable e) {
                     	LoggerUtils.logException(logger, e);
                         throw new RuntimeException(e);
                     }
                 }
             }).start();
-            logger.debug("returning inputStream"); //$NON-NLS-1$
+
             return in;
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
     }
+    
+    public InputStream getTemplate() throws IOException {
+        final InputStream resourceAsStream = app.getResourceAsStream(TEMPLATE_XLS);
+        if (resourceAsStream == null) {
+            throw new IOException("resource not found: " + TEMPLATE_XLS);} //$NON-NLS-1$
+        return resourceAsStream;
+    }
 
     public int size() {
         return lifters.size();
     }
+
+	public List<Lifter> getLifters() {
+		return lifters;
+	}
 
 }
