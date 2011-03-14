@@ -36,8 +36,6 @@ import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.mobile.MJuryConsole;
 import org.concordiainternational.competition.mobile.MRefereeConsole;
 import org.concordiainternational.competition.mobile.MobileMenu;
-import org.concordiainternational.competition.spreadsheet.OutputSheet;
-import org.concordiainternational.competition.spreadsheet.OutputSheetStreamSource;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.Menu;
 import org.concordiainternational.competition.ui.components.ResultFrame;
@@ -452,7 +450,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @param filename
      */
     @Override
-	public void openSpreadsheet(OutputSheetStreamSource<? extends OutputSheet> streamSource, final String filename) {
+	public void openSpreadsheet(StreamResource.StreamSource streamSource, final String filename) {
         StreamResource streamResource = new StreamResource(streamSource, filename + ".xls", this); //$NON-NLS-1$
         streamResource.setCacheTime(5000); // no cache (<=0) does not work with IE8
         streamResource.setMIMEType("application/x-msexcel"); //$NON-NLS-1$

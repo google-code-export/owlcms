@@ -90,6 +90,7 @@ public abstract class OutputSheet {
             }
             // get the data sheet
             workBookHandle = new WorkBookHandle(getTemplate());
+            setupWorkbook(workBookHandle);
             final WorkSheetHandle workSheet = workBookHandle.getWorkSheet(0);
 
             // fill-in the header.
@@ -101,6 +102,7 @@ public abstract class OutputSheet {
                 writeLifter(curLifter, workSheet, categoryLookup, i++);
             }
             removeLastRowIfInserting(workSheet, i + InputSheetHelper.START_ROW);
+            cleanUpLifters(workSheet,i);
 
             // write out
             writeWorkBook(workBookHandle, out);
@@ -113,7 +115,13 @@ public abstract class OutputSheet {
         }
     }
 
-    /**
+    protected void cleanUpLifters(WorkSheetHandle workSheet, int i) throws CellTypeMismatchException, CellNotFoundException {
+	}
+
+	protected void setupWorkbook(WorkBookHandle workBookHandle) {
+	}
+
+	/**
      * Override this method to do nothing if you are not inserting rows.
      * 
      * @param workSheet

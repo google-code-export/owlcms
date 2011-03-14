@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import com.extentech.ExtenXLS.CellHandle;
 import com.extentech.ExtenXLS.FormatHandle;
+import com.extentech.ExtenXLS.WorkBookHandle;
 import com.extentech.ExtenXLS.WorkSheetHandle;
 import com.extentech.formats.XLS.CellNotFoundException;
 import com.extentech.formats.XLS.CellPositionConflictException;
@@ -86,10 +87,9 @@ public class LifterCardSheet extends OutputSheet {
         }
 
         final Category category = lifter.getRegistrationCategory();
-        workSheet.getCell(rowNum + 2, 7).setVal((category != null ? category.getName() : null));
+        workSheet.getCell(rowNum + 2, 7).setVal((category != null ? category.getName() : ""));
 
         nbCardsPrinted++;
-
     }
 
     /**
@@ -152,4 +152,51 @@ public class LifterCardSheet extends OutputSheet {
     protected void writeHeader(WorkSheetHandle workSheet) throws CellTypeMismatchException, CellNotFoundException {
         // do nothing
     }
+
+	@Override
+	protected void setupWorkbook(WorkBookHandle workBookHandle) {
+		super.setupWorkbook(workBookHandle);
+//		workBookHandle.setDupeStringMode(WorkBookHandle.ALLOWDUPES);
+		workBookHandle.setStringEncodingMode(WorkBookHandle.STRING_ENCODING_UNICODE);
+//		System.getProperties().put(com.extentech.formats.XLS.WorkBook.CONVERTMULBLANKS, "false");
+	}
+
+	@Override
+	protected void cleanUpLifters(WorkSheetHandle workSheet, int nbCards) throws CellTypeMismatchException, CellNotFoundException {
+		// Horrible workaround. For some reason, cell E5 cannot be set before copying the lifter card
+		// Yes, you read right.  In fact, even changing cell E5 in the template proper breaks things.
+		int curCard = 0;
+		boolean done = false;
+		while (!done ) {
+			final int cardsPerPage = 2;
+			int curCardRowNum = curCard * TEMPLATE_ROWS - ((curCard+cardsPerPage) / cardsPerPage) + 1;
+			try {
+				setLocalizedStrings(workSheet, curCardRowNum);
+			} catch (CellNotFoundException e) {
+				done = true;
+			}
+			curCard++;
+		}
+			
+	}
+
+	/**
+	 * @param workSheet
+	 * @param curCardRowNum
+	 * @throws CellNotFoundException
+	 */
+	protected void setLocalizedStrings(WorkSheetHandle workSheet,
+			int curCardRowNum) throws CellNotFoundException {
+		CellHandle cell;
+		
+		cell = workSheet.getCell(curCardRowNum + 4, 1);
+		cell.setVal(null);
+		cell.setVal("Arraché");
+		
+		cell = workSheet.getCell(curCardRowNum + 4, 4);
+		cell.setVal(null);
+		cell.setVal("Épaulé-jeté");
+	}
+	
+	
 }
