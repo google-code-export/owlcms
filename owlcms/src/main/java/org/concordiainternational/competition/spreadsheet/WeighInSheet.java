@@ -229,23 +229,24 @@ public class WeighInSheet extends OutputSheet implements InputSheet, LifterReade
 			throws CellTypeMismatchException, CellNotFoundException {
 		
 		super.writeHeader(workSheet);
-		
 		if (competitionSession != null) {
 			//logger.warn("writeHeader {} {}",System.identityHashCode(competitionSession),competitionSession.getReferee3());
 			String announcer = competitionSession.getAnnouncer();
-			workSheet.getCell("C10").setVal(announcer != null ? announcer : ""); //$NON-NLS-1$
+			workSheet.getCell("C11").setVal(announcer != null ? announcer : ""); //$NON-NLS-1$
+			String marshall = competitionSession.getMarshall();
+			workSheet.getCell("G11").setVal(marshall != null ? marshall : ""); //$NON-NLS-1$
 			String timeKeeper = competitionSession.getTimeKeeper();
-			workSheet.getCell("H10").setVal(timeKeeper != null ? timeKeeper : ""); //$NON-NLS-1$
+			workSheet.getCell("M11").setVal(timeKeeper != null ? timeKeeper : ""); //$NON-NLS-1$
 			String technicalController = competitionSession.getTechnicalController();
-			workSheet.getCell("P10").setVal(technicalController != null ? technicalController : ""); //$NON-NLS-1$
+			workSheet.getCell("S11").setVal(technicalController != null ? technicalController : ""); //$NON-NLS-1$
 			String referee1 = competitionSession.getReferee1();
-			workSheet.getCell("C13").setVal(referee1 != null ? referee1 : ""); //$NON-NLS-1$
+			workSheet.getCell("C14").setVal(referee1 != null ? referee1 : ""); //$NON-NLS-1$
 			String referee2 = competitionSession.getReferee2();
-			workSheet.getCell("H13").setVal(referee2 != null ? referee2 : ""); //$NON-NLS-1$
+			workSheet.getCell("G14").setVal(referee2 != null ? referee2 : ""); //$NON-NLS-1$
 			String referee3 = competitionSession.getReferee3();
-			workSheet.getCell("P13").setVal(referee3 != null ? referee3 : ""); //$NON-NLS-1$
+			workSheet.getCell("M14").setVal(referee3 != null ? referee3 : ""); //$NON-NLS-1$
 			writeGroup(workSheet);
-		}
+		}		
 	}
 
 }
