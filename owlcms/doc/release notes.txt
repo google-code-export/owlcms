@@ -1,5 +1,9 @@
 #summary Release Notes
 
+== Release 2.5.1
+  * Marshall shown on weigh-in list (which is used as paper backup)
+  * Increased separation between buttons on tablets for jury and referees.
+
 == Release 2.5.0
   * Moved LifterCard generation to JXSL package (and Apache POI) to give end users more control 
     on look&feel
