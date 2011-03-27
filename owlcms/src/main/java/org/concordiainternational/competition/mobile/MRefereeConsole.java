@@ -36,6 +36,7 @@ import org.vaadin.touchdiv.TouchDiv.TouchListener;
 
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.URIHandler;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.UriFragmentUtility;
@@ -137,7 +138,8 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 		top.setSpacing(true);
 
 		red = new TouchDiv("");
-		red.setSizeFull();
+		red.setHeight("90%");
+		red.setWidth("90%");
 		red.addStyleName("red");
 		red.addListener(new TouchListener(){
 
@@ -154,7 +156,8 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 		
 		white = new TouchDiv("");
 		white.addStyleName("white");
-		white.setSizeFull();
+		white.setHeight("90%");
+		white.setWidth("90%");
 		white.addListener(new TouchListener(){
 
 			@Override
@@ -170,7 +173,11 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 			}});
 		
 		top.addComponent(red);
+		top.setComponentAlignment(red,Alignment.MIDDLE_CENTER);
+		
 		top.addComponent(white);
+		top.setComponentAlignment(white,Alignment.MIDDLE_CENTER);
+		
 		top.setExpandRatio(red,50.0F);
 		top.setExpandRatio(white,50.0F);
 	}
@@ -275,6 +282,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 						red.setStyleName("red");
 						resetTop();
 						resetBottom();
+						requestRepaintAll();
 						break;
 					}
 				}
@@ -329,6 +337,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 
 	private void resetBottom() {
 		synchronized (app) {
+			refereeReminder.setEnabled(true);
 			refereeReminder.setValue(refereeLabel(refereeIndex));
 			refereeReminder.setStyleName("refereeOk");
 		}
