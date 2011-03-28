@@ -19,6 +19,8 @@ package org.concordiainternational.competition.ui;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CompetitionSession;
@@ -74,10 +76,13 @@ public class AnnouncerView extends VerticalSplitPanel implements
 	Window.CloseListener,
 	URIHandler
 	{
-    private static final long serialVersionUID = 7881028819569705161L;
+	private static final long serialVersionUID = 7881028819569705161L;
     private static final Logger logger = LoggerFactory.getLogger(AnnouncerView.class);
     public static final boolean PUSHING = true;
 
+	/** remove message after this delay (ms) */
+    private static final int messageRemovalMs = 5000;
+    
     private HorizontalLayout topPart;
     private LifterInfo announcerInfo;
     private LiftList liftList;
@@ -517,8 +522,38 @@ public class AnnouncerView extends VerticalSplitPanel implements
 					Messages.getString("LiftList."+mode2.name(), locale),
 					Messages.getString("TimeStoppedNotificationReason."+reason.name(),locale));
 		}
-		notifications.add((Resource)null,message,true,Notifique.Styles.VAADIN_ORANGE,true);
-		
+		final Message addedMessage = notifications.add((Resource)null,message,true,Notifique.Styles.VAADIN_ORANGE,true);
+		switch (reason) {
+		case CURRENT_LIFTER_CHANGE:
+			// the announcer must acknowledge explicitly
+			if (this.mode != Mode.ANNOUNCER) {
+				scheduleMessageRemoval(addedMessage);
+			}	
+			break;
+		default:
+			// remove automatically
+			scheduleMessageRemoval(addedMessage);
+			break;
+		}
+	}
+
+
+	/**
+	 * @param addedMessage
+	 */
+	protected void scheduleMessageRemoval(final Message addedMessage) {
+		new Timer().schedule(new TimerTask(){
+			@Override
+			public void run() {
+				// remove message, push to client.
+				if (addedMessage.isVisible()) {
+					synchronized (app) {
+						addedMessage.hide();
+					}
+					app.push();
+				}
+			}	
+		}, messageRemovalMs);
 	}
 	
 	/**
