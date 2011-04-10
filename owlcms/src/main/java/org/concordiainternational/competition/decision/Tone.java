@@ -3,6 +3,7 @@ package org.concordiainternational.competition.decision;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
 
 public class Tone {
@@ -11,7 +12,21 @@ public class Tone {
 	private SourceDataLine sdl;
 
 	Tone(int hz, int msecs, double vol) throws IllegalArgumentException {
+		Mixer mixer = AudioSystem.getMixer(null);		
+		init(hz, msecs, vol, mixer);
+	}
+	
+	Tone(Mixer mixer, int hz, int msecs, double vol) throws IllegalArgumentException {
+		init(hz, msecs, vol, mixer);
+	}
 
+	/**
+	 * @param hz
+	 * @param msecs
+	 * @param vol
+	 * @param mixer
+	 */
+	protected void init(int hz, int msecs, double vol, Mixer mixer) {
 		if (vol > 1.0 || vol < 0.0)
 			throw new IllegalArgumentException("Volume out of range 0.0 - 1.0");
 		buf = new byte[msecs * 8];
@@ -30,7 +45,7 @@ public class Tone {
 
 		af = new AudioFormat(8000f,8,1,true,false);
 		try {
-			sdl = AudioSystem.getSourceDataLine(af);
+			sdl = AudioSystem.getSourceDataLine(af,mixer.getMixerInfo());
 		} catch (LineUnavailableException e) {
 			throw new RuntimeException(e);
 		}
