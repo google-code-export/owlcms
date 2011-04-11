@@ -98,7 +98,23 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
     @Override
 	public synchronized void decisionMade(int refereeNo, boolean accepted) {
     	if (isBlocked()) return;
-    	
+
+    	if (refereeDecisions[refereeNo] == null) {
+    		logger.warn("decision ignored from referee {}: {} (not in a session)", 
+        			refereeNo + 1,
+                    (accepted ? "lift" : "no lift"));
+        	return;
+    	}
+// can't happen: the device itself is disabled when a red is given.
+//        if ((refereeDecisions[refereeNo].accepted != null) && !(refereeDecisions[refereeNo].accepted)) {
+//        	// cannot reverse from red to white.
+//        	logger.warn("decision ignored from referee {}: {} (prior decision was {})", 
+//        			new Object[] { refereeNo + 1,
+//                    (accepted ? "lift" : "no lift"), 
+//                    refereeDecisions[refereeNo].accepted});
+//        	return;
+//        }
+        
         final long currentTimeMillis = System.currentTimeMillis();
         long deltaTime = currentTimeMillis - allDecisionsMadeTime;
         if (decisionsMade == 3 && deltaTime > DECISION_REVERSAL_DELAY) {
@@ -108,6 +124,8 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
             return;
         }
 
+
+        
         refereeDecisions[refereeNo].accepted = accepted;
         refereeDecisions[refereeNo].time = currentTimeMillis;
         logger.info("decision by referee {}: {}", refereeNo + 1, (accepted ? "lift" : "no lift"));

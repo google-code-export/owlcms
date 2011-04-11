@@ -61,6 +61,7 @@ public class CountdownDisplay extends VerticalLayout implements
 	private Window popUp = null;
 	private DecisionLightsWindow decisionLights;
 	private UpdateEventListener updateEventListener;
+	protected boolean shown;
 
     public CountdownDisplay(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
@@ -292,8 +293,6 @@ public class CountdownDisplay extends VerticalLayout implements
     @Override
     public void updateEvent(final DecisionEvent updateEvent) {
         new Thread(new Runnable() {
-			private boolean shown;
-
 			@Override
 			public void run() {
 				synchronized (app) {
@@ -305,8 +304,8 @@ public class CountdownDisplay extends VerticalLayout implements
 						
 					case SHOW:
 						// if window is not up, show it.
-						logger.info("received SHOW event");
 						shown = true;
+						logger.info("received SHOW event {}",shown);
 						showLights(updateEvent);
 						break;
 
@@ -322,10 +321,16 @@ public class CountdownDisplay extends VerticalLayout implements
 						break;
 						
 					case UPDATE:
+						logger.debug("received UPDATE event {}",shown);
 						// we need to show that referees have changed their mind.
 						if (shown) {
 							showLights(updateEvent);
 						}
+						break;
+					
+					case BLOCK:
+						logger.debug("received BLOCK event {}",shown);
+						showLights(updateEvent);
 						break;
 					}
 				}
@@ -342,7 +347,7 @@ public class CountdownDisplay extends VerticalLayout implements
 	private void showLights(DecisionEvent updateEvent) {
 		// create window
 		if (popUp == null) {
-			logger.warn("creating window");
+			logger.debug("creating window");
 			Window mainWindow = app.getMainWindow();
 			decisionLights = new DecisionLightsWindow(false, false);
 			popUp = new Window(platformName);
@@ -354,6 +359,7 @@ public class CountdownDisplay extends VerticalLayout implements
 		popUp.setVisible(true);
 		
 		// relay the event
+		logger.debug("relaying");
 		decisionLights.updateEvent(updateEvent);
 		
 	}

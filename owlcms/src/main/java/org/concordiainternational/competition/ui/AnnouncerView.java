@@ -276,6 +276,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
         CategoryLookup.getSharedInstance().reload();
         liftList.refresh();
         setStickyEditor(false, false);
+        masterData.getRefereeDecisionController().reset();
         loadFirstLifterInfo(masterData);
         logger.debug("end refresh ----------{}", mode); //$NON-NLS-1$
     }

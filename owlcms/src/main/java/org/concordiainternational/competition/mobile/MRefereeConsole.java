@@ -210,7 +210,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 		
 		white.setValue("");
 		red.setValue("\u2714"); // heavy checkmark
-		
+		disable();
 		resetBottom();
 	}
 	
@@ -271,9 +271,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 						break;
 					case BLOCK:
 						// decisions are shown to the public; prevent refs from changing.
-						white.setEnabled(false);
-						red.setEnabled(false);
-						refereeReminder.setStyleName("blocked");
+						disable();
 						//top.setEnabled(false);
 						break;
 					case RESET:
@@ -289,6 +287,15 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 				app.push();
 			}
 		}).start();
+	}
+	
+	/**
+	 * 
+	 */
+	protected void disable() {
+		white.setEnabled(false);
+		red.setEnabled(false);
+		refereeReminder.setStyleName("blocked");
 	}
 
 	/**
