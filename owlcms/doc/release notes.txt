@@ -1,5 +1,10 @@
 #summary Release Notes
 
+== Release 2.5.2
+  * Made sure that all decision changes are shown consistently on all
+    displays.
+  * Preparation work for supporting audible down signal on multiple platforms.
+
 == Release 2.5.1
   * Marshall shown on weigh-in list (which is used as paper backup)
   * Increased separation between buttons on tablets for jury and referees.
