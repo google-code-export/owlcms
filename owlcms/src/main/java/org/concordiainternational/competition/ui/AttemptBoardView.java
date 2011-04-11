@@ -81,6 +81,8 @@ public class AttemptBoardView extends VerticalLayout implements
 
 	private boolean decisionDisplayInProgress;
 
+	protected boolean shown;
+
     public AttemptBoardView(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
             setParametersFromFragment();
@@ -309,6 +311,50 @@ public class AttemptBoardView extends VerticalLayout implements
 	}
 
 
+//	/**
+//	 * Process a decision regarding the current lifter.
+//	 * Make sure that the name of the lifter does not change until after the decision has been shown.
+//	 * @see org.concordiainternational.competition.decision.DecisionEventListener#updateEvent(org.concordiainternational.competition.decision.DecisionEvent)
+//	 */
+//	@Override
+//	public void updateEvent(final DecisionEvent updateEvent) {
+//		new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+//				synchronized (app) {
+//					switch (updateEvent.getType()) {
+//					case DOWN:
+//						decisionDisplayInProgress = true;
+//						decisionArea.setVisible(false);
+//						break;
+//					case SHOW:
+//						// if window is not up, show it.
+//						decisionDisplayInProgress = true;
+//						decisionArea.setVisible(true);
+//						break;
+//					case RESET:
+//						// we are done
+//						decisionDisplayInProgress = false;
+//						decisionArea.setVisible(false);
+//						doDisplay();
+//						break;
+//					case WAITING:
+//						decisionDisplayInProgress = true;
+//						decisionArea.setVisible(false);
+//						break;
+//					case UPDATE:
+//						// change is made during 3 seconds where refs
+//						// can change their mind privately.
+//						decisionDisplayInProgress = true;
+//						decisionArea.setVisible(false);
+//						break;
+//					}
+//				}
+//				app.push();
+//			}
+//		}).start();
+//	}
+	
 	/**
 	 * Process a decision regarding the current lifter.
 	 * Make sure that the name of the lifter does not change until after the decision has been shown.
@@ -328,12 +374,14 @@ public class AttemptBoardView extends VerticalLayout implements
 					case SHOW:
 						// if window is not up, show it.
 						decisionDisplayInProgress = true;
+						shown = true;
 						decisionArea.setVisible(true);
 						break;
 					case RESET:
 						// we are done
 						decisionDisplayInProgress = false;
 						decisionArea.setVisible(false);
+						shown = false;
 						doDisplay();
 						break;
 					case WAITING:
@@ -341,14 +389,17 @@ public class AttemptBoardView extends VerticalLayout implements
 						decisionArea.setVisible(false);
 						break;
 					case UPDATE:
-						// change is made during 3 seconds where refs
-						// can change their mind privately.
+						// show change only if the lights are already on.
 						decisionDisplayInProgress = true;
-						decisionArea.setVisible(false);
+						if (shown) {
+							decisionArea.setVisible(true);
+						}
 						break;
+					case BLOCK:
+						decisionDisplayInProgress = true;
+						decisionArea.setVisible(true);
 					}
 				}
-				app.push();
 			}
 		}).start();
 	}
