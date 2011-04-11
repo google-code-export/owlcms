@@ -113,7 +113,7 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
 							logger.debug("showing immediateMode={} shown={}",immediateMode, shown);
 							showLights(decisions);
 						} else {
-							logger.debug("not showing",immediateMode, shown);
+							logger.debug("not showing {} {}",immediateMode, shown);
 						}
 						break;
 					case SHOW:
@@ -130,6 +130,9 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
 						logger.debug("received RESET event");
 						DecisionLightsWindow.this.removeStyleName("down");
 						resetLights();
+						break;
+					default:
+						logger.debug("received default");
 						break;
 					}
 				}
