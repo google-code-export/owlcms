@@ -278,7 +278,9 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
                                                                  // should free
                                                                  // H2
         h2Shutdown();
-        necDisplay.close();
+        if (necDisplay != null) {
+        	necDisplay.close();
+        }
         necDisplay = null;
         logger.debug("contextDestroyed() done"); //$NON-NLS-1$
     }
@@ -334,8 +336,10 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
      */
     public static void getNecDisplay(final String comPortName) throws RuntimeException {
         try {
-            necDisplay = new NECDisplay();
-            necDisplay.setComPortName(comPortName);
+        	if (comPortName != null && !comPortName.isEmpty()) {
+        		necDisplay = new NECDisplay();
+                necDisplay.setComPortName(comPortName);
+        	}
         } catch (Exception e) {
             // comPortName is likely a USB port which has been disconnected.
             try {
