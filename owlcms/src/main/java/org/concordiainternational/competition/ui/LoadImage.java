@@ -74,16 +74,16 @@ public class LoadImage extends WeeLayout {
         addPlates(1, "bar", barWeight);
         addPlates(1, "barInner", 0);
         final Integer collarAvailable = platform.getNbC_2_5();
-        boolean useCollar = false;
+        boolean useCollar = collarAvailable > 0;
         
-        final int nonBarWeight = weight;
+        int nonBarWeight = weight;
         if (weight >= 25) {
-	        if (collarAvailable > 0) {
+	        if (useCollar) {
 	            // we only take off the collar weight because we need to
 	            // wait before showing the collar.
 	            weight -= 5;
-	            useCollar = true;
-	        }
+	            nonBarWeight -= 5;
+	        } else 
 	
 	        // use large plates first
 	        addPlates(platform.getNbL_25(), "L_25", 2 * 25);
@@ -91,8 +91,18 @@ public class LoadImage extends WeeLayout {
 	        addPlates(platform.getNbL_15(), "L_15", 2 * 15);
 	        addPlates(platform.getNbL_10(), "L_10", 2 * 10);
         } else {
-            // make sure that large 5 and large 2.5 are only used when warranted
+			// make sure that large 5 and large 2.5 are only used when warranted
             // (must not require manual intervention if they are available)
+        	if (platform.getNbL_2_5() > 0 && nonBarWeight < 10  ||
+        			platform.getNbL_5() > 0 && nonBarWeight < 15 ) {
+        		useCollar = false;
+        	}
+	        if (useCollar) {
+	            // we only take off the collar weight because we need to
+	            // wait before showing the collar.
+	            weight -= 5;
+	            nonBarWeight -= 5;
+	        }
 	        addPlates(platform.getNbL_10(), "L_10", 2 * 10);
             addPlates(platform.getNbL_5(), "L_5", 2 * 5);
             if (nonBarWeight < 10) {
