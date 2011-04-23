@@ -28,8 +28,9 @@ import org.concordiainternational.competition.decision.DecisionEventListener;
 import org.concordiainternational.competition.decision.IDecisionController;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent;
+import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent;
 import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener;
-import org.concordiainternational.competition.publicAddress.PublicAddressOverlay;
+import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent.MessageTimerListener;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
@@ -60,6 +61,7 @@ public class AttemptBoardView extends VerticalLayout implements
 		ApplicationView, 
 		CountdownTimerListener,
 		MessageDisplayListener,
+		MessageTimerListener,
 		Window.CloseListener, 
 		URIHandler,
 		DecisionEventListener
@@ -95,7 +97,6 @@ public class AttemptBoardView extends VerticalLayout implements
         }
         
         this.app = CompetitionApplication.getCurrent();
-        logger.warn("app={}",app);
         
         boolean prevDisabledPush = app.getPusherDisabled();
         try {
@@ -158,8 +159,8 @@ public class AttemptBoardView extends VerticalLayout implements
                 	new Thread(new Runnable() {
 						@Override
 						public void run() {
-							logger.warn("request to display {}",
-									AttemptBoardView.this);
+//							logger.warn("request to display {}",
+//									AttemptBoardView.this);
 							if (!waitingForDecisionLightsReset) {
 								display(platformName1, masterData1);
 							}
@@ -241,6 +242,9 @@ public class AttemptBoardView extends VerticalLayout implements
      * @throws RuntimeException
      */
     private void display(final String platformName1, final SessionData masterData1) throws RuntimeException {
+    	if (paShown) {
+    		return;
+    	}
         synchronized (app) {
             final Lifter currentLifter = masterData1.getCurrentLifter();
             if (currentLifter != null) {
@@ -252,10 +256,7 @@ public class AttemptBoardView extends VerticalLayout implements
                 timeDisplayLabel.setVisible(!done);
             } else {
             	logger.debug("lifter null");
-                nameLabel.setValue(getWaitingMessage()); //$NON-NLS-1$
-                showDecisionLights(false);
-                timeDisplayLabel.setSizeUndefined();
-        		timeDisplayLabel.setVisible(false);
+                hideAll();
             }
 
         }
@@ -263,6 +264,22 @@ public class AttemptBoardView extends VerticalLayout implements
         
         app.push();
     }
+
+
+	/**
+	 * 
+	 */
+	protected void hideAll() {
+		nameLabel.setValue(getWaitingMessage()); //$NON-NLS-1$
+		showDecisionLights(false);
+		timeDisplayLabel.setSizeUndefined();
+		timeDisplayLabel.setVisible(false);
+		firstNameLabel.setValue("");
+		clubLabel.setValue("");
+		attemptLabel.setValue("");
+		weightLabel.setValue("");
+		plates.setVisible(false);
+	}
 
 
 
@@ -281,7 +298,7 @@ public class AttemptBoardView extends VerticalLayout implements
 
     @Override
     public void refresh() {
-        display(platformName, masterData);
+    	display(platformName, masterData);
     }
 
     public boolean fillLifterInfo(Lifter lifter) {
@@ -332,7 +349,7 @@ public class AttemptBoardView extends VerticalLayout implements
     }
     
     private void showDecisionLights(boolean decisionLightsVisible) {
-    	logger.warn("showDecisionLights {}",decisionLightsVisible);
+//    	logger.warn("showDecisionLights {}",decisionLightsVisible);
     	// remove everything
 		grid.removeComponent(timeDisplayLabel);
         grid.removeComponent(decisionLights);
@@ -351,6 +368,7 @@ public class AttemptBoardView extends VerticalLayout implements
             grid.setComponentAlignment(timeDisplayLabel, Alignment.MIDDLE_CENTER);
             grid.setComponentAlignment(plates, Alignment.MIDDLE_CENTER);
             timeDisplayLabel.setVisible(true);
+            plates.setVisible(true);
     	}
 	}
 
@@ -402,7 +420,9 @@ public class AttemptBoardView extends VerticalLayout implements
         // computed by groupData
         int timeAllowed = groupData.getTimeAllowed();
         final CountdownTimer timer = groupData.getTimer();
-        timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(timeAllowed));
+        if (!paShown){
+        	timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(timeAllowed));
+        }
         timer.addListener(this);
     }
 
@@ -413,7 +433,9 @@ public class AttemptBoardView extends VerticalLayout implements
 
     @Override
     public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
-        timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(startTime));
+    	if (!paShown){
+    		timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(startTime));
+    	}
     }
 
     @Override
@@ -428,10 +450,9 @@ public class AttemptBoardView extends VerticalLayout implements
 
     int previousTimeRemaining = 0;
     private String viewName;
-	private PublicAddressOverlay overlayContent;
-	private Window overlay;
 	protected boolean shown;
 	private String stylesheetName;
+	private boolean paShown;
 
     @Override
     public void normalTick(int timeRemaining) {
@@ -444,7 +465,9 @@ public class AttemptBoardView extends VerticalLayout implements
         }
 
         synchronized (app) {
-            timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
+        	if (!paShown){
+        		timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
+        	}
         }
         app.push();
     }
@@ -508,28 +531,38 @@ public class AttemptBoardView extends VerticalLayout implements
 	@Override
 	public void messageUpdate(PublicAddressMessageEvent event) {
 		synchronized(app) {
-			if (viewName.contains("resultBoard")) {
-				if (event.setHide()) {
-					removeMessage();
-				} else if (overlay == null) {				
-					displayMessage(event.getTitle(),event.getMessage(),event.getRemainingMilliseconds());
-				}  else {
-					// nothing to do: overlayContent listens to the events on its own
-				}
+			if (event.setHide()) {
+				removeMessage();
+			} else {
+				hideAll();
+				displayMessage(event.getTitle(),event.getMessage(),event.getRemainingMilliseconds());
 			}
 		}
 		app.push();
 
 	}
+	
+	@Override
+	public void timerUpdate(PublicAddressTimerEvent event) {
+		if (!paShown) {
+			return;
+		}
+		synchronized(app) {
+			Integer remainingMilliseconds = event.getRemainingMilliseconds();
+			if (remainingMilliseconds != null) {
+				timeDisplayLabel.setVisible(true);
+				timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(remainingMilliseconds));
+			}
+		}
+		app.push();
+	}
 
 	/**
-	 * Remove the currently displayed message, if any.
+	 * Remove the currently displayed public message, if any.
 	 */
 	private void removeMessage() {
-		if (overlayContent != null) masterData.removeBlackBoardListener(overlayContent);
-		overlayContent = null;
-		if (overlay != null) app.getMainWindow().removeWindow(overlay);
-		overlay = null;
+		paShown = false;
+		refresh();
 	}
 
 	/**
@@ -541,25 +574,12 @@ public class AttemptBoardView extends VerticalLayout implements
 	 */
 	private void displayMessage(String title, String message, Integer remainingMilliseconds) {
 		// create content formatting
-		logger.debug("displayMessage {} {}",title,message);
-		if (overlayContent == null) {
-			overlayContent = new PublicAddressOverlay(title,message,remainingMilliseconds);
-			// overlayContent listens to message updates and timer updates
-			masterData.addBlackBoardListener(overlayContent);
-		}
+//		logger.warn("displayMessage {}",remainingMilliseconds);
 		synchronized (app) {
-			// create window
-			if (overlay == null) {
-				logger.debug("creating window");
-				Window mainWindow = app.getMainWindow();;
-				overlay = new Window(platformName);
-				overlay.addStyleName("decisionLightsWindow");
-				overlay.setSizeFull();
-				mainWindow.addWindow(overlay);
-				overlay.center();
-				overlay.setContent(overlayContent);
-				overlay.setVisible(true);
-			}
+			paShown = true;
+			nameLabel.setValue("Pause");
+			timeDisplayLabel.setVisible(true);
+			timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(remainingMilliseconds));
 		}
 		app.push();
 	}
@@ -576,10 +596,8 @@ public class AttemptBoardView extends VerticalLayout implements
         updateListener = registerAsListener(platformName, masterData);
         
         // listen to public address events
-        if (viewName1.contains("resultBoard")) {
-        	logger.warn("listening to public address events.");
-        	masterData.addBlackBoardListener(this);
-        }
+        logger.warn("listening to public address events.");
+        masterData.addBlackBoardListener(this);
         
         // listen to decisions
         IDecisionController decisionController = masterData.getRefereeDecisionController();
@@ -604,10 +622,8 @@ public class AttemptBoardView extends VerticalLayout implements
         
         // stop listening to public address events
 		removeMessage();
-        if (viewName.contains("resultBoard")) {
-        	masterData.removeBlackBoardListener(this);
-        	logger.warn("stopped listening to PublicAddress TimerEvents");
-        }
+        masterData.removeBlackBoardListener(this);
+        logger.warn("stopped listening to PublicAddress TimerEvents");
         
         // stop listening to decisions
         IDecisionController decisionController = masterData.getRefereeDecisionController();
