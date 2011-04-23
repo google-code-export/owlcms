@@ -708,7 +708,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         mainLayout1.addComponent(buzzer);
 
         mainLayout1.setSizeFull();
-        mainLayout1.setStyleName("blue"); //$NON-NLS-1$
+        //mainLayout1.setStyleName("blue"); //$NON-NLS-1$
 
         components.menu = new Menu();
         mainLayout1.addComponent(components.menu);

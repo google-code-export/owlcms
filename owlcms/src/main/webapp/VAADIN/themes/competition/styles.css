@@ -21,11 +21,8 @@
 	padding-bottom: 5px;
 }
 
-table.v-table-table .v-table-row .v-table-cell-content,
-table.v-table-table .v-table-row-odd .v-table-cell-content,
-table.v-table-table .v-table-row .v-table-cell-content-sorted,
-table.v-table-table .v-table-row-odd .v-table-cell-content-sorted
-{
+table.v-table-table .v-table-row .v-table-cell-content,table.v-table-table .v-table-row-odd .v-table-cell-content,table.v-table-table .v-table-row .v-table-cell-content-sorted,table.v-table-table .v-table-row-odd .v-table-cell-content-sorted
+	{
 	vertical-align: middle;
 }
 
@@ -150,7 +147,7 @@ table.v-table-table .v-table-row-odd .v-table-cell-content-sorted
 	vertical-align: baseline;
 }
 
-.projectorTop td.name .v-label{
+.projectorTop td.name .v-label {
 	text-align: left;
 	line-height: 110%;
 	vertical-align: baseline;
@@ -274,6 +271,76 @@ button.v-button-failedLift span {
 .attemptBoardView .v-caption-loadChart .v-captiontext {
 	display: none;
 }
+
+
+.newAttemptBoard {
+	background-color: black;
+	color: white;
+}
+
+.newAttemptBoard .v-caption-loadChart .v-captiontext {
+	display: none;
+}
+
+.v-sa .v-panel-content, .v-ff3 .v-panel-content {
+border-style: none;
+}
+
+.newAttemptBoard .largeCountdown {
+	font-size: 300px;
+	line-height: 300px;
+	font-weight: bold;
+	vertical-align: middle;
+	color: yellow;
+	zoom: 110%;
+}
+
+.newAttemptBoard .v-label-text {
+	font-size: 100px;
+	line-height: 115px;
+	font-weight: bold;
+}
+
+.newAttemptBoard .v-label-weightLabel {
+	font-size: 100px;
+	line-height: 100px;
+	font-weight: bold;
+	zoom: 140%;
+	color: #7FFFFF;
+}
+
+.newAttemptBoard .loadChart .v-label {
+	font-size: xx-large;
+}
+
+.newAttemptBoard .loadChart div.plate {
+	border-color: white !important;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-width: 2px;
+	margin-left: 5px;
+}
+
+
+.newAttemptBoard .loadChart .barOuter {
+	margin-left: 5px;
+}
+
+.newAttemptBoard .decisionLight {
+	border-color: white !important;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-width: 4px;
+	margin: 10px;
+	zoom: 85%;
+}
+
+
+
+.v-view {border:black}
+	
+
+
 
 .zoomLarge .zoomable {
 	zoom: 135%;
@@ -505,7 +572,6 @@ button.yesButton {
 .v-horizontallayout-decisionLightsWindow .undecided {
 	background-color: black;
 }
-	
 
 .v-panel-content .largeCountdownBackground {
 	background-color: black;
@@ -579,6 +645,7 @@ textarea.v-textarea-fixedFont {
 .platesPopup .popupContent .v-label {
 	font-size: small;
 }
+
 .v-customoverlay .popupContent .v-label {
 	font-size: x-large;
 }
