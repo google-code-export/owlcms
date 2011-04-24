@@ -281,7 +281,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     /**
      * @return
      */
-    protected ICEPush ensurePusher() {
+    synchronized protected ICEPush ensurePusher() {
         if (pusher == null) {
             pusher = new ICEPush();
             getMainWindow().addComponent(pusher);

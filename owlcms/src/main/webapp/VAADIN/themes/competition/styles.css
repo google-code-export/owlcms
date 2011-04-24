@@ -649,3 +649,21 @@ textarea.v-textarea-fixedFont {
 .v-customoverlay .popupContent .v-label {
 	font-size: x-large;
 }
+
+.queue .owlcms-red .v-csslayout-margin {
+	border: 4px solid #FFF;
+	color: black;
+	background-color: #FF7B7C;
+	-moz-border-radius: 7px;
+	border-radius: 7px;
+	color: black;
+}
+
+.queue .owlcms-white .v-csslayout-margin {
+	border: 4px solid #FFF;
+	color: black;
+	background-color: #A5FF7F;
+	-moz-border-radius: 7px;
+	border-radius: 7px;
+	color: black;
+}

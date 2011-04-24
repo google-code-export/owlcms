@@ -577,7 +577,7 @@ public class AttemptBoardView extends VerticalLayout implements
 //		logger.warn("displayMessage {}",remainingMilliseconds);
 		synchronized (app) {
 			paShown = true;
-			nameLabel.setValue("Pause");
+			nameLabel.setValue(Messages.getString("AttemptBoard.Pause", CompetitionApplication.getCurrentLocale()));
 			timeDisplayLabel.setVisible(true);
 			timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(remainingMilliseconds));
 		}
