@@ -710,12 +710,14 @@ public class LifterInfo extends VerticalLayout implements
 						final Boolean accepted = newEvent.isAccepted();
 						logger.trace("B YES notification for {} accepted={}",newEvent,accepted);
 						if (accepted != null) {
+							final Lifter lifter2 = newEvent.getLifter();
+							final String name = lifter2.getLastName().toUpperCase()+" "+lifter2.getFirstName();
 							if (accepted) {
-								style = Notifique.Styles.MAGIC_WHITE;
-								message = MessageFormat.format(Messages.getString("Decision.lift", locale),newEvent.getLifter());
+								style = "owlcms-white";
+								message = MessageFormat.format(Messages.getString("Decision.lift", locale),name);
 							} else {
-								style = Notifique.Styles.VAADIN_RED;
-								message = MessageFormat.format(Messages.getString("Decision.noLift", locale),newEvent.getLifter());
+								style = "owlcms-red";
+								message = MessageFormat.format(Messages.getString("Decision.noLift", locale),name);
 							}
 							final Message addedMessage = notifications.add((Resource)null,message,true,style,true);
 							announcerView.scheduleMessageRemoval(addedMessage, 10000);
