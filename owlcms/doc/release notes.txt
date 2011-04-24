@@ -1,8 +1,14 @@
 #summary Release Notes
 
+== Release 2.6.0
+  * Reworked the attempt board for better readability
+  * When using wireless tablets for decisions, show the decision to the announcer as a notification
+    at the top of the screen. Also show decision reversals.
+  * Corrected computation of plate loading so that collars are not used with large thin 2.5kg plates
+  
+  
 == Release 2.5.2
-  * Made sure that all decision changes are shown consistently on all
-    displays.
+  * Made sure that all decision changes are shown consistently on all displays.
   * Preparation work for supporting audible down signal on multiple platforms.
 
 == Release 2.5.1
