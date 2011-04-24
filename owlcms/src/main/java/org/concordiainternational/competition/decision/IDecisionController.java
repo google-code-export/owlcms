@@ -1,5 +1,6 @@
 package org.concordiainternational.competition.decision;
 
+import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.mobile.IRefereeConsole;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
@@ -60,5 +61,7 @@ public interface IDecisionController {
 
 	public abstract void addListener(IRefereeConsole refereeConsole,
 			int refereeIndex);
+	
+	public abstract Lifter getLifter();
 
 }

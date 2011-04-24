@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.mobile.IRefereeConsole;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
@@ -148,7 +149,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
             // request lifter-facing display should display the "down" signal.
         	// also, downSignal() signals timeKeeper that time has been stopped if they
         	// had not stopped it manually.
-            if (pros == 2 || cons == 2) {
+            if (pros >= 2 || cons >= 2) {
             	synchronized (groupData.getTimer()) {
             		if (!downSignaled) {
             			new Thread(new Runnable() {
@@ -193,7 +194,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
                 scheduleReset();
             } else {
                 // referees have changed their mind
-            	logger.debug("three + change");
+            	logger.warn("three + change");
                 fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
             }
         }
@@ -391,5 +392,10 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 	@Override
 	public boolean isBlocked() {
 		return blocked &&  (groupData.getCurrentSession() != null);
+	}
+
+	@Override
+	public Lifter getLifter() {
+		return groupData.getCurrentLifter();
 	}
 }
