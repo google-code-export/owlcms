@@ -672,6 +672,7 @@ public class LifterInfo extends VerticalLayout implements
 				switch (updateEvent.getType()) {
 				case SHOW:
 					 displayNotification(updateEvent);
+					 if (buttons != null) { buttons.hideLiftControls(); }
 					 shown = true;
 					 break;
 					 // go on to UPDATE;
@@ -683,6 +684,7 @@ public class LifterInfo extends VerticalLayout implements
 				case RESET:
 					shown = false;
 					prevEvent = null;
+					if (buttons != null) { buttons.showLiftControls(); }
 					break;
 				}				
 			}
