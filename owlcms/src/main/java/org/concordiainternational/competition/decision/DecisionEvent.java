@@ -18,6 +18,8 @@ package org.concordiainternational.competition.decision;
 
 import java.util.EventObject;
 
+import org.concordiainternational.competition.data.Lifter;
+
 public class DecisionEvent extends EventObject {
     private static final long serialVersionUID = 2789988074894824591L;
 
@@ -34,12 +36,20 @@ public class DecisionEvent extends EventObject {
     private Type type;
     private long when;
     private Decision[] decisions;
+	private Lifter lifter;
+	private Integer attempt;
+	private Boolean accepted;
 
     public DecisionEvent(IDecisionController source, Type down, long currentTimeMillis, Decision[] refereeDecisions) {
         super(source);
         this.type = down;
         this.when = currentTimeMillis;
         this.decisions = refereeDecisions;
+        this.lifter = source.getLifter();
+        if (lifter != null) {
+        	this.setAttempt(lifter.getAttemptsDone());
+        }
+        this.setAccepted(computeAccepted());
     }
 
     @Override
@@ -62,4 +72,52 @@ public class DecisionEvent extends EventObject {
         return decisions;
     }
 
+    public boolean isDisplayable() {
+    	int count = 0;
+    	for (Decision decision : decisions){
+    		if (decision.accepted != null) count++;
+    	}
+    	return count == 3;
+    }
+    
+    /**
+     * Return true for a good lift, false for a rejected lift, null if decisions are pending.
+     * @return null if no decision yet, true if 3 decisions and at least 2 good, false otherwise
+     */
+    public Boolean computeAccepted() {
+    	int count = 0;
+    	int countAccepted = 0;
+    	for (Decision decision : decisions){
+    		final Boolean accepted1 = decision.accepted;
+			if (accepted1 != null) {
+    			count++;
+    			if (accepted1) countAccepted++;
+    		}
+    	}
+    	if (count < 3) {
+    		return null;
+    	} else {
+    		return countAccepted >= 2;
+    	}
+    }
+
+	public Lifter getLifter() {
+		return lifter;
+	}
+
+	public void setAttempt(Integer attempt) {
+		this.attempt = attempt;
+	}
+
+	public Integer getAttempt() {
+		return attempt;
+	}
+
+	public void setAccepted(Boolean accepted) {
+		this.accepted = accepted;
+	}
+
+	public Boolean isAccepted() {
+		return accepted;
+	}
 }

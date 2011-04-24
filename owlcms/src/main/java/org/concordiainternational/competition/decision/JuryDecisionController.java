@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.mobile.IRefereeConsole;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
@@ -300,6 +301,12 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
 	public boolean isBlocked() {
 		//return blocked &&  (groupData.getCurrentSession() != null);
 		return false; // does not matter for jury
+	}
+
+
+	@Override
+	public Lifter getLifter() {
+		return null;
 	}
 
 }

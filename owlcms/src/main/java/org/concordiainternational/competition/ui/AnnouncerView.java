@@ -528,12 +528,12 @@ public class AnnouncerView extends VerticalSplitPanel implements
 		case CURRENT_LIFTER_CHANGE:
 			// the announcer must acknowledge explicitly
 			if (this.mode != Mode.ANNOUNCER) {
-				scheduleMessageRemoval(addedMessage);
+				scheduleMessageRemoval(addedMessage, messageRemovalMs);
 			}	
 			break;
 		default:
 			// remove automatically
-			scheduleMessageRemoval(addedMessage);
+			scheduleMessageRemoval(addedMessage, messageRemovalMs);
 			break;
 		}
 	}
@@ -541,8 +541,9 @@ public class AnnouncerView extends VerticalSplitPanel implements
 
 	/**
 	 * @param addedMessage
+	 * @param i 
 	 */
-	protected void scheduleMessageRemoval(final Message addedMessage) {
+	public void scheduleMessageRemoval(final Message addedMessage, int msgRemovalMs) {
 		new Timer().schedule(new TimerTask(){
 			@Override
 			public void run() {
@@ -554,7 +555,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
 					app.push();
 				}
 			}	
-		}, messageRemovalMs);
+		}, msgRemovalMs);
 	}
 	
 	/**
@@ -584,5 +585,13 @@ public class AnnouncerView extends VerticalSplitPanel implements
 		logger.warn("registering listeners");
 		registerAsListener();
 		return null;
+	}
+
+
+	/**
+	 * @return the notifications
+	 */
+	public Notifique getNotifications() {
+		return notifications;
 	}
 }

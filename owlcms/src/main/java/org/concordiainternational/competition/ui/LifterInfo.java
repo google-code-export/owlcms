@@ -35,6 +35,8 @@ import org.concordiainternational.competition.ui.generators.TryFormatter;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.notifique.Notifique;
+import org.vaadin.notifique.Notifique.Message;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -42,6 +44,7 @@ import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.terminal.ClassResource;
 import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.CheckBox;
@@ -95,6 +98,8 @@ public class LifterInfo extends VerticalLayout implements
     private long lastFailedButtonClick = 0L;
 	private SessionData sessionData;
 
+	protected DecisionEvent prevEvent;
+	
     @SuppressWarnings("serial")
     public LifterInfo(String identifier, final SessionData groupData, AnnouncerView.Mode mode, Component parentView) {
         final CompetitionApplication currentApp = CompetitionApplication.getCurrent();
@@ -382,6 +387,7 @@ public class LifterInfo extends VerticalLayout implements
 
 
     int prevTimeRemaining = 0;
+	protected boolean shown;
 
     @Override
     public void normalTick(int timeRemaining) {
@@ -409,7 +415,7 @@ public class LifterInfo extends VerticalLayout implements
     @Override
     public void finalWarning(int remaining) {
         SessionData masterData = app.getMasterData(app.getPlatformName());
-        logger.warn("final warning, {}", isMasterConsole(masterData));
+        logger.trace("final warning, {}", isMasterConsole(masterData));
         if (timerDisplay == null) return;
         prevTimeRemaining = remaining;
 
@@ -525,8 +531,6 @@ public class LifterInfo extends VerticalLayout implements
 		if (isTop() && app != originatingApp) {
 			CompetitionApplication receivingApp = app;
 			
-
-			
 			// defensive
 			String originatingPlatformName = originatingApp.components.getPlatformName();
 			String receivingPlatformName = receivingApp.components.getPlatformName();
@@ -557,7 +561,7 @@ public class LifterInfo extends VerticalLayout implements
 	 * @param originatingApp
 	 */
 	private void traceBack(CompetitionApplication originatingApp) {
-//		logger.warn("showNotification in {} from {}",app,originatingApp);
+//		logger.trace("showNotification in {} from {}",app,originatingApp);
 //		LoggerUtils.logException(logger, new Exception("where"));
 	}
 
@@ -602,7 +606,7 @@ public class LifterInfo extends VerticalLayout implements
     public void setBlocked(boolean blocked) {
         if (blocked != this.blocked) {
             this.blocked = blocked;
-            // logger.warn("app {} blocked={}",app,blocked);
+            // logger.trace("app {} blocked={}",app,blocked);
         }
     }
 
@@ -653,25 +657,126 @@ public class LifterInfo extends VerticalLayout implements
                 .append(string).append("</div>"); //$NON-NLS-1$
     }
 
+	/**
+	 * Display referee decisions
+	 * @see org.concordiainternational.competition.decision.DecisionEventListener#updateEvent(org.concordiainternational.competition.decision.DecisionEvent)
+	 */
 	@Override
 	public void updateEvent(final DecisionEvent updateEvent) {
-		// Down signal now done on main computer.
-//		new Thread(new Runnable() {
-//			@Override
-//			public void run() {
-//				switch (updateEvent.getType()) {
-//				case DOWN:
-//					logger.warn("Down audible signal***");
-//					synchronized (app) {
-//						final ClassResource resource = new ClassResource(
-//								"/sounds/down.mp3", app); //$NON-NLS-1$
-//						playSound(resource);
-//					}
-//					app.push();
-//					break;
-//				}
-//			}
-//		}).start();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// show a notification
+				// only the master console is registered for these events.
+				logger.trace("received event {}",updateEvent);
+				switch (updateEvent.getType()) {
+				case SHOW:
+					 displayNotification(updateEvent);
+					 shown = true;
+					 break;
+					 // go on to UPDATE;
+				case UPDATE:
+					if (shown) {
+						displayNotification(updateEvent);
+					}
+					break;
+				case RESET:
+					shown = false;
+					prevEvent = null;
+					break;
+				}				
+			}
+
+			/**
+			 * @param newEvent
+			 */
+			protected void displayNotification(final DecisionEvent newEvent) {
+				synchronized (app) {
+					final ApplicationView currentView = app.components.currentView;
+					if (currentView instanceof AnnouncerView) {
+						if (stutteringEvent(newEvent,prevEvent)) {
+							prevEvent = newEvent;
+							logger.trace("A NO notification for {}",newEvent);
+							logger.trace("A prevEvent={}",prevEvent);
+							return;
+						}
+						prevEvent = newEvent;
+						logger.trace("B prevEvent={}",prevEvent);
+						
+						final AnnouncerView announcerView = (AnnouncerView)currentView;
+						Notifique notifications = announcerView.getNotifications();
+						String style;
+						String message;
+						final Boolean accepted = newEvent.isAccepted();
+						logger.trace("B YES notification for {} accepted={}",newEvent,accepted);
+						if (accepted != null) {
+							if (accepted) {
+								style = Notifique.Styles.MAGIC_WHITE;
+								message = MessageFormat.format(Messages.getString("Decision.lift", locale),newEvent.getLifter());
+							} else {
+								style = Notifique.Styles.VAADIN_RED;
+								message = MessageFormat.format(Messages.getString("Decision.noLift", locale),newEvent.getLifter());
+							}
+							final Message addedMessage = notifications.add((Resource)null,message,true,style,true);
+							announcerView.scheduleMessageRemoval(addedMessage, 10000);
+						}
+					}
+				}
+				app.push();
+			}
+
+			/**
+			 * @param curEvent
+			 * @param prevEvent1
+			 * @return true if the two events concern the same lifter and the same attempt and give the same decision
+			 */
+			private boolean stutteringEvent(DecisionEvent curEvent,
+					DecisionEvent prevEvent1) {
+				logger.trace("curEvent={} prevEvent={}",curEvent,prevEvent1);
+				if (curEvent != null && prevEvent1 != null) {
+					Lifter cur = updateEvent.getLifter();
+					Lifter prev = prevEvent1.getLifter();
+					if (cur != null && prev != null) {
+						if (cur != prev) {
+							return false;	
+						}
+						logger.trace("same lifter");
+						Integer curAtt = cur.getAttemptsDone();
+						Integer prevAtt = cur.getAttemptsDone();
+						if (curAtt != null && prevAtt != null) {
+							if (!curAtt.equals(prevAtt)){
+								return false;
+							}
+							logger.trace("same attempt");
+							Boolean prevDecision = prevEvent1.isAccepted();
+							Boolean curDecision = curEvent.isAccepted();
+							if (prevDecision != null && curDecision != null) {
+								logger.trace("prevDecision={} curDecision={}",prevDecision,curDecision);
+								return prevDecision.equals(curDecision);
+							} else {
+								final boolean b = prevDecision == null && curDecision == null;
+								logger.trace("either decision is null prevDecision={} curDecision={}",prevDecision,curDecision);
+								return b;
+							}
+						} else {
+							final boolean b = curAtt == null && prevAtt == null;
+							logger.trace("either attempt is null prevAtt={} curAtt={}",prevAtt,curAtt);
+							return b;
+						}
+					} else {
+						final boolean b = cur == null && prev == null;
+						logger.trace("either lifter is null prev={} cur={}",prev,cur);
+						return b;
+					}
+				}  else {
+					final boolean b = curEvent == null && prevEvent1 == null;
+					logger.trace("either event is null prevEvent1={} curEvent={}",prevEvent1,curEvent);
+					return b;
+				}
+			}
+				
+			
+		}).start();
 	}
 
 	/**
@@ -743,7 +848,7 @@ public class LifterInfo extends VerticalLayout implements
 
 	@Override
 	public DownloadStream handleURI(URL context, String relativeUri) {
-		logger.warn("registering listeners");
+		logger.trace("registering listeners");
 		// called on refresh
 		registerAsListener();
 		return null;
