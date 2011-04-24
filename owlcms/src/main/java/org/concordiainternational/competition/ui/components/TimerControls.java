@@ -446,4 +446,13 @@ public class TimerControls extends GridLayout {
         twoMinutes.setVisible(false);
     }
 
+    public void showLiftControls() {
+        okLift.setEnabled(true);
+        failedLift.setEnabled(true);
+    }
+
+    public void hideLiftControls() {
+        okLift.setEnabled(false);
+        failedLift.setEnabled(false);
+    }
 }
