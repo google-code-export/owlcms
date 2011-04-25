@@ -88,7 +88,7 @@ public class CountdownTimer implements Serializable {
         timer.scheduleAtFixedRate(countdownTask, 0, // start right away
             DECREMENT); // 100ms precision is good enough)
         final Set<CountdownTimerListener> listeners2 = getListeners();
-        logger.warn("start: {}  - {} listeners", startTime, listeners2.size()); //$NON-NLS-1$
+        logger.trace("start: {}  - {} listeners", startTime, listeners2.size()); //$NON-NLS-1$
         if (countdownDisplay != null) {
             countdownDisplay.start(startTime);
         }
