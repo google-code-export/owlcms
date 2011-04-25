@@ -39,7 +39,6 @@ import org.vaadin.overlay.CustomOverlay;
 import com.vaadin.data.Item;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.Sizeable;
 import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
@@ -146,10 +145,13 @@ public class AnnouncerView extends VerticalSplitPanel implements
         // right hand side shows information that the announcer reads aloud
         announcerInfo = new LifterInfo("topPart", masterData, mode, this); //$NON-NLS-1$
         announcerInfo.addStyleName("currentLifterSummary"); //$NON-NLS-1$
-        announcerInfo.setWidth(7.0F, Sizeable.UNITS_CM); //$NON-NLS-1$
+        //announcerInfo.setWidth(7.0F, Sizeable.UNITS_CM); //$NON-NLS-1$
         announcerInfo.setMargin(true);
 
         // left side is the lifting order, as well as the menu to switch groups.
+        // note: not used in timekeeper view, but until we refactor the code
+        // there is legacy information found inside the list that should not be there
+        // so we leave it there.
         liftList = new LiftList(masterData, this, mode);
         liftList.table.setPageLength(15);
         liftList.table.setSizeFull();
@@ -163,10 +165,19 @@ public class AnnouncerView extends VerticalSplitPanel implements
         	boolean prevDisabled = app.getPusherDisabled();
         	app.setPusherDisabled(true);
 			topPart.setSizeFull();
-			topPart.addComponent(liftList);
+			if (mode != Mode.TIMEKEEPER) {
+				topPart.addComponent(liftList);				
+				topPart.setExpandRatio(liftList, 100.0F);
+			}
+
+			announcerInfo.setSizeUndefined();
 			topPart.addComponent(announcerInfo);
+			
+			if (mode != Mode.TIMEKEEPER) {			
+				topPart.setExpandRatio(announcerInfo, 3.5F);
+			}
 			topPart.setComponentAlignment(announcerInfo, Alignment.TOP_LEFT);
-			topPart.setExpandRatio(liftList, 100.0F);
+
 			this.setFirstComponent(topPart);
 			loadFirstLifterInfo(masterData,
 					WebApplicationConfiguration.DEFAULT_STICKINESS);
@@ -285,13 +296,17 @@ public class AnnouncerView extends VerticalSplitPanel implements
      * Set the split bar location
      */
     void adjustSplitBarLocation() {
-        // compute percentage of split bar.
-        float height = app.getMainWindow().getHeight();
-        if (height > 0) {
-            this.setSplitPosition((int) ((height - 225) * 100 / height));
-        } else {
-            this.setSplitPosition(65);
-        }
+    	if (mode == Mode.TIMEKEEPER) {
+    		this.setSplitPosition(0, true);
+    	} else {
+    		// compute percentage of split bar.
+    		float height = app.getMainWindow().getHeight();
+    		if (height > 0) {
+    			this.setSplitPosition((int) ((height - 225) * 100 / height));
+    		} else {
+    			this.setSplitPosition(65);
+    		}
+    	}
     }
 
     /**

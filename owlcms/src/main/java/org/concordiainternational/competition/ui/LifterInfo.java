@@ -294,7 +294,7 @@ public class LifterInfo extends VerticalLayout implements
                 if (showTimerControls) {
                     automaticStartTime.setValue(false);
                     automaticStartTime.setVisible(showTimerControls);
-                    buttons.showTimerControls();
+                    buttons.showTimerControls(groupData.getTimer().isRunning());
                 } else {
                     automaticStartTime.setVisible(false);
                     buttons.hideTimerControls();
@@ -496,9 +496,9 @@ public class LifterInfo extends VerticalLayout implements
         synchronized (app) {
         	timerDisplay.setEnabled(false); // show that timer has stopped.
             timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
+            buttons.enableStopStart(false);
             setBlocked(false);
         }
-        
         showNotification(originatingApp, reason);
         app.push();
 
@@ -509,7 +509,9 @@ public class LifterInfo extends VerticalLayout implements
     	
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {
-	        if (buttons != null) buttons.stopStart.setEnabled(true);
+	        if (buttons != null) {
+	        	buttons.enableStopStart(false);
+	        }
 	        if (timerDisplay != null) {
 	            timerDisplay.setEnabled(false);
 	        }
@@ -569,7 +571,7 @@ public class LifterInfo extends VerticalLayout implements
     public void start(int timeRemaining) {
         setBlocked(false);
         synchronized (app) {
-	        if (buttons != null) buttons.stopStart.setEnabled(true);
+	        if (buttons != null) buttons.enableStopStart(true);
 	        if (timerDisplay != null) {
 	            timerDisplay.setEnabled(true);
 	        }
@@ -583,7 +585,7 @@ public class LifterInfo extends VerticalLayout implements
 
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {
-	        if (buttons != null) buttons.stopStart.setEnabled(true);
+	        if (buttons != null) buttons.enableStopStart(false);
 	        if (timerDisplay != null) {
 	            timerDisplay.setEnabled(false);
 	        }

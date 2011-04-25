@@ -31,6 +31,7 @@ import org.concordiainternational.competition.webapp.WebApplicationConfiguration
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.GridLayout;
@@ -56,7 +57,9 @@ public class TimerControls extends GridLayout {
 
     final public Button announce = new Button();
     final public Button changeWeight = new Button();
-    final public Button stopStart = new Button();
+    //final public Button stopStart = new Button();
+    final public Button start = new Button();
+    final public Button stop = new Button();
     final public Button oneMinute = new Button();
     final public Button twoMinutes = new Button();
     final public Button okLift = new Button();
@@ -68,10 +71,12 @@ public class TimerControls extends GridLayout {
 
     public TimerControls(final Lifter lifter, final SessionData groupData, boolean top, AnnouncerView.Mode mode,
             LifterInfo lifterInfo, boolean timerVisible, CompetitionApplication app) {
-        super(3, 3);
+        super(4, 3);
         this.mode = mode;
         this.lifterInfo = lifterInfo;
         this.timerVisible = timerVisible;
+        this.setMargin(false);
+        this.setSpacing(false);
 
         Locale locale = app.getLocale();
 
@@ -96,19 +101,24 @@ public class TimerControls extends GridLayout {
         if (mode == AnnouncerView.Mode.ANNOUNCER) {
             configureAnnounceButton(lifter, groupData, locale);
             configureWeightChangeButton(lifter, groupData, locale);
-            configureStopStart(lifter, groupData, locale);
+            //configureStopStart(lifter, groupData, locale);
+            configureStart(lifter, groupData, locale);
+            configureStop(lifter, groupData, locale);
             configureOneMinute(lifter, groupData, locale);
             configureTwoMinutes(lifter, groupData, locale);
             configureOkLift(lifter, groupData, locale);
             configureFailedLift(lifter, groupData, locale);
 
-            this.addComponent(announce, 0, 0);
-            this.addComponent(changeWeight, 1, 0, 2, 0);
-            this.addComponent(stopStart, 0, 1);
-            this.addComponent(oneMinute, 1, 1);
-            this.addComponent(twoMinutes, 2, 1);
-            this.addComponent(okLift, 0, 2);
-            this.addComponent(failedLift, 1, 2, 2, 2);
+            this.addComponent(announce, 0, 0, 1, 0);
+            this.addComponent(changeWeight, 2, 0, 3, 0);
+            //this.addComponent(stopStart, 0, 1, 1, 1);
+            this.addComponent(start, 0, 1, 0, 1);
+            this.addComponent(stop, 1, 1, 1, 1);
+            
+            this.addComponent(oneMinute, 2, 1, 2, 1);
+            this.addComponent(twoMinutes, 3, 1, 3, 1);
+            this.addComponent(okLift, 0, 2, 1, 2);
+            this.addComponent(failedLift, 2, 2, 3, 2);
 
             okLift.addStyleName("okLift"); //$NON-NLS-1$
             failedLift.addStyleName("failedLift"); //$NON-NLS-1$
@@ -118,19 +128,21 @@ public class TimerControls extends GridLayout {
                 announce.setEnabled(true); // allow announcer to call lifter at
                                            // will
                 changeWeight.setEnabled(true); // always allow changes
-                stopStart.setEnabled(announced);
+                enableStopStart(true);
+                //stopStart.setEnabled(announced);
             } else {
                 announce.setEnabled(!announced); // if lifter has been
                                                  // announced, disable this
                                                  // button
                 changeWeight.setEnabled(true); // always allow changes
-                stopStart.setEnabled(announced);
+                enableStopStart(groupData.getTimer().isRunning());
+                //stopStart.setEnabled(announced);
             }
             // okLift.setEnabled(false);
             // failedLift.setEnabled(false);
 
             if (timerVisible) {
-                showTimerControls();
+                showTimerControls(groupData.getTimer().isRunning());
             } else {
                 hideTimerControls();
             }
@@ -139,17 +151,32 @@ public class TimerControls extends GridLayout {
             this.addComponent(changeWeight, 0, 0, 1, 0);
             // changeWeight.setEnabled(false);
         } else if (mode == AnnouncerView.Mode.TIMEKEEPER) {
-            configureStopStart(lifter, groupData, locale);
+            //configureStopStart(lifter, groupData, locale);
+        	configureStart(lifter, groupData, locale);
+        	configureStop(lifter, groupData, locale);
             configureOneMinute(lifter, groupData, locale);
             configureTwoMinutes(lifter, groupData, locale);
-            this.addComponent(stopStart, 0, 1);
-            this.addComponent(oneMinute, 1, 1);
-            this.addComponent(twoMinutes, 2, 1);
-            // stopStart.setEnabled(false);
+            this.addComponent(start, 0, 1, 0, 1);
+            this.addComponent(stop, 1, 1, 1, 1);     
+            this.addComponent(oneMinute, 2, 1, 2, 1);
+            this.addComponent(twoMinutes, 3, 1, 3, 1);
+            enableStopStart(groupData.getTimer().isRunning());
         }
     }
 
-    /**
+    public void enableStopStart(boolean running) {
+    	if (!running) {
+    		stop.setEnabled(false);
+    		start.setEnabled(true);
+    		start.focus();
+    	} else {
+    		start.setEnabled(false);
+    		stop.setEnabled(true);
+    		stop.focus();
+    	} 
+	}
+
+	/**
      * @param groupData
      * @param locale
      */
@@ -236,40 +263,107 @@ public class TimerControls extends GridLayout {
         okLift.setCaption(Messages.getString("LifterInfo.Successful", locale)); //$NON-NLS-1$
     }
 
+//    /**
+//     * @param lifter
+//     * @param groupData
+//     * @param locale
+//     */
+//    private void configureStopStart(final Lifter lifter, final SessionData groupData, Locale locale) {
+//        final Button.ClickListener stopStartListener = new Button.ClickListener() { //$NON-NLS-1$
+//            private static final long serialVersionUID = -2582860566509880474L;
+//
+//            @Override
+//            public void buttonClick(ClickEvent event) {
+//                logger.warn("stop/start clicked");
+//                final CountdownTimer timer = groupData.getTimer();
+//                groupData.manageTimerOwner(lifter, groupData, timer);
+//
+//                final boolean running = timer.isRunning();
+//                timingLogger.debug("stop/start timer.isRunning()={}", running); //$NON-NLS-1$
+//                if (running) {
+//                    lifterInfo.setBlocked(true);
+//                    timer.pause(TimeStoppedNotificationReason.STOP_START_BUTTON); // pause() does not clear the associated
+//                                   // lifter
+//                } else {
+//                    lifterInfo.setBlocked(false); // !!!!
+//                    timer.restart();
+//                    groupData.setLifterAsHavingStarted(lifter);
+//                    groupData.getRefereeDecisionController().setBlocked(false);
+//                }
+//                // announce.setEnabled(false);
+//                // changeWeight.setEnabled(false);
+//            }
+//        };
+////        stopStart.addListener(stopStartListener);
+////        stopStart.setWidth(ANNOUNCER_BUTTON_WIDTH); //$NON-NLS-1$
+////        stopStart.setCaption(Messages.getString("LifterInfo.StopStartTime", locale)); //$NON-NLS-1$
+//    }
+    
     /**
      * @param lifter
      * @param groupData
      * @param locale
      */
-    private void configureStopStart(final Lifter lifter, final SessionData groupData, Locale locale) {
-        final Button.ClickListener stopStartListener = new Button.ClickListener() { //$NON-NLS-1$
-            private static final long serialVersionUID = -2582860566509880474L;
+    private void configureStart(final Lifter lifter, final SessionData groupData, Locale locale) {
+        @SuppressWarnings("serial")
+		final Button.ClickListener startListener = new Button.ClickListener() { //$NON-NLS-1$
 
             @Override
             public void buttonClick(ClickEvent event) {
-                logger.warn("stop/start clicked");
+                logger.warn("start clicked");
                 final CountdownTimer timer = groupData.getTimer();
                 groupData.manageTimerOwner(lifter, groupData, timer);
 
                 final boolean running = timer.isRunning();
-                timingLogger.debug("stop/start timer.isRunning()={}", running); //$NON-NLS-1$
+                timingLogger.debug("start timer.isRunning()={}", running); //$NON-NLS-1$
                 if (running) {
-                    lifterInfo.setBlocked(true);
-                    timer.pause(TimeStoppedNotificationReason.STOP_START_BUTTON); // pause() does not clear the associated
-                                   // lifter
+                	// do nothing
                 } else {
                     lifterInfo.setBlocked(false); // !!!!
                     timer.restart();
                     groupData.setLifterAsHavingStarted(lifter);
                     groupData.getRefereeDecisionController().setBlocked(false);
+                    enableStopStart(true);
                 }
-                // announce.setEnabled(false);
-                // changeWeight.setEnabled(false);
             }
         };
-        stopStart.addListener(stopStartListener);
-        stopStart.setWidth(ANNOUNCER_BUTTON_WIDTH); //$NON-NLS-1$
-        stopStart.setCaption(Messages.getString("LifterInfo.StopStartTime", locale)); //$NON-NLS-1$
+        start.addListener(startListener);
+        //start.setWidth(ANNOUNCER_BUTTON_WIDTH); //$NON-NLS-1$
+        start.setIcon(new ThemeResource("icons/16/playTriangle.png"));
+        //start.setCaption(Messages.getString("LifterInfo.StartTime", locale)); //$NON-NLS-1$
+    }
+    
+    /**
+     * @param lifter
+     * @param groupData
+     * @param locale
+     */
+    private void configureStop(final Lifter lifter, final SessionData groupData, Locale locale) {
+        final Button.ClickListener stopListener = new Button.ClickListener() { //$NON-NLS-1$
+            private static final long serialVersionUID = -2582860566509880474L;
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                logger.warn("stop clicked");
+                final CountdownTimer timer = groupData.getTimer();
+                groupData.manageTimerOwner(lifter, groupData, timer);
+
+                final boolean running = timer.isRunning();
+                timingLogger.debug("stop timer.isRunning()={}", running); //$NON-NLS-1$
+                if (running) {
+                    lifterInfo.setBlocked(true);
+                    timer.pause(TimeStoppedNotificationReason.STOP_START_BUTTON); // pause() does not clear the associated
+                                   // lifter
+                    enableStopStart(false);
+                } else {
+                	// do nothing.
+                }
+            }
+        };
+        stop.addListener(stopListener);
+        //stop.setWidth(ANNOUNCER_BUTTON_WIDTH); //$NON-NLS-1$
+        stop.setIcon(new ThemeResource("icons/16/pause.png"));
+        //stop.setCaption(Messages.getString("LifterInfo.StopTime", locale)); //$NON-NLS-1$
     }
 
     /**
@@ -295,6 +389,7 @@ public class TimerControls extends GridLayout {
                                                      // the associated lifter
                 }
                 groupData.setForcedByTimekeeper(true, 60000);
+                enableStopStart(false);
 
             }
         };
@@ -327,6 +422,7 @@ public class TimerControls extends GridLayout {
                 }
 
                 groupData.setForcedByTimekeeper(true, 120000);
+                enableStopStart(false);
             }
         };
         twoMinutes.addListener(twoMinutesListener);
@@ -392,7 +488,7 @@ public class TimerControls extends GridLayout {
                 groupData.callLifter(lifter); // will call start which will
                                               // cause the timer buttons to do
                                               // their thing.
-                stopStart.setEnabled(true);
+                enableStopStart(groupData.getTimer().isRunning());
                 announce.setEnabled(false);
                 changeWeight.setEnabled(true);
                 groupData.getRefereeDecisionController().setBlocked(false);
@@ -434,14 +530,18 @@ public class TimerControls extends GridLayout {
         stopTimeBottom.setCaption(Messages.getString("LifterInfo.WeightChange", locale)); //$NON-NLS-1$
     }
 
-    public void showTimerControls() {
-        stopStart.setVisible(true);
+    public void showTimerControls(boolean running) {
+        //stopStart.setVisible(true);
+    	stop.setVisible(true);
+    	start.setVisible(true);
+    	enableStopStart(running);
         oneMinute.setVisible(true);
         twoMinutes.setVisible(true);
     }
 
     public void hideTimerControls() {
-        stopStart.setVisible(false);
+        start.setVisible(false);
+        stop.setVisible(false);
         oneMinute.setVisible(false);
         twoMinutes.setVisible(false);
     }
