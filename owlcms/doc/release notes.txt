@@ -1,5 +1,11 @@
 #summary Release Notes
 
+== Release 2.6.1
+  * Split the clock button into a separate start and stop button, to facilitate cooperation
+    between time keeper and announcer, especially when time is stopped for a weight change.
+  * Time keeper can use "Enter" key to start and stop timer without using the mouse
+  * Simplified interface for timekeeper console.
+
 == Release 2.6.0
   * Reworked the attempt board for better readability
   * When using wireless tablets for decisions, show the decision to the announcer as a notification
