@@ -31,6 +31,7 @@ import org.concordiainternational.competition.webapp.WebApplicationConfiguration
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -165,14 +166,36 @@ public class TimerControls extends GridLayout {
     }
 
     public void enableStopStart(boolean running) {
+    	final boolean isTimeKeeper = mode == Mode.TIMEKEEPER;
     	if (!running) {
     		stop.setEnabled(false);
-    		start.setEnabled(true);
-    		start.focus();
+    		stop.removeStyleName("primary");
+    		
+			if (isTimeKeeper) {
+				stop.removeClickShortcut();
+			}
+    		
+    		start.setEnabled(true);    		
+    		if (isTimeKeeper) {
+    			start.setClickShortcut(KeyCode.ENTER);
+    		} else {
+    			start.focus();
+    		}
+    		start.addStyleName("primary");
     	} else {
     		start.setEnabled(false);
-    		stop.setEnabled(true);
-    		stop.focus();
+    		start.removeStyleName("primary");
+    		if (isTimeKeeper) {
+    			start.removeClickShortcut();
+    		}
+    		
+    		stop.setEnabled(true);    		
+    		if (isTimeKeeper) {
+    			stop.setClickShortcut(KeyCode.ENTER);
+    		} else {
+    			stop.focus();
+    		}
+    		stop.addStyleName("primary");
     	} 
 	}
 
