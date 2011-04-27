@@ -1,5 +1,8 @@
 #summary Release Notes
 
+== Release 2.6.2
+  * Better visual separation for decision lights
+
 == Release 2.6.1
   * Split the clock button into a separate start and stop button, to facilitate cooperation
     between time keeper and announcer, especially when time is stopped for a weight change.
