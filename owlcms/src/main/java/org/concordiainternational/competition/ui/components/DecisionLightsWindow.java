@@ -24,6 +24,7 @@ import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 
@@ -68,6 +69,7 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
             decisionLights[i].setSizeFull();
             decisionLights[i].setStyleName("decisionLight");
             this.addComponent(decisionLights[i]);
+            this.setComponentAlignment(decisionLights[i], Alignment.MIDDLE_CENTER);
             this.setExpandRatio(decisionLights[i], 100.0F / decisionLights.length);
         }
 	}
