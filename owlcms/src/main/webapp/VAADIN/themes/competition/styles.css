@@ -505,16 +505,19 @@ button.yesButton {
 .decisionLight.undecided {
 	background-color: silver;
 	background-image: none;
+	zoom: 90%;
 }
 
 .decisionLight.lift {
 	background-color: white;
 	background-image: none;
+	zoom: 90%;
 }
 
 .decisionLight.nolift {
 	background-color: red;
 	background-image: none;
+	zoom: 90%;
 }
 
 .decisionLight.down {
