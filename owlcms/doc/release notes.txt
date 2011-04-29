@@ -2,6 +2,9 @@
 
 == Release 2.6.2
   * Better visual separation for decision lights
+  * Article 6.5.15 - grant two minutes if athlete A just lifted (has not been called) and weight changes by
+    other athletes bring him back to lift, even if time has started for other athletes.
+    
 
 == Release 2.6.1
   * Split the clock button into a separate start and stop button, to facilitate cooperation
