@@ -19,7 +19,6 @@ package org.concordiainternational.competition.ui;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -367,12 +366,12 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      * 
      */
     public int timeAllowed(Lifter lifter) {
-        final Set<LifterCall> calledLifters = getStartedLifters();
-        logger.debug("timeAllowed start"); //$NON-NLS-1$
+        final Set<Lifter> calledLifters = getStartedLifters();
+        logger.warn("timeAllowed start"); //$NON-NLS-1$
         // if clock was running for the current lifter, return the remaining
         // time.
         if (getTimer().getOwner() == lifter) {
-            logger.debug("timeAllowed current lifter {} was running.", lifter); //$NON-NLS-1$
+            logger.warn("timeAllowed current lifter {} was running.", lifter); //$NON-NLS-1$
             int timeRemaining = getTimer().getTimeRemaining();
             if (timeRemaining < 0) timeRemaining = 0;
             // if the decision was not entered, and timer has run to 0, we still
@@ -384,36 +383,37 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             return timeRemaining;
             // }
         }
-        logger.debug("not current lifter"); //$NON-NLS-1$
+        logger.warn("not current lifter"); //$NON-NLS-1$
         final Lifter previousLifter = getPreviousLifter();
         if (previousLifter == null) {
-            logger.debug("A twoMinutes (not): previousLifter null: calledLifters={} lifter={}", //$NON-NLS-1$
+            logger.warn("A twoMinutes (not): previousLifter null: calledLifters={} lifter={}", //$NON-NLS-1$
                 new Object[] { calledLifters, lifter });
             return 60000;
         } else if (lifter.getAttemptsDone() % 3 == 0) {
             // no 2 minutes if starting snatch or starting c-jerk
-            logger.debug("B twoMinutes (not): first attempt lifter={}", lifter); //$NON-NLS-1$
+            logger.warn("B twoMinutes (not): first attempt lifter={}", lifter); //$NON-NLS-1$
             return 60000;
         } else if (calledLifters == null || calledLifters.isEmpty()) {
             if (lifter.equals(previousLifter)) {
-                logger.debug("C twoMinutes : calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
+                logger.warn("C twoMinutes : calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
                     new Object[] { calledLifters, lifter, previousLifter });
                 // setTimerForTwoMinutes(lifter);
                 return 120000;
             } else {
-                logger.debug("D twoMinutes (not): calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
+                logger.warn("D twoMinutes (not): calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
                     new Object[] { calledLifters, lifter, previousLifter });
                 return 60000;
             }
-        } else if (lifter.equals(previousLifter) && (calledLifters.size() == 1 && calledLifters.contains(lifter))) {
-            // we are the previous lifter and no other lifter besides ourself
-            // has been called.
-            logger.debug("E twoMinutes: calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
+        //} else if (lifter.equals(previousLifter) && (calledLifters.size() == 1 && calledLifters.contains(lifter))) {
+        } else if (lifter.equals(previousLifter) && (!calledLifters.contains(lifter))) {
+            // we are the previous lifter, and but were not called.
+        	// we do not lose the two minute privilege
+            logger.warn("E twoMinutes: calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
                 new Object[] { calledLifters, lifter, previousLifter });
             // setTimerForTwoMinutes(lifter);
             return 120000;
         } else {
-            logger.debug("F twoMinutes (not) : calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
+            logger.warn("F twoMinutes (not) : calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
                 new Object[] { calledLifters, lifter, previousLifter });
             return 60000;
         }
@@ -431,23 +431,25 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         getTimer().setTimeRemaining(120000);
     }
 
-    Set<LifterCall> startedLifters = new HashSet<LifterCall>();
+//    Set<LifterCall> startedLifterCalls = new HashSet<LifterCall>();
+    Set<Lifter> startedLifters = new HashSet<Lifter>();
+    
     private boolean forcedByTimekeeper = false;
 
-    public class LifterCall {
-        public Date callTime;
-        public Lifter lifter;
-
-        LifterCall(Date callTime, Lifter lifter) {
-            this.callTime = callTime;
-            this.lifter = lifter;
-        }
-
-        @Override
-        public String toString() {
-            return lifter.toString() + "_" + callTime.toString(); //$NON-NLS-1$
-        }
-    }
+//    public class LifterCall {
+//        public Date callTime;
+//        public Lifter lifter;
+//
+//        LifterCall(Date callTime, Lifter lifter) {
+//            this.callTime = callTime;
+//            this.lifter = lifter;
+//        }
+//
+//        @Override
+//        public String toString() {
+//            return lifter.toString() + "_" + callTime.toString(); //$NON-NLS-1$
+//        }
+//    }
 
     public void callLifter(Lifter lifter) {
         // beware: must call timeAllowed *before* setLifterAnnounced.
@@ -484,7 +486,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      * @param lifter
      */
     public void setLifterAsHavingStarted(Lifter lifter) {
-        startedLifters.add(new LifterCall(new Date(), lifter));
+//        startedLifterCalls.add(new LifterCall(new Date(), lifter));
+        startedLifters.add(lifter);
     }
 
     /**
@@ -531,6 +534,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
     public void liftDone(Lifter lifter, boolean success) {
         logger.debug("lift done: notifiers={}", notifiers); //$NON-NLS-1$
+//        startedLifterCalls.clear();
         startedLifters.clear();
 
         final CountdownTimer timer2 = getTimer();
@@ -539,7 +543,11 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         timer2.setTimeRemaining(0);
     }
 
-    public Set<LifterCall> getStartedLifters() {
+//    public Set<LifterCall> getStartedLifterCalls() {
+//        return startedLifterCalls;
+//    }
+    
+    public Set<Lifter> getStartedLifters() {
         return startedLifters;
     }
 
