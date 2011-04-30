@@ -58,8 +58,8 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 
 	private static final long serialVersionUID = 1L;
 
-	private HorizontalLayout top = new HorizontalLayout();
-	private HorizontalLayout bottom = new HorizontalLayout();
+	private HorizontalLayout top;
+	private HorizontalLayout bottom;
 
 	private SessionData masterData;
 	private CompetitionApplication app = CompetitionApplication.getCurrent();
@@ -68,7 +68,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 
 	private Integer refereeIndex = null;
 
-	private Label refereeReminder = new Label();
+	private Label refereeReminder;
 
 	private String platformName;
 
@@ -103,6 +103,20 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 		app.getMainWindow().addURIHandler(this);
 		registerAsListener();
 
+		init();
+	}
+
+
+
+	/**
+	 * 
+	 */
+	protected void init() {
+		top = new HorizontalLayout();
+		bottom = new HorizontalLayout();
+		refereeReminder = new Label();
+		refereeReminder.setValue(refereeLabel(refereeIndex));
+		
 		this.setSizeFull();
 		this.addStyleName("refereePad");
 		setupTop(decisionController); 
@@ -276,11 +290,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 						break;
 					case RESET:
 						logger.warn("referee #{} RESET", refereeIndex + 1);
-						white.setStyleName("white");
-						red.setStyleName("red");
-						resetTop();
-						resetBottom();
-						requestRepaintAll();
+						reset();
 						break;
 					}
 				}
@@ -323,16 +333,29 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 		refereeReminder.setStyleName("refereeReminder");
 		//CompetitionApplication.getCurrent().getMainWindow().executeJavaScript("alert('wakeup')");
 	}
-
-	/**
-	 * reset styles for top part
-	 */
-	private void resetTop() { 
-		white.setEnabled(true);
-		red.setEnabled(true);
-		white.setValue("");
-		red.setValue("");		
+	
+	private void reset() {
+		new Thread( new Runnable() {
+			@Override
+			public void run() {
+				top.removeAllComponents();
+				bottom.removeAllComponents();
+				MRefereeConsole.this.removeAllComponents();
+				init();
+				requestRepaintAll();
+			}
+		}).start();
 	}
+
+//	/**
+//	 * reset styles for top part
+//	 */
+//	private void resetTop() { 
+//		white.setEnabled(true);
+//		red.setEnabled(true);
+//		white.setValue("");
+//		red.setValue("");		
+//	}
 
 	/* (non-Javadoc)
 	 * @see org.concordiainternational.competition.ui.IRefereeConsole#refresh()
@@ -359,7 +382,6 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 	public void setIndex(int refereeIndex) {
 		synchronized (app) {
 			this.refereeIndex = refereeIndex;
-			refereeReminder.setValue(refereeLabel(refereeIndex));
 			UriFragmentUtility uriFragmentUtility = CompetitionApplication.getCurrent().getUriFragmentUtility();
 			uriFragmentUtility.setFragment(getFragment(), false);
 		}
@@ -408,6 +430,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 		}
 
 		if (params.length >= 3) {
+			logger.warn("params[2]={}",params[2]);
 			setIndex(Integer.parseInt(params[2])-1);
 		} else {
 			throw new RuleViolationException("Error.RefereeNumberIsMissing");
