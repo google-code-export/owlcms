@@ -112,11 +112,6 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 	 * 
 	 */
 	protected void init() {
-		top = new HorizontalLayout();
-		bottom = new HorizontalLayout();
-		refereeReminder = new Label();
-		refereeReminder.setValue(refereeLabel(refereeIndex));
-		
 		this.setSizeFull();
 		this.addStyleName("refereePad");
 		setupTop(decisionController); 
@@ -147,6 +142,9 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 	 * @param decisionController
 	 */
 	private void setupTop(final IDecisionController decisionController) {
+		if (top == null) {
+			top = new HorizontalLayout();
+		}
 		top.setSizeFull();
 		top.setMargin(true);
 		top.setSpacing(true);
@@ -159,13 +157,13 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 
 			@Override
 			public void onTouch(TouchEvent event) {
+				redSelected();
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
 						decisionController.decisionMade(refereeIndex, false);
 					}
 				}).start();
-				redSelected();
 			}});
 		
 		white = new TouchDiv("");
@@ -176,6 +174,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 
 			@Override
 			public void onTouch(TouchEvent event) {
+				whiteSelected();
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
@@ -183,7 +182,6 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 								.decisionMade(refereeIndex, true);
 					}
 				}).start();
-				whiteSelected();
 			}});
 		
 		top.addComponent(red);
@@ -209,7 +207,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 		white.setValue("\u2714"); // heavy checkmark
 		red.setValue("");
 		
-		resetBottom();
+		doResetBottom();
 	}
 
 	/**
@@ -225,19 +223,26 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 		white.setValue("");
 		red.setValue("\u2714"); // heavy checkmark
 		disable();
-		resetBottom();
+		doResetBottom();
 	}
 	
 	/**
 	 * 
 	 */
 	private void setupBottom() {
-		bottom.setSizeFull();
-		bottom.setMargin(false);
+
+		refereeReminder = new Label();
 		refereeReminder.setValue(refereeLabel(refereeIndex));
 		refereeReminder.setSizeFull();
-		bottom.addComponent(refereeReminder);
 		refereeReminder.setStyleName("refereeOk");
+		if (bottom == null) {
+			bottom = new HorizontalLayout();
+		} else {
+			bottom.removeAllComponents();
+		}
+		bottom.addComponent(refereeReminder);
+		bottom.setSizeFull();
+		bottom.setMargin(false);
 	}
 
 
@@ -282,8 +287,12 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 						}
 						break;
 					case UPDATE:
+//						logger.warn(
+//								"referee #{} UPDATE",
+//								refereeIndex + 1);
 						break;
 					case BLOCK:
+						logger.warn("referee #{} BLOCK", refereeIndex + 1);
 						// decisions are shown to the public; prevent refs from changing.
 						disable();
 						//top.setEnabled(false);
@@ -365,13 +374,14 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 	}
 
 
-	private void resetBottom() {
-		synchronized (app) {
-			refereeReminder.setEnabled(true);
-			refereeReminder.setValue(refereeLabel(refereeIndex));
-			refereeReminder.setStyleName("refereeOk");
-		}
-		app.push();
+
+	/**
+	 * 
+	 */
+	protected void doResetBottom() {
+		refereeReminder.setEnabled(true);
+		refereeReminder.setValue(refereeLabel(refereeIndex));
+		refereeReminder.setStyleName("refereeOk");
 	}
 
 
@@ -384,6 +394,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 			this.refereeIndex = refereeIndex;
 			UriFragmentUtility uriFragmentUtility = CompetitionApplication.getCurrent().getUriFragmentUtility();
 			uriFragmentUtility.setFragment(getFragment(), false);
+			setupBottom();
 		}
 		getDecisionController().addListener(this,refereeIndex);
 		app.push();
