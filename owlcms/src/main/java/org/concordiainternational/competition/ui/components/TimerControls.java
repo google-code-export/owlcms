@@ -573,14 +573,14 @@ public class TimerControls extends GridLayout {
     }
 
     public void showLiftControls() {
-    	logger.warn("showing announcer decision buttons");
+    	logger.trace("showing announcer decision buttons");
     	announce.setEnabled(true);
         okLift.setEnabled(true);
         failedLift.setEnabled(true);
     }
 
     public void hideLiftControls() {
-    	logger.warn("hiding announcer decision buttons");
+    	logger.trace("hiding announcer decision buttons");
     	announce.setEnabled(false);
         okLift.setEnabled(false);
         failedLift.setEnabled(false);

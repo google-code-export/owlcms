@@ -367,11 +367,11 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      */
     public int timeAllowed(Lifter lifter) {
         final Set<Lifter> calledLifters = getStartedLifters();
-        logger.warn("timeAllowed start"); //$NON-NLS-1$
+        logger.trace("timeAllowed start"); //$NON-NLS-1$
         // if clock was running for the current lifter, return the remaining
         // time.
         if (getTimer().getOwner() == lifter) {
-            logger.warn("timeAllowed current lifter {} was running.", lifter); //$NON-NLS-1$
+            logger.trace("timeAllowed current lifter {} was running.", lifter); //$NON-NLS-1$
             int timeRemaining = getTimer().getTimeRemaining();
             if (timeRemaining < 0) timeRemaining = 0;
             // if the decision was not entered, and timer has run to 0, we still
@@ -383,24 +383,24 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             return timeRemaining;
             // }
         }
-        logger.warn("not current lifter"); //$NON-NLS-1$
+        logger.trace("not current lifter"); //$NON-NLS-1$
         final Lifter previousLifter = getPreviousLifter();
         if (previousLifter == null) {
-            logger.warn("A twoMinutes (not): previousLifter null: calledLifters={} lifter={}", //$NON-NLS-1$
+            logger.trace("A twoMinutes (not): previousLifter null: calledLifters={} lifter={}", //$NON-NLS-1$
                 new Object[] { calledLifters, lifter });
             return 60000;
         } else if (lifter.getAttemptsDone() % 3 == 0) {
             // no 2 minutes if starting snatch or starting c-jerk
-            logger.warn("B twoMinutes (not): first attempt lifter={}", lifter); //$NON-NLS-1$
+            logger.trace("B twoMinutes (not): first attempt lifter={}", lifter); //$NON-NLS-1$
             return 60000;
         } else if (calledLifters == null || calledLifters.isEmpty()) {
             if (lifter.equals(previousLifter)) {
-                logger.warn("C twoMinutes : calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
+                logger.trace("C twoMinutes : calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
                     new Object[] { calledLifters, lifter, previousLifter });
                 // setTimerForTwoMinutes(lifter);
                 return 120000;
             } else {
-                logger.warn("D twoMinutes (not): calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
+                logger.trace("D twoMinutes (not): calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
                     new Object[] { calledLifters, lifter, previousLifter });
                 return 60000;
             }
@@ -408,12 +408,12 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         } else if (lifter.equals(previousLifter) && (!calledLifters.contains(lifter))) {
             // we are the previous lifter, and but were not called.
         	// we do not lose the two minute privilege
-            logger.warn("E twoMinutes: calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
+            logger.trace("E twoMinutes: calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
                 new Object[] { calledLifters, lifter, previousLifter });
             // setTimerForTwoMinutes(lifter);
             return 120000;
         } else {
-            logger.warn("F twoMinutes (not) : calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
+            logger.trace("F twoMinutes (not) : calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
                 new Object[] { calledLifters, lifter, previousLifter });
             return 60000;
         }
