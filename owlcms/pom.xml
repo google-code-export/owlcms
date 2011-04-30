@@ -175,12 +175,12 @@
 				</repository>
 				<repository>
 					<id>ICEFaces</id>
-					<url>http://anonsvn.icefaces.org/repo/maven2/snapshots/</url>
+					<url>http://anonsvn.icefaces.org/repo/maven2/releases/</url>
 					<releases>
 						<enabled>true</enabled>
 					</releases>
 					<snapshots>
-						<enabled>true</enabled>
+						<enabled>false</enabled>
 					</snapshots>
 				</repository>
 			</repositories>
@@ -239,7 +239,7 @@
 		<dependency>
 			<groupId>org.icepush</groupId>
 			<artifactId>icepush</artifactId>
-			<version>2.0.0</version>
+			<version>2.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
