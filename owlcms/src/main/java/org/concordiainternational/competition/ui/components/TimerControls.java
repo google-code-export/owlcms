@@ -132,7 +132,7 @@ public class TimerControls extends GridLayout {
                 enableStopStart(true);
                 //stopStart.setEnabled(announced);
             } else {
-                announce.setEnabled(!announced); // if lifter has been
+                announce.setEnabled(!announced && groupData.getAnnouncerEnabled()); // if lifter has been
                                                  // announced, disable this
                                                  // button
                 changeWeight.setEnabled(true); // always allow changes
@@ -248,6 +248,7 @@ public class TimerControls extends GridLayout {
         failedLift.addListener(failedLiftListener);
         failedLift.setWidth(ANNOUNCER_BUTTON_WIDTH); //$NON-NLS-1$
         failedLift.setCaption(Messages.getString("LifterInfo.Failed", locale)); //$NON-NLS-1$
+        failedLift.setEnabled(groupData.getAnnouncerEnabled());
     }
 
     /**
@@ -284,6 +285,7 @@ public class TimerControls extends GridLayout {
         okLift.addListener(okLiftListener);
         okLift.setWidth(ANNOUNCER_BUTTON_WIDTH); //$NON-NLS-1$
         okLift.setCaption(Messages.getString("LifterInfo.Successful", locale)); //$NON-NLS-1$
+        okLift.setEnabled(groupData.getAnnouncerEnabled());
     }
 
 //    /**
@@ -523,6 +525,7 @@ public class TimerControls extends GridLayout {
         announce.addListener(announceListener);
         announce.setWidth(ANNOUNCER_BUTTON_WIDTH); //$NON-NLS-1$
         announce.setCaption(Messages.getString("LifterInfo.Announce", locale)); //$NON-NLS-1$
+        announce.setEnabled(groupData.getAnnouncerEnabled());
     }
 
     protected void checkDecisionHasBeenDisplayed(SessionData groupData, Locale locale) {
@@ -570,11 +573,15 @@ public class TimerControls extends GridLayout {
     }
 
     public void showLiftControls() {
+    	logger.warn("showing announcer decision buttons");
+    	announce.setEnabled(true);
         okLift.setEnabled(true);
         failedLift.setEnabled(true);
     }
 
     public void hideLiftControls() {
+    	logger.warn("hiding announcer decision buttons");
+    	announce.setEnabled(false);
         okLift.setEnabled(false);
         failedLift.setEnabled(false);
     }
