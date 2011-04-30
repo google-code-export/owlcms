@@ -191,7 +191,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
                 groupData.setAnnouncerEnabled(false);
                 scheduleDisplay(currentTimeMillis);
                 scheduleBlock();
-                scheduleResetAndBlock();
+                scheduleReset();
             } else {
                 // referees have changed their mind
             	logger.warn("three + change");
@@ -239,13 +239,12 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 	/**
      * 
      */
-    private void scheduleResetAndBlock() {
+    private void scheduleReset() {
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 reset();
-            	fireEvent(new DecisionEvent(RefereeDecisionController.this, DecisionEvent.Type.BLOCK, System.currentTimeMillis(), refereeDecisions));
             }
         }, DECISION_REVERSAL_DELAY + RESET_DELAY);
     }
