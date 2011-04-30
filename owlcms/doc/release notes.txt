@@ -2,8 +2,11 @@
 
 == Release 2.6.2
   * Better visual separation for decision lights
-  * Article 6.5.15 - grant two minutes if athlete A just lifted (has not been called) and weight changes by
-    other athletes bring him back to lift, even if time has started for other athletes.
+  * Article 6.5.15 - exception implemented : two minutes are granted if an athlete just
+    lifted, was not called, and changes by other athletes bring him back to lift, even
+    if time started for the other athletes.  The athlete gets 1 minute if he was called
+    and participated in the sequence of weight changes that brings him back as
+    next lifter.
     
 
 == Release 2.6.1
