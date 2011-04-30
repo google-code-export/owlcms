@@ -287,18 +287,16 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 						}
 						break;
 					case UPDATE:
-//						logger.warn(
-//								"referee #{} UPDATE",
-//								refereeIndex + 1);
+						logger.trace("referee #{} UPDATE",refereeIndex + 1);
 						break;
 					case BLOCK:
-						logger.warn("referee #{} BLOCK", refereeIndex + 1);
+						logger.trace("referee #{} BLOCK", refereeIndex + 1);
 						// decisions are shown to the public; prevent refs from changing.
 						disable();
 						//top.setEnabled(false);
 						break;
 					case RESET:
-						logger.warn("referee #{} RESET", refereeIndex + 1);
+						logger.trace("referee #{} RESET", refereeIndex + 1);
 						reset();
 						break;
 					}
@@ -441,7 +439,6 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 		}
 
 		if (params.length >= 3) {
-			logger.warn("params[2]={}",params[2]);
 			setIndex(Integer.parseInt(params[2])-1);
 		} else {
 			throw new RuleViolationException("Error.RefereeNumberIsMissing");
@@ -454,7 +451,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 	 * Exception: do not register the URIHandler here.
 	 */
 	private void registerAsListener() {
-		logger.warn("registering as listener");
+		logger.debug("registering as listener");
 		app.getMainWindow().addListener((CloseListener)this);
 		if (refereeIndex != null) {
 			setIndex(refereeIndex);
@@ -466,7 +463,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 	 * Undo all registrations in {@link #registerAsListener()}.
 	 */
 	private void unregisterAsListener() {
-		logger.warn("unregistering as listener");
+		logger.debug("unregistering as listener");
 		app.getMainWindow().removeListener((CloseListener)this);
 		decisionController.removeListener(this);
 	}

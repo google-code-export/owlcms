@@ -167,7 +167,7 @@ public class ResultFrame extends VerticalLayout implements
                 	new Thread(new Runnable() {
 						@Override
 						public void run() {
-							logger.warn("request to display {}",
+							logger.debug("request to display {}",
 									ResultFrame.this);
 							if (!waitingForDecisionLightsReset) {
 								display(platformName1, masterData1);
@@ -272,7 +272,7 @@ public class ResultFrame extends VerticalLayout implements
         final String spec = appUrlString + urlString + encodedPlatformName + styleSheet +"&time=" + System.currentTimeMillis(); //$NON-NLS-1$
         try {
             url = new URL(spec);
-            logger.warn("url={}",url.toExternalForm());
+            logger.debug("url={}",url.toExternalForm());
         } catch (MalformedURLException e) {
             throw new RuntimeException(e); // can't happen.
         }
