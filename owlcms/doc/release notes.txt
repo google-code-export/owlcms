@@ -7,6 +7,13 @@
     if time started for the other athletes.  The athlete gets 1 minute if he was called
     and participated in the sequence of weight changes that brings him back as
     next lifter.
+  * Improved feedback to referees using tablets
+  * When using tablets, better usability for announcer: if a decision is given by the officials,
+    the announcer controls for "lift/no lift" are hidden, preventing the announcer from recording
+    a spurious decision.  If on the other hand no decision has been given by one official (due to
+    malfunction), and flags are used, the controls are visible and the announcer can record the
+    decision.
+  * Tested with "Dolphin Mini" browser on Android tablets.  Recommended for use on low-end tablets.
     
 
 == Release 2.6.1
