@@ -715,7 +715,7 @@ public class LifterInfo extends VerticalLayout implements
 						logger.trace("B YES notification for {} accepted={}",newEvent,accepted);
 						if (accepted != null) {
 							final Lifter lifter2 = newEvent.getLifter();
-							final String name = lifter2.getLastName().toUpperCase()+" "+lifter2.getFirstName();
+							final String name = (lifter2 != null ?lifter2.getLastName().toUpperCase()+" "+lifter2.getFirstName() : "none");
 							if (accepted) {
 								style = "owlcms-white";
 								message = MessageFormat.format(Messages.getString("Decision.lift", locale),name);
