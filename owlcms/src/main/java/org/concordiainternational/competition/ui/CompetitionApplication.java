@@ -48,7 +48,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.vaadin.artur.icepush.ICEPush;
-import org.vaadin.soundplayer.SoundPlayer;
 
 import com.vaadin.Application;
 import com.vaadin.data.Buffered;
@@ -204,7 +203,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * Display views
      */
 
-    private SoundPlayer buzzer = new SoundPlayer();
+//    private SoundPlayer buzzer = new SoundPlayer();
 
     protected ICEPush pusher = null;
 
@@ -305,12 +304,12 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     	return pusherDisabled;
     }
     
-    /**
-     * @return the buzzer
-     */
-    public SoundPlayer getBuzzer() {
-        return buzzer;
-    }
+//    /**
+//     * @return the buzzer
+//     */
+//    public SoundPlayer getBuzzer() {
+//        return buzzer;
+//    }
 
     public CompetitionSession getCurrentCompetitionSession() {
         return currentGroup;
@@ -704,8 +703,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 		mobilePanel = null;
         setTheme("competition"); //$NON-NLS-1$
         
-		// include a sound player
-        mainLayout1.addComponent(buzzer);
+//		// include a sound player
+//        mainLayout1.addComponent(buzzer);
 
         mainLayout1.setSizeFull();
         //mainLayout1.setStyleName("blue"); //$NON-NLS-1$
