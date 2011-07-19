@@ -241,11 +241,11 @@
 			<artifactId>icepush</artifactId>
 			<version>2.0.1</version>
 		</dependency>
-		<dependency>
+		<!-- dependency>
 			<groupId>org.vaadin.addons</groupId>
 			<artifactId>soundplayer</artifactId>
 			<version>1.1.1</version>
-		</dependency>
+		</dependency -->
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
 			<artifactId>dashlayout</artifactId>

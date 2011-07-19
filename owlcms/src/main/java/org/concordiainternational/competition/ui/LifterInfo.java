@@ -43,7 +43,6 @@ import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
-import com.vaadin.terminal.ClassResource;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.Resource;
 import com.vaadin.terminal.URIHandler;
@@ -449,21 +448,21 @@ public class LifterInfo extends VerticalLayout implements
         app.push();
     }
 
-    /**
-     * @param resource
-     */
-    @SuppressWarnings("unused")
-	private void playSound(final ClassResource resource) {
-        SessionData masterData = app.getMasterData(app.getPlatformName());
-        if (isMasterConsole(masterData)) {
-            // we are not the master application; do not play
-            app.getBuzzer().play(resource);
-            logger.debug("! {} is master, playing sound", app); //$NON-NLS-1$
-        } else {
-            logger.debug("- {} not master, not playing sound", app); //$NON-NLS-1$
-        }
-
-    }
+//    /**
+//     * @param resource
+//     */
+//    @SuppressWarnings("unused")
+//	private void playSound(final ClassResource resource) {
+//        SessionData masterData = app.getMasterData(app.getPlatformName());
+//        if (isMasterConsole(masterData)) {
+//            // we are not the master application; do not play
+//            app.getBuzzer().play(resource);
+//            logger.debug("! {} is master, playing sound", app); //$NON-NLS-1$
+//        } else {
+//            logger.debug("- {} not master, not playing sound", app); //$NON-NLS-1$
+//        }
+//
+//    }
     
     private void playSound(String soundName) {
         SessionData masterData = app.getMasterData(app.getPlatformName());
