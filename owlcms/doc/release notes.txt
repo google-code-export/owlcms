@@ -1,5 +1,11 @@
 #summary Release Notes
 
+== Release 2.7.0
+  * All sounds are now produced on the server.  This removes the dependency on Flash running
+    in the browser, and increases reliability.  Reminder: there is no user interface
+    to select which sound mixer is used for a platform, so sounds can only be used on
+    single-platform setups. 
+  
 == Release 2.6.2
   * Better visual separation for decision lights
   * Article 6.5.15 - exception implemented : two minutes are granted if an athlete just
