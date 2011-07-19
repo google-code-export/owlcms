@@ -24,6 +24,7 @@ import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionEventListener;
+import org.concordiainternational.competition.decision.Sound;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
@@ -422,8 +423,9 @@ public class LifterInfo extends VerticalLayout implements
         synchronized (app) {
             if (!isBlocked()) {
                 timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
-                final ClassResource resource = new ClassResource("/sounds/finalWarning.mp3", app); //$NON-NLS-1$
-                playSound(resource);
+//                final ClassResource resource = new ClassResource("/sounds/finalWarning.mp3", app); //$NON-NLS-1$
+//                playSound(resource);
+                playSound("/sounds/finalWarning.wav");
             }
             setBlocked(false);
         }
@@ -438,8 +440,9 @@ public class LifterInfo extends VerticalLayout implements
         synchronized (app) {
             if (!isBlocked()) {
                 timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
-                final ClassResource resource = new ClassResource("/sounds/initialWarning.mp3", app); //$NON-NLS-1$
-                playSound(resource);
+//                final ClassResource resource = new ClassResource("/sounds/initialWarning.mp3", app); //$NON-NLS-1$
+//                playSound(resource);
+                playSound("/sounds/initialWarning.wav");
             }
             setBlocked(false);
         }
@@ -449,7 +452,8 @@ public class LifterInfo extends VerticalLayout implements
     /**
      * @param resource
      */
-    private void playSound(final ClassResource resource) {
+    @SuppressWarnings("unused")
+	private void playSound(final ClassResource resource) {
         SessionData masterData = app.getMasterData(app.getPlatformName());
         if (isMasterConsole(masterData)) {
             // we are not the master application; do not play
@@ -459,6 +463,17 @@ public class LifterInfo extends VerticalLayout implements
             logger.debug("- {} not master, not playing sound", app); //$NON-NLS-1$
         }
 
+    }
+    
+    private void playSound(String soundName) {
+        SessionData masterData = app.getMasterData(app.getPlatformName());
+        if (isMasterConsole(masterData)) {
+            // we are not the master application; do not play
+            new Sound(soundName).emit();
+            logger.debug("! {} is master, playing sound", app); //$NON-NLS-1$
+        } else {
+            logger.debug("- {} not master, not playing sound", app); //$NON-NLS-1$
+        }    	
     }
 
     /**
@@ -477,8 +492,9 @@ public class LifterInfo extends VerticalLayout implements
         synchronized (app) {
             if (!isBlocked()) {
                 timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
-                final ClassResource resource = new ClassResource("/sounds/timeOver.mp3", app); //$NON-NLS-1$
-                playSound(resource);
+//                final ClassResource resource = new ClassResource("/sounds/timeOver.mp3", app); //$NON-NLS-1$
+//                playSound(resource);
+                playSound("/sounds/timeOver.wav");
                 if (timerDisplay != null) {
                     timerDisplay.setEnabled(false);
                 }
