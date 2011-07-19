@@ -1,9 +1,7 @@
 <module>
 	<!-- Inherit super widgetset -->
 	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
-    <inherits name="org.miller.gwt.Sound" />
 	
-
     <inherits name="com.vaadin.incubator.dashlayout.DashLayoutWidgetSet" />
 
     <inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
@@ -12,8 +10,6 @@
     <!-- adding support for icepush -->
     <script src="icepush.js"></script>
     
-
-    <inherits name="org.vaadin.soundplayer.widgetset.SoundplayerWidgetset" />
 
     <inherits name="org.vaadin.jouni.animator.AnimatorWidgetset" />
 
@@ -29,24 +25,4 @@
 
     <inherits name="com.lombardi.mobilesafari.MobileSafariEvents" />
 
-
-
-
-
-
-    <inherits name="com.google.gwt.user.MobileSafari" />
-
-    <inherits name="com.lombardi.mobilesafari.MobileSafariEvents" />
-
-    <inherits name="com.google.gwt.user.MobileSafari" />
-
-    <inherits name="com.lombardi.mobilesafari.MobileSafariEvents" />
-
-    <inherits name="com.google.gwt.user.MobileSafari" />
-
-    <inherits name="com.lombardi.mobilesafari.MobileSafariEvents" />
-
-    <inherits name="com.google.gwt.user.MobileSafari" />
-
-    <inherits name="com.lombardi.mobilesafari.MobileSafariEvents" />
 </module>
