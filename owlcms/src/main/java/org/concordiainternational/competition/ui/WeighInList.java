@@ -16,6 +16,7 @@
 
 package org.concordiainternational.competition.ui;
 
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -42,11 +43,14 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.SystemError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Window.CloseListener;
 
 public class WeighInList extends LifterHbnList implements ApplicationView {
 
@@ -512,5 +516,27 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
             groupName = null;
         }
     }
+
+	@Override
+	public void registerAsListener() {
+		app.getMainWindow().addListener((CloseListener) this);
+	}
+
+	@Override
+	public void unregisterAsListener() {
+		app.getMainWindow().addListener((CloseListener) this);
+	}
+	
+	@Override
+	public void windowClose(CloseEvent e) {
+		unregisterAsListener();	
+	}
+	
+	@Override
+	public DownloadStream handleURI(URL context, String relativeUri) {
+		registerAsListener();
+		return null;
+	}
+
 
 }

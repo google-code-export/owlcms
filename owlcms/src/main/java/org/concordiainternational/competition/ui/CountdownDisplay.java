@@ -384,7 +384,8 @@ public class CountdownDisplay extends VerticalLayout implements
 	/**
 	 * Resister to all necessary listening events
 	 */
-	private void registerAsListener() {
+	@Override
+	public void registerAsListener() {
 		app.getMainWindow().addListener((CloseListener)this);
 		registerAsGroupDataListener(platformName, masterData);
 		masterData.getRefereeDecisionController().addListener(this);
@@ -395,7 +396,8 @@ public class CountdownDisplay extends VerticalLayout implements
 	/**
 	 * Undo what registerAsListener did.
 	 */
-	private void unregisterAsListener() {
+	@Override
+	public void unregisterAsListener() {
 		app.getMainWindow().removeListener((CloseListener)this);
 		masterData.removeListener(updateEventListener);
 		masterData.getRefereeDecisionController().removeListener(this);
@@ -424,6 +426,5 @@ public class CountdownDisplay extends VerticalLayout implements
 	public void setDecisionLights(DecisionLightsWindow decisionLights) {
 		this.decisionLights = decisionLights;
 	}
-
 
 }

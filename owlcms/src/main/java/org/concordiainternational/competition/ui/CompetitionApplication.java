@@ -223,6 +223,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
 	private VerticalLayout mainLayout;
 
+	private ApplicationView mainLayoutContent;
+
     public void displayRefereeConsole(int refereeIndex) {
         final ORefereeConsole view = (ORefereeConsole) components
                 .getViewByName(CompetitionApplicationComponents.OREFEREE_CONSOLE, false);
@@ -260,7 +262,10 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      */
     public void doDisplay(String viewName) {
 //    	logger.warn("doDisplay {}",viewName);
+
         ApplicationView view = components.getViewByName(viewName, false);
+        // remove all listeners on current view.
+        getMainLayoutContent().unregisterAsListener();
         setMainLayoutContent(view);
         uriFragmentUtility.setFragment(view.getFragment(), false);
     }
@@ -743,6 +748,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 	}
 	
     public void setMainLayoutContent(ApplicationView c) {
+    	mainLayoutContent = c;
         boolean needsMenu = c.needsMenu();
     	//logger.warn(">>>>> setting app view for {} -- view {}",this,c);
         if (this.mobilePanel == null) {
@@ -759,6 +765,11 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         	mainLayout.setExpandRatio(mobilePanel,100);
         }
     }
+    
+    public ApplicationView getMainLayoutContent() {
+    	return mainLayoutContent;
+    }
+    
     /**
      * @param uri
      * 

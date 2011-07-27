@@ -16,6 +16,8 @@
 
 package org.concordiainternational.competition.ui;
 
+import java.net.URL;
+
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.CompetitionSessionLookup;
@@ -27,9 +29,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
+import com.vaadin.terminal.DownloadStream;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalSplitPanel;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 
 /**
  * This class defines the screen layout for the competition secretary.
@@ -378,5 +383,30 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
             groupName = null;
         }
     }
+
+
+	@Override
+	public void registerAsListener() {
+		app.getMainWindow().addListener((CloseListener) this);
+	}
+
+	@Override
+	public void unregisterAsListener() {
+		app.getMainWindow().addListener((CloseListener) this);
+	}
+	
+	@Override
+	public void windowClose(CloseEvent e) {
+		unregisterAsListener();	
+	}
+	
+	/* Called on refresh.
+	 * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
+	 */
+	@Override
+	public DownloadStream handleURI(URL context, String relativeUri) {
+		registerAsListener();
+		return null;
+	}
 
 }

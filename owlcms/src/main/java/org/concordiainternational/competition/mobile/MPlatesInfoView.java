@@ -214,12 +214,14 @@ public class MPlatesInfoView extends VerticalLayout implements
 		unregisterAsListener();
 	}
 
-	private void registerAsListener() {
+	@Override
+	public void registerAsListener() {
 		masterData.addListener(this); // weight changes
         masterData.addBlackBoardListener(this); // changes in available plates
 	}
 	
-	private void unregisterAsListener() {
+	@Override
+	public void unregisterAsListener() {
 		masterData.removeListener(this); // weight changes
 		masterData.removeBlackBoardListener(this); // changes in available plates
 	}
@@ -237,7 +239,6 @@ public class MPlatesInfoView extends VerticalLayout implements
 	public void updateEvent(UpdateEvent updateEvent) {
 		doDisplay();
 	}
-
 
 
 }

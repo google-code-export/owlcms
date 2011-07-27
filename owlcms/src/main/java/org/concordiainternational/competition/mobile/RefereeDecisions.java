@@ -16,6 +16,8 @@
 
 package org.concordiainternational.competition.mobile;
 
+import java.net.URL;
+
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.Decision;
 import org.concordiainternational.competition.decision.DecisionEvent;
@@ -28,10 +30,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.incubator.dashlayout.ui.HorDashLayout;
+import com.vaadin.terminal.DownloadStream;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 
 public class RefereeDecisions extends VerticalLayout implements DecisionEventListener, ApplicationView {
 
@@ -245,5 +250,29 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
         	platformName = CompetitionApplicationComponents.initPlatformName();
         }
     }
+
+	@Override
+	public void registerAsListener() {
+		app.getMainWindow().addListener((CloseListener) this);
+	}
+
+	@Override
+	public void unregisterAsListener() {
+		app.getMainWindow().addListener((CloseListener) this);
+	}
+	
+	@Override
+	public void windowClose(CloseEvent e) {
+		unregisterAsListener();	
+	}
+	
+	/* Called on refresh.
+	 * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
+	 */
+	@Override
+	public DownloadStream handleURI(URL context, String relativeUri) {
+		registerAsListener();
+		return null;
+	}
     
 }

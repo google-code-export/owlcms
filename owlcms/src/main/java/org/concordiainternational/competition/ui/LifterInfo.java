@@ -45,20 +45,19 @@ import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
-import com.vaadin.ui.Window.CloseListener;
 
 /**
  * Display information regarding the current lifter
  * 
- * REFACTOR Refactorize this class, as it is used in 6 different settings (3
+ * REFACTOR This class badly needs refactoring, as it is used in 6 different settings (3
  * announcer views, the result editing page, the lifter display, the lifter card
  * editor).
  * 
@@ -68,8 +67,7 @@ import com.vaadin.ui.Window.CloseListener;
 public class LifterInfo extends VerticalLayout implements 
 	CountdownTimerListener,
 	DecisionEventListener,
-	CloseListener,
-	URIHandler
+	ApplicationView
 	{
     static final Logger logger = LoggerFactory.getLogger(LifterInfo.class);
     static final Logger timingLogger = LoggerFactory
@@ -825,17 +823,23 @@ public class LifterInfo extends VerticalLayout implements
 	/**
 	 * Register as listener to various events.
 	 */
-	private void registerAsListener() {
+	@Override
+	public void registerAsListener() {
 		// window close
-		logger.trace("register for {}",identifier);
-        app.getMainWindow().addListener(this);
+        final Window mainWindow = app.getMainWindow();
+		logger.warn("window: {} register for {} {}",
+				new Object[]{mainWindow,identifier,this});
+		mainWindow.addListener(this);
         
 		final CompetitionApplication masterApplication = groupData.getMasterApplication();
 		CountdownTimer timer = groupData.getTimer();
+		
+		// if several instances of lifter information are shown on page, only top one buzzes.
 		if (masterApplication == app && isTop()) {
 			// down signal (for buzzer)
 			groupData.getRefereeDecisionController().addListener(this);
 			// timer will buzz on this console
+			// TODO: now obsolete? - javax.sound is used from server
 			if (timer != null) timer.setMasterBuzzer(this);
         }
 		// timer countdown events; bottom information does not show timer.
@@ -843,20 +847,18 @@ public class LifterInfo extends VerticalLayout implements
 
 	}
 
-	private void unregisterAsListener() {
+	@Override
+	public void unregisterAsListener() {
 		// window close
-		logger.trace("unregister for {}",identifier);
-		app.getMainWindow().removeListener(this);
+		final Window mainWindow = app.getMainWindow();
+		logger.warn("window: {} UNregister for {} {}",
+				new Object[]{mainWindow,identifier,this});
+		mainWindow.removeListener(this);
 		
-		final CompetitionApplication masterApplication = groupData.getMasterApplication();
-		CountdownTimer timer = groupData.getTimer();
-		// if several instances of lifter information, only top one buzzes.
-		if (masterApplication == app && isTop()) {
-			// down signal will no longer buzz
-			groupData.getRefereeDecisionController().removeListener(this);
-			// no more timer buzz
-			if (timer != null) timer.setMasterBuzzer(null);
-        }
+		// cleanup referee decision listening.
+		CountdownTimer timer = groupData.getTimer();	
+		groupData.getRefereeDecisionController().removeListener(this);
+		if (timer != null && timer.getMasterBuzzer() == this) timer.setMasterBuzzer(null);
 		// timer countdown events
 		if (timer != null) timer.removeListener(this);
 	}
@@ -872,6 +874,24 @@ public class LifterInfo extends VerticalLayout implements
 		logger.trace("registering listeners");
 		// called on refresh
 		registerAsListener();
+		return null;
+	}
+
+	@Override
+	public void refresh() {
+	}
+
+	@Override
+	public boolean needsMenu() {
+		return false;
+	}
+
+	@Override
+	public void setParametersFromFragment() {
+	}
+
+	@Override
+	public String getFragment() {
 		return null;
 	}
 
