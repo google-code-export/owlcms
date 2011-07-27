@@ -16,11 +16,13 @@
 
 package org.concordiainternational.competition.ui;
 
+import java.net.URL;
 import java.util.Locale;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.timer.CountdownTimer;
+import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.CustomTextField;
 import org.concordiainternational.competition.ui.generators.WeightFormatter;
 import org.slf4j.Logger;
@@ -34,6 +36,7 @@ import com.vaadin.data.validator.IntegerValidator;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ShortcutAction;
+import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -48,10 +51,12 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.Window.CloseEvent;
 
 public class LifterCardEditor extends Panel implements 
 	Property.ValueChangeListener, // listen to changes within the editor
-	Handler // handle keyboard shortcuts
+	Handler, // handle keyboard shortcuts
+	ApplicationView
 {
 
     private static final long serialVersionUID = -216488484306113727L;
@@ -619,5 +624,49 @@ public class LifterCardEditor extends Panel implements
     public Lifter getLifter() {
         return lifter;
     }
+
+	@Override
+	public void registerAsListener() {
+	}
+
+	@Override
+	public void unregisterAsListener() {
+		if (lifterCardIdentification != null) {
+			lifterCardIdentification.unregisterAsListener();
+		}	
+	}
+
+
+	@Override
+	public void windowClose(CloseEvent e) {
+		unregisterAsListener();
+	}
+
+	@Override
+	public DownloadStream handleURI(URL context, String relativeUri) {
+		logger.trace("registering listeners");
+		// called on refresh
+		registerAsListener();
+		return null;
+	}
+
+	@Override
+	public void refresh() {
+	}
+
+	@Override
+	public boolean needsMenu() {
+		return false;
+	}
+
+	@Override
+	public void setParametersFromFragment() {
+	}
+
+	@Override
+	public String getFragment() {
+		return null;
+	}
+
 
 }
