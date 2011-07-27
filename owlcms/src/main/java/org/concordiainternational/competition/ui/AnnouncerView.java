@@ -590,13 +590,16 @@ public class AnnouncerView extends VerticalSplitPanel implements
 		logger.warn("unregistering registering listeners");
 		masterData.removeListener(this);
 		announcerInfo.unregisterAsListener();
+        if (lifterCardEditor != null) {
+            lifterCardEditor.unregisterAsListener();
+        }
 	}
 
 
 
 	@Override
 	public void windowClose(CloseEvent e) {
-		unregisterAsListener();	
+		unregisterAsListener();
 	}
 
 
