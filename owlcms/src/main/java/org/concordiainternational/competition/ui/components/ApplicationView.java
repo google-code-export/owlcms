@@ -16,14 +16,16 @@
 
 package org.concordiainternational.competition.ui.components;
 
+import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.ComponentContainer;
+import com.vaadin.ui.Window.CloseListener;
 
 /**
  * In this application the views need to refresh themselves when the user
  * switches groups, or when they receive events.
  * 
  */
-public interface ApplicationView extends ComponentContainer {
+public interface ApplicationView extends ComponentContainer, CloseListener, URIHandler {
 
     public void refresh();
     
@@ -40,4 +42,7 @@ public interface ApplicationView extends ComponentContainer {
      */
     public String getFragment();
 
+    public void registerAsListener();
+    
+    public void unregisterAsListener();
 }

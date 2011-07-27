@@ -412,7 +412,8 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 	 * Register all listeners for this app.
 	 * Exception: do not register the URIHandler here.
 	 */
-	private void registerAsListener() {
+	@Override
+	public void registerAsListener() {
 		logger.warn("registering as listener");
 		app.getMainWindow().addListener((CloseListener)this);
 		if (juryIndex != null) {
@@ -424,7 +425,8 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 	/**
 	 * Undo all registrations in {@link #registerAsListener()}.
 	 */
-	private void unregisterAsListener() {
+	@Override
+	public void unregisterAsListener() {
 		logger.warn("unregistering as listener");
 		app.getMainWindow().removeListener((CloseListener)this);
 		decisionController.removeListener(this);
@@ -455,5 +457,6 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 	public void windowClose(CloseEvent e) {
 		unregisterAsListener();
 	}
+
 
 }

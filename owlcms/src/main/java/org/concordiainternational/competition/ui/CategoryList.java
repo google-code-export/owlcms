@@ -16,6 +16,7 @@
 
 package org.concordiainternational.competition.ui;
 
+import java.net.URL;
 import java.util.Locale;
 
 import org.concordiainternational.competition.data.Category;
@@ -23,6 +24,10 @@ import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.list.GenericHbnList;
+
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 
 public class CategoryList extends GenericHbnList<Category> implements ApplicationView {
 
@@ -108,4 +113,26 @@ public class CategoryList extends GenericHbnList<Category> implements Applicatio
             throw new RuleViolationException("Error.ViewNameIsMissing"); 
         }
     }
+
+	@Override
+	public void registerAsListener() {
+		CompetitionApplication.getCurrent().getMainWindow().addListener((CloseListener) this);
+	}
+
+	@Override
+	public void unregisterAsListener() {
+		CompetitionApplication.getCurrent().getMainWindow().addListener((CloseListener) this);
+	}
+	
+	@Override
+	public void windowClose(CloseEvent e) {
+		unregisterAsListener();	
+	}
+
+	@Override
+	public DownloadStream handleURI(URL context, String relativeUri) {
+		registerAsListener();
+		return null;
+	}
+
 }

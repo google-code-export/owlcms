@@ -19,6 +19,7 @@ package org.concordiainternational.competition.spreadsheet;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
@@ -40,6 +41,8 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.Upload;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 
 /**
  * @author IT Mill
@@ -200,4 +203,29 @@ public class SpreadsheetUploader extends CustomComponent implements Upload.Succe
             throw new RuleViolationException("Error.ViewNameIsMissing"); 
         }
     }
+
+	@Override
+	public void registerAsListener() {
+		app.getMainWindow().addListener((CloseListener) this);
+	}
+
+	@Override
+	public void unregisterAsListener() {
+		app.getMainWindow().addListener((CloseListener) this);
+	}
+	
+	@Override
+	public void windowClose(CloseEvent e) {
+		unregisterAsListener();	
+	}
+	
+	/* Called on refresh.
+	 * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
+	 */
+	@Override
+	public DownloadStream handleURI(URL context, String relativeUri) {
+		registerAsListener();
+		return null;
+	}
+
 }

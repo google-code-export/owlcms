@@ -185,7 +185,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
 			// we are now fully initialized
 			masterData.setAllowAll(false);
 			
-			// URI handler must remain, so is not part of the register/unRegister paire
+			// URI handler must remain, so is not part of the register/unRegister pair
 			app.getMainWindow().addURIHandler(this);
 			registerAsListener();
 			
@@ -576,15 +576,20 @@ public class AnnouncerView extends VerticalSplitPanel implements
 	/**
 	 * Register all handlers that listen to model or outside events.
 	 */
-	private void registerAsListener() {
+	@Override
+	public void registerAsListener() {
+		logger.warn("registering listeners");
 		masterData.addListener(this);
 	}
 	
 	/**
 	 * 
 	 */
-	private void unregisterAsListener() {
+	@Override
+	public void unregisterAsListener() {
+		logger.warn("unregistering registering listeners");
 		masterData.removeListener(this);
+		announcerInfo.unregisterAsListener();
 	}
 
 
@@ -597,7 +602,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
 
 	@Override
 	public DownloadStream handleURI(URL context, String relativeUri) {
-		logger.warn("registering listeners");
+		logger.warn("registering URI listeners");
 		registerAsListener();
 		return null;
 	}
@@ -609,4 +614,5 @@ public class AnnouncerView extends VerticalSplitPanel implements
 	public Notifique getNotifications() {
 		return notifications;
 	}
+
 }

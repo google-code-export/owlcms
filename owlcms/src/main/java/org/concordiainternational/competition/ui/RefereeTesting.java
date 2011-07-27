@@ -219,11 +219,14 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
     }
     
     
-	private void registerAsListener() {
+    @Override
+    public void registerAsListener() {
         masterData.getRefereeDecisionController().addListener(decisionArea);
 	}
 	
-	private void unregisterAsListener() {
+	
+    @Override
+    public void unregisterAsListener() {
 		masterData.getRefereeDecisionController().removeListener(decisionArea);
 	}
 	
@@ -241,5 +244,6 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
 		registerAsListener();
 		return null;
 	}
+
     
 }

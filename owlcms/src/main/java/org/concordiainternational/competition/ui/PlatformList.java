@@ -16,6 +16,7 @@
 
 package org.concordiainternational.competition.ui;
 
+import java.net.URL;
 import java.util.Locale;
 
 import org.concordiainternational.competition.data.Platform;
@@ -25,6 +26,7 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.list.GenericHbnList;
 import org.hibernate.exception.ConstraintViolationException;
 
+import com.vaadin.terminal.DownloadStream;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -32,6 +34,8 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 
 public class PlatformList extends GenericHbnList<Platform> implements ApplicationView {
 
@@ -145,4 +149,28 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
             throw new RuleViolationException("Error.ViewNameIsMissing"); 
         }
     }
+
+	@Override
+	public void registerAsListener() {
+		app.getMainWindow().addListener((CloseListener) this);
+	}
+
+	@Override
+	public void unregisterAsListener() {
+		app.getMainWindow().addListener((CloseListener) this);
+	}
+	
+	@Override
+	public void windowClose(CloseEvent e) {
+		unregisterAsListener();	
+	}
+	
+	/* Called on refresh.
+	 * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
+	 */
+	@Override
+	public DownloadStream handleURI(URL context, String relativeUri) {
+		registerAsListener();
+		return null;
+	}
 }

@@ -689,6 +689,20 @@ public class ResultFrame extends VerticalLayout implements
 	}
 
 
+	@Override
+	public void registerAsListener() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void unregisterAsListener() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 
 	
 

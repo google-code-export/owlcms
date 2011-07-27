@@ -450,7 +450,8 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 	 * Register all listeners for this app.
 	 * Exception: do not register the URIHandler here.
 	 */
-	private void registerAsListener() {
+	@Override
+	public void registerAsListener() {
 		logger.debug("registering as listener");
 		app.getMainWindow().addListener((CloseListener)this);
 		if (refereeIndex != null) {
@@ -462,7 +463,8 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 	/**
 	 * Undo all registrations in {@link #registerAsListener()}.
 	 */
-	private void unregisterAsListener() {
+	@Override
+	public void unregisterAsListener() {
 		logger.debug("unregistering as listener");
 		app.getMainWindow().removeListener((CloseListener)this);
 		decisionController.removeListener(this);

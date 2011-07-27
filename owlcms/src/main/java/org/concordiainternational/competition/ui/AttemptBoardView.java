@@ -709,6 +709,20 @@ public class AttemptBoardView extends VerticalLayout implements
 			}
 		}).start();
 	}
+
+
+	@Override
+	public void registerAsListener() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void unregisterAsListener() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }
