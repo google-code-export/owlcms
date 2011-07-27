@@ -38,8 +38,7 @@
 			</plugin>
 
 			<!-- Compile custom GWT components or widget dependencies with the GWT 
-				compiler -->
-
+				 compiler -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
