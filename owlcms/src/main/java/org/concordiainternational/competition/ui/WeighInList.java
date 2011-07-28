@@ -28,12 +28,11 @@ import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.spreadsheet.JXLSJurySheet;
 import org.concordiainternational.competition.spreadsheet.JXLSLifterCard;
+import org.concordiainternational.competition.spreadsheet.JXLSStartingList;
+import org.concordiainternational.competition.spreadsheet.JXLSWeighInSheet;
 import org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource;
-import org.concordiainternational.competition.spreadsheet.JurySheet;
-import org.concordiainternational.competition.spreadsheet.OutputSheetStreamSource;
-import org.concordiainternational.competition.spreadsheet.StartList;
-import org.concordiainternational.competition.spreadsheet.WeighInSheet;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.SessionSelect;
 import org.concordiainternational.competition.ui.generators.CommonColumnGenerator;
@@ -226,8 +225,9 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
             @Override
 			public void buttonClick(ClickEvent event) {
                 weighInListButton.setComponentError(null);
-                final OutputSheetStreamSource<WeighInSheet> streamSource = new OutputSheetStreamSource<WeighInSheet>(
-                        WeighInSheet.class, (CompetitionApplication) app, excludeNotWeighed);
+                final JXLSWorkbookStreamSource streamSource = new JXLSWeighInSheet(excludeNotWeighed);                
+//                final OutputSheetStreamSource<WeighInSheet> streamSource = new OutputSheetStreamSource<WeighInSheet>(
+//                        WeighInSheet.class, (CompetitionApplication) app, excludeNotWeighed);
                 if (streamSource.size() == 0) {
                     weighInListButton.setComponentError(new SystemError(Messages.getString(
                         "WeighInList.NoLifters", locale))); //$NON-NLS-1$
@@ -254,8 +254,9 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
             @Override
 			public void buttonClick(ClickEvent event) {
                 juryListButton.setComponentError(null);
-                final OutputSheetStreamSource<JurySheet> streamSource = new OutputSheetStreamSource<JurySheet>(
-                        JurySheet.class, (CompetitionApplication) app, excludeNotWeighed);
+                final JXLSWorkbookStreamSource streamSource = new JXLSJurySheet(excludeNotWeighed);   
+//                final OutputSheetStreamSource<JurySheet> streamSource = new OutputSheetStreamSource<JurySheet>(
+//                        JurySheet.class, (CompetitionApplication) app, excludeNotWeighed);
                 if (streamSource.size() == 0) {
                     juryListButton.setComponentError(new SystemError(Messages
                             .getString("WeighInList.NoLifters", locale))); //$NON-NLS-1$
@@ -282,8 +283,9 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
             @Override
 			public void buttonClick(ClickEvent event) {
                 startListButton.setComponentError(null);
-                final OutputSheetStreamSource<StartList> streamSource = new OutputSheetStreamSource<StartList>(
-                        StartList.class, (CompetitionApplication) app, false);
+                final JXLSWorkbookStreamSource streamSource = new JXLSStartingList();
+//                final OutputSheetStreamSource<StartList> streamSource = new OutputSheetStreamSource<StartList>(
+//                        StartList.class, (CompetitionApplication) app, false);
                 if (streamSource.size() == 0) {
                     startListButton.setComponentError(new SystemError(Messages.getString(
                         "WeighInList.NoLifters", locale))); //$NON-NLS-1$
