@@ -559,6 +559,22 @@ public class Lifter implements MethodEventSource, Notifier {
     public String getCleanJerk1ActualLift() {
         return emptyIfNull(cleanJerk1ActualLift);
     };
+    
+    public Integer getCleanJerk1AsInteger() {
+    	return asInteger(cleanJerk1ActualLift);
+    }
+
+	/**
+	 * @return
+	 */
+	protected Integer asInteger(String stringValue) {
+		if (stringValue == null) return null;
+        try {
+        	return Integer.parseInt(stringValue);
+        } catch (NumberFormatException nfe) {
+        	return null;
+        }
+	};
 
     public String getCleanJerk1AutomaticProgression() {
         return "-"; // there is no such thing. //$NON-NLS-1$
@@ -582,6 +598,10 @@ public class Lifter implements MethodEventSource, Notifier {
 
     public String getCleanJerk2ActualLift() {
         return emptyIfNull(cleanJerk2ActualLift);
+    }
+    
+    public Integer getCleanJerk2AsInteger() {
+    	return asInteger(cleanJerk2ActualLift);
     }
 
     public String getCleanJerk2AutomaticProgression() {
@@ -607,6 +627,10 @@ public class Lifter implements MethodEventSource, Notifier {
 
     public String getCleanJerk3ActualLift() {
         return emptyIfNull(cleanJerk3ActualLift);
+    }
+    
+    public Integer getCleanJerk3AsInteger() {
+    	return asInteger(cleanJerk3ActualLift);
     }
 
     public String getCleanJerk3AutomaticProgression() {
@@ -901,6 +925,10 @@ public class Lifter implements MethodEventSource, Notifier {
     public String getSnatch1ActualLift() {
         return emptyIfNull(snatch1ActualLift);
     }
+    
+    public Integer getSnatch1AsInteger() {
+        return asInteger(snatch1ActualLift);
+    }
 
     public String getSnatch1AutomaticProgression() {
         return "-"; //no such thing. //$NON-NLS-1$
@@ -924,6 +952,10 @@ public class Lifter implements MethodEventSource, Notifier {
 
     public String getSnatch2ActualLift() {
         return emptyIfNull(snatch2ActualLift);
+    }
+    
+    public Integer getSnatch2AsInteger() {
+        return asInteger(snatch2ActualLift);
     }
 
     public String getSnatch2AutomaticProgression() {
@@ -950,7 +982,11 @@ public class Lifter implements MethodEventSource, Notifier {
     public String getSnatch3ActualLift() {
         return emptyIfNull(snatch3ActualLift);
     }
-
+    
+    public Integer getSnatch3AsInteger() {
+        return asInteger(snatch3ActualLift);
+    }
+    
     public String getSnatch3AutomaticProgression() {
         final int prevVal = zeroIfInvalid(snatch2ActualLift);
         return doAutomaticProgression(prevVal);

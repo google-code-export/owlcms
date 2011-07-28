@@ -28,6 +28,7 @@ import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.spreadsheet.JXLSLifterCard;
 import org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource;
 import org.concordiainternational.competition.spreadsheet.JurySheet;
 import org.concordiainternational.competition.spreadsheet.OutputSheetStreamSource;
@@ -47,9 +48,9 @@ import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.SystemError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
 public class WeighInList extends LifterHbnList implements ApplicationView {
@@ -196,7 +197,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
             @Override
 			public void buttonClick(ClickEvent event) {
                 lifterCardsButton.setComponentError(null);
-                final JXLSWorkbookStreamSource streamSource = new JXLSWorkbookStreamSource();
+                final JXLSWorkbookStreamSource streamSource = new JXLSLifterCard();
 //                final OutputSheetStreamSource<LifterCardSheet> streamSource = new OutputSheetStreamSource<LifterCardSheet>(
 //                        LifterCardSheet.class, (CompetitionApplication) app, excludeNotWeighed);
                 if (streamSource.size() == 0) {

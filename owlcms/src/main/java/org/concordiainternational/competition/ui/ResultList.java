@@ -27,9 +27,10 @@ import org.concordiainternational.competition.data.lifterSort.WinningOrderCompar
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.publicAddress.PublicAddressForm;
 import org.concordiainternational.competition.spreadsheet.CompetitionBook;
+import org.concordiainternational.competition.spreadsheet.JXLSResultSheet;
+import org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource;
 import org.concordiainternational.competition.spreadsheet.MastersGroupResults;
 import org.concordiainternational.competition.spreadsheet.OutputSheetStreamSource;
-import org.concordiainternational.competition.spreadsheet.ResultSheet;
 import org.concordiainternational.competition.ui.components.SessionSelect;
 import org.concordiainternational.competition.ui.generators.CommonColumnGenerator;
 import org.concordiainternational.competition.ui.generators.LiftCellStyleGenerator;
@@ -201,8 +202,9 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
                  * @throws RuntimeException
                  */
                 private void regularCompetition(final Locale locale1) throws RuntimeException {
-                    final OutputSheetStreamSource<ResultSheet> streamSource = new OutputSheetStreamSource<ResultSheet>(
-                            ResultSheet.class, (CompetitionApplication) app, true);
+                	final JXLSWorkbookStreamSource streamSource = new JXLSResultSheet();
+//                    final OutputSheetStreamSource<ResultSheet> streamSource = new OutputSheetStreamSource<ResultSheet>(
+//                            ResultSheet.class, (CompetitionApplication) app, true);
                     if (streamSource.size() == 0) {
                         setComponentError(new SystemError(Messages.getString("ResultList.NoResults", locale1))); //$NON-NLS-1$
                         throw new RuntimeException(Messages.getString("ResultList.NoResults", locale1)); //$NON-NLS-1$
