@@ -26,12 +26,13 @@ import java.util.List;
 
 import net.sf.jxls.transformer.XLSTransformer;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.Lifter;
-import org.concordiainternational.competition.data.LifterContainer;
-import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
@@ -48,16 +49,14 @@ import com.vaadin.terminal.StreamResource;
  * input stream that the vaadin framework can consume.
  */
 @SuppressWarnings("serial")
-public class JXLSWorkbookStreamSource implements StreamResource.StreamSource {
+public abstract class JXLSWorkbookStreamSource implements StreamResource.StreamSource {
     private final static Logger logger = LoggerFactory.getLogger(JXLSWorkbookStreamSource.class);
-    
-    protected static final String TEMPLATE_XLS = "/LifterCardTemplate_"+CompetitionApplication.getDefaultLocale().getLanguage()+".xls"; //$NON-NLS-1$
     
     protected CategoryLookup categoryLookup;
     protected CompetitionApplication app;
-	private List<Lifter> lifters;
+	protected List<Lifter> lifters;
 
-	private HashMap<String, Object> beans;
+	private HashMap<String, Object> reportingBeans;
 
     public JXLSWorkbookStreamSource() {
     	this.app = CompetitionApplication.getCurrent();
@@ -65,11 +64,16 @@ public class JXLSWorkbookStreamSource implements StreamResource.StreamSource {
     }
 
     protected void init() {
-        this.lifters = LifterSorter.registrationOrderCopy(new LifterContainer(app, false).getAllPojos());
-        beans = new HashMap<String,Object>();
-        beans.put("lifters",lifters);
-        beans.put("masters",Competition.isMasters());
+        getSortedLifters();
+        setReportingBeans(new HashMap<String,Object>());
+        getReportingBeans().put("lifters",lifters);
+        getReportingBeans().put("masters",Competition.isMasters());
 	}
+    
+	/**
+	 * Return lifters as they should be sorted.
+	 */
+	abstract protected void getSortedLifters();
 
     
     @Override
@@ -83,7 +87,8 @@ public class JXLSWorkbookStreamSource implements StreamResource.StreamSource {
 				public void run() {
                     try {
                     	XLSTransformer transformer = new XLSTransformer();
-                        Workbook workbook = transformer.transformXLS(getTemplate(),beans);
+                        Workbook workbook = transformer.transformXLS(getTemplate(),getReportingBeans());
+                        postProcess(workbook);
                         workbook.write(out);
                     } catch (Throwable e) {
                     	LoggerUtils.logException(logger, e);
@@ -98,12 +103,28 @@ public class JXLSWorkbookStreamSource implements StreamResource.StreamSource {
         }
     }
     
-    public InputStream getTemplate() throws IOException {
-        final InputStream resourceAsStream = app.getResourceAsStream(TEMPLATE_XLS);
-        if (resourceAsStream == null) {
-            throw new IOException("resource not found: " + TEMPLATE_XLS);} //$NON-NLS-1$
-        return resourceAsStream;
-    }
+    protected void postProcess(Workbook workbook) {
+    	// do nothing, to be overridden as needed,
+	}
+    
+
+	/**
+	 * Erase a pair of adjoining cells.
+	 * @param workbook
+	 * @param rownum
+	 * @param cellnum
+	 */
+	public void zapCellPair(Workbook workbook, int rownum, int cellnum) {
+		Row row = workbook.getSheetAt(0).getRow(rownum);
+		final Cell cellLeft = row.getCell(cellnum);
+		cellLeft.setCellValue("");
+		row.getCell(19).setCellValue("");
+		CellStyle blank = workbook.createCellStyle();
+		blank.setBorderBottom(CellStyle.BORDER_NONE);
+		row.getCell(cellnum+1).setCellStyle(blank);
+	}
+
+	public abstract InputStream getTemplate() throws IOException ;
 
     public int size() {
         return lifters.size();
@@ -111,6 +132,14 @@ public class JXLSWorkbookStreamSource implements StreamResource.StreamSource {
 
 	public List<Lifter> getLifters() {
 		return lifters;
+	}
+
+	public void setReportingBeans(HashMap<String, Object> jXLSBeans) {
+		this.reportingBeans = jXLSBeans;
+	}
+
+	public HashMap<String, Object> getReportingBeans() {
+		return reportingBeans;
 	}
 
 }
