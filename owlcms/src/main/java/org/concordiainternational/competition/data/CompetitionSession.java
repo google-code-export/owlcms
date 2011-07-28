@@ -42,7 +42,7 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class CompetitionSession implements Serializable {
+public class CompetitionSession implements Serializable, Comparable {
 
     private static final long serialVersionUID = -7744027515867237334L;
     private static final Logger logger = LoggerFactory.getLogger(CompetitionSession.class);
@@ -72,7 +72,7 @@ public class CompetitionSession implements Serializable {
 
 
 	// group is the property in Lifter that is the opposite of CompetitionSession.lifters
-    @OneToMany(mappedBy = "competitionSession")
+    @OneToMany(mappedBy = "competitionSession",fetch=FetchType.EAGER)
     Set<Lifter> lifters;
 
     public CompetitionSession() {
@@ -274,5 +274,18 @@ public class CompetitionSession implements Serializable {
     static public List<CompetitionSession> getAll() {
         return CompetitionApplication.getCurrent().getHbnSession().createCriteria(CompetitionSession.class).list();
     }
+
+	@Override
+	public int compareTo(Object arg0) {
+		CompetitionSession other = (CompetitionSession)arg0;
+		if (this.weighInTime == null && other.weighInTime == null) return 0;
+		if (this.weighInTime == null) return -1;
+		if (other.weighInTime == null) return 1;
+		
+		if (this.name == null && other.name == null) return 0;
+		if (this.name == null) return -1;
+		if (other.name == null) return 1;
+		return this.name.compareTo(other.name);
+	}
 
 }

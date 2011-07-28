@@ -84,6 +84,7 @@ public class WeighInSheet extends OutputSheet implements InputSheet, LifterReade
      *      {@link InputSheetHelper#readLifter(WorkSheetHandle, int)}
      */
     @Override
+    @Deprecated
     public void writeLifter(Lifter lifter, WorkSheetHandle workSheet, CategoryLookup categoryLookup1, int rownum)
             throws CellTypeMismatchException, CellNotFoundException {
         rownum = rownum + InputSheetHelper.START_ROW;

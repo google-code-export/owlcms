@@ -2087,6 +2087,18 @@ public class Lifter implements MethodEventSource, Notifier {
         }
     }
 
+    /**
+     * @return
+     */
+    public String getLongCategory() {
+        final Category category = getCategory();
+        if (category != null && Competition.isMasters()) {
+            return getMastersLongCategory();
+        } else {
+            return getDisplayCategory();
+        }
+    }
+    
     @Version
     public Long getVersion() {
         return version;
