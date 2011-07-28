@@ -58,7 +58,10 @@ public abstract class JXLSWorkbookStreamSource implements StreamResource.StreamS
 
 	private HashMap<String, Object> reportingBeans;
 
-    public JXLSWorkbookStreamSource() {
+	private boolean excludeNotWeighed;
+
+    public JXLSWorkbookStreamSource(boolean excludeNotWeighed) {
+    	this.excludeNotWeighed = excludeNotWeighed;
     	this.app = CompetitionApplication.getCurrent();
     	init();
     }
@@ -87,6 +90,7 @@ public abstract class JXLSWorkbookStreamSource implements StreamResource.StreamS
 				public void run() {
                     try {
                     	XLSTransformer transformer = new XLSTransformer();
+                    	configureTransformer(transformer);
                         Workbook workbook = transformer.transformXLS(getTemplate(),getReportingBeans());
                         postProcess(workbook);
                         workbook.write(out);
@@ -103,7 +107,11 @@ public abstract class JXLSWorkbookStreamSource implements StreamResource.StreamS
         }
     }
     
-    protected void postProcess(Workbook workbook) {
+    protected void configureTransformer(XLSTransformer transformer) {
+    	// do nothing, to be overridden as needed,
+	}
+
+	protected void postProcess(Workbook workbook) {
     	// do nothing, to be overridden as needed,
 	}
     
@@ -140,6 +148,14 @@ public abstract class JXLSWorkbookStreamSource implements StreamResource.StreamS
 
 	public HashMap<String, Object> getReportingBeans() {
 		return reportingBeans;
+	}
+
+	public void setExcludeNotWeighed(boolean excludeNotWeighed) {
+		this.excludeNotWeighed = excludeNotWeighed;
+	}
+
+	public boolean isExcludeNotWeighed() {
+		return excludeNotWeighed;
 	}
 
 }

@@ -34,6 +34,15 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings("serial")
 public class JXLSResultSheet extends JXLSWorkbookStreamSource {
+	
+	public JXLSResultSheet(){
+		super(true);
+	}
+	
+	public JXLSResultSheet(boolean excludeNotWeighed) {
+		super(excludeNotWeighed);
+	}
+
 	Logger logger = LoggerFactory.getLogger(JXLSResultSheet.class);
 	
 
@@ -58,7 +67,7 @@ public class JXLSResultSheet extends JXLSWorkbookStreamSource {
 
 	@Override
 	protected void getSortedLifters()  {
-		this.lifters = LifterSorter.resultsOrderCopy(new LifterContainer(CompetitionApplication.getCurrent()).getAllPojos(),
+		this.lifters = LifterSorter.resultsOrderCopy(new LifterContainer(CompetitionApplication.getCurrent(),isExcludeNotWeighed()).getAllPojos(),
 	            Ranking.TOTAL);
 	    LifterSorter.assignMedals(lifters);
 	}
