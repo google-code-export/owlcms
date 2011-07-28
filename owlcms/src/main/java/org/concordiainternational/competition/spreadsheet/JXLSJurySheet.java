@@ -13,59 +13,70 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-
 package org.concordiainternational.competition.spreadsheet;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
-import org.concordiainternational.competition.data.CategoryLookup;
+import net.sf.jxls.transformer.XLSTransformer;
+
+import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.extentech.ExtenXLS.WorkBookHandle;
-
 /**
- * Encapsulate a spreadsheet as a StreamSource so that it can be used as a
- * source of data when the user clicks on a link. This class converts the output
- * stream produced by the
- * {@link OutputSheet#writeWorkBook(WorkBookHandle, OutputStream)} method to an
- * input stream that the Vaadin framework can consume.
+ * @author jflamy
+ *
  */
 @SuppressWarnings("serial")
-public class JXLSLifterCard extends JXLSWorkbookStreamSource {
-    public JXLSLifterCard() {
-		super(false);
+public class JXLSJurySheet extends JXLSWorkbookStreamSource {
+	
+
+	private JXLSJurySheet(){
+		super(true);
 	}
 	
-    public JXLSLifterCard(boolean excludeNotWeighed) {
+	public JXLSJurySheet(boolean excludeNotWeighed) {
 		super(excludeNotWeighed);
 	}
 
+	Logger logger = LoggerFactory.getLogger(JXLSJurySheet.class);
+	
 
-	@SuppressWarnings("unused")
-	private final static Logger logger = LoggerFactory.getLogger(JXLSLifterCard.class);
-    
-    protected CategoryLookup categoryLookup;
+	private Competition competition;
 
-    
-    @Override
+	@Override
+	protected void init() {
+		super.init();
+		competition = Competition.getAll().get(0);
+		getReportingBeans().put("competition",competition);
+		getReportingBeans().put("session",app.getCurrentCompetitionSession());
+	}
+
+	@Override
 	public InputStream getTemplate() throws IOException {
-    	String templateName = "/LifterCardTemplate_"+CompetitionApplication.getCurrentLocale().getLanguage()+".xls";
+    	String templateName = "/JurySheetTemplate_"+CompetitionApplication.getCurrentLocale().getLanguage()+".xls";
         final InputStream resourceAsStream = app.getResourceAsStream(templateName);
         if (resourceAsStream == null) {
             throw new IOException("resource not found: " + templateName);} //$NON-NLS-1$
         return resourceAsStream;
     }
 
-
 	@Override
 	protected void getSortedLifters()  {
-		this.lifters = LifterSorter.registrationOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAllPojos());
+		this.lifters = LifterSorter.displayOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAllPojos());
+	    LifterSorter.assignMedals(lifters);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource#configureTransformer(net.sf.jxls.transformer.XLSTransformer)
+	 */
+	@Override
+	protected void configureTransformer(XLSTransformer transformer) {
+		transformer.markAsFixedSizeCollection("lifters");
 	}
 
 
