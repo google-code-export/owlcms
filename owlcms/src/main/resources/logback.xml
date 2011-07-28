@@ -18,7 +18,7 @@
 	<logger name="org.hibernate" level="WARN" />
 	<logger name="org.hibernate.cache.EhCacheProvider" level="ERROR" />
 	<logger name="net.sf.ehcache.hibernate" level="ERROR" />	
-	
+	<logger name="org.apache.commons.jexl2.Interpreter" level="ERROR" />
 	<logger name="org.concordiainternational.org" level="INFO" /> 
     <logger name="org.concordiainternational.competition.nec" level="DEBUG" />
 	
