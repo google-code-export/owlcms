@@ -26,3 +26,7 @@ syntax: regexp
 ^target/test-classes$
 syntax: regexp
 ^target$
+syntax: regexp
+^src/main/webapp/registration$
+syntax: regexp
+^doc/owlcmsScreenshots/\.picasa\.ini$
