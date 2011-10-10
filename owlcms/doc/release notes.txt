@@ -1,5 +1,9 @@
 #summary Release Notes
 
+== Release 2.7.2
+  * Fix: when using multiple platforms, sessions were appearing multiple times in dropdown.
+    due to ill-defined hashcode function and use of unnecessary eager fetch.
+
 == Release 2.7.1
   * Fix: notifications to the announcer for good/bad lifts were duplicated if the announcer
     used the menus to go to another page and came back.  General clean-up of registration
