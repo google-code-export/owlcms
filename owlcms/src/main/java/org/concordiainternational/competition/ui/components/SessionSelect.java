@@ -57,7 +57,7 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
         groupLabel.setSizeUndefined();
 
         sessionSelect = new Select();
-        final HbnContainer<CompetitionSession> sessionDataSource = loadData(competitionApplication, sessionSelect);
+        loadData(competitionApplication, sessionSelect);
         sessionSelect.setImmediate(true);
         sessionSelect.setNullSelectionAllowed(true);
         sessionSelect.setNullSelectionItemId(null);
@@ -73,7 +73,7 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
 
                 if (selectedValue != null) {
                 	selectedId = selectedValue;
-                    selectedItem = sessionDataSource.getItem(selectedValue);
+                    selectedItem = sessionSelect.getContainerDataSource().getItem(selectedValue);
                     value = (CompetitionSession) ItemAdapter.getObject(selectedItem);
                 } else {
                 	selectedId = null;

@@ -21,8 +21,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -40,6 +43,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Environment;
+import org.hibernate.dialect.DerbyDialect;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.event.def.OverrideMergeEventListener;
 import org.slf4j.Logger;
@@ -52,7 +56,7 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
  *         database and other global features (serial communication ports)
  */
 
-public class WebApplicationConfiguration implements HbnSessionManager, ServletContextListener {
+public class WebApplicationConfiguration implements HbnSessionManager, ServletContextListener, EntityManagerFactory {
     private static Logger logger = LoggerFactory.getLogger(WebApplicationConfiguration.class);
 
     private static SessionFactory sessionFactory = null;
@@ -96,7 +100,8 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
     public static SessionFactory getSessionFactory(boolean testMode, String dbPath) {
         if (sessionFactory == null) {
             try {
-                cnf = new AnnotationConfiguration();       
+                cnf = new AnnotationConfiguration();
+                //derbySetup(testMode, dbPath, cnf);
                 h2Setup(testMode, dbPath, cnf);
                 cnf.setProperty(Environment.USER, "sa"); //$NON-NLS-1$
                 cnf.setProperty(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread"); //$NON-NLS-1$
@@ -178,6 +183,48 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
         cnf1.setProperty(Environment.DIALECT, H2Dialect.class.getName());
     }
 
+    /**
+     * @param testMode
+     * @param dbPath
+     * @param cnf1
+     */
+    @SuppressWarnings("unused")
+	private static void derbySetup(boolean testMode, String dbPath, AnnotationConfiguration cnf1) {
+        if (testMode) {
+        	cnf1.setProperty(Environment.DRIVER, "org.h2.Driver"); //$NON-NLS-1$
+        	cnf1.setProperty(Environment.URL, "jdbc:h2:mem:competition"); //$NON-NLS-1$
+            cnf1.setProperty(Environment.SHOW_SQL, "false"); //$NON-NLS-1$
+            cnf1.setProperty(Environment.HBM2DDL_AUTO, "create-drop"); //$NON-NLS-1$
+        } else {
+        	cnf1.setProperty(Environment.DRIVER, "org.apache.derby.jdbc.EmbeddedDriver"); //$NON-NLS-1$
+            cnf1.setProperty(Environment.SHOW_SQL, "false"); //$NON-NLS-1$
+            
+            String ddlMode = "create"; //$NON-NLS-1$
+            String suffix=";create=true";
+            
+            File file = new File(dbPath); //$NON-NLS-1$
+            logger.warn("Using Hibernate (file {} exists={}", new Object[] { file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
+			if (file.exists()) {
+                ddlMode = "update"; //$NON-NLS-1$
+            } else {
+            	file = new File(dbPath); //$NON-NLS-1$
+            	logger.warn(
+            			"Using Hibernate (file {} exists={}",
+            			new Object[] { file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
+                if (file.exists()) {
+                    ddlMode = "update"; //$NON-NLS-1$
+                }
+            }
+            logger.warn(
+            		"Using Hibernate mode {} (file {} exists={}",
+            		new Object[] { ddlMode, file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
+            cnf1.setProperty(Environment.HBM2DDL_AUTO, ddlMode);
+            cnf1.setProperty(Environment.URL, "jdbc:derby:" + dbPath + suffix); //$NON-NLS-1$
+            // throw new ExceptionInInitializerError("Production database configuration not specified");
+        }
+        cnf1.setProperty(Environment.DIALECT, DerbyDialect.class.getName());
+    }
+    
     /**
      * Insert initial data if the database is empty.
      * 
@@ -350,5 +397,30 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
             }
         }
     }
+
+    
+	@Override
+	public EntityManager createEntityManager() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EntityManager createEntityManager(@SuppressWarnings("rawtypes") Map map) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isOpen() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 }

@@ -1,5 +1,5 @@
-#Sun Sep 05 09:07:38 EDT 2010
-activeProfiles=
+#Sat Oct 08 11:27:25 EDT 2011
+activeProfiles=useExternalRepositories
 eclipse.preferences.version=1
 fullBuildGoals=process-test-resources
 includeModules=false

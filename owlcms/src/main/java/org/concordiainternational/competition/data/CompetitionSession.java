@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,7 +41,7 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class CompetitionSession implements Serializable, Comparable {
+public class CompetitionSession implements Serializable, Comparable<Object> {
 
     private static final long serialVersionUID = -7744027515867237334L;
     private static final Logger logger = LoggerFactory.getLogger(CompetitionSession.class);
@@ -63,16 +62,16 @@ public class CompetitionSession implements Serializable, Comparable {
     String referee3;
     String jury;
 
-    @ManyToOne
+    @ManyToOne(optional=true)
     Platform platform;
 
-    @ManyToMany(fetch=FetchType.EAGER)
+    @ManyToMany//(fetch=FetchType.EAGER)
     Set<Category> categories;
 
 
 
 	// group is the property in Lifter that is the opposite of CompetitionSession.lifters
-    @OneToMany(mappedBy = "competitionSession",fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "competitionSession")//,fetch=FetchType.EAGER)
     Set<Lifter> lifters;
 
     public CompetitionSession() {
@@ -234,26 +233,6 @@ public class CompetitionSession implements Serializable, Comparable {
         this.weighInTime = w;
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        CompetitionSession other = (CompetitionSession) obj;
-        if (name == null) {
-            if (other.name != null) return false;
-        } else if (!name.equals(other.name)) return false;
-        return true;
-    }
-
     public Set<Lifter> getLifters() {
         return lifters;
     }
@@ -286,6 +265,37 @@ public class CompetitionSession implements Serializable, Comparable {
 		if (this.name == null) return -1;
 		if (other.name == null) return 1;
 		return this.name.compareTo(other.name);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CompetitionSession other = (CompetitionSession) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
 	}
 
 }
