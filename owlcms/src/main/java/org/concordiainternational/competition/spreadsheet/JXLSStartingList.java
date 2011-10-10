@@ -21,12 +21,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.poi.ss.usermodel.Workbook;
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.CompetitionSession;
-import org.concordiainternational.competition.data.LifterContainer;
-import org.concordiainternational.competition.data.lifterSort.LifterSorter;
-import org.concordiainternational.competition.data.lifterSort.LifterSorter.Ranking;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.hibernate.Session;
 import org.slf4j.Logger;
