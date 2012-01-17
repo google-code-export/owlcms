@@ -391,7 +391,11 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
             // comPortName is likely a USB port which has been disconnected.
             try {
                 necDisplay = new NECDisplay(); //$NON-NLS-1$
-                necDisplay.setComPortName("COM1"); //$NON-NLS-1$
+                try {
+					necDisplay.setComPortName("COM1"); //$NON-NLS-1$
+				} catch (Exception e2) {
+					necDisplay.setComPortName(null);
+				}
             } catch (Exception e1) {
                 logger.warn("could not open port {} {}","COM1",e.getMessage());
             }

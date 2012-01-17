@@ -62,8 +62,11 @@ public class NECDisplay implements Serializable {
     private void init(String comPortName1) throws NoSuchPortException, PortInUseException, IOException,
             UnsupportedCommOperationException {
         if (opened) return;
-        if (comPortName1 == null) comPortName1 = "COM1"; //$NON-NLS-1$
-        this.serialPort = openPort(comPortName1);
+        if (comPortName1 != null) {
+        	this.serialPort = openPort(comPortName1);
+        } else {
+        	this.serialPort = null;
+        }
     }
 
     /**
@@ -210,6 +213,10 @@ public class NECDisplay implements Serializable {
      */
     private SerialPort openPort(String comPortName1) throws PortInUseException, IOException,
             UnsupportedCommOperationException, NoSuchPortException {
+    	if (comPortName1 == null) {
+    		serialPort = null;
+    		return serialPort;
+    	}
 
         CommPortIdentifier portId;
         try {
@@ -253,19 +260,20 @@ public class NECDisplay implements Serializable {
             synchronized (display) {
                 OutputStream out = null;
                 try {
-                    init(display.comPortName);
-                    out = display.serialPort.getOutputStream();
-                    String string1 = strings[0] != null ? strings[0] : ""; //$NON-NLS-1$
-                    String string2 = strings[1] != null ? strings[1] : ""; //$NON-NLS-1$
-                    String string3 = strings[2] != null ? strings[2] : ""; //$NON-NLS-1$
-                    if (string1.length() > 20) string1 = string1.substring(0, 20);
-                    if (string2.length() > 20) string2 = string2.substring(0, 20);
-                    if (string3.length() > 20) string3 = string3.substring(0, 20);
-                    // write, flush and log just to make sure it all goes out.
-                    out.write(encode(string1, string2, string3));
-                    out.flush();
-                    logger
-                            .warn("\n" + string1 + "\n" + string2 + "\n" + string3 + "\n.........|.........| written on " + serialPort.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                	init(display.comPortName);
+                	if (display.serialPort != null) {
+                		out = display.serialPort.getOutputStream();
+                		String string1 = strings[0] != null ? strings[0] : ""; //$NON-NLS-1$
+                		String string2 = strings[1] != null ? strings[1] : ""; //$NON-NLS-1$
+                		String string3 = strings[2] != null ? strings[2] : ""; //$NON-NLS-1$
+                		if (string1.length() > 20) string1 = string1.substring(0, 20);
+                		if (string2.length() > 20) string2 = string2.substring(0, 20);
+                		if (string3.length() > 20) string3 = string3.substring(0, 20);
+                		// write, flush and log just to make sure it all goes out.
+                		out.write(encode(string1, string2, string3));
+                		out.flush();
+                		logger.warn("\n" + string1 + "\n" + string2 + "\n" + string3 + "\n.........|.........| written on " + serialPort.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {
