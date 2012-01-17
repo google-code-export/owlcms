@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -65,10 +66,8 @@ public class CompetitionSession implements Serializable, Comparable<Object> {
     @ManyToOne(optional=true)
     Platform platform;
 
-    @ManyToMany//(fetch=FetchType.EAGER)
+    @ManyToMany(fetch=FetchType.EAGER)
     Set<Category> categories;
-
-
 
 	// group is the property in Lifter that is the opposite of CompetitionSession.lifters
     @OneToMany(mappedBy = "competitionSession")//,fetch=FetchType.EAGER)
