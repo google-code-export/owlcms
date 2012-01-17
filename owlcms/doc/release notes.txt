@@ -1,5 +1,9 @@
 #summary Release Notes
 
+== Release 2.7.3
+  * Tested under Ubuntu Linux.
+  * No longer requires the presence of a serial port (used to drive old-fashioned LED display boards)
+
 == Release 2.7.2
   * Fix: when using multiple platforms, sessions were appearing multiple times in dropdown.
     due to ill-defined hashcode function and use of unnecessary eager fetch.
