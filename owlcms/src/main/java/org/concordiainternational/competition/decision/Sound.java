@@ -11,11 +11,8 @@ public class Sound {
 	Mixer mixer;
 	private InputStream resource;
 
-	public Sound(String soundRelativeURL) throws IllegalArgumentException {
-		this(AudioSystem.getMixer(null), soundRelativeURL);
-	}
 	
-	Sound(Mixer mixer, String soundRelativeURL) throws IllegalArgumentException {
+	public Sound(Mixer mixer, String soundRelativeURL) throws IllegalArgumentException {
 		this.mixer = mixer;
 		this.resource = Sound.class.getResourceAsStream(soundRelativeURL);
 	}
@@ -23,17 +20,12 @@ public class Sound {
 	
 	public void emit() {
         try {
-			// must use wav format; did not find easy way to get mp3spi to work.
-			AudioInputStream inputStream = AudioSystem.getAudioInputStream(resource);
-			
-	        try {
-	            Clip clip = AudioSystem.getClip(mixer.getMixerInfo());
-	            clip.open(inputStream);
-	            clip.start(); 
-	          } catch (Exception e) {
-	            System.err.println(e.getMessage());
-	          }
-			    
+        	if (mixer == null) return;
+			// must use wav format
+        	AudioInputStream inputStream = AudioSystem.getAudioInputStream(resource);
+        	Clip clip = AudioSystem.getClip(mixer.getMixerInfo());
+        	clip.open(inputStream);
+        	clip.start(); 			    
           } catch (Exception e) {
         	  throw new RuntimeException(e);
           }

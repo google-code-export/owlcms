@@ -465,10 +465,10 @@ public class LifterInfo extends VerticalLayout implements
     private void playSound(String soundName) {
         SessionData masterData = app.getMasterData(app.getPlatformName());
         if (isMasterConsole(masterData)) {
-            // we are not the master application; do not play
-            new Sound(soundName).emit();
+            new Sound(masterData.getPlatform().getMixer(),soundName).emit();
             logger.debug("! {} is master, playing sound", app); //$NON-NLS-1$
         } else {
+            // we are not the master application; do not play
             logger.debug("- {} not master, not playing sound", app); //$NON-NLS-1$
         }    	
     }

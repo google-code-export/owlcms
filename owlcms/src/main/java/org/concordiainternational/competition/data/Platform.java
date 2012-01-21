@@ -23,13 +23,17 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.sound.sampled.Mixer;
 
+import org.concordiainternational.competition.decision.Speakers;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.LiftList;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Data on a lifting site.
@@ -50,6 +54,7 @@ import org.hibernate.criterion.Restrictions;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Platform implements Serializable {
+	private static final Logger logger = LoggerFactory.getLogger(Platform.class);
 
     private static final long serialVersionUID = -6871042180395572184L;
 
@@ -91,6 +96,9 @@ public class Platform implements Serializable {
     // bar
     Integer officialBar = 0;
     Integer lightBar = 0;
+
+	String mixerName = "";
+    transient private Mixer mixer;
 
     public Platform() {
     }
@@ -135,7 +143,9 @@ public class Platform implements Serializable {
             Restrictions.eq("name", name)) //$NON-NLS-1$
                 .list();
         if (list.size() == 1) {
-            return (Platform) list.get(0);
+            final Platform platform = (Platform) list.get(0);
+            platform.setMixerName(platform.mixerName);
+			return platform;
         } else {
             return null;
         }
@@ -336,7 +346,36 @@ public class Platform implements Serializable {
 			return false;
 		return true;
 	}
-    
-    
 
+	public Mixer getMixer() {
+		return mixer;
+	}
+
+	public void setMixer(Mixer mixer) {
+		this.mixer = mixer;
+	}
+
+	/**
+	 * @return the mixerName
+	 */
+	public String getMixerName() {
+		return mixerName;
+	}
+
+	/**
+	 * @param mixerName the mixerName to set
+	 */
+	public void setMixerName(String mixerName) {
+		this.mixerName = mixerName;
+		setMixer(null);
+		List<Mixer> mixers = Speakers.getOutputs();
+		for (Mixer curMixer: mixers) {
+			if (curMixer.getMixerInfo().getName().equals(mixerName)) {
+				setMixer(curMixer);
+				logger.warn("Platform: {}: changing mixer to {}",this.name,mixerName);
+				break;
+			}
+		}
+	}
+    
 }

@@ -21,17 +21,26 @@ import java.util.Locale;
 
 import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.data.RuleViolationException;
+import org.concordiainternational.competition.decision.Speakers;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.list.GenericHbnList;
 import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.hbnutil.HbnContainer.EntityItem;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.Window.CloseEvent;
@@ -41,6 +50,7 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
 
     private static final long serialVersionUID = -6455130090728823622L;
     private String viewName;
+    final static org.slf4j.Logger logger = LoggerFactory.getLogger(PlatformList.class);
 
     public PlatformList(boolean initFromFragment, String viewName) {
         super(CompetitionApplication.getCurrent(), Platform.class, Messages.getString(
@@ -67,6 +77,7 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
         		"name", //$NON-NLS-1$
                 "hasDisplay", //$NON-NLS-1$
                 "showDecisionLights", //$NON-NLS-1$
+                "mixerName", //$NON-NLS-1$
                 "actions" //$NON-NLS-1$
         };
         return NATURAL_COL_ORDER;
@@ -80,9 +91,11 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
     protected String[] getColHeaders() {
         Locale locale = app.getLocale();
         if (COL_HEADERS != null) return COL_HEADERS;
-        COL_HEADERS = new String[] { Messages.getString("CategoryEditor.name", locale), //$NON-NLS-1$
+        COL_HEADERS = new String[] {
+        		Messages.getString("CategoryEditor.name", locale), //$NON-NLS-1$
                 Messages.getString("Platform.NECDisplay", locale), //$NON-NLS-1$
                 Messages.getString("Platform.showDecisionLights", locale), //$NON-NLS-1$
+                Messages.getString("Platform.speakers", locale), //$NON-NLS-1$
                 Messages.getString("Common.actions", locale), //$NON-NLS-1$
         };
         return COL_HEADERS;
@@ -119,8 +132,54 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
                 }
             });
     }
+    
+    
 
     /* (non-Javadoc)
+	 * @see org.concordiainternational.competition.ui.list.GenericHbnList#addGeneratedColumns()
+	 */
+	@Override
+	protected void addGeneratedColumns() {
+        super.addGeneratedColumns();
+        table.removeGeneratedColumn("mixerName"); //$NON-NLS-1$
+        table.addGeneratedColumn("mixerName", new ColumnGenerator() { //$NON-NLS-1$
+                private static final long serialVersionUID = 7397136740353981832L;
+                
+				@SuppressWarnings("serial")
+				@Override
+				public Component generateCell(Table source, final Object itemId, Object columnId) {
+                    final Item item = table.getItem(itemId);
+                    //final Property uiProp = item.getItemProperty(columnId);
+                    final Property prop = table.getContainerProperty(itemId, columnId);
+                    
+                    if (!table.isEditable()) {
+                        final Object value = prop.getValue();
+                        return new Label((String) value); //$NON-NLS-1$
+                    } else {
+	                	ComboBox ls = new ComboBox("", Speakers.getOutputNames());
+	                	ls.setNullSelectionAllowed(true);
+	                	ls.setPropertyDataSource(prop);
+	                	ls.setImmediate(true);
+	                	
+	                	// normally, there is no need for a listener (the setImmediate will
+	                	// ensure that the setMixerName() method is called right away.  But
+	                	// we would like audio feedback right away if there are multiple audio devices.
+	                	ls.addListener(new ValueChangeListener() {
+							@SuppressWarnings("rawtypes")
+							@Override
+							public void valueChange(ValueChangeEvent event) {
+								Platform pl = (Platform)((EntityItem) item).getPojo();
+								pl.setMixerName((String) event.getProperty().getValue());
+								Speakers.testSound(pl.getMixer());
+							}
+						});
+	                	return ls;
+                    }
+                }
+            });
+	}
+
+	/* (non-Javadoc)
      * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()
      */
     @Override

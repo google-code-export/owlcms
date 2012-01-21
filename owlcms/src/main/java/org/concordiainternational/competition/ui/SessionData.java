@@ -127,6 +127,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         lifters = new ArrayList<Lifter>();
         currentPlatformName = platformName;
         platform = Platform.getByName(platformName);
+
         notificationManager = new NotificationManager<SessionData, Lifter, Component>(this);
         init();
     }
