@@ -57,12 +57,18 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
     DecisionEventListener[] listeners = new DecisionEventListener[3];
 
     private SessionData groupData;
+	private Tone downSignal = null;
 
     public RefereeDecisionController(SessionData groupData) {
         this.groupData = groupData;
         for (int i = 0; i < refereeDecisions.length; i++) {
             refereeDecisions[i] = new Decision();
         }
+        try {
+			downSignal = new Tone(groupData.getPlatform().getMixer(), 1100, 1200, 1.0);
+		} catch (Exception e) {
+			// leave as null if not able to emit.
+		}
     }
 
 
@@ -73,7 +79,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 
 	private Boolean downSignaled = false;
 	
-	Tone downSignal = new Tone(1100,1200,1.0);
+
 
 	private boolean blocked = true;
 
@@ -151,7 +157,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
         	// had not stopped it manually.
             if (pros >= 2 || cons >= 2) {
             	synchronized (groupData.getTimer()) {
-            		if (!downSignaled) {
+            		if (!downSignaled && downSignal != null) {
             			new Thread(new Runnable() {
 							@Override
 							public void run() {

@@ -10,13 +10,9 @@ public class Tone {
 	private byte[] buf;
 	private AudioFormat af;
 	private SourceDataLine sdl;
-
-	Tone(int hz, int msecs, double vol) throws IllegalArgumentException {
-		Mixer mixer = AudioSystem.getMixer(null);		
-		init(hz, msecs, vol, mixer);
-	}
 	
 	Tone(Mixer mixer, int hz, int msecs, double vol) throws IllegalArgumentException {
+		if (mixer == null) return;
 		init(hz, msecs, vol, mixer);
 	}
 

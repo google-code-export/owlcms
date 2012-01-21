@@ -201,6 +201,8 @@ public class LiftList extends GenericBeanList<Lifter> implements
 				public void buttonClick(ClickEvent event) {
                     logger.debug("reloading"); //$NON-NLS-1$
                     data.setCurrentSession(data.getCurrentSession());
+                    final Platform platform = data.getPlatform();
+					platform.setMixerName(platform.getMixerName());
                 }
             };
             refreshButton.addListener(refreshClickListener);
