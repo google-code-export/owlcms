@@ -201,8 +201,10 @@ public class LiftList extends GenericBeanList<Lifter> implements
 				public void buttonClick(ClickEvent event) {
                     logger.debug("reloading"); //$NON-NLS-1$
                     data.setCurrentSession(data.getCurrentSession());
-                    final Platform platform = data.getPlatform();
-					platform.setMixerName(platform.getMixerName());
+                    // force re-fetching of platform, so that the audio output switches
+                    String platformName = data.getPlatform().getName();
+                    Platform platform = Platform.getByName(platformName);
+                    data.setPlatform(platform);
                 }
             };
             refreshButton.addListener(refreshClickListener);
