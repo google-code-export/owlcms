@@ -5,8 +5,8 @@
 		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
 			<layout class="ch.qos.logback.classic.PatternLayout">
 				<Pattern>
-					%d{HH:mm:ss.SSS} %X{currentGroup} %-5level %class{45}:%L %M - %msg%n
-			</Pattern>
+					%d{HH:mm:ss.SSS} %-5level %class{45}:%L %M - %msg%n
+				</Pattern>
 			</layout>
 		</encoder>
 	</appender>

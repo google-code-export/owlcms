@@ -28,7 +28,6 @@ import java.util.Locale;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.MDC;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.data.RuleViolationException;
@@ -46,6 +45,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.vaadin.artur.icepush.ICEPush;
@@ -357,7 +357,10 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         if (masterData != null) {
         	final CompetitionSession currentSession = masterData.getCurrentSession();
         	if (currentSession != null) {
-    			MDC.put("currentGroup", currentSession.getName());
+    			final String name = currentSession.getName();
+				MDC.put("currentGroup", name);
+    			logger.info("setting current group to {}", name);
+
         	}
 
             return masterData;
@@ -500,8 +503,10 @@ public class CompetitionApplication extends Application implements HbnSessionMan
             }
             setMainLayoutContent(currentView);
         }
-        if (newSession != null) {
-            MDC.put("currentGroup", newSession.getName());
+        if (newSession != null) {      	
+            final String name = newSession.getName();
+			MDC.put("currentGroup", name);
+            logger.info("switching session to {}",name);
         }
 
     }
