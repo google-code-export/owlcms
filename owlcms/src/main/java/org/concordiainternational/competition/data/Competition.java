@@ -150,7 +150,7 @@ public class Competition implements Serializable {
     }
 
     public String getResultTemplateFileName() {
-    	//logger.warn("getResultTemplateFileName {}",resultTemplateFileName);
+    	//logger.debug("getResultTemplateFileName {}",resultTemplateFileName);
         if (resultTemplateFileName != null && new File(resultTemplateFileName).exists()) {
             return resultTemplateFileName;
         } else {

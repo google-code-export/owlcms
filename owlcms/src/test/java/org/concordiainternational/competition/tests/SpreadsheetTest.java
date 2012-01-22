@@ -80,7 +80,7 @@ public class SpreadsheetTest {
     public void writeAllLifters() throws Throwable {
         tempFile = File.createTempFile("myApp", ".xls"); //$NON-NLS-1$ //$NON-NLS-2$
         //tempFile.deleteOnExit();
-        logger.warn("temporary file is set to "+tempFile.getAbsolutePath());
+        logger.debug("temporary file is set to "+tempFile.getAbsolutePath());
         FileOutputStream os = new FileOutputStream(tempFile);
         new ResultSheet(new CategoryLookup(hbnSessionManager), new CompetitionApplication(), (CompetitionSession) null)
                 .writeLifters(lifters, os);

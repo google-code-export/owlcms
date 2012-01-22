@@ -178,7 +178,7 @@ public class CommonFieldFactory extends DefaultFieldFactory {
      * @return
      */
     public static Field createFieldByPropertyType(Class<?> type) {
-    	//logger.warn("creating {}",type);
+    	//logger.debug("creating {}",type);
         // Null typed properties can not be edited
         if (type == null) {
             return null;

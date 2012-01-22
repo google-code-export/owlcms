@@ -240,7 +240,7 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
 	
 	@Override
 	public DownloadStream handleURI(URL context, String relativeUri) {
-		//logger.warn("re-registering handlers for {} {}",this,relativeUri);
+		//logger.debug("re-registering handlers for {} {}",this,relativeUri);
 		registerAsListener();
 		return null;
 	}

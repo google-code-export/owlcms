@@ -43,7 +43,7 @@ public class TouchKitApplication extends CompetitionApplication {
 //	synchronized public void push() {
 //    	pusher = this.ensurePusher();
 //    	if (!pusherDisabled) {
-//    		logger.warn("pushing with {} on window {}",pusher,mainWindow);
+//    		logger.debug("pushing with {} on window {}",pusher,mainWindow);
 //    		pusher.push();
 //    	}
 //    }
@@ -55,7 +55,7 @@ public class TouchKitApplication extends CompetitionApplication {
 //	protected ICEPush ensurePusher() {
 //
 //        if (pusher == null) {
-//        	logger.warn("ensuring pusher");
+//        	logger.debug("ensuring pusher");
 //        	LoggerUtils.logException(logger, new Exception("ensurePusher wherefrom"));
 //            pusher = new ICEPush();
 //            mainWindow.addComponent(pusher);

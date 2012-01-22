@@ -83,7 +83,7 @@ public class ResultSheet extends OutputSheet implements InputSheet, LifterReader
         workSheet.getCell(rownum, 2).setVal(lifter.getLastName());
         workSheet.getCell(rownum, 3).setVal(lifter.getFirstName());
         final String gender = lifter.getGender();
-        //logger.warn("lifter {} gender <{}>",lifter,gender);
+        //logger.debug("lifter {} gender <{}>",lifter,gender);
         workSheet.getCell(rownum, 4).setVal((gender != null ? gender.toString() : null));
         workSheet.getCell(rownum, 5).setVal(lifter.getDisplayCategory());
         workSheet.getCell(rownum, 6).setVal(lifter.getBodyWeight());
@@ -185,7 +185,7 @@ public class ResultSheet extends OutputSheet implements InputSheet, LifterReader
 		super.writeHeader(workSheet);
 		
 		if (competitionSession != null) {
-			//logger.warn("writeHeader {} {}",System.identityHashCode(competitionSession),competitionSession.getReferee3());
+			//logger.debug("writeHeader {} {}",System.identityHashCode(competitionSession),competitionSession.getReferee3());
 			String announcer = competitionSession.getAnnouncer();
 			workSheet.getCell("C11").setVal(announcer != null ? announcer : ""); //$NON-NLS-1$
 			String marshall = competitionSession.getMarshall();

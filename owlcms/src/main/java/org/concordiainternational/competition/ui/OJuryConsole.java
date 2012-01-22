@@ -229,7 +229,7 @@ public class OJuryConsole extends VerticalLayout implements DecisionEventListene
 					switch (updateEvent.getType()) {
 					case DOWN:
 						if (accepted == null) {
-							logger.warn(
+							logger.info(
 									"referee #{} decision required after DOWN",
 									refereeIndex + 1);
 							requireDecision();
@@ -237,7 +237,7 @@ public class OJuryConsole extends VerticalLayout implements DecisionEventListene
 						break;
 					case WAITING:
 						if (accepted == null) {
-							logger.warn(
+							logger.info(
 									"referee #{} decision required WAITING",
 									refereeIndex + 1);
 							requireDecision();
@@ -252,7 +252,7 @@ public class OJuryConsole extends VerticalLayout implements DecisionEventListene
 						//top.setEnabled(false);
 						break;
 					case RESET:
-						logger.warn("referee #{} RESET", refereeIndex + 1);
+						logger.info("referee #{} RESET", refereeIndex + 1);
 						white.setStyleName("white");
 						red.setStyleName("red");
 						resetTop();
@@ -379,7 +379,7 @@ public class OJuryConsole extends VerticalLayout implements DecisionEventListene
 	 */
 	@Override
 	public void registerAsListener() {
-		logger.warn("registering as listener");
+		logger.debug("registering as listener");
 		app.getMainWindow().addListener((CloseListener)this);
 		if (refereeIndex != null) {
 			setIndex(refereeIndex);
@@ -392,7 +392,7 @@ public class OJuryConsole extends VerticalLayout implements DecisionEventListene
 	 */
 	@Override
 	public void unregisterAsListener() {
-		logger.warn("unregistering as listener");
+		logger.debug("unregistering as listener");
 		app.getMainWindow().removeListener((CloseListener)this);
 		decisionController.removeListener(this);
 	}

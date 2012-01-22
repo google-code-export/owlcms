@@ -152,7 +152,7 @@ class CountdownTask extends TimerTask implements Serializable {
     }
 
     private void initialWarning() {
-        logger.warn("initial warning: " + ticks / 1000 + " " + (System.currentTimeMillis() - startMillis)); //$NON-NLS-1$ //$NON-NLS-2$
+        logger.info("initial warning: " + ticks / 1000 + " " + (System.currentTimeMillis() - startMillis)); //$NON-NLS-1$ //$NON-NLS-2$
         final CountdownTimerListener countdownDisplay = countdownTimer.getCountdownDisplay();
         final CountdownTimerListener masterBuzzer = countdownTimer.getMasterBuzzer();
         if (countdownDisplay != null) {
@@ -167,7 +167,7 @@ class CountdownTask extends TimerTask implements Serializable {
     }
 
     private void finalWarning() {
-        logger.warn("final warning: " + ticks / 1000 + " " + (System.currentTimeMillis() - startMillis)); //$NON-NLS-1$ //$NON-NLS-2$
+        logger.info("final warning: " + ticks / 1000 + " " + (System.currentTimeMillis() - startMillis)); //$NON-NLS-1$ //$NON-NLS-2$
         final CountdownTimerListener countdownDisplay = countdownTimer.getCountdownDisplay();
         final CountdownTimerListener masterBuzzer = countdownTimer.getMasterBuzzer();
         if (countdownDisplay != null) {
@@ -182,7 +182,7 @@ class CountdownTask extends TimerTask implements Serializable {
     }
 
     private void noTimeLeft() {
-        logger.warn("time over: " + ticks / 1000 + " " + (System.currentTimeMillis() - startMillis)); //$NON-NLS-1$ //$NON-NLS-2$
+        logger.info("time over: " + ticks / 1000 + " " + (System.currentTimeMillis() - startMillis)); //$NON-NLS-1$ //$NON-NLS-2$
         final CountdownTimerListener countdownDisplay = countdownTimer.getCountdownDisplay();
         final CountdownTimerListener masterBuzzer = countdownTimer.getMasterBuzzer();
         if (countdownDisplay != null) {
@@ -216,7 +216,7 @@ class CountdownTask extends TimerTask implements Serializable {
      *            the finalWarningSignaled to set
      */
     private void setFinalWarningSignaled(boolean finalWarningSignaled) {
-        // logger.warn("setting finalWarningSignaled={}",finalWarningSignaled);
+        // logger.debug("setting finalWarningSignaled={}",finalWarningSignaled);
         // LoggerUtils.logException(logger,new Exception("wtf"));
         this.finalWarningSignaled = finalWarningSignaled;
     }

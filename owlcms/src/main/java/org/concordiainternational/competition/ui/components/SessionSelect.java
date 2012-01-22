@@ -80,7 +80,7 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
                 	selectedItem = null;
                 	value = null;
                 }
-                logger.warn("valueChange {}",value);
+                logger.debug("valueChange {}",value);
                 competitionApplication.setCurrentCompetitionSession(value);
             }
 
@@ -113,7 +113,7 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
 		sessionSelect.removeListener(listener);
 		loadData(CompetitionApplication.getCurrent(), sessionSelect);
 		sessionSelect.setValue(selectedId);
-		logger.warn("selected {}",selectedId);
+		logger.info("selected {}",selectedId);
 		sessionSelect.addListener(listener);
 		CompetitionApplication.getCurrent().push();
 	}

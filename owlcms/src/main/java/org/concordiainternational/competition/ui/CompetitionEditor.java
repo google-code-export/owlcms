@@ -182,7 +182,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
             @Override
             public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
                 itemProperty.setValue(event.getProperty());
-                logger.warn("property: {}, object field: {}.",
+                logger.debug("property: {}, object field: {}.",
                 		itemProperty.getValue(),
                 		competition.getResultTemplateFileName());
             }

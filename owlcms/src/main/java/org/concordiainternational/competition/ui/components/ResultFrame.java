@@ -217,7 +217,7 @@ public class ResultFrame extends VerticalLayout implements
     private void display(final String platformName1, final SessionData masterData1) throws RuntimeException {
         synchronized (app) {
             URL url = computeUrl(platformName1);
-            logger.warn("display {}",url);
+            logger.debug("display {}",url);
             iframe.setSource(new ExternalResource(url));
             final Lifter currentLifter = masterData1.getCurrentLifter();
             if (currentLifter != null) {
@@ -490,7 +490,7 @@ public class ResultFrame extends VerticalLayout implements
         
         if (params.length >= 3) {
             stylesheetName = params[2];
-            logger.warn("setting stylesheetName to {}",stylesheetName);
+            logger.debug("setting stylesheetName to {}",stylesheetName);
         }
     }
 
@@ -565,12 +565,12 @@ public class ResultFrame extends VerticalLayout implements
 	 */
 	private void registerHandlers(String viewName1) {
 		// listen to changes in the competition data
-		logger.warn("listening to session data updates.");
+		logger.debug("listening to session data updates.");
         updateListener = registerAsListener(platformName, masterData);
         
         // listen to public address events
         if (viewName1.contains("resultBoard")) {
-        	logger.warn("listening to public address events.");
+        	logger.debug("listening to public address events.");
         	masterData.addBlackBoardListener(this);
         }
         
@@ -592,14 +592,14 @@ public class ResultFrame extends VerticalLayout implements
 		// stop listening to changes in the competition data
 		if (updateListener != null) {
 			masterData.removeListener(updateListener);
-			logger.warn("stopped listening to UpdateEvents");
+			logger.debug("stopped listening to UpdateEvents");
 		}
         
         // stop listening to public address events
 		removeMessage();
         if (viewName.contains("resultBoard")) {
         	masterData.removeBlackBoardListener(this);
-        	logger.warn("stopped listening to PublicAddress TimerEvents");
+        	logger.debug("stopped listening to PublicAddress TimerEvents");
         }
         
         // stop listening to decisions

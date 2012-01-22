@@ -827,7 +827,7 @@ public class LifterInfo extends VerticalLayout implements
 	public void registerAsListener() {
 		// window close
         final Window mainWindow = app.getMainWindow();
-		logger.warn("window: {} register for {} {}",
+		logger.debug("window: {} register for {} {}",
 				new Object[]{mainWindow,identifier,this});
 		mainWindow.addListener(this);
         
@@ -851,7 +851,7 @@ public class LifterInfo extends VerticalLayout implements
 	public void unregisterAsListener() {
 		// window close
 		final Window mainWindow = app.getMainWindow();
-		logger.warn("window: {} UNregister for {} {}",
+		logger.debug("window: {} UNregister for {} {}",
 				new Object[]{mainWindow,identifier,this});
 		mainWindow.removeListener(this);
 		

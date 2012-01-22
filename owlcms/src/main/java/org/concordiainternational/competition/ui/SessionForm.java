@@ -124,7 +124,7 @@ public class SessionForm extends Form  {
 	 * 
 	 */
 	private void closeWindow() {
-		logger.warn("closeWindow {}",parentList);
+		logger.debug("closeWindow {}",parentList);
 
 		if (window != null) {
 			Window parent = window.getParent();

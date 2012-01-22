@@ -146,7 +146,7 @@ public class MPlatesInfoView extends VerticalLayout implements
             
 			plates.setVisible(false);
 			if (!done || ie) {
-				//logger.warn("recomputing image area: pusherDisabled = {}",app.getPusherDisabled());
+				//logger.debug("recomputing image area: pusherDisabled = {}",app.getPusherDisabled());
 	            plates.computeImageArea(masterData, masterData.getPlatform());
 				plates.setVisible(true);
 				//horLayout.setComponentAlignment(plates, Alignment.MIDDLE_CENTER);
@@ -201,7 +201,7 @@ public class MPlatesInfoView extends VerticalLayout implements
 
 	@Override
 	public void plateLoadingUpdate(PlatesInfoEvent event) {
-		//logger.warn("plateLoadingUpdate");
+		//logger.debug("plateLoadingUpdate");
 		doDisplay();
 	}
 
@@ -229,7 +229,7 @@ public class MPlatesInfoView extends VerticalLayout implements
 
 	@Override
 	public DownloadStream handleURI(URL context, String relativeUri) {
-		//logger.warn("re-registering handlers for {} {}",this,relativeUri);
+		//logger.debug("re-registering handlers for {} {}",this,relativeUri);
 		registerAsListener();
 		return null;
 	}

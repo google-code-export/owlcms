@@ -28,6 +28,7 @@ import java.util.Locale;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.MDC;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.data.RuleViolationException;
@@ -118,15 +119,15 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     public static Locale getCurrentLocale() {
         // ignore the preference received from the browser.
         if (current == null) {
-            // logger.warn("current locale={}",getDefaultLocale());
+            // logger.debug("current locale={}",getDefaultLocale());
             return getDefaultLocale();
         }
         final CompetitionApplication current2 = getCurrent();
         if (current2 == null) {
-            // logger.warn("current locale={}",getDefaultLocale());
+            // logger.debug("current locale={}",getDefaultLocale());
             return getDefaultLocale();
         }
-        // logger.warn("current locale={}",current2.getLocale());
+        // logger.debug("current locale={}",current2.getLocale());
         return current2.getLocale();
     }
 
@@ -261,7 +262,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @param viewName
      */
     public void doDisplay(String viewName) {
-//    	logger.warn("doDisplay {}",viewName);
+//    	logger.debug("doDisplay {}",viewName);
 
         ApplicationView view = components.getViewByName(viewName, false);
         // remove all listeners on current view.
@@ -274,7 +275,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @param viewName
      */
     public void displayProjector(String viewName, String stylesheet) {
-//    	logger.warn("doDisplay {}",viewName);
+//    	logger.debug("doDisplay {}",viewName);
         ResultFrame view = (ResultFrame) components.getViewByName(viewName, false);
         setMainLayoutContent(view);
         view.setStylesheet(stylesheet);
@@ -354,6 +355,11 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     public SessionData getMasterData(String platformName) {
         SessionData masterData = SessionData.getSingletonForPlatform(platformName);
         if (masterData != null) {
+        	final CompetitionSession currentSession = masterData.getCurrentSession();
+        	if (currentSession != null) {
+    			MDC.put("currentGroup", currentSession.getName());
+        	}
+
             return masterData;
         } else {
             logger.error("Master data for platformName " + platformName + " not found"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -378,7 +384,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      */
     public InputStream getResourceAsStream(String path) throws IOException {
         InputStream resourceAsStream;
-//        logger.warn("classpath: {}",System.getProperty("java.class.path"));
+//        logger.debug("classpath: {}",System.getProperty("java.class.path"));
               
         // first, search using class loader
         resourceAsStream = this.getClass().getResourceAsStream(path); //$NON-NLS-1$
@@ -494,6 +500,10 @@ public class CompetitionApplication extends Application implements HbnSessionMan
             }
             setMainLayoutContent(currentView);
         }
+        if (newSession != null) {
+            MDC.put("currentGroup", newSession.getName());
+        }
+
     }
 
 
@@ -668,17 +678,17 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 			public DownloadStream handleURI(URL context, String relativeUri) {
 				final String externalForm = context.toExternalForm();
 				contextURI = externalForm;
-//				logger.warn("handleURI uris: {} {}",externalForm,contextURI);
+//				logger.debug("handleURI uris: {} {}",externalForm,contextURI);
 				if (layoutCreated) {
-//					logger.warn("layout exists, skipping");
+//					logger.debug("layout exists, skipping");
 					return null; // already created layout
 				} else {
-//					logger.warn("creating layout");
+//					logger.debug("creating layout");
 				}
 
 				if (contextURI.endsWith("/app/")){
 //					LoggerUtils.logException(logger, new Exception("creating app layout !"+externalForm+" "+contextURI));
-//					logger.warn("creating app layout");
+//					logger.debug("creating app layout");
 					createAppLayout(mainLayout);
 					if (relativeUri.isEmpty()) {
 						setMainLayoutContent(components.getViewByName("competitionEditor", false));
@@ -750,7 +760,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     public void setMainLayoutContent(ApplicationView c) {
     	mainLayoutContent = c;
         boolean needsMenu = c.needsMenu();
-    	//logger.warn(">>>>> setting app view for {} -- view {}",this,c);
+    	//logger.debug(">>>>> setting app view for {} -- view {}",this,c);
         if (this.mobilePanel == null) {
             this.components.currentView = c;
     		final Menu menu = this.components.menu;

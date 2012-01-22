@@ -299,7 +299,7 @@ public class TimerControls extends GridLayout {
 //
 //            @Override
 //            public void buttonClick(ClickEvent event) {
-//                logger.warn("stop/start clicked");
+//                logger.debug("stop/start clicked");
 //                final CountdownTimer timer = groupData.getTimer();
 //                groupData.manageTimerOwner(lifter, groupData, timer);
 //
@@ -335,7 +335,7 @@ public class TimerControls extends GridLayout {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                logger.warn("start clicked");
+                logger.info("start clicked");
                 final CountdownTimer timer = groupData.getTimer();
                 groupData.manageTimerOwner(lifter, groupData, timer);
 
@@ -369,7 +369,7 @@ public class TimerControls extends GridLayout {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                logger.warn("stop clicked");
+                logger.info("stop clicked");
                 final CountdownTimer timer = groupData.getTimer();
                 groupData.manageTimerOwner(lifter, groupData, timer);
 
