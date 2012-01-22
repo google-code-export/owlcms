@@ -77,11 +77,11 @@ public class MastersIndividualSheet extends IndividualSheet {
 
         // create an age group boundary if needed
         ageGroup = lifter.getMastersAgeGroup();
-        // logger.warn("lifter {}  agegroup {}",lifter,ageGroup);
+        // logger.debug("lifter {}  agegroup {}",lifter,ageGroup);
         boolean newHeadingRequired = false;
         if (!ageGroup.equals(prevAgeGroup)) {
             createAgeGroupHeading(workSheet, INDIVIDUAL_COLS - 1, lifter.getMastersGenderAgeGroupInterval());
-            // logger.warn("different");
+            // logger.debug("different");
             newHeadingRequired = true;
         }
         prevAgeGroup = ageGroup;

@@ -466,7 +466,7 @@ public class CompetitionApplicationComponents {
         if (component != null) {
             final ApplicationView applicationView = component.get(initFromFragment,viewName);
 //            LoggerUtils.logException(logger, new Exception("fragment "+fragment));
-//            logger.warn("getViewByName returning {}",applicationView);
+//            logger.debug("getViewByName returning {}",applicationView);
             return applicationView;
         } else {
             throw new RuntimeException(Messages.getString(

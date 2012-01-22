@@ -115,7 +115,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 // can't happen: the device itself is disabled when a red is given.
 //        if ((refereeDecisions[refereeNo].accepted != null) && !(refereeDecisions[refereeNo].accepted)) {
 //        	// cannot reverse from red to white.
-//        	logger.warn("decision ignored from referee {}: {} (prior decision was {})", 
+//        	logger.debug("decision ignored from referee {}: {} (prior decision was {})", 
 //        			new Object[] { refereeNo + 1,
 //                    (accepted ? "lift" : "no lift"), 
 //                    refereeDecisions[refereeNo].accepted});
@@ -169,7 +169,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
             			fireEvent(new DecisionEvent(this,
             					DecisionEvent.Type.DOWN, currentTimeMillis,
             					refereeDecisions));
-            			logger.warn("*** audible down signal");
+            			logger.info("*** audible down signal");
             		}
             	}
             } else {
@@ -200,7 +200,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
                 scheduleReset();
             } else {
                 // referees have changed their mind
-            	logger.warn("three + change");
+            	logger.debug("three + change");
                 fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
             }
         }

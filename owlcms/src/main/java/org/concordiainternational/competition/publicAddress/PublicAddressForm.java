@@ -206,7 +206,7 @@ public class PublicAddressForm extends Form implements Window.CloseListener {
 	 * 
 	 */
 	private void closeWindow() {
-		logger.warn("closeWindow {}",parentList); //$NON-NLS-1$
+		logger.debug("closeWindow {}",parentList); //$NON-NLS-1$
 		masterData.removeBlackBoardListener(countdownField);
 		
 		if (window != null) {
@@ -221,7 +221,7 @@ public class PublicAddressForm extends Form implements Window.CloseListener {
 
 	@Override
 	public void windowClose(CloseEvent e) {
-		logger.warn("windowClose {}",parentList); //$NON-NLS-1$
+		logger.debug("windowClose {}",parentList); //$NON-NLS-1$
 		masterData.removeBlackBoardListener(countdownField);
 	}
 

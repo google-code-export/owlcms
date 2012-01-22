@@ -359,7 +359,7 @@ public abstract class GenericList<T> extends VerticalLayout {
         form.setReadOnly(false);
 
         CompetitionSession competitionSession = (CompetitionSession) ItemAdapter.getObject(item);
-        //logger.warn("retrieved session {} {}",System.identityHashCode(competitionSession), competitionSession.getReferee3());
+        //logger.debug("retrieved session {} {}",System.identityHashCode(competitionSession), competitionSession.getReferee3());
 		Window editingWindow = new Window(competitionSession.getName());
         form.setWindow(editingWindow);
         form.setParentList(this);

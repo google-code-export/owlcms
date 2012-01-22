@@ -253,7 +253,7 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 					switch (updateEvent.getType()) {
 					case DOWN:
 						if (accepted == null) {
-							logger.warn(
+							logger.info(
 									"jury #{} decision required after DOWN",
 									juryIndex + 1);
 							requireDecision();
@@ -261,7 +261,7 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 						break;
 					case WAITING:
 						if (accepted == null) {
-							logger.warn(
+							logger.info(
 									"jury #{} decision required WAITING",
 									juryIndex + 1);
 							requireDecision();
@@ -277,7 +277,7 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 						//top.setEnabled(false);
 						break;
 					case RESET:
-						logger.warn("jury #{} RESET", juryIndex + 1);
+						logger.info("jury #{} RESET", juryIndex + 1);
 						white.setStyleName("white");
 						red.setStyleName("red");
 						resetTop();
@@ -414,7 +414,7 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 	 */
 	@Override
 	public void registerAsListener() {
-		logger.warn("registering as listener");
+		logger.debug("registering as listener");
 		app.getMainWindow().addListener((CloseListener)this);
 		if (juryIndex != null) {
 			setIndex(juryIndex);
@@ -427,7 +427,7 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 	 */
 	@Override
 	public void unregisterAsListener() {
-		logger.warn("unregistering as listener");
+		logger.debug("unregistering as listener");
 		app.getMainWindow().removeListener((CloseListener)this);
 		decisionController.removeListener(this);
 	}

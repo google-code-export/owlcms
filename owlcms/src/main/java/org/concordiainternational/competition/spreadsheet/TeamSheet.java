@@ -79,7 +79,7 @@ public class TeamSheet extends ResultSheet {
         workSheet.add(gender, lifterIndex, 3);
         workSheet.add(lifter.getBodyWeight(), lifterIndex, 4);
 
-        logger.warn("lifter {}  lifterIndex {}", lifter.getLastName(),lifterIndex);
+        logger.debug("lifter {}  lifterIndex {}", lifter.getLastName(),lifterIndex);
         
         workSheet.add(club + "_" + gender, lifterIndex, 5);
         switch (rankingType) {
@@ -182,7 +182,7 @@ public class TeamSheet extends ResultSheet {
 
         setFooterLeft(workSheet);
 
-//        logger.warn("writing snatch");
+//        logger.debug("writing snatch");
         previousGender = null;
         previousClub = null;
         lifterRankWithinTeam = 0;
@@ -193,7 +193,7 @@ public class TeamSheet extends ResultSheet {
             }
         }
         
-//        logger.warn("writing clean-and-jerk");
+//        logger.debug("writing clean-and-jerk");
         previousGender = null;
         previousClub = null;
         lifterRankWithinTeam = 0;
@@ -203,7 +203,7 @@ public class TeamSheet extends ResultSheet {
             }
         }
         
-//        logger.warn("writing total");
+//        logger.debug("writing total");
         previousGender = null;
         previousClub = null;
         lifterRankWithinTeam = 0;

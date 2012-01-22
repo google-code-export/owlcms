@@ -163,19 +163,16 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
             cnf1.setProperty(Environment.SHOW_SQL, "false"); //$NON-NLS-1$
             cnf1.setProperty(Environment.URL, "jdbc:h2:file:" + dbPath); //$NON-NLS-1$
             String ddlMode = "create"; //$NON-NLS-1$
-            File file = new File(dbPath + ".h2.db"); //$NON-NLS-1$
-            logger.warn("Using Hibernate (file {} exists={}", new Object[] { file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
+            File file = new File(dbPath + ".h2.db"); //$NON-NLS-1$            
             if (file.exists()) {
                 ddlMode = "update"; //$NON-NLS-1$
             } else {
             	file = new File(dbPath + ".data.db"); //$NON-NLS-1$
-            	logger.warn("Using Hibernate (file {} exists={}", new Object[] { file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
                 if (file.exists()) {
                     ddlMode = "update"; //$NON-NLS-1$
                 }
             }
-            logger.warn(
-                        "Using Hibernate mode {} (file {} exists={}", new Object[] { ddlMode, file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
+            logger.info("Using Hibernate mode {} (file {} exists={}", new Object[] { ddlMode, file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
             cnf1.setProperty(Environment.HBM2DDL_AUTO, ddlMode);
             // throw new
             // ExceptionInInitializerError("Production database configuration not specified");
@@ -203,19 +200,15 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
             String suffix=";create=true";
             
             File file = new File(dbPath); //$NON-NLS-1$
-            logger.warn("Using Hibernate (file {} exists={}", new Object[] { file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
 			if (file.exists()) {
                 ddlMode = "update"; //$NON-NLS-1$
             } else {
             	file = new File(dbPath); //$NON-NLS-1$
-            	logger.warn(
-            			"Using Hibernate (file {} exists={}",
-            			new Object[] { file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
                 if (file.exists()) {
                     ddlMode = "update"; //$NON-NLS-1$
                 }
             }
-            logger.warn(
+            logger.info(
             		"Using Hibernate mode {} (file {} exists={}",
             		new Object[] { ddlMode, file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
             cnf1.setProperty(Environment.HBM2DDL_AUTO, ddlMode);
@@ -340,7 +333,6 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
         try {
             connection = cnf.buildSettings().getConnectionProvider().getConnection();
             connection.createStatement().execute("SHUTDOWN"); //$NON-NLS-1$
-            // logger.warn("orderly shutdown done.");
         } catch (HibernateException e) {
             LoggerUtils.logException(logger, e);
         } catch (SQLException e) {
@@ -397,7 +389,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 					necDisplay.setComPortName(null);
 				}
             } catch (Exception e1) {
-                logger.warn("could not open port {} {}","COM1",e.getMessage());
+                logger.warn("Could not open ports {} {}",comPortName+" and COM1",e.getMessage());
             }
         }
     }

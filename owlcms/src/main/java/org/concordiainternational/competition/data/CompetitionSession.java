@@ -212,7 +212,6 @@ public class CompetitionSession implements Serializable, Comparable<Object> {
 	}
 
 	public void setReferee3(String referee3) {
-		logger.warn("session: {} {}",this,referee3);
 		this.referee3 = referee3;
 	}
 

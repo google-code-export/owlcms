@@ -425,7 +425,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      */
     @SuppressWarnings("unused")
     private void setTimerForTwoMinutes(Lifter lifter) {
-        logger.warn("setting timer owner to {}", lifter);
+        logger.info("setting timer owner to {}", lifter);
         getTimer().stop();
         getTimer().setOwner(lifter); // so time is kept for this lifter after
                                      // switcheroo
@@ -478,7 +478,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             startTimer(lifter,this,getTimer());
         } else if (!getTimeKeepingInUse()) {
             setLifterAsHavingStarted(lifter);
-            logger.warn("timekeeping NOT in use, setting lifter {} as owner", lifter);
+            logger.info("timekeeping NOT in use, setting lifter {} as owner", lifter);
             getTimer().setOwner(lifter);
         } 
     }
@@ -632,7 +632,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     }
 
     public void setMasterApplication(CompetitionApplication app2) {
-        logger.warn("setting master application {}", app2);
+        logger.debug("setting master application {}", app2);
         this.masterApplication = app2;
     }
 

@@ -151,7 +151,7 @@ public class MastersGroupResults extends ResultSheet {
 		super.writeHeader(workSheet);
 		
 		if (competitionSession != null) {
-			//logger.warn("writeHeader {} {}",System.identityHashCode(competitionSession),competitionSession.getReferee3());
+			//logger.debug("writeHeader {} {}",System.identityHashCode(competitionSession),competitionSession.getReferee3());
 			String announcer = competitionSession.getAnnouncer();
 			workSheet.getCell("C11").setVal(announcer != null ? announcer : ""); //$NON-NLS-1$
 			String marshall = competitionSession.getMarshall();

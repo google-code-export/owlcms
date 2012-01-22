@@ -411,8 +411,8 @@ public class AnnouncerView extends VerticalSplitPanel implements
             
 
 			if (switching) {
-	            logger.warn("=============== switching from {} to group {}", oldSession, newSession); //$NON-NLS-1$
-	            logger.warn("=============== modifying group data {}", masterData, (newSession != null ? newSession.getName() : null)); //$NON-NLS-1$
+	            logger.debug("=============== switching from {} to group {}", oldSession, newSession); //$NON-NLS-1$
+	            logger.debug("=============== modifying group data {}", masterData, (newSession != null ? newSession.getName() : null)); //$NON-NLS-1$
             	masterData.setCurrentSession(newSession);
             }
             
@@ -578,7 +578,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
 	 */
 	@Override
 	public void registerAsListener() {
-		logger.warn("registering listeners");
+		logger.trace("registering listeners");
 		masterData.addListener(this);
 	}
 	
@@ -587,7 +587,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
 	 */
 	@Override
 	public void unregisterAsListener() {
-		logger.warn("unregistering registering listeners");
+		logger.trace("unregistering registering listeners");
 		masterData.removeListener(this);
 		announcerInfo.unregisterAsListener();
         if (lifterCardEditor != null) {
@@ -605,7 +605,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
 
 	@Override
 	public DownloadStream handleURI(URL context, String relativeUri) {
-		logger.warn("registering URI listeners");
+		logger.trace("registering URI listeners");
 		registerAsListener();
 		return null;
 	}

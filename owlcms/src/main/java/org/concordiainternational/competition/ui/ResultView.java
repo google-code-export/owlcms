@@ -309,7 +309,7 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
      * @param dataCurrentGroup
      */
     private void switchGroup(final CompetitionSession dataCurrentGroup) {
-        logger.warn("===============ResultView switching to group {}", dataCurrentGroup); //$NON-NLS-1$
+        logger.debug("===============ResultView switching to group {}", dataCurrentGroup); //$NON-NLS-1$
         groupData.setCurrentSession(dataCurrentGroup);
         if (dataCurrentGroup != null) {
             groupName = dataCurrentGroup.getName();

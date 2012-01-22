@@ -272,7 +272,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 					switch (updateEvent.getType()) {
 					case DOWN:
 						if (accepted == null) {
-							logger.warn(
+							logger.info(
 									"referee #{} decision required after DOWN",
 									refereeIndex + 1);
 							requireDecision();
@@ -280,7 +280,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 						break;
 					case WAITING:
 						if (accepted == null) {
-							logger.warn(
+							logger.info(
 									"referee #{} decision required WAITING",
 									refereeIndex + 1);
 							requireDecision();

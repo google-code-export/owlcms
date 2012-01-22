@@ -72,7 +72,7 @@ public abstract class OutputSheet {
         this.app = app1;
         this.competitionSession = competitionSession1;
         if (competitionSession1 != null){
-            logger.warn("resultSheet session = {} {}",System.identityHashCode(competitionSession1), competitionSession1.getReferee3());
+            logger.debug("resultSheet session = {} {}",System.identityHashCode(competitionSession1), competitionSession1.getReferee3());
         }
     }
 

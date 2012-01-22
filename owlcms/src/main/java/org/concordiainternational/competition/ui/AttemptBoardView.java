@@ -159,7 +159,7 @@ public class AttemptBoardView extends VerticalLayout implements
                 	new Thread(new Runnable() {
 						@Override
 						public void run() {
-//							logger.warn("request to display {}",
+//							logger.debug("request to display {}",
 //									AttemptBoardView.this);
 							if (!waitingForDecisionLightsReset) {
 								display(platformName1, masterData1);
@@ -349,7 +349,7 @@ public class AttemptBoardView extends VerticalLayout implements
     }
     
     private void showDecisionLights(boolean decisionLightsVisible) {
-//    	logger.warn("showDecisionLights {}",decisionLightsVisible);
+//    	logger.debug("showDecisionLights {}",decisionLightsVisible);
     	// remove everything
 		grid.removeComponent(timeDisplayLabel);
         grid.removeComponent(decisionLights);
@@ -574,7 +574,7 @@ public class AttemptBoardView extends VerticalLayout implements
 	 */
 	private void displayMessage(String title, String message, Integer remainingMilliseconds) {
 		// create content formatting
-//		logger.warn("displayMessage {}",remainingMilliseconds);
+//		logger.debug("displayMessage {}",remainingMilliseconds);
 		synchronized (app) {
 			paShown = true;
 			nameLabel.setValue(Messages.getString("AttemptBoard.Pause", CompetitionApplication.getCurrentLocale()));
@@ -592,11 +592,11 @@ public class AttemptBoardView extends VerticalLayout implements
 	 */
 	private void registerHandlers(String viewName1) {
 		// listen to changes in the competition data
-		logger.warn("listening to session data updates.");
+		logger.debug("listening to session data updates.");
         updateListener = registerAsListener(platformName, masterData);
         
         // listen to public address events
-        logger.warn("listening to public address events.");
+        logger.debug("listening to public address events.");
         masterData.addBlackBoardListener(this);
         
         // listen to decisions
@@ -617,13 +617,13 @@ public class AttemptBoardView extends VerticalLayout implements
 		// stop listening to changes in the competition data
 		if (updateListener != null) {
 			masterData.removeListener(updateListener);
-			logger.warn("stopped listening to UpdateEvents");
+			logger.debug("stopped listening to UpdateEvents");
 		}
         
         // stop listening to public address events
 		removeMessage();
         masterData.removeBlackBoardListener(this);
-        logger.warn("stopped listening to PublicAddress TimerEvents");
+        logger.debug("stopped listening to PublicAddress TimerEvents");
         
         // stop listening to decisions
         IDecisionController decisionController = masterData.getRefereeDecisionController();
@@ -647,7 +647,7 @@ public class AttemptBoardView extends VerticalLayout implements
 
 	@Override
 	public DownloadStream handleURI(URL context, String relativeUri) {
-		logger.warn("re-registering handlers for {} {}",this,relativeUri);
+		logger.debug("re-registering handlers for {} {}",this,relativeUri);
 		registerHandlers(viewName);
 		return null;
 	}
