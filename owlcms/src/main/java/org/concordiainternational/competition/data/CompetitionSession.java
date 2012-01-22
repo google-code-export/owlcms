@@ -45,7 +45,8 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 public class CompetitionSession implements Serializable, Comparable<Object> {
 
     private static final long serialVersionUID = -7744027515867237334L;
-    private static final Logger logger = LoggerFactory.getLogger(CompetitionSession.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = LoggerFactory.getLogger(CompetitionSession.class);
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
