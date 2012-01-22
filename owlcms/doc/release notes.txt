@@ -2,6 +2,9 @@
 
 == Release 2.7.3
   * Tested under Ubuntu Linux.
+  * When editing a platform, the sound mixer to be used as output can be selected.  Refresh button
+    on the announcer screen will read this setting again. This is useful on computers that have
+    several mixers/sound cards, or when two platforms are in use.
   * No longer requires the presence of a serial port (used to drive old-fashioned LED display boards)
 
 == Release 2.7.2
