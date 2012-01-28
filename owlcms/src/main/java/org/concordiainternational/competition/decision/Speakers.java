@@ -15,6 +15,7 @@ public class Speakers {
 		List<Mixer> mixers = getOutputs();
 		for (Mixer mixer: mixers) {
 			System.out.println(mixer.getMixerInfo().getName());
+			new Speakers().testSound(mixer);
 		}
 	}
 
@@ -36,7 +37,7 @@ public class Speakers {
 			Mixer mixer = AudioSystem.getMixer(info);
 
 			try {
-				if (mixer != defaultMixer && ! mixer.getMixerInfo().toString().startsWith("Java")) {
+				if (! mixer.getMixerInfo().toString().startsWith("Java")) {
 					AudioFormat af = new AudioFormat(8000f,8,1,true,false);
 					if (AudioSystem.getSourceDataLine(af,info) != null) {
 						mixers.add(mixer);
@@ -52,16 +53,11 @@ public class Speakers {
 	/**
 	 * @param mixer
 	 */
-	public static void testSound(Mixer mixer) {
+	public synchronized void testSound(Mixer mixer) {
 		try {
-			// must use wav format; did not find easy way to get mp3spi to work.
-//			final InputStream resource = Speakers.class
-//			.getResourceAsStream("/sounds/initialWarning.wav");
-//			AudioInputStream inputStream = AudioSystem
-//			.getAudioInputStream(resource);
-//			Clip clip = AudioSystem.getClip(mixer.getMixerInfo());
-//			clip.open(inputStream);
-			System.err.println(mixer.getMixerInfo().getName());
+			if (mixer == null) return;
+			// both sounds should be heard simultaneously
+			new Sound(mixer,"/sounds/initialWarning2.wav").emit();
 			new Tone(mixer, 1100, 1200, 1.0).emit();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
