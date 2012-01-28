@@ -359,8 +359,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         	if (currentSession != null) {
     			final String name = currentSession.getName();
 				MDC.put("currentGroup", name);
-    			logger.info("setting current group to {}", name);
-
+    			logger.trace("setting MDC group to {}", name);
         	}
 
             return masterData;
