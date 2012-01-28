@@ -21,7 +21,6 @@
 	<logger name="org.concordiainternational.org" level="INFO" /> 
     <logger name="org.concordiainternational.competition.nec" level="DEBUG" />
     
-    <logger name="org.concordiainternational.competition.timer" level="DEBUG" />
     <!--
         <logger name="com.vaadin.event" level="DEBUG" />
         
