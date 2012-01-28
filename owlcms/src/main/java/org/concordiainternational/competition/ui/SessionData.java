@@ -28,6 +28,7 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
+import org.apache.log4j.MDC;
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
@@ -588,6 +589,10 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      * @return the currentSession
      */
     public CompetitionSession getCurrentSession() {
+    	if (currentSession != null) {
+			final String name = currentSession.getName();
+			MDC.put("currentGroup", ">"+name);
+    	}
         return currentSession;
     }
 
@@ -1204,6 +1209,21 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 	
 //	public void setPublicAddressTimer(PublicAddressCountdownTimer publicAddressTimer) {
 //		this.publicAddressTimer = publicAddressTimer;
+//	}
+	
+//	void logInfo(Logger logger1, String message, Object argument1) {
+//		MDC.put("currentGroup",currentSession.getName());
+//		logger1.info(message,argument1);
+//	}
+//	
+//	void logInfo(Logger logger1, String message, Object argument1, Object argument2) {
+//		MDC.put("currentGroup",currentSession.getName());
+//		logger1.info(message,argument1,argument2);
+//	}
+//	
+//	void logInfo(Logger logger1, String message, Object[] arguments) {
+//		MDC.put("currentGroup",currentSession.getName());
+//		logger1.info(message,arguments);
 //	}
 
 }
