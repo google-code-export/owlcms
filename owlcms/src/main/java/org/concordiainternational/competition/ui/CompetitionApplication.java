@@ -318,6 +318,12 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 //    }
 
     public CompetitionSession getCurrentCompetitionSession() {
+    	if (currentGroup != null) {
+			final String name = currentGroup.getName();
+			MDC.put("currentGroup", name);
+    	} else {
+    		MDC.put("currentGroup", "-");
+    	}
         return currentGroup;
     }
 
@@ -355,13 +361,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     public SessionData getMasterData(String platformName) {
         SessionData masterData = SessionData.getSingletonForPlatform(platformName);
         if (masterData != null) {
-        	final CompetitionSession currentSession = masterData.getCurrentSession();
-        	if (currentSession != null) {
-    			final String name = currentSession.getName();
-				MDC.put("currentGroup", name);
-    			logger.trace("setting MDC group to {}", name);
-        	}
-
+        	masterData.getCurrentSession();
             return masterData;
         } else {
             logger.error("Master data for platformName " + platformName + " not found"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -491,6 +491,10 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      */
     @Override
 	public void setCurrentCompetitionSession(CompetitionSession newSession) {
+        if (newSession != null) {      	
+            final String name = newSession.getName();
+			MDC.put("currentGroup", "*"+name);
+        }
     	final CompetitionSession oldSession = currentGroup;
         currentGroup = newSession;
         final ApplicationView currentView = components.currentView;
@@ -501,11 +505,6 @@ public class CompetitionApplication extends Application implements HbnSessionMan
                 currentView.refresh();
             }
             setMainLayoutContent(currentView);
-        }
-        if (newSession != null) {      	
-            final String name = newSession.getName();
-			MDC.put("currentGroup", name);
-            logger.info("switching session to {}",name);
         }
 
     }
@@ -647,6 +646,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
                 } else {
                 	request.getSession(true).setMaxInactiveInterval(3600);
                 }
+                getCurrentCompetitionSession(); // sets up the MDC
             }
         };
 		getContext().addTransactionListener(listener);
