@@ -170,7 +170,7 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
 							public void valueChange(ValueChangeEvent event) {
 								Platform pl = (Platform)((EntityItem) item).getPojo();
 								pl.setMixerName((String) event.getProperty().getValue());
-								Speakers.testSound(pl.getMixer());
+								new Speakers().testSound(pl.getMixer());
 							}
 						});
 	                	return ls;
