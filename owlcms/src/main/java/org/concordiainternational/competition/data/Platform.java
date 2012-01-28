@@ -372,7 +372,7 @@ public class Platform implements Serializable {
 		for (Mixer curMixer: mixers) {
 			if (curMixer.getMixerInfo().getName().equals(mixerName)) {
 				setMixer(curMixer);
-				logger.info("Platform: {}: changing mixer to {}",this.name,mixerName);
+				logger.debug("Platform: {}: changing mixer to {}",this.name,mixerName);
 				break;
 			}
 		}
