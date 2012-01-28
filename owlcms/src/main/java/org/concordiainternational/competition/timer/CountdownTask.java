@@ -29,12 +29,6 @@ import org.slf4j.LoggerFactory;
  */
 class CountdownTask extends TimerTask implements Serializable {
 
-    /**
-     * sound takes time to start playing; we need to anticipate the start. This
-     * number is determined empirically
-     */
-    // private static final int ANTICIPATION_CONSTANT = 0;
-
     private static final long serialVersionUID = -2967275874759395049L;
 
     final private static Logger logger = LoggerFactory.getLogger(CountdownTask.class);

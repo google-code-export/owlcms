@@ -62,14 +62,14 @@ public class CountdownTimer implements Serializable {
     private LifterInfo masterBuzzer = null;
 
     public CountdownTimer() {
-        logger.debug("new"); //$NON-NLS-1$
+        logger.debug("new {}",this); //$NON-NLS-1$
     }
 
     /**
      * Start the timer.
      */
     public void start() {
-        logger.debug("enter start {}", getTimeRemaining()); //$NON-NLS-1$
+        logger.debug("enter start {} {}", this, getTimeRemaining()); //$NON-NLS-1$
         if (timer != null) {
             timer.cancel();
         }
