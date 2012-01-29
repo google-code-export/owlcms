@@ -119,11 +119,13 @@ class CountdownTask extends TimerTask implements Serializable {
         } else if (ticks <= noTimeLeftTicks && !getNoTimeLeftSignaled()) {
             noTimeLeft();
             setNoTimeLeftSignaled(true); // buzzer has already sounded.
-        } else {
+        } else if (ticks >= 0) {
             normalTick();
         }
 
-        if (ticks <= 0) {
+        // leave the timer running for one second extra
+        // Under linux, cancelling the timer also cancel the sounds
+        if (ticks <= -1000) {
             this.countdownTimer.timer.cancel();
         } else {
             ticks = ticks - decrement;
