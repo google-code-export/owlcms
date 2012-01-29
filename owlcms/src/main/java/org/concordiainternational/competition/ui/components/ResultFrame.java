@@ -624,7 +624,7 @@ public class ResultFrame extends VerticalLayout implements
 
 	@Override
 	public DownloadStream handleURI(URL context, String relativeUri) {
-		logger.warn("re-registering handlers for {} {}",this,relativeUri);
+		logger.trace("re-registering handlers for {} {}",this,relativeUri);
 		registerHandlers(viewName);
 		return null;
 	}

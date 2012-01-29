@@ -566,8 +566,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      * @param newCurrentSession
      *            the currentSession to set
      */
-    void setCurrentSession(CompetitionSession newCurrentSession) {
-        logger.debug("{} setting group to {}", this, newCurrentSession); //$NON-NLS-1$
+    public void setCurrentSession(CompetitionSession newCurrentSession) {
+        logger.info("{} setting group to {}", this, newCurrentSession); //$NON-NLS-1$
         // do this first, in case we get called us recursively  
         this.currentSession = newCurrentSession;
         
@@ -579,8 +579,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         loadData();
         sortLists();
         publishLists();
-        setTimeKeepingInUse(false); // will switch to true if Start/stop is
-                                    // used.
+        setTimeKeepingInUse(false); // will switch to true if Start/stop is used.
         // tell listeners to refresh.
         fireEvent(new UpdateEvent(this, true));
     }
@@ -1049,7 +1048,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 			if (dl != null) {
 				dl.doDown();
 			} else {
-				logger.warn("dl is null");
+				logger.error("decision lights is null");
 			}
 		}
 		timerStoppedByReferee();
