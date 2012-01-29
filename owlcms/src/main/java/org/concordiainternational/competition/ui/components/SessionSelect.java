@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import org.concordiainternational.competition.data.CompetitionSession;
-import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.SessionData;
