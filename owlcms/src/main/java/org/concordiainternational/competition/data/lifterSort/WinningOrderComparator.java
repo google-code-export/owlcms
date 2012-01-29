@@ -122,30 +122,30 @@ public class WinningOrderComparator extends AbstractLifterComparator implements 
         false;
         int compare = 0;
 
-        if (trace) logger.warn("lifter1 {};  lifter2 {}", lifter1.getFirstName(), lifter2.getFirstName());
+        if (trace) logger.trace("lifter1 {};  lifter2 {}", lifter1.getFirstName(), lifter2.getFirstName());
 
         if (useRegistrationCategory) {
             compare = compareRegistrationCategory(lifter1, lifter2);
         } else {
             compare = compareCategory(lifter1, lifter2);
         }
-        if (trace) logger.warn("compareCategory {}", compare);
+        if (trace) logger.trace("compareCategory {}", compare);
         if (compare != 0) return compare;
 
         compare = compareBestSnatch(lifter1, lifter2);
-        if (trace) logger.warn("compareBestSnatch {}", compare);
+        if (trace) logger.trace("compareBestSnatch {}", compare);
         if (compare != 0) return -compare; // smaller snatch is less good
 
         compare = compareBodyWeight(lifter1, lifter2);
-        if (trace) logger.warn("compareBodyWeight {}", compare);
+        if (trace) logger.trace("compareBodyWeight {}", compare);
         if (compare != 0) return compare; // smaller lifter wins
 
         compare = compareBestSnatchAttemptNumber(lifter1, lifter2);
-        if (trace) logger.warn("compareBestSnatchAttemptNumber {}", compare);
+        if (trace) logger.trace("compareBestSnatchAttemptNumber {}", compare);
         if (compare != 0) return compare; // earlier best attempt wins
 
         compare = comparePreviousAttempts(lifter1.getBestSnatchAttemptNumber(), false, lifter1, lifter2);
-        if (trace) logger.warn("comparePreviousAttempts {}", compare);
+        if (trace) logger.trace("comparePreviousAttempts {}", compare);
         if (compare != 0) return compare; // compare attempted weights (prior to
                                           // best attempt), smaller first
 
@@ -153,12 +153,12 @@ public class WinningOrderComparator extends AbstractLifterComparator implements 
         // earlier group is not
         // given the ranking.
         // compare = compareGroup(lifter1, lifter2);
-        // if (trace) logger.warn("compareGroup {}",compare);
+        // if (trace) logger.trace("compareGroup {}",compare);
         // if (compare != 0) return compare; // if split groups, smallest group
         // wins -- lifted earlier
 
         compare = compareLotNumber(lifter1, lifter2);
-        if (trace) logger.warn("compareLotNumber {}", compare);
+        if (trace) logger.trace("compareLotNumber {}", compare);
         if (compare != 0) return compare; // if equality within a group,
                                           // smallest lot number wins
 
