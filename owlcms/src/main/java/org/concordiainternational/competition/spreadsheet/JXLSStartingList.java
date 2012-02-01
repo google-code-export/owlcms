@@ -66,9 +66,9 @@ public class JXLSStartingList extends JXLSWorkbookStreamSource {
 				cleanSessions.add(session);
 			}
 		}
-		for (CompetitionSession session: cleanSessions) {
-			System.err.println(session.getName());
-		}
+//		for (CompetitionSession session: cleanSessions) {
+//			System.err.println(session.getName());
+//		}
 		getReportingBeans().put("sessions",cleanSessions);
 	}
 
