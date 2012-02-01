@@ -18,6 +18,8 @@ package org.concordiainternational.competition.webapp;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Calendar;
@@ -36,6 +38,7 @@ import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.Platform;
+import org.concordiainternational.competition.decision.Speakers;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.nec.NECDisplay;
 import org.concordiainternational.competition.utils.LoggerUtils;
@@ -246,7 +249,6 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 					.getString("Competition.defaultFederationEMail", Locale.getDefault())); //$NON-NLS-1$
 			competition.setFederationWebSite(Messages.getString(
 					"Competition.defaultFederationWebSite", Locale.getDefault())); //$NON-NLS-1$
-			sess.save(competition);
 
 			Calendar w = Calendar.getInstance();
 			w.set(Calendar.MILLISECOND, 0);
@@ -257,33 +259,100 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 			c.add(Calendar.HOUR_OF_DAY, 2);
 
 			if (testMode) {
-				Platform platform1 = new Platform("Gym 1"); //$NON-NLS-1$
-				sess.save(platform1);
-				Platform platform2 = new Platform("Gym 2"); //$NON-NLS-1$
-				sess.save(platform1);
-				sess.save(platform2);
-				CompetitionSession groupA = new CompetitionSession("A", w.getTime(), c.getTime()); //$NON-NLS-1$
-				groupA.setPlatform(platform1);
-				CompetitionSession groupB = new CompetitionSession("B", w.getTime(), c.getTime()); //$NON-NLS-1$
-				groupB.setPlatform(platform2);
-				CompetitionSession groupC = new CompetitionSession("C", w.getTime(), c.getTime()); //$NON-NLS-1$
-				groupC.setPlatform(platform1);
-				insertSampleLifters(liftersToLoad, sess, groupA, groupB, groupC);
+				setupTestData(competition, liftersToLoad, sess, w, c);
 			} else {
-				Platform platform1 = new Platform("Platform"); //$NON-NLS-1$
-				sess.save(platform1);
-				CompetitionSession groupA = new CompetitionSession("A", null, null); //$NON-NLS-1$
-				sess.save(groupA);
-				CompetitionSession groupB = new CompetitionSession("B", null, null); //$NON-NLS-1$#
-				sess.save(groupB);
-				CompetitionSession groupC = new CompetitionSession("C", null, null); //$NON-NLS-1$
-				sess.save(groupC);
+				setupEmptyCompetition(competition, sess);	
 			}
-
+			
+			sess.save(competition);
 		} else {
 			// database contains data, leave it alone.
 		}
 
+	}
+
+	/**
+	 * Create an empty competition.
+	 * Set-up the defaults for using the timekeeping and refereeing features.
+	 * @param competition 
+	 * 
+	 * @param sess
+	 */
+	protected static void setupEmptyCompetition(Competition competition, org.hibernate.Session sess) {
+		Platform platform1 = new Platform("Platform"); //$NON-NLS-1$
+		setDefaultMixerName(platform1);
+		platform1.setHasDisplay(false);
+		platform1.setShowDecisionLights(true);
+		// collar
+		platform1.setNbC_2_5(1);
+		// small plates
+		platform1.setNbS_0_5(1);
+		platform1.setNbS_1(1);
+		platform1.setNbS_1_5(1);
+		platform1.setNbS_2(1);
+		platform1.setNbS_2_5(1);
+		// large plates, regulation set-up
+		platform1.setNbL_2_5(0);
+		platform1.setNbL_5(0);
+		platform1.setNbL_10(1);
+		platform1.setNbL_15(1);
+		platform1.setNbL_20(1);
+		platform1.setNbL_25(1);
+		
+		// competition template
+		File templateFile;
+		URL templateUrl = platform1.getClass().getResource("/templates/teamResults/TeamResultSheetTemplate_Standard.xls");
+		try {
+			templateFile = new File(templateUrl.toURI());
+			competition.setResultTemplateFileName(templateFile.getCanonicalPath());
+		} catch (URISyntaxException e) {
+			templateFile = new File(templateUrl.getPath());
+		} catch (IOException e) {
+		}
+
+		sess.save(platform1);
+		CompetitionSession groupA = new CompetitionSession("A", null, null); //$NON-NLS-1$
+		sess.save(groupA);
+		CompetitionSession groupB = new CompetitionSession("B", null, null); //$NON-NLS-1$#
+		sess.save(groupB);
+		CompetitionSession groupC = new CompetitionSession("C", null, null); //$NON-NLS-1$
+		sess.save(groupC);
+	}
+
+	/**
+	 * @param competition 
+	 * @param liftersToLoad
+	 * @param sess
+	 * @param w
+	 * @param c
+	 */
+	protected static void setupTestData(Competition competition, int liftersToLoad,
+			org.hibernate.Session sess, Calendar w, Calendar c) {
+		Platform platform1 = new Platform("Gym 1"); //$NON-NLS-1$
+		sess.save(platform1);
+		Platform platform2 = new Platform("Gym 2"); //$NON-NLS-1$
+		sess.save(platform1);
+		sess.save(platform2);
+		CompetitionSession groupA = new CompetitionSession("A", w.getTime(), c.getTime()); //$NON-NLS-1$
+		groupA.setPlatform(platform1);
+		CompetitionSession groupB = new CompetitionSession("B", w.getTime(), c.getTime()); //$NON-NLS-1$
+		groupB.setPlatform(platform2);
+		CompetitionSession groupC = new CompetitionSession("C", w.getTime(), c.getTime()); //$NON-NLS-1$
+		groupC.setPlatform(platform1);
+		insertSampleLifters(liftersToLoad, sess, groupA, groupB, groupC);
+	}
+
+	/**
+	 * @param platform1
+	 */
+	protected static void setDefaultMixerName(Platform platform1) {
+		String mixerName = null;	
+		try {
+			mixerName = Speakers.getOutputNames().get(0);
+			platform1.setMixerName(mixerName);
+		} catch (Exception e) {
+			// leave mixerName null
+		}
 	}
 
 	private static void insertSampleLifters(int liftersToLoad, org.hibernate.Session sess, CompetitionSession groupA, CompetitionSession groupB,

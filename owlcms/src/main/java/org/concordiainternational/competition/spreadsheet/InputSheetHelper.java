@@ -26,10 +26,13 @@ import java.util.List;
 import org.concordiainternational.competition.data.Category;
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CategoryLookupByName;
+import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.CompetitionSessionLookup;
 import org.concordiainternational.competition.data.Gender;
 import org.concordiainternational.competition.data.Lifter;
+import org.hibernate.Session;
+import org.pojava.datetime.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +57,10 @@ public class InputSheetHelper implements InputSheet {
 
 	private LifterReader reader;
 
+	private WorkBookHandle workBookHandle;
+
+	private WorkSheetHandle workSheet;
+
     InputSheetHelper(HbnSessionManager hbnSessionManager, LifterReader reader) {
         categoryLookup = new CategoryLookup(hbnSessionManager);
         categoryLookupByName = new CategoryLookupByName(hbnSessionManager);
@@ -67,13 +74,11 @@ public class InputSheetHelper implements InputSheet {
     @Override
 	public synchronized List<Lifter> getAllLifters(InputStream is, HbnSessionManager sessionMgr) throws IOException,
             CellNotFoundException, WorkSheetNotFoundException {
-        WorkBookHandle workBookHandle = null;
+
 
         LinkedList<Lifter> allLifters;
         try {
-            // get the data sheet
-            workBookHandle = new WorkBookHandle(is);
-            final WorkSheetHandle workSheet = workBookHandle.getWorkSheet(0);
+            getWorkSheet(is);
 
             // process data sheet
             allLifters = new LinkedList<Lifter>();
@@ -99,6 +104,33 @@ public class InputSheetHelper implements InputSheet {
         }
         return allLifters;
     }
+
+	/**
+	 * @param is
+	 * @throws WorkSheetNotFoundException
+	 */
+	protected void getWorkSheet(InputStream is)
+			throws WorkSheetNotFoundException {
+		// get the data sheet
+		if (workSheet == null) {
+		    workBookHandle = new WorkBookHandle(is);
+		    workSheet = workBookHandle.getWorkSheet(0);
+		}
+	}
+    
+	public void readHeader(InputStream is, HbnSessionManager sessionMgr) 
+	throws CellNotFoundException, WorkSheetNotFoundException, IOException {
+		try {
+			getWorkSheet(is);
+            readHeader(sessionMgr.getHbnSession());
+        } finally {
+            // close workbook file and hide lock
+            if (workBookHandle != null) workBookHandle.close();
+            if (is != null) is.close();
+
+        }
+	}
+
     
     /*
      * (non-Javadoc)
@@ -215,6 +247,33 @@ public class InputSheetHelper implements InputSheet {
         } catch (CellNotFoundException c) {
             logger.debug(c.toString());
             return null;
+        }
+    }
+    
+    @SuppressWarnings( { "unchecked" })
+    public void readHeader(Session hbnSession) throws CellNotFoundException {
+        List<Competition> competitions = hbnSession.createCriteria(Competition.class).list();
+        if (competitions.size() > 0) {
+            final Competition competition = competitions.get(0);
+            competition.setFederation(workSheet.getCell("A1").getStringVal()); //$NON-NLS-1$
+            competition.setFederationAddress(workSheet.getCell("A2").getStringVal()); //$NON-NLS-1$
+            competition.setFederationWebSite(workSheet.getCell("A3").getStringVal()); //$NON-NLS-1$
+            competition.setFederationEMail(workSheet.getCell("B4").getStringVal()); //$NON-NLS-1$
+
+            competition.setCompetitionName(workSheet.getCell("I1").getStringVal()); //$NON-NLS-1$
+            competition.setCompetitionSite(workSheet.getCell("I2").getStringVal()); //$NON-NLS-1$
+            
+            String dateString = workSheet.getCell("I3").getStringVal(); //$NON-NLS-1$
+            if (dateString != null && !dateString.trim().isEmpty()) {
+                Date date = DateTime.parse(dateString).toDate();       
+                competition.setCompetitionDate(date);
+            } else {
+            	competition.setCompetitionDate(new Date());
+            }
+
+            competition.setCompetitionCity(workSheet.getCell("T2").getStringVal()); //$NON-NLS-1$
+            competition.setCompetitionOrganizer(workSheet.getCell("T3").getStringVal()); //$NON-NLS-1$
+            competition.setInvitedIfBornBefore(workSheet.getCell("T4").getIntVal()); //$NON-NLS-1$
         }
     }
 
