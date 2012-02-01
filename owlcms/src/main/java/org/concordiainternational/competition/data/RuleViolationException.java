@@ -36,11 +36,17 @@ public class RuleViolationException extends InvalidValueException implements Loc
         this.messageKey = s;
         this.messageFormatData = objs;
     }
+    
+    public RuleViolationException(Locale l, String s, Object... objs) {
+        super(s);
+        this.setLocale(l);
+        this.messageKey = s;
+        this.messageFormatData = objs;
+    }
 
     @Override
     public String getMessage() {
-        final String messageTemplate = Messages.getString(this.messageKey, CompetitionApplication.getDefaultLocale());
-        return MessageFormat.format(messageTemplate, messageFormatData);
+    	return getLocalizedMessage();
     }
 
     @Override
