@@ -68,7 +68,7 @@ public abstract class GenericBeanList<T extends Serializable> extends GenericLis
     @Override
     public void clearCache() {
         // the following is brute force!
-        System.err.println("GenericBeanList: clearCache()"); //$NON-NLS-1$
+        //System.err.println("GenericBeanList: clearCache()"); //$NON-NLS-1$
         table = null;
         populateAndConfigureTable();
     }
