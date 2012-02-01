@@ -1,8 +1,12 @@
 #summary Release Notes
 
 == Release 2.8.1
-  * Restored the down signal (both visual and audio). Inadvertently broken when independent audio
-    for multiple platforms was introduced in v2.8.0.
+  * Fix: Had inadvertently disabled the down signal while adding support for independent audio
+    for multiple platforms in v2.8.0.
+  * Read information about the competition from the registration spreadsheet
+  * Set the default competition book template when initializing the database.
+  * Associate the default sound mixer to the default platform.
+  * Assume that by default the system provides timekeeping and decision lights.
   * All error messages now appear according to the language selected by the browser.
   * Set the default language to en_US instead of fr_CA, so that international users get
     English messages if their browser's preferred language is not English.
@@ -13,11 +17,11 @@
 == Release 2.8.0
   * Tested to work under embedded Tomcat (packaged as a Windows executable)
   * Tested under Ubuntu Linux 11.10 as an embedded Tomcat (packaged as a tar.gz)
-    - one minor issue: the final buzzer sound is emitted, but cut short.
+    - known issue (minor): the final buzzer sound is emitted, but cut short.
   * Tested under Ubuntu Linux 10 as a server (packaged as a war)
     - under this configuration, sound is likely not available. The sounds are
-      generated on the server itself, in order to avoid latency. server configurations
-      do not typically install pulseaudio.
+      generated on the server itself, in order to avoid latency. Ubuntu Server
+      does not install pulseaudio, and installing it is not straightforward.
   * Clean-up of sound processing
   * When editing a platform, the sound mixer to be used as output can be selected.  Refresh button
     on the announcer screen will read this setting again. This is useful on computers that have
