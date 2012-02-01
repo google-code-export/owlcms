@@ -1,5 +1,15 @@
 #summary Release Notes
 
+== Release 2.8.1
+  * Restored the down signal (both visual and audio). Inadvertently broken when independent audio
+    for multiple platforms was introduced in v2.8.0.
+  * All error messages now appear according to the language selected by the browser.
+  * Set the default language to en_US instead of fr_CA, so that international users get
+    English messages if their browser's preferred language is not English.
+    (The application is fully localized, support for additional languages only requires translation
+    of owlcms/WEB-INF/classes/i18n/messages_en.properties to the desired language)
+     
+  
 == Release 2.8.0
   * Tested to work under embedded Tomcat (packaged as a Windows executable)
   * Tested under Ubuntu Linux 11.10 as an embedded Tomcat (packaged as a tar.gz)
