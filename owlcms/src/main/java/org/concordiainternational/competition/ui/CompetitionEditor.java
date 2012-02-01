@@ -304,8 +304,6 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
 
             private void saveItem(HbnContainer<Competition>.EntityItem<Competition> cmItem) {
                 Competition competition = (Competition) cmItem.getPojo();
-                System.err
-                        .println("saving " + competition.getCompetitionName() + " " + competition.getResultTemplateFileName()); //$NON-NLS-1$
                 final Session session = app.getHbnSession();
                 session.merge(competition);
                 session.flush();

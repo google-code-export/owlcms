@@ -31,6 +31,7 @@ import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.components.ApplicationView;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,9 +147,12 @@ public class SpreadsheetUploader extends CustomComponent implements Upload.Succe
         final FileResource fileResource = new FileResource(file, getApplication());
         DownloadStream ds = fileResource.getStream();
         try {
-            List<Lifter> lifters = new WeighInSheet(app).getAllLifters(ds.getStream(), app);
+            final WeighInSheet weighInSheet = new WeighInSheet(app);
+            final Session hbnSession = app.getHbnSession();
+            weighInSheet.readHeader(ds.getStream(), app);
+			List<Lifter> lifters = weighInSheet.getAllLifters(ds.getStream(), app);
             for (Lifter curLifter : lifters) {
-                app.getHbnSession().save(curLifter);
+				hbnSession.save(curLifter);
             }
         } catch (Throwable t) {
             t.printStackTrace();

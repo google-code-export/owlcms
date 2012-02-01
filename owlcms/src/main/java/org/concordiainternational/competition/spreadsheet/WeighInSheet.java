@@ -184,8 +184,14 @@ public class WeighInSheet extends OutputSheet implements InputSheet, LifterReade
     }
 
 
-    @SuppressWarnings( { "unchecked", "unused" })
-    private void readHeader(WorkSheetHandle workSheet, Session hbnSession) throws CellNotFoundException {
+	public void readHeader(InputStream is, HbnSessionManager session) 
+	throws CellNotFoundException, WorkSheetNotFoundException, IOException {
+		lifterReaderHelper.readHeader(is, session);
+		return;
+	}
+	
+    @SuppressWarnings( { "unchecked" })
+    public void readHeader(WorkSheetHandle workSheet, Session hbnSession) throws CellNotFoundException {
         List<Competition> competitions = app.getHbnSession().createCriteria(Competition.class).list();
         if (competitions.size() > 0) {
             final Competition competition = competitions.get(0);
@@ -194,9 +200,9 @@ public class WeighInSheet extends OutputSheet implements InputSheet, LifterReade
             competition.setFederationWebSite(workSheet.getCell("A3").getStringVal()); //$NON-NLS-1$
             competition.setFederationEMail(workSheet.getCell("B4").getStringVal()); //$NON-NLS-1$
 
-            competition.setCompetitionName(workSheet.getCell("L1").getStringVal()); //$NON-NLS-1$
-            competition.setCompetitionSite(workSheet.getCell("L2").getStringVal()); //$NON-NLS-1$
-            // competition.setCompetitionDate(workSheet.getCell("L3").getDateVal());
+            competition.setCompetitionName(workSheet.getCell("I1").getStringVal()); //$NON-NLS-1$
+            competition.setCompetitionSite(workSheet.getCell("I2").getStringVal()); //$NON-NLS-1$
+            //competition.setCompetitionDate(workSheet.getCell("I3").getDateVal());
 
             competition.setCompetitionCity(workSheet.getCell("T2").getStringVal()); //$NON-NLS-1$
             competition.setCompetitionOrganizer(workSheet.getCell("T3").getStringVal()); //$NON-NLS-1$
@@ -249,5 +255,7 @@ public class WeighInSheet extends OutputSheet implements InputSheet, LifterReade
 			writeGroup(workSheet);
 		}		
 	}
+
+
 
 }
