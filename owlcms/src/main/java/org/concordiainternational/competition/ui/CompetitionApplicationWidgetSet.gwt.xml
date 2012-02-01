@@ -1,0 +1,28 @@
+<module>
+	<!-- Inherit super widgetset -->
+	<inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
+	
+    <inherits name="com.vaadin.incubator.dashlayout.DashLayoutWidgetSet" />
+
+    <inherits name="org.vaadin.artur.icepush.IcepushaddonWidgetset" />
+    <inherits name="org.icepush.gwt.ICEpush" />
+
+    <!-- adding support for icepush -->
+    <script src="icepush.js"></script>
+    
+
+    <inherits name="org.vaadin.jouni.animator.AnimatorWidgetset" />
+
+    <inherits name="org.vaadin.notifique.widgetset.NotifiqueWidgetset" />
+
+    <inherits name="org.vaadin.overlay.OverlaysWidgetset" />
+
+    <inherits name="org.vaadin.weelayout.WeelayoutWidgetset" />
+
+    <inherits name="org.vaadin.touchdiv.widgetset.TouchDivWidgetSet" />
+    
+    <inherits name="com.google.gwt.user.MobileSafari" />
+
+    <inherits name="com.lombardi.mobilesafari.MobileSafariEvents" />
+
+</module>

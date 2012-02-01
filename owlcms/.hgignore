@@ -1,0 +1,32 @@
+
+syntax: regexp
+^target/classes$
+
+syntax: glob
+owlcms-*
+syntax: regexp
+^target/\.generated$
+syntax: regexp
+^target/war$
+syntax: regexp
+^src/main/webapp/VAADIN/themes/competition/Thumbs\.db$
+syntax: regexp
+^target/tomcat$
+syntax: regexp
+^src/main/webapp/VAADIN/widgetsets$
+syntax: regexp
+^target/HCompetition-1\.8\.1$
+syntax: regexp
+\.war$
+syntax: regexp
+^target/surefire-reports$
+syntax: regexp
+^target/test-classes$
+syntax: regexp
+^target/test-classes$
+syntax: regexp
+^target$
+syntax: regexp
+^src/main/webapp/registration$
+syntax: regexp
+^doc/owlcmsScreenshots/\.picasa\.ini$

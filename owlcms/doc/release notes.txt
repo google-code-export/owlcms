@@ -1,0 +1,202 @@
+#summary Release Notes
+
+== Release 2.8.0
+  * Tested to work under embedded Tomcat (packaged as a Windows executable)
+  * Tested under Ubuntu Linux 11.10 as an embedded Tomcat (packaged as a tar.gz)
+    - one minor issue: the final buzzer sound is emitted, but cut short.
+  * Tested under Ubuntu Linux 10 as a server (packaged as a war)
+    - under this configuration, sound is likely not available. The sounds are
+      generated on the server itself, in order to avoid latency. server configurations
+      do not typically install pulseaudio.
+  * Clean-up of sound processing
+  * When editing a platform, the sound mixer to be used as output can be selected.  Refresh button
+    on the announcer screen will read this setting again. This is useful on computers that have
+    several mixers/sound cards, or when two platforms are in use.
+  * No longer requires the presence of a serial port (used to drive old-fashioned LED display boards)
+
+== Release 2.7.2
+  * Fix: when using multiple platforms, sessions were appearing multiple times in dropdown.
+    due to ill-defined hashcode function and use of unnecessary eager fetch.
+
+== Release 2.7.1
+  * Fix: notifications to the announcer for good/bad lifts were duplicated if the announcer
+    used the menus to go to another page and came back.  General clean-up of registration
+    and unregistration for all notifications.
+    
+== Release 2.7.0
+  * All sounds are now produced on the server.  This removes the dependency on Flash running
+    in the browser, and increases reliability.  Reminder: there is no user interface
+    to select which sound mixer is used for a platform, so sounds can only be used on
+    single-platform setups. 
+  
+== Release 2.6.2
+  * Better visual separation for decision lights
+  * Article 6.5.15 - exception implemented : two minutes are granted if an athlete just
+    lifted, was not called, and changes by other athletes bring him back to lift, even
+    if time started for the other athletes.  The athlete gets 1 minute if he was called
+    and participated in the sequence of weight changes that brings him back as
+    next lifter.
+  * Improved feedback to referees using tablets
+  * When using tablets, better usability for announcer: if a decision is given by the officials,
+    the announcer controls for "lift/no lift" are hidden, preventing the announcer from recording
+    a spurious decision.  If on the other hand no decision has been given by one official (due to
+    malfunction), and flags are used, the controls are visible and the announcer can record the
+    decision.
+  * Tested with "Dolphin Mini" browser on Android tablets.  Recommended for use on low-end tablets.
+    
+
+== Release 2.6.1
+  * Split the clock button into a separate start and stop button, to facilitate cooperation
+    between time keeper and announcer, especially when time is stopped for a weight change.
+  * Time keeper can use "Enter" key to start and stop timer without using the mouse
+  * Simplified interface for timekeeper console.
+
+== Release 2.6.0
+  * Reworked the attempt board for better readability
+  * When using wireless tablets for decisions, show the decision to the announcer as a notification
+    at the top of the screen. Also show decision reversals.
+  * Corrected computation of plate loading so that collars are not used with large thin 2.5kg plates
+  
+  
+== Release 2.5.2
+  * Made sure that all decision changes are shown consistently on all displays.
+  * Preparation work for supporting audible down signal on multiple platforms.
+
+== Release 2.5.1
+  * Marshall shown on weigh-in list (which is used as paper backup)
+  * Increased separation between buttons on tablets for jury and referees.
+
+== Release 2.5.0
+  * Moved LifterCard generation to JXSL package (and Apache POI) to give end users more control 
+    on look&feel
+
+== Release 2.4.1
+  * Wait until all referee keypads are blocked to register decision.
+  
+== Release 2.4.0
+  * Fixed Lifter-facing display when referees change their decision.
+
+== Releases 2.3.2 to 2.3.7 ==
+  * Many team scoring subtleties for provincial "Jeux du Québec" games
+  * Work-around for results not being shown immediately when selecting Results page
+  * Fix for category display on result board for youth competitions (e.g. >85) -- fixes regression
+    introduced by Masters category display.
+
+== Release 2.3.1 ==
+  * Added template for provincial "Jeux du Québec" games scoring system
+
+== Release 2.3.0 ==
+  * Jury and Referee decision displays now highlight which person who has not given decision
+  * Jury decision display shows decision as soon as all decisions are in.
+  * Checkmark on referee/jury pad is now shown using a character instead of an image; this
+    avoids prompt to download image that happened when a ref would leave finger on device.
+  * Referee names now shown on start list
+  * May now edit referee names and session details from the weigh-in page.
+
+== Release 2.2.3 ==
+  * Plate loading information can be tracked from mobile device.
+  * Same message for "session done" was being reused inappropriately in the result frame
+    title and in the lifting order board; they are now distinct.
+
+== Release 2.2.2 ==
+  * Column alignment and cell padding was broken by a recent Vaadin change to the stylesheets. 
+
+== Release 2.2.1 ==
+  * Can now choose between 3 styles for main display (bright colors for DLP, darker colors for LCD,
+    and a pale setting which is less punchy but works with a wide range of displays)
+
+== Release 2.2.0 ==
+  * Added support for 3-person Jury: a dedicated display (iPod) is used for displaying the
+    jury decisions.  5-person Jury is doable, but not needed at this time.
+  * The referee decisions are now sent as soon as the refereeing device is touched.  Touch devices
+    wait 400ms before sending "onClick"; this has been worked around by a custom-built GWT widget
+    that triggers on the touchStart event.
+  * The *down* signal is emitted by the main computer, to further reduce latency.  This currently means
+    that in 2-platform competitions only one can use the computerized refereeing system (though both
+    can use the Jury).  Support for the old "in browser" approach will need to be tested again now that
+    we have fixed the touchstart issue; otherwise we will need websockets and HTML5 sound to reduce latency.
+  * Long names are handled better by the main display.
+
+== Release 2.1.3 ==
+  * Referee decision display tested with iPod Mercury Lite browser (free) alternative to Mobile Safari; this browser allows removal of all decorations on the screen.
+  * Made sure that referee decision display session never expires.
+
+== Release 2.1.2 ==
+  * hide url bar for referee display on refresh.
+  * avoid duplicate decision listeners when referee display is reset.
+  
+== Release 2.1.1 ==
+  * improved visual feedback for referees on mobile devices (Android, iPod)
+  * able to test decision lights on main display without having selected a platform
+  
+== Release 2.1.0 ==
+  * http://host/m/ brings up a menu for mobile devices (Android, iPod)
+  
+== Release 2.0.1 ==
+  * Stop time if time is still running when down is signaled.
+  * Notification to other officials if new weight for current lifter is typed directly
+  * Fix: Referee console does not leave listeners around when closed or refreshed
+  
+== Release 2.0.0 ==
+  * Tested with Android 2.1 device as referee console (Archos 28)
+  * Tested with iPod and Android as small jury console to visualize referee decisions
+  * Down signal sound tested
+  * Lighter colors for Result Screen, for DLP projectors
+  * Multiple notifications to other consoles fixed
+  * Handle missing information gracefully when producing start sheet
+  * Better formatting of time countdown
+  * Fixes to changes in plate information not being shown on attempt board (first change)
+  * Quicker response to events by implementing threads
+  * General clean-up of listeners, so that refresh does not leave any behind
+
+== Release 1.9.1 ==
+  * Spurious need for refresh on spreadsheets worked around (new behavior with dev versions of Chrome and Vaadin)
+  * CSS interference between plates popup and notification popup fixed.
+  * Language of user being notified used in notification popup instead of language of notifier.
+
+== Release 1.9.0 ==
+  * Release candidate for referee decision handling.
+  * Result board shows decisions
+  * Attempt board waits for decision display to reset prior to switching to next lifter.
+  * Consoles are notified when someone else stops time (e.g. marshall console receiving weight change for current lifter whose time has started).
+
+== Release 1.8.7 ==
+  * Attempt board shows referee decisions.
+  * Public Message button added to all consoles, including Results.
+  * Results pane now correctly shows the selected group on first invocation and through URL fragment.
+    * same fix corrects behavior of Team Points and Rankings buttons (selector showed no group, but a group was in fact selected, resulting in a truncated report)
+  
+== Release 1.8.6 ==
+  * Changes made to plate loading information are propagated to all plate loading subwindows and to attempt board.
+  * This release was used for Québec Senior Championships 2010 (84 athletes).
+  
+== Release 1.8.5 ==
+  * (1.8.5-a) Fixed Exception in Start Sheet when a group had no start or end time
+  * (1.8.5-a) Fixed default communication port for NEC display.
+  * Location of team templates moved to a team sub-directory, only name shown in dropdown
+  * Restored Points and Ranking button on results page (fixed regression introduced in 1.8.2)
+  * Fix for obscure bug with 2-minute rule that only showed up if announcer acts as timekeeper ("start time on announce" option).
+  * Clean-up of push behavior so that the push() method is not called involuntarily in constructors.
+  * Removal of all vestiges of polling.
+  * Documentation reorganized.
+  * merged jetty and tomcat configurations (widgetset located in Maven src instead of target)
+
+== Release 1.8.4 ==
+  * Improved behavior when refreshing public address display (cleanup of listeners)
+  * Support for Vaadin 6.5
+
+== Release 1.8.3 ==
+  * Display public message on demand, overlaid over result boards.  Typically used between sessions or during pauses.
+  * Fixed Jetty configuration issue relative to serial communication native library.
+  * Cosmetic fixes to Start List
+
+== Release 1.8.2 ==
+  * Show officials on result sheet.
+  * Editing competition session information, officials in particular
+  * Can again reload competition data from old spreadsheets.
+  * Further Maven changes to follow testing conventions
+
+== Release 1.8.1 ==
+  * Change in source layout to run under Maven
+  * Small fixes to run under Maven jetty:run plugin (ICEpush causes exception if called in class constructor)
+  * Time display now shows referee decisions after 3 seconds.
