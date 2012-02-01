@@ -97,14 +97,14 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     public CompetitionApplication() {
 		super();
         current.set(this);
-        logger.debug("new application {}",this);
+        logger.debug("new application {} {}",this, this.getLocale());
 	}
     
     public CompetitionApplication(String suffix) {
 		super();
         current.set(this);
         setAppSuffix(suffix);
-        logger.debug("new application {}",this);
+        logger.debug("new application {} {}",this);
 	}
     
 	/**
@@ -117,11 +117,6 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @return the current application.
      */
     public static Locale getCurrentLocale() {
-        // ignore the preference received from the browser.
-        if (current == null) {
-            // logger.debug("current locale={}",getDefaultLocale());
-            return getDefaultLocale();
-        }
         final CompetitionApplication current2 = getCurrent();
         if (current2 == null) {
             // logger.debug("current locale={}",getDefaultLocale());

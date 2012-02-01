@@ -536,7 +536,7 @@ public class CompetitionApplicationComponents {
                 app.components.setPlatform(platforms.get(0));
                 platformName = app.getPlatformName();
             } else {
-                throw new RuleViolationException("AnnouncerView.selectPlatformFirst"); //$NON-NLS-1$
+                throw new RuleViolationException(CompetitionApplication.getCurrent().getLocale(),"AnnouncerView.selectPlatformFirst"); //$NON-NLS-1$
             }
         }
         return platformName;
