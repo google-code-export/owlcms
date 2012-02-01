@@ -94,7 +94,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     private List<Lifter> displayOrder;
     private List<Lifter> resultOrder;
     private CompetitionApplication app;
-    private String currentPlatformName;
+
     private CompetitionSession currentSession;
     private Lifter currentLifter;
     public boolean needToUpdateNEC;
@@ -106,8 +106,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     private int timeAllowed;
     private int liftsDone;
 
-    private RefereeDecisionController refereeDecisionController = new RefereeDecisionController(this);
-    private JuryDecisionController juryDecisionController = new JuryDecisionController(this);
+    private RefereeDecisionController refereeDecisionController = null;
+    private JuryDecisionController juryDecisionController = null;
 
     boolean allowAll = false; // allow null group to mean all lifters.
     // will be set to true if the Timekeeping button is pressed.
@@ -126,10 +126,11 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     private SessionData(String platformName) {
         app = CompetitionApplication.getCurrent();
         lifters = new ArrayList<Lifter>();
-        currentPlatformName = platformName;
         platform = Platform.getByName(platformName);
 
         notificationManager = new NotificationManager<SessionData, Lifter, Component>(this);
+        refereeDecisionController = new RefereeDecisionController(this);
+        juryDecisionController = new JuryDecisionController(this);
         init();
     }
 
@@ -562,42 +563,6 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         return timer;
     }
 
-    /**
-     * @param newCurrentSession
-     *            the currentSession to set
-     */
-    public void setCurrentSession(CompetitionSession newCurrentSession) {
-        logger.info("{} setting group to {}", this, newCurrentSession); //$NON-NLS-1$
-        // do this first, in case we get called us recursively  
-        this.currentSession = newCurrentSession;
-        
-        if (app.getCurrentCompetitionSession() != newCurrentSession) {
-            // synchronize with the application (if we were not called from there)
-            app.setCurrentCompetitionSession(newCurrentSession);
-        }
-
-        loadData();
-        sortLists();
-        publishLists();
-        setTimeKeepingInUse(false); // will switch to true if Start/stop is used.
-        // tell listeners to refresh.
-        fireEvent(new UpdateEvent(this, true));
-    }
-
-    /**
-     * @return the currentSession
-     */
-    public CompetitionSession getCurrentSession() {
-    	if (currentSession != null) {
-			final String name = currentSession.getName();
-			MDC.put("currentGroup", ">"+name);
-    	}
-        return currentSession;
-    }
-
-    public String getCurrentPlatformName() {
-        return currentPlatformName;
-    }
 
     /**
      * @param forcedByTimekeeper
@@ -635,15 +600,6 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         return announcerView;
     }
 
-    public void setMasterApplication(CompetitionApplication app2) {
-        logger.debug("setting master application {}", app2);
-        this.masterApplication = app2;
-    }
-
-    public CompetitionApplication getMasterApplication() {
-        return masterApplication;
-    }
-
     /**
      * @return the currentDisplayOrder
      */
@@ -666,6 +622,68 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             return null;
         }
     }
+    
+    
+    /* *********************************************************************************
+     * Interactions with the context.
+     * TODO: fix this mess.
+     * 
+     * Several features with different implementation patterns led to this. Clean-up and
+     * factoring required.
+     */
+    
+    
+    /**
+     * @param newCurrentSession
+     *            the currentSession to set
+     */
+    public void setCurrentSession(CompetitionSession newCurrentSession) {
+        logger.info("{} setting group to {}", this, newCurrentSession); //$NON-NLS-1$
+        // do this first, in case we get called us recursively  
+        this.currentSession = newCurrentSession;
+        
+        if (app.getCurrentCompetitionSession() != newCurrentSession) {
+            // synchronize with the application (if we were not called from there)
+            app.setCurrentCompetitionSession(newCurrentSession);
+        }
+
+        loadData();
+        sortLists();
+        publishLists();
+        setTimeKeepingInUse(false); // will switch to true if Start/stop is used.
+        // tell listeners to refresh.
+        fireEvent(new UpdateEvent(this, true));
+    }
+
+    /**
+     * @return the currentSession
+     */
+    public CompetitionSession getCurrentSession() {
+    	if (currentSession != null) {
+			final String name = currentSession.getName();
+			MDC.put("currentGroup", ">"+name);
+    	}
+        return currentSession;
+    }
+    
+    public void setMasterApplication(CompetitionApplication app2) {
+        logger.debug("setting as master application {}", app2);
+        this.masterApplication = app2;
+    }
+
+    public CompetitionApplication getMasterApplication() {
+        return masterApplication;
+    }
+    
+	public Platform getPlatform() {
+		return platform;
+	}
+
+	public void setPlatform(Platform platform) {
+		this.platform = platform;
+	}
+	
+    
 
     /* *********************************************************************************
      * UpdateEvent framework.
@@ -1192,14 +1210,6 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 		return publicAddressTimer;
 	}
 
-	public Platform getPlatform() {
-		return platform;
-	}
-
-	public void setPlatform(Platform platform) {
-		this.platform = platform;
-	}
-
 	void noCurrentLifter() {
 		// most likely completely obsolete.
 		//getTimer().removeAllListeners();
@@ -1224,5 +1234,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 //		MDC.put("currentGroup",currentSession.getName());
 //		logger1.info(message,arguments);
 //	}
+	
+
 
 }

@@ -21,6 +21,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.concordiainternational.competition.data.Lifter;
+import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.mobile.IRefereeConsole;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
@@ -64,10 +65,13 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
         for (int i = 0; i < refereeDecisions.length; i++) {
             refereeDecisions[i] = new Decision();
         }
-        try {
-			downSignal = new Tone(groupData.getPlatform().getMixer(), 1100, 1200, 1.0);
+        final Platform platform = groupData.getPlatform();
+		try {
+			if (platform != null) {
+				downSignal = new Tone(platform.getMixer(), 1100, 1200, 1.0);
+			}
 		} catch (Exception e) {
-			// leave as null if not able to emit.
+			logger.warn("no sound for platform {}",platform.getName());
 		}
     }
 
@@ -157,11 +161,13 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
         	// had not stopped it manually.
             if (pros >= 2 || cons >= 2) {
             	synchronized (groupData.getTimer()) {
-            		if (!downSignaled && downSignal != null) {
+            		if (!downSignaled) {
             			new Thread(new Runnable() {
 							@Override
 							public void run() {
-								downSignal.emit();
+								if (downSignal != null) {
+									downSignal.emit();
+								}
 								groupData.downSignal();
 							}
 						}).start();
@@ -169,7 +175,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
             			fireEvent(new DecisionEvent(this,
             					DecisionEvent.Type.DOWN, currentTimeMillis,
             					refereeDecisions));
-            			logger.info("*** audible down signal");
+            			logger.info("*** down signal");
             		}
             	}
             } else {
