@@ -32,11 +32,11 @@ import org.concordiainternational.competition.data.CompetitionSessionLookup;
 import org.concordiainternational.competition.data.Gender;
 import org.concordiainternational.competition.data.Lifter;
 import org.hibernate.Session;
-import org.pojava.datetime.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.extentech.ExtenXLS.CellHandle;
+import com.extentech.ExtenXLS.DateConverter;
 import com.extentech.ExtenXLS.WorkBookHandle;
 import com.extentech.ExtenXLS.WorkSheetHandle;
 import com.extentech.formats.XLS.CellNotFoundException;
@@ -263,13 +263,21 @@ public class InputSheetHelper implements InputSheet {
             competition.setCompetitionName(workSheet.getCell("I1").getStringVal()); //$NON-NLS-1$
             competition.setCompetitionSite(workSheet.getCell("I2").getStringVal()); //$NON-NLS-1$
             
-            String dateString = workSheet.getCell("I3").getStringVal(); //$NON-NLS-1$
-            if (dateString != null && !dateString.trim().isEmpty()) {
-                Date date = DateTime.parse(dateString).toDate();       
-                competition.setCompetitionDate(date);
-            } else {
-            	competition.setCompetitionDate(new Date());
-            }
+            final CellHandle dateCell = workSheet.getCell("I3");
+            Date nDate = DateConverter.getDateFromCell(dateCell) ;
+            competition.setCompetitionDate(nDate);
+            
+//			String dateString = dateCell.getStringVal(); //$NON-NLS-1$
+//            if (dateString != null && !dateString.trim().isEmpty()) {
+//            	try {
+//				} catch (NumberFormatException e) {
+//					// TODO: handle exception
+//				}
+//				Date date = DateTime.parse(dateString).toDate();       
+//                competition.setCompetitionDate(date);
+//            } else {
+//            	competition.setCompetitionDate(new Date());
+//            }
 
             competition.setCompetitionCity(workSheet.getCell("T2").getStringVal()); //$NON-NLS-1$
             competition.setCompetitionOrganizer(workSheet.getCell("T3").getStringVal()); //$NON-NLS-1$
@@ -320,5 +328,6 @@ public class InputSheetHelper implements InputSheet {
         if (lookup != null) return lookup;
         return null;
     }
+
 
 }

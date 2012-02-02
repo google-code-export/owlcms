@@ -30,3 +30,5 @@ syntax: regexp
 ^src/main/webapp/registration$
 syntax: regexp
 ^doc/owlcmsScreenshots/\.picasa\.ini$
+syntax: regexp
+\.pdf$
