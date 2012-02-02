@@ -8,7 +8,7 @@
          <property name="javax.persistence.jdbc.user" value="sa"/>
          <property name="javax.persistence.jdbc.password" value=""/>
          <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:."/>
-         <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/
+         <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
          <property name="hibernate.max_fetch_depth" value="3"/>
        
          <!-- cache configuration -->
