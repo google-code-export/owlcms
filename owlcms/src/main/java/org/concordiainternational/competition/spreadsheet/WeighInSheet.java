@@ -27,7 +27,6 @@ import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -190,27 +189,6 @@ public class WeighInSheet extends OutputSheet implements InputSheet, LifterReade
 		return;
 	}
 	
-    @SuppressWarnings( { "unchecked" })
-    public void readHeader(WorkSheetHandle workSheet, Session hbnSession) throws CellNotFoundException {
-        List<Competition> competitions = app.getHbnSession().createCriteria(Competition.class).list();
-        if (competitions.size() > 0) {
-            final Competition competition = competitions.get(0);
-            competition.setFederation(workSheet.getCell("A1").getStringVal()); //$NON-NLS-1$
-            competition.setFederationAddress(workSheet.getCell("A2").getStringVal()); //$NON-NLS-1$
-            competition.setFederationWebSite(workSheet.getCell("A3").getStringVal()); //$NON-NLS-1$
-            competition.setFederationEMail(workSheet.getCell("B4").getStringVal()); //$NON-NLS-1$
-
-            competition.setCompetitionName(workSheet.getCell("I1").getStringVal()); //$NON-NLS-1$
-            competition.setCompetitionSite(workSheet.getCell("I2").getStringVal()); //$NON-NLS-1$
-            //competition.setCompetitionDate(workSheet.getCell("I3").getDateVal());
-
-            competition.setCompetitionCity(workSheet.getCell("T2").getStringVal()); //$NON-NLS-1$
-            competition.setCompetitionOrganizer(workSheet.getCell("T3").getStringVal()); //$NON-NLS-1$
-            competition.setInvitedIfBornBefore(workSheet.getCell("T4").getIntVal()); //$NON-NLS-1$
-
-        }
-    }
-
 	@Override
 	public List<Lifter> getAllLifters(InputStream is, HbnSessionManager session)
 			throws CellNotFoundException, IOException,
