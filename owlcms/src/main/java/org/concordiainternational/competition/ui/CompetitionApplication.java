@@ -119,13 +119,34 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     public static Locale getCurrentLocale() {
         final CompetitionApplication current2 = getCurrent();
         if (current2 == null) {
-            // logger.debug("current locale={}",getDefaultLocale());
+            //logger.warn("*current locale={}",getDefaultLocale());
             return getDefaultLocale();
         }
-        // logger.debug("current locale={}",current2.getLocale());
+        //logger.warn("current locale={}",current2.getLocale());
         return current2.getLocale();
     }
 
+    /**
+     * @return the current application.
+     */
+    public static Locale getCurrentSupportedLocale() {
+        final CompetitionApplication current2 = getCurrent();
+        if (current2 == null) {
+            return getDefaultLocale();
+        }
+        final Locale currentLocale =  current2.getLocale();
+        
+        // compare the current language with code retrieved from bundle. If the
+        // code is different, then the language is not directly translated.
+		final String languageCode = Messages.getString("Locale.languageCode", currentLocale); //$NON-NLS-1$
+		logger.info("Locale.languageCode({})={}",currentLocale,languageCode);
+        if (currentLocale.getLanguage().equals(languageCode)) {
+        	return currentLocale; 
+        } else {
+        	return getDefaultLocale();
+        }
+    }
+    
     /**
      * return the default locale to whoever needs it.
      */
