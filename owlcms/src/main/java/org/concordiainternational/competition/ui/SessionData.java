@@ -28,7 +28,6 @@ import java.util.Set;
 
 import javax.servlet.ServletContext;
 
-import org.apache.log4j.MDC;
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
@@ -57,6 +56,7 @@ import org.concordiainternational.competition.utils.NotificationManager;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.hibernate.Session;
 import org.hibernate.StaleObjectStateException;
+import org.slf4j.MDC;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 
