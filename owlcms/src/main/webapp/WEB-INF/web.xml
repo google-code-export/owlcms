@@ -15,7 +15,7 @@
 	</context-param>
 	<context-param>
 		<param-name>comPort</param-name>
-		<param-value>COM3</param-value>
+		<param-value></param-value>
 	</context-param>
 
 	<listener>
