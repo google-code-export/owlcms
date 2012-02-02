@@ -38,57 +38,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- Compile custom GWT components or widget dependencies with the GWT 
-				 compiler -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>gwt-maven-plugin</artifactId>
-				<version>2.4.0</version>
-				<configuration>
-					<webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
-					<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
-					<runTarget>owlcms</runTarget>
-					<hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
-					<noServer>true</noServer>
-					<port>8080</port>
-					<soyc>false</soyc>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>resources</goal>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
-			<dependencies>
-          <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-            <version>2.2.0</version>
-          </dependency>
-          <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-dev</artifactId>
-            <version>2.2.0</version>
-          </dependency>
-        </dependencies>
-      </plugin>
 
-			<plugin>
-				<groupId>com.vaadin</groupId>
-				<artifactId>vaadin-maven-plugin</artifactId>
-				<version>1.0.1</version>
-				<executions>
-					<execution>
-						<configuration>
-						</configuration>
-						<goals>
-							<goal>update-widgetset</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 
 
 			<!-- A simple Jetty test server at http://localhost:8080/owlcms can be 
@@ -149,6 +99,61 @@
 		</plugins>
 	</build>
 	<profiles>
+		<profile>
+			<id>compile-widgetset</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>gwt-maven-plugin</artifactId>
+						<version>2.3.0</version>
+						<configuration>
+							<webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
+							<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
+							<runTarget>owlcms</runTarget>
+							<hostedWebapp>${project.build.directory}/${project.build.finalName}</hostedWebapp>
+							<noServer>true</noServer>
+							<port>8080</port>
+							<soyc>false</soyc>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+							</execution>
+						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>com.google.gwt</groupId>
+								<artifactId>gwt-user</artifactId>
+								<version>2.1.1</version>
+							</dependency>
+							<dependency>
+								<groupId>com.google.gwt</groupId>
+								<artifactId>gwt-dev</artifactId>
+								<version>2.1.1</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+					<plugin>
+						<groupId>com.vaadin</groupId>
+						<artifactId>vaadin-maven-plugin</artifactId>
+						<version>1.0.1</version>
+						<executions>
+							<execution>
+								<configuration>
+								</configuration>
+								<goals>
+									<goal>update-widgetset</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
 		<!-- Local caching repository for container developer; change for your 
 			own settings if you have such a repository. see http://maven.apache.org/guides/introduction/introduction-to-profiles.html -->
 		<profile>
@@ -263,11 +268,8 @@
 			<artifactId>icepush</artifactId>
 			<version>2.0.1</version>
 		</dependency>
-		<!-- dependency>
-			<groupId>org.vaadin.addons</groupId>
-			<artifactId>soundplayer</artifactId>
-			<version>1.1.1</version>
-		</dependency -->
+		<!-- dependency> <groupId>org.vaadin.addons</groupId> <artifactId>soundplayer</artifactId> 
+			<version>1.1.1</version> </dependency -->
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
 			<artifactId>dashlayout</artifactId>
@@ -353,7 +355,7 @@
 			<version>1.6.4</version>
 		</dependency>
 		<dependency>
-			<groupId>jstl</groupId>
+			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.1.2</version>
 		</dependency>
@@ -368,16 +370,16 @@
 			<version>1.1.116</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.derby</groupId>
-		    <artifactId>derby</artifactId>
-		    <version>10.8.1.2</version>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+			<version>10.8.1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.pojava</groupId>
 			<artifactId>pojava</artifactId>
 			<version>2.8.0</version>
-		</dependency>	
-				
+		</dependency>
+
 
 
 		<!-- the dependency on the hibernate-core module (see above) -->
@@ -390,7 +392,6 @@
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-core</artifactId>
 			<version>2.5.0</version>
-			<type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -417,12 +418,8 @@
 			<artifactId>openxls</artifactId>
 			<version>6.0.6</version>
 		</dependency>
-		<!-- dependency>
-			<groupId>org.miller</groupId>
-			<artifactId>gwt-sound</artifactId>
-			<version>1.0</version>
-		</dependency>
-		 -->
+		<!-- dependency> <groupId>org.miller</groupId> <artifactId>gwt-sound</artifactId> 
+			<version>1.0</version> </dependency> -->
 		<dependency>
 			<groupId>org.icepush</groupId>
 			<artifactId>icepush-gwt</artifactId>
@@ -445,6 +442,12 @@
 			<artifactId>touchdiv</artifactId>
 			<version>1.0.1</version>
 			<type>jar</type>
+			<exclusions>
+				<exclusion>
+					<groupId>com.vaadin</groupId>
+					<artifactId>vaadin</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.jxls</groupId>
