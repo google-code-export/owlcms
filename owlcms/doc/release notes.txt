@@ -1,5 +1,13 @@
 #summary Release Notes
 
+== Release 2.8.2
+  * Fix: Start List report did not show registration category correctly.
+  * Fix: Use English template for documents when the template is not available in the native language
+  * Fix: using a language other than English or French now sets the application locale to en_US
+         (fix in 2.8.1 was incomplete.)
+  * Installation Guide (draft)
+  * Competition Setup Guide (draft)
+    
 == Release 2.8.1
   * Fix: Had inadvertently disabled the down signal while adding support for independent audio
     for multiple platforms in v2.8.0.
@@ -8,11 +16,6 @@
   * Associate the default sound mixer to the default platform.
   * Assume that by default the system provides timekeeping and decision lights.
   * All error messages now appear according to the language selected by the browser.
-  * Set the default language to en_US instead of fr_CA, so that international users get
-    English messages if their browser's preferred language is not English.
-    (The application is fully localized, support for additional languages only requires translation
-    of owlcms/WEB-INF/classes/i18n/messages_en.properties to the desired language)
-     
   
 == Release 2.8.0
   * Tested to work under embedded Tomcat (packaged as a Windows executable)
