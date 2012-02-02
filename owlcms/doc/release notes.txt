@@ -5,6 +5,7 @@
   * Fix: Use English template for documents when the template is not available in the native language
   * Fix: using a language other than English or French now sets the application locale to en_US
          (fix in 2.8.1 was incomplete.)
+  * Fix: Processing of date in registration template now works as documented in the setup guide.
   * Installation Guide (draft)
   * Competition Setup Guide (draft)
     
