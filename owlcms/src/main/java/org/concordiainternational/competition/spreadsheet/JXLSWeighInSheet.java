@@ -57,7 +57,7 @@ public class JXLSWeighInSheet extends JXLSWorkbookStreamSource {
 
 	@Override
 	public InputStream getTemplate() throws IOException {
-    	String templateName = "/WeighInSheetTemplate_"+CompetitionApplication.getCurrentLocale().getLanguage()+".xls";
+    	String templateName = "/WeighInSheetTemplate_"+CompetitionApplication.getCurrentSupportedLocale().getLanguage()+".xls";
         final InputStream resourceAsStream = app.getResourceAsStream(templateName);
         if (resourceAsStream == null) {
             throw new IOException("resource not found: " + templateName);} //$NON-NLS-1$

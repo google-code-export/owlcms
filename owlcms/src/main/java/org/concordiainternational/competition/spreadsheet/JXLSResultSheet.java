@@ -58,7 +58,7 @@ public class JXLSResultSheet extends JXLSWorkbookStreamSource {
 
 	@Override
 	public InputStream getTemplate() throws IOException {
-    	String templateName = "/ResultSheetTemplate_"+CompetitionApplication.getCurrentLocale().getLanguage()+".xls";
+    	String templateName = "/ResultSheetTemplate_"+CompetitionApplication.getCurrentSupportedLocale().getLanguage()+".xls";
         final InputStream resourceAsStream = app.getResourceAsStream(templateName);
         if (resourceAsStream == null) {
             throw new IOException("resource not found: " + templateName);} //$NON-NLS-1$

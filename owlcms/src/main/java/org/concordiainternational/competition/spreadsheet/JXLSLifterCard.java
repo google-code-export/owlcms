@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
@@ -49,13 +48,11 @@ public class JXLSLifterCard extends JXLSWorkbookStreamSource {
 
 	@SuppressWarnings("unused")
 	private final static Logger logger = LoggerFactory.getLogger(JXLSLifterCard.class);
-    
-    protected CategoryLookup categoryLookup;
 
     
     @Override
 	public InputStream getTemplate() throws IOException {
-    	String templateName = "/LifterCardTemplate_"+CompetitionApplication.getCurrentLocale().getLanguage()+".xls";
+    	String templateName = "/LifterCardTemplate_"+CompetitionApplication.getCurrentSupportedLocale().getLanguage()+".xls";
         final InputStream resourceAsStream = app.getResourceAsStream(templateName);
         if (resourceAsStream == null) {
             throw new IOException("resource not found: " + templateName);} //$NON-NLS-1$
