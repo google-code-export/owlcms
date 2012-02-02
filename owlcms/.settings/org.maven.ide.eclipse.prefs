@@ -1,5 +1,5 @@
-#Fri Jan 27 13:09:40 EST 2012
-activeProfiles=useExternalRepositories
+#Thu Feb 02 11:13:40 EST 2012
+activeProfiles=forceUpdate
 eclipse.preferences.version=1
 fullBuildGoals=process-test-resources
 includeModules=false
