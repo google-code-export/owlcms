@@ -54,6 +54,7 @@ public class Tone {
 	 * @throws LineUnavailableException
 	 */
 	public void emit() {
+		if (sdl == null) return;
 		try {
 			sdl.open(af);
 			sdl.start();

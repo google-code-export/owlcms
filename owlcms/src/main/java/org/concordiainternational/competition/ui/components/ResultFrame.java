@@ -221,7 +221,6 @@ public class ResultFrame extends VerticalLayout implements
             iframe.setSource(new ExternalResource(url));
             final Lifter currentLifter = masterData1.getCurrentLifter();
             if (currentLifter != null) {
-            	logger.debug("masterData {}",masterData1.getCurrentSession().getName());
                 boolean done = fillLifterInfo(currentLifter);
                 updateTime(masterData1);
                 top.addComponent(timeDisplay, "timeDisplay"); //$NON-NLS-1$
