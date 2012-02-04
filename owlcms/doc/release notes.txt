@@ -3,6 +3,7 @@
 == Release 2.8.3
   * May now select lifter-facing or public-facing variants of attempt-board (so referee decisions
     are shown in correct order)
+  * Cosmetic: Minor adjustments to weigh-in and results templates (spurious borders)
 
 == Release 2.8.2
   * Fix: Start List report did not show registration category correctly.
