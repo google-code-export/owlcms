@@ -61,14 +61,15 @@ public class Menu extends MenuBar implements Serializable {
         createDisplayMenuItem(projectors, competitionApplication, locale, "dlp");
         createDisplayMenuItem(projectors, competitionApplication, locale, "lcd");
         createDisplayMenuItem(projectors, competitionApplication, locale, "pale");
-        createSimpleDisplayMenuItem(projectors, competitionApplication, locale);
+        //createSimpleDisplayMenuItem(projectors, competitionApplication, locale);
         projectors.addSeparator();
-        createLiftOrderMenuItem(projectors, competitionApplication, locale);
-        createSummaryLiftOrderMenuItem(projectors, competitionApplication, locale);
-        projectors.addSeparator();
-        createAttemptBoardMenuItem(projectors, competitionApplication, locale);
+        createPublicAttemptBoardMenuItem(projectors, competitionApplication, locale);
+        createLifterAttemptBoardMenuItem(projectors, competitionApplication, locale);
         projectors.addSeparator();
         createCountdownDisplayMenuItem(projectors, competitionApplication, locale);
+        projectors.addSeparator();
+        //createLiftOrderMenuItem(projectors, competitionApplication, locale);
+        createSummaryLiftOrderMenuItem(projectors, competitionApplication, locale);
         
 
         createLoadComputerMenuItem(menu, competitionApplication, locale);
@@ -254,7 +255,8 @@ public class Menu extends MenuBar implements Serializable {
      * @param locale
      * @return
      */
-    private MenuItem createSimpleDisplayMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
+    @SuppressWarnings("unused")
+	private MenuItem createSimpleDisplayMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
             final Locale locale) {
         return projectors.addItem(Messages.getString("CompetitionApplication.SimpleDisplay", locale), //$NON-NLS-1$
             null, // new ThemeResource("icons/32/folder-add.png"),
@@ -290,16 +292,34 @@ public class Menu extends MenuBar implements Serializable {
      * @param competitionApplication
      * @param locale
      */
-    private MenuItem createAttemptBoardMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
+    private MenuItem createPublicAttemptBoardMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
             final Locale locale) {
-        return projectors.addItem(Messages.getString("CompetitionApplication.AttemptBoard", locale), //$NON-NLS-1$
+        return projectors.addItem(Messages.getString("CompetitionApplication.PublicAttemptBoard", locale), //$NON-NLS-1$
             null, // new ThemeResource("icons/32/folder-add.png"),
             new Command() {
                 private static final long serialVersionUID = 5658882232799685230L;
 
                 @Override
                 public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.ATTEMPT_BOARD_VIEW);
+                    competitionApplication.doDisplay(CompetitionApplicationComponents.PUBLIC_ATTEMPT_BOARD_VIEW);
+                }
+            });
+    }
+    
+    /**
+     * @param competitionApplication
+     * @param locale
+     */
+    private MenuItem createLifterAttemptBoardMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
+            final Locale locale) {
+        return projectors.addItem(Messages.getString("CompetitionApplication.LifterAttemptBoard", locale), //$NON-NLS-1$
+            null, // new ThemeResource("icons/32/folder-add.png"),
+            new Command() {
+                private static final long serialVersionUID = 5658882232799685230L;
+
+                @Override
+                public void menuSelected(MenuItem selectedItem) {
+                    competitionApplication.doDisplay(CompetitionApplicationComponents.LIFTER_ATTEMPT_BOARD_VIEW);
                 }
             });
     }
@@ -308,7 +328,8 @@ public class Menu extends MenuBar implements Serializable {
      * @param competitionApplication
      * @param locale
      */
-    private MenuItem createLiftOrderMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
+    @SuppressWarnings("unused")
+	private MenuItem createLiftOrderMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
             final Locale locale) {
         return projectors.addItem(Messages.getString("CompetitionApplication.LiftOrder", locale), //$NON-NLS-1$
             null, // new ThemeResource("icons/32/folder-add.png"),
