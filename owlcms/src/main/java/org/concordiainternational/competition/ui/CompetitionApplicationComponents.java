@@ -49,7 +49,8 @@ public class CompetitionApplicationComponents {
     public static final String CHANGES_VIEW = "changesView"; //$NON-NLS-1$
     public static final String COMPETITION_EDITOR = "competitionEditor"; //$NON-NLS-1$
     public static final String GROUP_LIST = "groupList"; //$NON-NLS-1$
-    public static final String ATTEMPT_BOARD_VIEW = "attemptBoard"; //$NON-NLS-1$
+    public static final String PUBLIC_ATTEMPT_BOARD_VIEW = "publicAttemptBoard"; //$NON-NLS-1$
+    public static final String LIFTER_ATTEMPT_BOARD_VIEW = "lifterAttemptBoard"; //$NON-NLS-1$
     public static final String LIFT_ORDER_VIEW = "liftOrderBoard"; //$NON-NLS-1$
     public static final String PLATFORM_LIST = "platformList"; //$NON-NLS-1$
     public static final String REGISTRATION_LIST = "registrationList"; //$NON-NLS-1$
@@ -95,7 +96,8 @@ public class CompetitionApplicationComponents {
         urlFragmentToView.put(REFEREE_TESTING, new RefereeTestingComponent());
         urlFragmentToView.put(JURY_LIGHTS, new JuryLightsComponent());
         urlFragmentToView.put(GROUP_LIST, new GroupListComponent());
-        urlFragmentToView.put(ATTEMPT_BOARD_VIEW, new AttemptBoardComponent());
+        urlFragmentToView.put(PUBLIC_ATTEMPT_BOARD_VIEW, new PublicAttemptBoardComponent());
+        urlFragmentToView.put(LIFTER_ATTEMPT_BOARD_VIEW, new LifterAttemptBoardComponent());
         urlFragmentToView.put(LIFT_ORDER_VIEW, new LifterBoardComponent());
         urlFragmentToView.put(PLATFORM_LIST, new PlatformListComponent());
         urlFragmentToView.put(REGISTRATION_LIST, new RegistrationListComponent());
@@ -434,12 +436,24 @@ public class CompetitionApplicationComponents {
     /**
      * Lazy builder for current lifter information
      */
-    private class AttemptBoardComponent implements CompetitionApplicationComponent {
+    private class PublicAttemptBoardComponent implements CompetitionApplicationComponent {
         // private ResultFrame currentLifterPanel = null;
 
         @Override
 		public AttemptBoardView get(boolean initFromFragment, String viewName) {
-            return new AttemptBoardView(initFromFragment, viewName);
+            return new AttemptBoardView(initFromFragment, viewName, true);
+        }
+    }
+    
+    /**
+     * Lazy builder for current lifter information
+     */
+    private class LifterAttemptBoardComponent implements CompetitionApplicationComponent {
+        // private ResultFrame currentLifterPanel = null;
+
+        @Override
+		public AttemptBoardView get(boolean initFromFragment, String viewName) {
+            return new AttemptBoardView(initFromFragment, viewName, false);
         }
     }
     

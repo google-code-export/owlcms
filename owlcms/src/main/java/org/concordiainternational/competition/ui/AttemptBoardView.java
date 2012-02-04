@@ -28,8 +28,8 @@ import org.concordiainternational.competition.decision.DecisionEventListener;
 import org.concordiainternational.competition.decision.IDecisionController;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent;
-import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent;
 import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener;
+import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent;
 import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent.MessageTimerListener;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
@@ -88,12 +88,13 @@ public class AttemptBoardView extends VerticalLayout implements
 	private DecisionLightsWindow decisionLights;
 	protected boolean waitingForDecisionLightsReset;
 
-    public AttemptBoardView(boolean initFromFragment, String viewName) {
+    public AttemptBoardView(boolean initFromFragment, String viewName, boolean publicFacing) {
 
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
             this.viewName = viewName;
+            this.publicFacing = publicFacing;
         }
         
         this.app = CompetitionApplication.getCurrent();
@@ -140,7 +141,7 @@ public class AttemptBoardView extends VerticalLayout implements
 	 * 
 	 */
 	protected void createDecisionLights() {
-		decisionLights = new DecisionLightsWindow(false, true);
+		decisionLights = new DecisionLightsWindow(false, publicFacing);
 		decisionLights.setSizeFull();
 		decisionLights.setMargin(false);
 	}
@@ -248,7 +249,6 @@ public class AttemptBoardView extends VerticalLayout implements
         synchronized (app) {
             final Lifter currentLifter = masterData1.getCurrentLifter();
             if (currentLifter != null) {
-            	logger.debug("masterData {}",masterData1.getCurrentSession().getName());
                 boolean done = fillLifterInfo(currentLifter);
                 updateTime(masterData1);
                 showDecisionLights(false);
@@ -453,6 +453,7 @@ public class AttemptBoardView extends VerticalLayout implements
 	protected boolean shown;
 	private String stylesheetName;
 	private boolean paShown;
+	private boolean publicFacing;
 
     @Override
     public void normalTick(int timeRemaining) {
@@ -497,7 +498,7 @@ public class AttemptBoardView extends VerticalLayout implements
      */
     @Override
 	public String getFragment() {
-        return viewName+"/"+platformName+(stylesheetName != null ? "/"+stylesheetName : "");
+        return viewName+"/"+platformName+"/"+(publicFacing == true ? "public" : "lifter")+(stylesheetName != null ? "/"+stylesheetName : "");
     }
     
 
@@ -517,9 +518,13 @@ public class AttemptBoardView extends VerticalLayout implements
         if (params.length >= 2) {
             platformName = params[1];
         }
-        
         if (params.length >= 3) {
-            stylesheetName = params[2];
+            String publicFacingString = params[2];
+            publicFacing = "public".equals(publicFacingString);
+            logger.trace("setting publicFacing to {}",publicFacing);
+        }
+        if (params.length >= 4) {
+            stylesheetName = params[3];
             logger.trace("setting stylesheetName to {}",stylesheetName);
         }
     }
