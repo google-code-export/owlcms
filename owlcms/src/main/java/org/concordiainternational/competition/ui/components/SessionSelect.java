@@ -22,7 +22,6 @@ import java.util.Locale;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.utils.ItemAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,9 +61,8 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
         sessionSelect.setImmediate(true);
         sessionSelect.setNullSelectionAllowed(true);
         sessionSelect.setNullSelectionItemId(null);
+        
         final CompetitionSession currentGroup = competitionApplication.getCurrentCompetitionSession();
-        String platformName = competitionApplication.getPlatformName();
-        final SessionData masterData = competitionApplication.getMasterData(platformName);
         
         sessionSelect.select((currentGroup != null ? currentGroup.getId() : null));
         listener = new ValueChangeListener() {
@@ -85,7 +83,8 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
                 	value = null;
                 }
                 logger.debug("valueChange {}",value);
-                masterData.setCurrentSession(value);
+                 
+                CompetitionApplication.getCurrent().setCurrentCompetitionSession(value);
             }
 
         };
