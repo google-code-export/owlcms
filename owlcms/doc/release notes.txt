@@ -1,6 +1,10 @@
 #summary Release Notes
 
 == Release 2.8.3
+  * Super Bowl edition ;-)
+  * Fix: when using multiple browsers, changing the current session for weigh-in or results could sometime
+    affect the the announcer screen.  Restored correct behaviour: only announcer screen can affect the master
+    session for the platform; competition secretary changes can be done at will and do not affect officiating.
   * May now select lifter-facing or public-facing variants of attempt-board (so referee decisions
     are shown in correct order)
   * Cosmetic: Minor adjustments to weigh-in and results templates (spurious borders)
