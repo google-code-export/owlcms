@@ -626,18 +626,18 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     
     /* *********************************************************************************
      * Interactions with the context.
-     * TODO: fix this mess.
-     * 
-     * Several features with different implementation patterns led to this. Clean-up and
-     * factoring required.
      */
     
     
     /**
-     * @param newCurrentSession
-     *            the currentSession to set
+	 * Change the underlying session.
+	 * Change the underlying session. When sessionData object has many browsers listening
+	 * to it, it is simpler to change the session than to recreate a new SessionData object.
+	 * This method should only be used by AnnouncerView, when the announcer.
+	 * 
+     * @param newCurrentSession  the currentSession to set
      */
-    public void setCurrentSession(CompetitionSession newCurrentSession) {
+    void setCurrentSession(CompetitionSession newCurrentSession) {
         logger.info("{} setting group to {}", this, newCurrentSession); //$NON-NLS-1$
         // do this first, in case we get called us recursively  
         this.currentSession = newCurrentSession;
@@ -1215,26 +1215,13 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 		//getTimer().removeAllListeners();
 	}
 
-	
-//	public void setPublicAddressTimer(PublicAddressCountdownTimer publicAddressTimer) {
-//		this.publicAddressTimer = publicAddressTimer;
-//	}
-	
-//	void logInfo(Logger logger1, String message, Object argument1) {
-//		MDC.put("currentGroup",currentSession.getName());
-//		logger1.info(message,argument1);
-//	}
-//	
-//	void logInfo(Logger logger1, String message, Object argument1, Object argument2) {
-//		MDC.put("currentGroup",currentSession.getName());
-//		logger1.info(message,argument1,argument2);
-//	}
-//	
-//	void logInfo(Logger logger1, String message, Object[] arguments) {
-//		MDC.put("currentGroup",currentSession.getName());
-//		logger1.info(message,arguments);
-//	}
-	
+	public void refresh() {
+		 setCurrentSession(this.getCurrentSession());
+         // force re-fetching of platform, so that the audio output switches
+         String platformName = this.getPlatform().getName();
+         Platform platform1 = Platform.getByName(platformName);
+         this.setPlatform(platform1);
+	}
 
 
 }

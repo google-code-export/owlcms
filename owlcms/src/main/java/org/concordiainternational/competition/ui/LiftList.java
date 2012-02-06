@@ -56,7 +56,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
     static final Logger logger = LoggerFactory.getLogger(LiftList.class);
     private static final long serialVersionUID = 148461976217706535L;
     private EditingView parentView;
-    transient private SessionData data = null; // do not serialize
+    transient private SessionData masterDataForCurrentPlatform = null; // do not serialize
 
     private static String[] NATURAL_COL_ORDER = null;
     private static String[] COL_HEADERS = null;
@@ -68,7 +68,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
         logger.trace("new."); //$NON-NLS-1$
         this.parentView = parentView;
         this.mode = mode;
-        data = groupData;
+        masterDataForCurrentPlatform = groupData;
         init();
     }
 
@@ -112,7 +112,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
 
     @Override
     public SessionData getGroupData() {
-        return data;
+        return masterDataForCurrentPlatform;
     }
 
     @Override
@@ -135,7 +135,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
 
     @Override
     public void setGroupData(SessionData data) {
-        this.data = data;
+        this.masterDataForCurrentPlatform = data;
     }
 
     /*
@@ -200,11 +200,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
                 @Override
 				public void buttonClick(ClickEvent event) {
                     logger.debug("reloading"); //$NON-NLS-1$
-                    data.setCurrentSession(data.getCurrentSession());
-                    // force re-fetching of platform, so that the audio output switches
-                    String platformName = data.getPlatform().getName();
-                    Platform platform = Platform.getByName(platformName);
-                    data.setPlatform(platform);
+                    masterDataForCurrentPlatform.refresh();
                 }
             };
             refreshButton.addListener(refreshClickListener);
@@ -296,9 +292,9 @@ public class LiftList extends GenericBeanList<Lifter> implements
     @Override
     protected void loadData() {
 
-        logger.debug("loadData for {}, size={}", mode, data.lifters.size()); //$NON-NLS-1$
-        logger.debug("data={}", data); //$NON-NLS-1$
-        List<Lifter> lifters = data.getAttemptOrder();
+        logger.debug("loadData for {}, size={}", mode, masterDataForCurrentPlatform.lifters.size()); //$NON-NLS-1$
+        logger.debug("masterDataForCurrentPlatform={}", masterDataForCurrentPlatform); //$NON-NLS-1$
+        List<Lifter> lifters = masterDataForCurrentPlatform.getAttemptOrder();
         if (lifters != null && !lifters.isEmpty()) {
             final BeanItemContainer<Lifter> cont = new BeanItemContainer<Lifter>(Lifter.class,lifters);
             table.setContainerDataSource(cont);
@@ -335,7 +331,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
 
     /**
      * Sorts the lifters in the correct order in response to a change in the
-     * data. Informs listeners that the order has been updated.
+     * masterDataForCurrentPlatform. Informs listeners that the order has been updated.
      */
     void updateTable() {
         // update our own user interface

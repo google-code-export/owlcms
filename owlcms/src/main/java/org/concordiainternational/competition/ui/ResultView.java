@@ -125,11 +125,11 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
 	        groupData.setAllowAll(true);
 			if (groupData.lifters.isEmpty()) {
 				logger.debug(
-						"switching masterData.lifters {}", groupData.lifters); //$NON-NLS-1$
+						"switching groupData.lifters {}", groupData.lifters); //$NON-NLS-1$
 				switchGroup(app.getCurrentCompetitionSession());
 			} else {
 				logger.debug(
-						"not switching masterData.lifters {}", groupData.lifters); //$NON-NLS-1$
+						"not switching groupData {}", groupData.lifters); //$NON-NLS-1$
 			}
 			CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
 			app.setPusherDisabled(prevDisabled);
@@ -303,8 +303,7 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
 //    }
 
     /**
-     * Reload data according to this session's (CompetitionApplication) current
-     * lifter group.
+     * Change the group that is being listened to.
      * 
      * @param dataCurrentGroup
      */
