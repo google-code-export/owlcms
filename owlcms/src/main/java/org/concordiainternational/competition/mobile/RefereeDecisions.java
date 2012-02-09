@@ -22,6 +22,7 @@ import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.Decision;
 import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionEventListener;
+import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
 import org.concordiainternational.competition.ui.SessionData;
@@ -122,7 +123,10 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 
 	private void setupBottom() {
 		bottom.setSizeFull();
-		Label bottomLabel = new Label(juryMode ? "Jury" : "Arbitres");
+		Label bottomLabel = new Label(
+				juryMode 
+					? Messages.getString("MobileMenu.JuryDecisions", CompetitionApplication.getCurrentLocale()) 
+						: Messages.getString("MobileMenu.RefDecisions", CompetitionApplication.getCurrentLocale()));
 		bottom.setStyleName(juryMode ? "juryDecisionsLabel" : "refereeDecisionsLabel");
 		bottomLabel.setSizeUndefined();
 		bottomLabel.setStyleName("refereeOk");
