@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	<display-name>${artifactId} ${version}</display-name>
+
+	<context-param>
+		<param-name>productionMode</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>dbPath</param-name>
+		<param-value>e:/dev/db/competition</param-value>
+	</context-param>
+	<context-param>
+		<param-name>comPort</param-name>
+		<param-value></param-value>
+	</context-param>
+
+	<listener>
+		<description>Ensure orderly release of resources on shutdown</description>
+		<listener-class>org.concordiainternational.competition.webapp.WebApplicationConfiguration</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>CompetitionApplication</servlet-name>
+		<!-- servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class -->
+		<servlet-class>org.concordiainternational.competition.webapp.PushServlet</servlet-class>
+		<init-param>
+			<param-name>application</param-name>
+			<param-value>org.concordiainternational.competition.ui.CompetitionApplication</param-value>
+		</init-param>
+		<init-param>
+			<param-name>widgetset</param-name>
+			<param-value>org.concordiainternational.competition.ui.CompetitionApplicationWidgetSet</param-value>
+		</init-param>
+	</servlet>
+
+
+	<servlet-mapping>
+		<servlet-name>CompetitionApplication</servlet-name>
+		<url-pattern>/VAADIN/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>CompetitionApplication</servlet-name>
+		<url-pattern>/app/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>CompetitionApplication</servlet-name>
+		<url-pattern>/m/*</url-pattern>
+	</servlet-mapping>
+
+</web-app>
