@@ -18,6 +18,7 @@ package org.concordiainternational.competition.ui.components;
 
 import java.io.File;
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.Locale;
 
 import javax.servlet.ServletContext;
@@ -31,6 +32,7 @@ import org.concordiainternational.competition.ui.SessionData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -97,6 +99,8 @@ public class Menu extends MenuBar implements Serializable {
         createLiftersMenuItem(administration, competitionApplication, locale);
         administration.addSeparator();
         createRestartMenuItem(administration, competitionApplication, locale);
+        
+        createAboutMenuItem(menu, competitionApplication, locale);
 
         if (Platform.getSize() > 1) {
             MenuItem platforms = createPlatformsMenuItem(menu, competitionApplication, locale);
@@ -656,5 +660,40 @@ public class Menu extends MenuBar implements Serializable {
      */
     public LoadWindow getLoadComputerWindow() {
         return loadComputerWindow;
+    }
+    
+    /**
+     * @param competitionApplication
+     * @param locale
+     */
+    private MenuItem createAboutMenuItem(MenuBar menu, final CompetitionApplication competitionApplication,
+            final Locale locale) {
+        return menu.addItem(Messages.getString("About.menu", CompetitionApplication.getCurrentLocale()), //$NON-NLS-1$
+            null,
+            new Command() {
+                private static final long serialVersionUID = 5577281157225515360L;
+
+                @Override
+                public void menuSelected(MenuItem selectedItem) {
+                    if (getLoadComputerWindow() == null) {
+                        displayAboutWindow();
+                    }
+                }
+
+				private void displayAboutWindow() {
+					Window window = new Window();
+					window.setIcon(new ThemeResource("icons/16/appIcon.png"));
+					ServletContext servletContext = CompetitionApplication.getCurrent().getServletContext();
+					String name = servletContext.getInitParameter("appName");
+					String version = servletContext.getInitParameter("appVersion");
+					String url = servletContext.getInitParameter("appUrl");
+					window.setCaption(" "+name);
+					String pattern = Messages.getString("About.message", CompetitionApplication.getCurrentLocale());
+					String message = MessageFormat.format(pattern, version, "Jean-François Lamy", url, url, "lamyjeanfrancois@gmail.com");
+					window.addComponent(new Label(message, Label.CONTENT_XHTML));
+					getApplication().getMainWindow().addWindow(window);
+					window.center();
+				}
+            });
     }
 }
