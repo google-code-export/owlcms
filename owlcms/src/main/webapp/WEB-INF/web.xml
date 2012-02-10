@@ -10,10 +10,41 @@
 		<param-value>true</param-value>
 	</context-param>
 	<context-param>
-		<param-name>dbPath</param-name>
-		<param-value>e:/dev/db/competition</param-value>
+		<param-name>appVersion</param-name>
+		<param-value>${version}</param-value>
 	</context-param>
 	<context-param>
+		<param-name>appName</param-name>
+		<param-value>${name}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>appUrl</param-name>
+		<param-value>${url}</param-value>
+	</context-param>	
+	
+	<!-- when running on a tomcat server (non-embedded), the values for dbPath and
+	     (if used) comPort should be defined in conf/context.xml
+	     as in the following example: 
+	     	<Parameter name="comPort" value="COM3" override="false"/>
+			<Parameter name="dbPath" value="e:/dev/db/competition" override="false"/>
+		This enables the server to keep the values when deploying versions of the
+		war. Note: We recommend *against* using conf/Catalina/localhost/owlcms.xml for this
+		purpose unless you truly know what you are doing.
+	  -->
+	<context-param>
+		<description>
+			File root for the owlcms database (actual files will have a suffix
+			appended, e.g. ".db" or ".log").  May be an absolute path or relative
+			to the current directory
+		</description>
+		<param-name>dbPath</param-name>
+		<param-value>db/competition</param-value>
+	</context-param>
+	<context-param>
+		<description>
+			Communication port used to drive an external LED display.  Leave empty
+			if no such port is used.
+		</description>	
 		<param-name>comPort</param-name>
 		<param-value></param-value>
 	</context-param>
