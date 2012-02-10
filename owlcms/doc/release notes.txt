@@ -1,5 +1,10 @@
 #summary Release Notes
 
+== Release 2.8.4
+  * Fix: missing English translation for referee decisions on tablet
+  * Added "About" screen with reference to author and license.
+  * Default web.xml ok for stand-alone installation, added note for defining tomcat parameters.
+
 == Release 2.8.3
   * Super Bowl edition ;-)
   * Fix: when using multiple browsers, changing the current session for weigh-in or results could sometime
