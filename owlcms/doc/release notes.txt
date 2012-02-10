@@ -3,7 +3,7 @@
 == Release 2.8.4
   * Fix: missing English translation for referee decisions on tablet
   * Added "About" screen with reference to author and license.
-  * Default web.xml ok for stand-alone installation, added note for defining tomcat parameters.
+  * Default web.xml ok for stand-alone installation, added note for defining tomcat context parameters.
 
 == Release 2.8.3
   * Super Bowl edition ;-)

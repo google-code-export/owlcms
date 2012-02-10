@@ -177,8 +177,6 @@
 			</build>
 		</profile>
 
-		<!-- Local caching repository for container developer; change for your 
-			own settings if you have such a repository. see http://maven.apache.org/guides/introduction/introduction-to-profiles.html -->
 		<profile>
 			<id>useExternalRepositories</id>
 			<activation>
