@@ -1,10 +1,12 @@
 #summary Release Notes
 
 == Release 2.8.5
-  * Changed the license to use a more mainstream license, namely the Mozilla Public Licence (MPL-2.0).
-    Updated the "about" screens to reflect this change, and to indicate that source code is available.
-    The spirit of the licensing is the same: should anyone create a version of the program, they need
-    to make the full source code available, including that of their modifications.
+  * Changed the license to use the just-released version of the Mozilla Public Licence (MPL-2.0).
+    The spirit of the licensing remains the same: should anyone create a version of the program, they need
+    to make the full source code available, including that of their modifications. MPL-2.0 is is in my
+    opinion easier to read and apply than GPLv2, and is more mainstream than my previous licensing choice.
+  * Updated the "about" screens to reflect the licensing change, and to indicate where source code is available.
+.
 
 == Release 2.8.4
   * Fix: missing English translation the screen that displays referee decisions on a tablet.
