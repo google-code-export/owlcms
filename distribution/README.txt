@@ -5,7 +5,7 @@ Steps to create a release.
 - Run the war:war goal in owlcms
 - commit, push
 
-- in project "distribution" run the maven goals:   clean assembly:single
+- in project "distribution" run the maven goals:   clean assembly:single  (configuration "prepare uploads")
 - go to distribution/src/installer/owlcms-cache and delete the contents.
 - start src/installer/owlcms.aip and go to Application Data/owlcms
   - remove the doc, lib and owlcms directory.  You will get warnings about files that cannot be deleted,
@@ -23,5 +23,5 @@ Steps to create a release.
   - tag with "x.y.z"
   - push
   
-- in project "distribution" run the maven goals:   antrun:run
+- in project "distribution" run the maven goals:   antrun:run (configuration "upload")
  
