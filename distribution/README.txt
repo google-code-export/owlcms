@@ -21,4 +21,6 @@ Steps to create a release.
   - commit with "Release x.y.z" as comment
   - tag with "x.y.z"
   - push
+  
+- in project "distribution" run the maven goals:   antrun:run
  
