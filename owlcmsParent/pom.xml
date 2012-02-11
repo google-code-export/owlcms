@@ -8,16 +8,17 @@
 	<version>1.0.0</version>
 	<packaging>pom</packaging>
 
-	<name>owlcmsParent</name>
+	<name>distribution</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
 	<modules>
 		<module>../owlcms</module>
 		<module>../launch</module>
 		<module>../touchdiv</module>
 	</modules>
+
 
 </project>
