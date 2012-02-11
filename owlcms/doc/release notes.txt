@@ -1,9 +1,13 @@
 #summary Release Notes
 
 == Release 2.8.4
-  * Fix: missing English translation for referee decisions on tablet
-  * Added "About" screen with reference to author and license.
-  * Default web.xml ok for stand-alone installation, added note for defining tomcat context parameters.
+  * Fix: missing English translation the screen that displays referee decisions on a tablet.
+  * Fix: Added "About" screen with reference to author and license.
+  * Adjusted web.xml to be ok for stand-alone installation, added note for defining parameters for
+    Tomcat WAR deployments.
+  * The real purpose of this release is internal: all that could be automated
+    in the process of assembling and uploading the installers and documentation has indeed been
+    automated.  This release is the first one to be published with the new tools.
 
 == Release 2.8.3
   * Super Bowl edition ;-)
