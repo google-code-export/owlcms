@@ -191,7 +191,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
                 @Override
 				public void buttonClick(ClickEvent event) {
                     logger.debug("reloading"); //$NON-NLS-1$
-                    masterDataForCurrentPlatform.refresh();
+                    masterDataForCurrentPlatform.refresh(true);
                 }
             };
             refreshButton.addListener(refreshClickListener);
