@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
@@ -18,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.extentech.ExtenXLS.WorkBookHandle;
+
 
 /**
  * Encapsulate a spreadsheet as a StreamSource so that it can be used as a
@@ -28,6 +31,19 @@ import com.extentech.ExtenXLS.WorkBookHandle;
  */
 @SuppressWarnings("serial")
 public class JXLSLifterCard extends JXLSWorkbookStreamSource {
+
+	/**
+	 * Number of rows in a card
+	 */
+	final static int CARD_SIZE = 10;
+	/**
+	 * Number of cards per page
+	 */
+	final static int CARDS_PER_PAGE = 2;
+
+    /**
+     * 
+     */
     public JXLSLifterCard() {
 		super(false);
 	}
@@ -56,5 +72,23 @@ public class JXLSLifterCard extends JXLSWorkbookStreamSource {
 		this.lifters = LifterSorter.registrationOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAllPojos());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource#postProcess(org.apache.poi.ss.usermodel.Workbook)
+	 */
+	@Override
+	protected void postProcess(Workbook workbook) {
+		setPageBreaks(workbook);
+	}
 
+	private void setPageBreaks(Workbook workbook) {
+		Sheet sheet = workbook.getSheetAt(0);
+		int lastRowNum = sheet.getLastRowNum();
+		sheet.setAutobreaks(false);
+		int increment = CARDS_PER_PAGE*CARD_SIZE + (CARDS_PER_PAGE-1);
+		
+		for (int curRowNum = increment; curRowNum < lastRowNum;) {
+			sheet.setRowBreak(curRowNum-1);
+			curRowNum += increment;
+		}
+	}
 }
