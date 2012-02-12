@@ -259,7 +259,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
             @Override
 			public void buttonClick(ClickEvent event) {
                 logger.debug("reloading"); //$NON-NLS-1$
-                data.refresh();
+                data.refresh(false);
             }
         };
         refreshButton.addListener(refreshClickListener);

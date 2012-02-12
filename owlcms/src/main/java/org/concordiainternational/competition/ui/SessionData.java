@@ -1206,12 +1206,16 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 		//getTimer().removeAllListeners();
 	}
 
-	public void refresh() {
+	public void refresh(boolean isMaster) {
 		 setCurrentSession(this.getCurrentSession());
-         // force re-fetching of platform, so that the audio output switches
-         String platformName = this.getPlatform().getName();
-         Platform platform1 = Platform.getByName(platformName);
-         this.setPlatform(platform1);
+		 if (isMaster) {
+	         // get current platform back from database
+			 // TODO: switch to JPA and use entity refresh
+	         String platformName = this.getPlatform().getName();
+	         Platform platform1 = Platform.getByName(platformName);
+	         // setPlatform forces the audio to switch
+	         this.setPlatform(platform1);
+		 }
 	}
 
 
