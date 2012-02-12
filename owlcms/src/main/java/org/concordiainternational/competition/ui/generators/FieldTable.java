@@ -7,6 +7,13 @@
  */
 package org.concordiainternational.competition.ui.generators;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+
+import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.data.Property;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Table;
@@ -18,6 +25,9 @@ import com.vaadin.ui.TableFieldFactory;
  */
 @SuppressWarnings("serial")
 public class FieldTable extends Table {
+	Logger logger = LoggerFactory.getLogger(FieldTable.class);
+	DecimalFormat threeDecimals = new DecimalFormat("0.000", new DecimalFormatSymbols(CompetitionApplication.getCurrentLocale()));
+	DecimalFormat twoDecimals = new DecimalFormat("0.00", new DecimalFormatSymbols(CompetitionApplication.getCurrentLocale()));
 
 	/* Always use a field, so that the read-only version is consistent with the editing formatting.
 	 * @see com.vaadin.ui.Table#getPropertyValue(java.lang.Object, java.lang.Object, com.vaadin.data.Property)
@@ -34,7 +44,7 @@ public class FieldTable extends Table {
                 if (isEditable()) {
                 	return f;
                 } else {
-                	return f.toString();
+                	return formatPropertyValue(rowId, colId, property);
                 }
             }
         }
@@ -42,6 +52,39 @@ public class FieldTable extends Table {
         return formatPropertyValue(rowId, colId, property);
 	}
 
+	@Override
+	protected String formatPropertyValue(Object rowId, Object colId,
+			Property property) {
+        // Format by property type
+        if (property.getType() == Double.class) {
+        	if (((String)colId).endsWith("inclair")) {          
+                return threeDecimals.format((Double) property.getValue());
+        	} else {
+        		return twoDecimals.format((Double) property.getValue());
+        	}
+        }
+		return super.formatPropertyValue(rowId, colId, property);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.vaadin.ui.Table#getColumnAlignment(java.lang.Object)
+	 */
+	@Override
+	public String getColumnAlignment(Object propertyId) {
+//		if (this.isEditable()) {
+//			return ALIGN_CENTER;
+//		} else {
+			if (((String)propertyId).endsWith("Name")){
+	//			logger.warn("{} {}",propertyId,"left");
+				return ALIGN_LEFT;
+			} else {
+	//			logger.warn("{} {}",propertyId,"right");
+				return ALIGN_RIGHT;
+			}
+//		}
+	}
+	
+	
 
 
 }

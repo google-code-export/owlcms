@@ -329,9 +329,9 @@ public abstract class GenericList<T> extends VerticalLayout {
 		for (int i = 0; i < visibleColumns.length; i++) {
 	    	Object columnId = visibleColumns[i];
 	    	if (columnId.equals("lastName") ||columnId.equals("firstName")) {
-	    		table.setColumnExpandRatio(columnId, 2.6F);
+	    		table.setColumnExpandRatio(columnId, 1.0F);
 	    	} else {
-	    		table.setColumnExpandRatio(columnId, 0.9F);
+	    		table.setColumnExpandRatio(columnId, 0.0F);
 	    	}
 	    	
 	    }

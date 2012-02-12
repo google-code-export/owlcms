@@ -147,8 +147,18 @@ public class CommonFieldFactory extends DefaultFieldFactory {
             return f;
         }
         
+        if (propertyIdString.contains("gender")) { //$NON-NLS-1$
+        	f.setWidth("3em");
+            return f;
+        }
+        
         if (propertyIdString.contains("Name")) { //$NON-NLS-1$
-        	f.setWidth("15em");
+        	f.setWidth("100%");
+            return f;
+        }
+        
+        if (propertyIdString.contains("name")) { //$NON-NLS-1$
+        	f.setWidth("100%");
             return f;
         }
         
@@ -157,7 +167,7 @@ public class CommonFieldFactory extends DefaultFieldFactory {
         }
 
         if (f instanceof TextField && (uiContext instanceof Table)) {
-            ((TextField) f).setWidth("3em"); //$NON-NLS-1$
+            ((TextField) f).setWidth("90%"); //$NON-NLS-1$
         }
            
         return f;

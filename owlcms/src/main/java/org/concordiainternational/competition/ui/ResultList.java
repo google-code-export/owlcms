@@ -155,6 +155,10 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
         // the following columns will be read-only.
         final CommonColumnGenerator columnGenerator = new CommonColumnGenerator(app);
         table.addGeneratedColumn("totalRank", columnGenerator); //$NON-NLS-1$
+        table.setColumnAlignment("totalRank",Table.ALIGN_RIGHT);
+        table.setColumnAlignment("lastName",Table.ALIGN_LEFT);
+        table.setColumnAlignment("firstName",Table.ALIGN_LEFT);
+        
         if (WinningOrderComparator.useRegistrationCategory) {
             table.addGeneratedColumn("registrationCategory", columnGenerator); //$NON-NLS-1$
         } else {
@@ -316,6 +320,9 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
                 Messages.getString("Lifter.cleanJerk2", locale), //$NON-NLS-1$
                 Messages.getString("Lifter.cleanJerk3", locale), //$NON-NLS-1$
                 Messages.getString("Lifter.total", locale), //$NON-NLS-1$
+                Messages.getString("Lifter.sinclair", locale), //$NON-NLS-1$
+                Messages.getString("Lifter.sinclairCat", locale), //$NON-NLS-1$
+                
         };
         return COL_HEADERS;
     }
@@ -344,6 +351,8 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
                 "cleanJerk2ActualLift", //$NON-NLS-1$
                 "cleanJerk3ActualLift", //$NON-NLS-1$
                 "total", //$NON-NLS-1$
+                "sinclair", //$NON-NLS-1$
+                "categorySinclair", //$NON-NLS-1$
         };
         return NATURAL_COL_ORDER;
     }
