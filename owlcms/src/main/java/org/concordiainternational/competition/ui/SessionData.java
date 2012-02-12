@@ -1207,15 +1207,19 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 	}
 
 	public void refresh(boolean isMaster) {
-		 setCurrentSession(this.getCurrentSession());
-		 if (isMaster) {
-	         // get current platform back from database
-			 // TODO: switch to JPA and use entity refresh
-	         String platformName = this.getPlatform().getName();
-	         Platform platform1 = Platform.getByName(platformName);
-	         // setPlatform forces the audio to switch
-	         this.setPlatform(platform1);
-		 }
+		setCurrentSession(this.getCurrentSession());
+		if (isMaster) {
+			// get current platform back from database
+			// TODO: switch to JPA and use entity refresh
+			Platform curPlatform = this.getPlatform();
+			if (curPlatform != null) {
+				String platformName = curPlatform.getName();
+				Platform refreshedPlatform = Platform.getByName(platformName);
+				// setPlatform forces the audio to switch
+				this.setPlatform(refreshedPlatform);
+			}
+
+		}
 	}
 
 
