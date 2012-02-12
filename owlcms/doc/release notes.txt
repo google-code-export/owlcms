@@ -1,5 +1,10 @@
 #summary Release Notes
 
+== Release 2.8.6
+  * Improvement: issue 2 - show Sinclair (body weight and category weight) on Results page. Can be sorted,
+    useful for "best of meet" awards -- just make sure no session is selected to get all lifters
+  * Fix: issue 3 - Reload of results prior to selecting any session was trying to reset the platform. 
+
 == Release 2.8.5
   * Changed the license to use the just-released version of the Mozilla Public Licence (MPL-2.0).
     The spirit of the licensing remains the same: should anyone create a version of the program, they need
