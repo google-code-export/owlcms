@@ -16,6 +16,13 @@
 			<unpack>true</unpack>
 		</dependencySet>
 	</dependencySets>
+	<files>
+		<file>
+			<source>../../wiki/ReleaseNotes.wiki</source>
+			<outputDirectory>doc</outputDirectory>
+			<destName>release notes.txt</destName>
+		</file>
+	</files>	
 	<fileSets>
 		<fileSet>
 			<directory>../launch/src/main/scripts</directory>
