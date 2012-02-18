@@ -166,6 +166,7 @@ public class Competition implements Serializable {
             final Competition competition = competitions.get(0);
             invitedThreshold = competition.getInvitedIfBornBefore();
         }
+        if (invitedThreshold == null) return 0;
         return invitedThreshold;
     }
 
@@ -186,9 +187,10 @@ public class Competition implements Serializable {
         if (competitions.size() > 0) {
             final Competition competition = competitions.get(0);
             isMasters = competition.getMasters();
-            if (isMasters == null) return false; // junit database does not have
-                                                 // this attribute set.
+            
         }
+        if (isMasters == null) return false; // junit database does not have
+        // this attribute set.
         return isMasters;
     }
 

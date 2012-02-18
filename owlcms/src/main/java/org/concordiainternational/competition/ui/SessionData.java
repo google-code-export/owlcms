@@ -134,6 +134,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         app = CompetitionApplication.getCurrent();
         this.lifters = lifters;
         notificationManager = new NotificationManager<SessionData, Lifter, Component>(this);
+        refereeDecisionController = new RefereeDecisionController(this);
+        juryDecisionController = new JuryDecisionController(this);
         updateListsForLiftingOrderChange();
         init();
     }

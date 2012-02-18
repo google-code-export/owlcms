@@ -330,6 +330,9 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 		groupB.setPlatform(platform2);
 		CompetitionSession groupC = new CompetitionSession("C", w.getTime(), c.getTime()); //$NON-NLS-1$
 		groupC.setPlatform(platform1);
+		sess.save(groupA);
+		sess.save(groupB);
+		sess.save(groupC);
 		insertSampleLifters(liftersToLoad, sess, groupA, groupB, groupC);
 	}
 

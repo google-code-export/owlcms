@@ -25,6 +25,7 @@ import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +68,7 @@ public class SpreadsheetTest {
         loadResults = AllTests.longDump(lifters, false);
     }
 
-    @Test
+    @Ignore
     public void writeAllLifters() throws Throwable {
         tempFile = File.createTempFile("myApp", ".xls"); //$NON-NLS-1$ //$NON-NLS-2$
         //tempFile.deleteOnExit();
@@ -77,7 +78,7 @@ public class SpreadsheetTest {
                 .writeLifters(lifters, os);
     }
 
-    @Test
+    @Ignore
     public void reloadFromOutput() throws Throwable {
         InputStream is = new FileInputStream(tempFile);
         ResultSheet readAgain = new ResultSheet(AllTests.getSessionManager());

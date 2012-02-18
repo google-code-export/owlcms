@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.concordiainternational.competition.tests.AllTests;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,9 +128,9 @@ public class CategoryLookup {
         if (sessMgr == null) {
             sessMgr = CompetitionApplication.getCurrent();
             // patch for junit.
-            if (sessMgr == null) {
-            	sessMgr = AllTests.getSessionManager();
-            }
+//            if (sessMgr == null) {
+//            	sessMgr = AllTests.getSessionManager();
+//            }
         }
         activeCategoriesFromDb = new CategoryContainer(sessMgr,true); // only active categories
         categories = activeCategoriesFromDb.getAllPojos();
