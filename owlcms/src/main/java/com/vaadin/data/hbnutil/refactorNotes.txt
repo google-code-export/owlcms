@@ -1,0 +1,30 @@
+Ideas for refactoring HbnContainer
+
+- current implementation is hybrid.  It uses field access to get the values (the field in the class is stored in the database)
+but uses property access for creating the class (HbnContainer always uses the setter so that updates to fields are propagated
+to the user interface).
+
+Approach 0
+
+- force use of setter in HbnContainer
+
+- not portable to JPAContainer
+
+Approach 1
+
+- add container properties for all the Pojo computed properties
+
+- would work, but only if we add propertyFormatters for all the native properties that display ugly (all those where we use emptyIfNull)
+
+
+Approach 2
+
+- we could create LifterData class with field access to be stored in hibernate.
+
+- Can we then use Lifter in HbnContainer -- no because the hibernate metadata info is not present.
+
+- Can we use HbnContainer<LifterData> -- no, the datasource is incomplete.
+
+- So we need to create a DelegatingContainer<Lifter,LifterData> such that
+	* creating an item from a lifter, just like a beanitem container would
+	* addItem would 
