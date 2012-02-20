@@ -12,6 +12,12 @@
 	<version>2.8.6</version>
 	<name>Olympic Weightlifting Competition Management System</name>
 
+	<parent>
+		<artifactId>owlcmsParent</artifactId>
+		<groupId>org.concordiainternational</groupId>
+		<version>1.0.0</version>
+		<relativePath>../owlcmsParent</relativePath>
+	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.concordiainternational</groupId>
 	<artifactId>owlcms</artifactId>
