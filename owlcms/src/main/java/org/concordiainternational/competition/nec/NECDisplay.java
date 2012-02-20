@@ -237,7 +237,7 @@ public class NECDisplay implements Serializable {
      * Write to a serial device using a separate thread.
      * 
      */
-    private class StringWriter implements Runnable {
+    public class StringWriter implements Runnable {
         private String[] strings;
         private NECDisplay display;
 
@@ -251,6 +251,7 @@ public class NECDisplay implements Serializable {
             synchronized (display) {
                 OutputStream out = null;
                 try {
+                	if (display.comPortName == null) return;
                 	init(display.comPortName);
                 	if (display.serialPort != null) {
                 		out = display.serialPort.getOutputStream();
@@ -342,9 +343,9 @@ public class NECDisplay implements Serializable {
     }
 
     @Test
-    public void testStrings() throws IOException, NoSuchPortException, PortInUseException,
+    public void testStrings(String comPortName1) throws IOException, NoSuchPortException, PortInUseException,
             UnsupportedCommOperationException {
-        comPortName = "COM3"; //$NON-NLS-1$
+    	this.comPortName = comPortName1;
         writeStrings("", "", "          17 KG"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         try {
             Thread.sleep(2000);
