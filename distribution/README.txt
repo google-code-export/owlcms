@@ -11,6 +11,7 @@ Steps to create a release.
 2) Create the windows installer with Advanced Installer Freeware
 Because we use the Free edition, these steps are manual.
 
+- go to the distribution project and refresh (F5)
 - go to distribution/src/installer/owlcms-cache and delete the contents.
 - start src/installer/owlcms.aip
   - In the "files" section, go to "Application Data/owlcms"
