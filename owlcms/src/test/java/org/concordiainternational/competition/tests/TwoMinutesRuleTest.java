@@ -11,8 +11,10 @@ import static org.concordiainternational.competition.tests.AllTests.assertEquals
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.LifterContainer;
@@ -60,7 +62,15 @@ public class TwoMinutesRuleTest {
         lifters = (hbnLifters.getAllPojos());
 
         // set up the port
-        WebApplicationConfiguration.getNecDisplay("COM1"); //$NON-NLS-1$
+        String portName = null;
+        try {
+        	Properties props = new Properties();
+        	props.load(this.getClass().getResourceAsStream("/tests.properties"));
+        	portName = (String) props.get("portName");
+        	if (portName != null && portName.trim().isEmpty()) portName = null;
+        } catch (IOException ioe) {        	
+        }
+        WebApplicationConfiguration.getNecDisplay(portName); //$NON-NLS-1$
     }
 
     @After
