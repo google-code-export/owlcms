@@ -27,8 +27,7 @@ import org.junit.runners.Suite;
 import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { CategoryLookupTest.class, GroupLookupTest.class, LifterEditorTest.class, LifterSorterTest.class,
-        LifterTest.class, SpreadsheetTest.class, TwoMinutesRuleTest.class, NECDisplay.class, })
+@Suite.SuiteClasses( { CategoryLookupTest.class, GroupLookupTest.class, LifterEditorTest.class, LifterSorterTest.class, LifterTest.class, SpreadsheetTest.class, TwoMinutesRuleTest.class, NECDisplay.class })
 public class AllTests implements HbnSessionManager {
 
     final static String lineSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
