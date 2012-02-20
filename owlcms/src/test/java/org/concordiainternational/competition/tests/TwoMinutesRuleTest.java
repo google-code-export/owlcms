@@ -70,7 +70,10 @@ public class TwoMinutesRuleTest {
         	if (portName != null && portName.trim().isEmpty()) portName = null;
         } catch (IOException ioe) {        	
         }
-        WebApplicationConfiguration.getNecDisplay(portName); //$NON-NLS-1$
+        if (portName != null) {
+            WebApplicationConfiguration.getNecDisplay(portName);
+        }
+
     }
 
     @After
