@@ -22,9 +22,10 @@
 	</properties>
 
 	<modules>
+		<module>../touchdiv</module>
 		<module>../owlcms</module>
 		<module>../launch</module>
-		<module>../touchdiv</module>
+
 	</modules>
 
 
