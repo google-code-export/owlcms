@@ -6,7 +6,7 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/webapp/WEB-INF"/>
         <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
-        <dependent-module archiveName="touchdiv-1.0.1.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/touchdiv/touchdiv">
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/touchdiv/touchdiv">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="owlcms"/>
