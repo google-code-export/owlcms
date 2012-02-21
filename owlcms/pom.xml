@@ -193,7 +193,7 @@
 		<profile>
 			<id>useExternalRepositories</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<repositories>
 				<repository>
@@ -245,9 +245,6 @@
 					</snapshots>
 				</repository>
 			</repositories>
-
-
-
 
 			<pluginRepositories>
 				<pluginRepository>
