@@ -215,7 +215,7 @@
 	<repositories>
 		<repository>
 			<id>repository</id>
-			<name>repository</name>
+			<name>local repository for unpublished third-party jars.</name>
 			<releases>
 				<enabled>true</enabled>
 				<checksumPolicy>ignore</checksumPolicy>
