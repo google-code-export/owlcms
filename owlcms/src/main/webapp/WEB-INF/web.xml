@@ -7,7 +7,7 @@
 
 	<context-param>
 		<param-name>productionMode</param-name>
-		<param-value>false</param-value>
+		<param-value>${productionMode}</param-value>
 	</context-param>
 	<context-param>
 		<param-name>appVersion</param-name>
@@ -20,7 +20,7 @@
 	<context-param>
 		<param-name>appUrl</param-name>
 		<param-value>${url}</param-value>
-	</context-param>	
+	</context-param>
 	
 	<!-- when running on a tomcat server (non-embedded), the values for dbPath and
 	     (if used) comPort should be defined in conf/context.xml
