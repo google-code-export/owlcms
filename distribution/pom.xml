@@ -13,6 +13,13 @@
 	<groupId>org.concordiainternational</groupId>
 	<artifactId>distribution</artifactId>
 	<version>2.8.7</version>
+	
+	<parent>
+		<artifactId>owlcmsParent</artifactId>
+		<groupId>org.concordiainternational</groupId>
+		<version>1.0.0</version>
+		<relativePath>../owlcmsParent</relativePath>
+	</parent>
 
 	<dependencies>
 		<dependency>
