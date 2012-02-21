@@ -89,9 +89,9 @@
 						redeployment -->
 					<scanIntervalSeconds>0</scanIntervalSeconds>
 					<reload>manual</reload>
-					<webXml>${project.build.directory}/jetty/WEB-INF/web.xml</webXml>
 					<webAppConfig>
 						<contextPath>/${project.artifactId}</contextPath>
+						<descriptor>${project.build.directory}/jetty/WEB-INF/web.xml</descriptor>
 					</webAppConfig>
 					<systemProperties>
 						<systemProperty>
@@ -226,6 +226,20 @@
 			<url>file://${project.basedir}/../repository</url>
 		</repository>
 	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>repository</id>
+			<name>local repository for unpublished third-party jars.</name>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<url>file://${project.basedir}/../repository</url>
+		</pluginRepository>	
+	</pluginRepositories>
 	<dependencies>
 		<!-- vaadin and add-ons -->
 		<dependency>
