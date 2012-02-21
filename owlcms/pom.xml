@@ -246,6 +246,9 @@
 				</repository>
 			</repositories>
 
+
+
+
 			<pluginRepositories>
 				<pluginRepository>
 					<id>apache.snapshots</id>
@@ -284,7 +287,20 @@
 			</pluginRepositories>
 		</profile>
 	</profiles>
-
+	<repositories>
+		<repository>
+			<id>repository</id>
+			<name>repository</name>
+			<releases>
+				<enabled>true</enabled>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<url>file://${project.basedir}/../repository</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<!-- vaadin and add-ons -->
 		<dependency>
