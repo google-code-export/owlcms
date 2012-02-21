@@ -1,9 +1,9 @@
-#Tue Feb 21 10:14:09 EST 2012
-activeProfiles=\!artifactory,\!dev
+#Tue Feb 21 13:12:45 EST 2012
+activeProfiles=\!artifactory
 eclipse.preferences.version=1
 fullBuildGoals=process-test-resources
 includeModules=false
-resolveWorkspaceProjects=true
+resolveWorkspaceProjects=false
 resourceFilterGoals=process-resources resources\:testResources
 skipCompilerPlugin=true
 version=1
