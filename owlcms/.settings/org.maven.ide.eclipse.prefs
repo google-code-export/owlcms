@@ -1,5 +1,5 @@
-#Tue Feb 07 07:52:57 EST 2012
-activeProfiles=
+#Tue Feb 21 10:14:09 EST 2012
+activeProfiles=\!artifactory,\!dev
 eclipse.preferences.version=1
 fullBuildGoals=process-test-resources
 includeModules=false
