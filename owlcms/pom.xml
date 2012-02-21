@@ -189,9 +189,8 @@
 				</plugins>
 			</build>
 		</profile>
-
 		<profile>
-			<id>useExternalRepositories</id>
+			<id>allExternalRepositories</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
@@ -282,6 +281,28 @@
 					</releases>
 				</pluginRepository>
 			</pluginRepositories>
+		</profile>
+		<profile>
+			<id>useExternalRepositories</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<repositories>
+				<repository>
+					<id>vaadin-addons</id>
+					<url>http://maven.vaadin.com/vaadin-addons</url>
+				</repository>
+				<repository>
+					<id>ICEFaces</id>
+					<url>http://anonsvn.icefaces.org/repo/maven2/releases/</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>			
+			</repositories>
 		</profile>
 	</profiles>
 	<repositories>
@@ -485,7 +506,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.concordiainternational</groupId>
+			<groupId>org.vaadin</groupId>
 			<artifactId>touchdiv</artifactId>
 			<version>1.0.1</version>
 			<type>jar</type>
