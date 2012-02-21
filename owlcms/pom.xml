@@ -53,7 +53,7 @@
 				<targetPath>${project.build.directory}/jetty/WEB-INF</targetPath>
 			</resource>
 		</resources>
-	
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -190,99 +190,6 @@
 			</build>
 		</profile>
 		<profile>
-			<id>allExternalRepositories</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<repositories>
-				<repository>
-					<id>vaadin-snapshots</id>
-					<url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
-					<releases>
-						<enabled>false</enabled>
-						<updatePolicy>daily</updatePolicy>
-					</releases>
-					<snapshots>
-						<enabled>true</enabled>
-						<updatePolicy>daily</updatePolicy>
-					</snapshots>
-				</repository>
-				<repository>
-					<id>sourceforge-snapshots</id>
-					<url>http://oss.sonatype.org/content/repositories/sourceforge-snapshots/</url>
-					<releases>
-						<enabled>true</enabled>
-					</releases>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-				</repository>
-				<repository>
-					<id>vaadin-addons</id>
-					<url>http://maven.vaadin.com/vaadin-addons</url>
-				</repository>
-				<repository>
-					<id>JBoss</id>
-					<name>JBoss Repository</name>
-					<layout>default</layout>
-					<url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
-					<releases>
-						<enabled>true</enabled>
-					</releases>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-				</repository>
-				<repository>
-					<id>ICEFaces</id>
-					<url>http://anonsvn.icefaces.org/repo/maven2/releases/</url>
-					<releases>
-						<enabled>true</enabled>
-					</releases>
-					<snapshots>
-						<enabled>false</enabled>
-					</snapshots>
-				</repository>
-			</repositories>
-
-			<pluginRepositories>
-				<pluginRepository>
-					<id>apache.snapshots</id>
-					<url>http://repository.apache.org/snapshots/</url>
-				</pluginRepository>
-				<pluginRepository>
-					<id>mojo-snapshots</id>
-					<url>http://snapshots.repository.codehaus.org/</url>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
-				</pluginRepository>
-				<pluginRepository>
-					<id>vaadin-snapshots</id>
-					<url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
-				</pluginRepository>
-				<pluginRepository>
-					<id>codehaus-snapshots</id>
-					<url>http://nexus.codehaus.org/snapshots</url>
-					<snapshots>
-						<enabled>true</enabled>
-					</snapshots>
-					<releases>
-						<enabled>false</enabled>
-					</releases>
-				</pluginRepository>
-			</pluginRepositories>
-		</profile>
-		<profile>
 			<id>useExternalRepositories</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
@@ -301,7 +208,7 @@
 					<snapshots>
 						<enabled>false</enabled>
 					</snapshots>
-				</repository>			
+				</repository>
 			</repositories>
 		</profile>
 	</profiles>
