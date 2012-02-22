@@ -48,6 +48,13 @@ public class CategoryLookup {
         }
         return sharedCategoryLookup;
     }
+    
+    public static synchronized CategoryLookup getSharedInstance(HbnSessionManager hbnSessionManager) {
+        if (sharedCategoryLookup == null) {
+            sharedCategoryLookup = new CategoryLookup(hbnSessionManager);
+        }
+        return sharedCategoryLookup;
+    }
 
     /**
      * compare categories (assumed to be properly defined and non-overlapping).

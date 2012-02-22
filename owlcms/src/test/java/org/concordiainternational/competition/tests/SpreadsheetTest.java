@@ -49,6 +49,7 @@ public class SpreadsheetTest {
         Assert.assertNotNull(hbnSessionManager);
         Assert.assertNotNull(hbnSessionManager.getHbnSession());
         hbnSessionManager.getHbnSession().beginTransaction();
+        CategoryLookup.getSharedInstance(hbnSessionManager);
     }
 
     @After
