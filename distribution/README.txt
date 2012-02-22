@@ -5,7 +5,8 @@ Steps to create a release.
 - Make sure that owlcms/pom.xml owlcms/doc/releasenotes.txt and distribution/pom.xml all
   have correct version numbers.
 - cd to owlcms
-	- Run       mvn clean vaadin:update-widgetset gwt:compile -P compile-widgetset
+	- Run       mvn clean vaadin:update-widgetset gwt:compile -P compile-widgetset   
+	  (under Eclipse, run  widgetset.launch  using right-click on file)
 	- Run       mvn install
 - commit, push
 - in project "distribution" run the maven goals:   clean assembly:single  (configuration "prepare uploads")
