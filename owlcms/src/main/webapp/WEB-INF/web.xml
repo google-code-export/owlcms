@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	<display-name>${artifactId} ${version}</display-name>
+
+	<context-param>
+		<param-name>productionMode</param-name>
+		<param-value>${productionMode}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>appVersion</param-name>
+		<param-value>${version}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>appName</param-name>
+		<param-value>${name}</param-value>
+	</context-param>
+	<context-param>
+		<param-name>appUrl</param-name>
+		<param-value>${url}</param-value>
+	</context-param>
+	
+	<!-- when running on a tomcat server (non-embedded), the values for dbPath and
+	     (if used) comPort should be defined in conf/context.xml
+	     as in the following example: 
+	     	<Parameter name="comPort" value="COM3" override="false"/>
+			<Parameter name="dbPath" value="e:/dev/db/competition" override="false"/>
+		This enables the server to keep the values when deploying versions of the
+		war. Note: We recommend *against* using conf/Catalina/localhost/owlcms.xml for this
+		purpose unless you truly know what you are doing.
+	  -->
+	<context-param>
+		<description>
+			File root for the owlcms database (actual files will have a suffix
+			appended, e.g. ".db" or ".log").  May be an absolute path or relative
+			to the current directory
+		</description>
+		<param-name>dbPath</param-name>
+		<param-value>db/competition</param-value>
+	</context-param>
+	<context-param>
+		<description>
+			Communication port used to drive an external LED display.  Leave empty
+			if no such port is used.
+		</description>	
+		<param-name>comPort</param-name>
+		<param-value></param-value>
+	</context-param>
+
+	<listener>
+		<description>Ensure orderly release of resources on shutdown</description>
+		<listener-class>org.concordiainternational.competition.webapp.WebApplicationConfiguration</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>CompetitionApplication</servlet-name>
+		<!-- servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class -->
+		<servlet-class>org.concordiainternational.competition.webapp.PushServlet</servlet-class>
+		<init-param>
+			<param-name>application</param-name>
+			<param-value>org.concordiainternational.competition.ui.CompetitionApplication</param-value>
+		</init-param>
+		<init-param>
+			<param-name>widgetset</param-name>
+			<param-value>org.concordiainternational.competition.ui.CompetitionApplicationWidgetSet</param-value>
+		</init-param>
+	</servlet>
+
+
+	<servlet-mapping>
+		<servlet-name>CompetitionApplication</servlet-name>
+		<url-pattern>/VAADIN/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>CompetitionApplication</servlet-name>
+		<url-pattern>/app/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>CompetitionApplication</servlet-name>
+		<url-pattern>/m/*</url-pattern>
+	</servlet-mapping>
+
+</web-app>
