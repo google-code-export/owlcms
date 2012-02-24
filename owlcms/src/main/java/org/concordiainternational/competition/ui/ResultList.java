@@ -387,6 +387,10 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
     protected void populateAndConfigureTable() {
         super.populateAndConfigureTable(); // this creates a new table and calls
                                            // loadData (below)
+        
+        table.setColumnExpandRatio("lastName",100F);
+        table.setColumnExpandRatio("firstName",100F);
+        
         if (table.size() > 0) {
             table.setEditable(false);
             table.addListener(this); // listen to selection events

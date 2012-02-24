@@ -299,6 +299,18 @@ public class LiftList extends GenericBeanList<Lifter> implements
     protected void populateAndConfigureTable() {
         super.populateAndConfigureTable(); // this creates a new table and calls
                                            // loadData (below)
+        
+        table.setColumnWidth("lastName",100);
+        table.setColumnWidth("firstName",100); 
+        table.setColumnExpandRatio("lastName",100F);
+        table.setColumnExpandRatio("firstName",100F);
+            
+        table.setColumnWidth("birthDate",30);
+        table.setColumnWidth("category",30);
+        table.setColumnWidth("bodyWeight",45);
+        table.setColumnWidth("nextAttemptRequestedWeight",30);
+        table.setColumnWidth("lotNumber",30);
+        
         if (table.size() > 0) {
             table.setEditable(false);
             table.addListener(this); // listen to selection events

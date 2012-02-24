@@ -417,6 +417,8 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
     @Override
     protected void populateAndConfigureTable() {
         super.populateAndConfigureTable();
+        table.setColumnExpandRatio("lastName",100F);
+        table.setColumnExpandRatio("firstName",100F);
         if (table.size() > 0) {
             // set styling;
             table.setCellStyleGenerator(new LiftCellStyleGenerator(table));
