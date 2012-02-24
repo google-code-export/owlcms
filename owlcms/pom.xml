@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Copyright 2009-2012, Jean-François Lamy
-  
-  This Source Code Form is subject to the terms of the Mozilla Public License,
-  v. 2.0. If a copy of the MPL was not distributed with this file, 
-  You can obtain one at http://mozilla.org/MPL/2.0/.
--->
+<!-- Copyright 2009-2012, Jean-François Lamy This Source Code Form is subject 
+	to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL 
+	was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -152,7 +148,7 @@
 			<properties>
 				<productionMode>true</productionMode>
 			</properties>
-		</profile>		
+		</profile>
 		<profile>
 			<id>compile-widgetset</id>
 			<build>
@@ -256,7 +252,7 @@
 				<enabled>false</enabled>
 			</snapshots>
 			<url>file://${project.basedir}/../repository</url>
-		</pluginRepository>	
+		</pluginRepository>
 	</pluginRepositories>
 	<dependencies>
 		<!-- vaadin and add-ons -->
@@ -362,14 +358,10 @@
 			<version>1.6.4</version>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>taglibs</groupId>
-			<artifactId>standard</artifactId>
-			<version>1.1.2</version>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>jstl</artifactId>
+		    <version>1.2</version>
+		    <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
