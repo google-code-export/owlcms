@@ -152,7 +152,7 @@
 			<properties>
 				<productionMode>true</productionMode>
 			</properties>
-		</profile>		
+		</profile>
 		<profile>
 			<id>compile-widgetset</id>
 			<build>
@@ -256,7 +256,7 @@
 				<enabled>false</enabled>
 			</snapshots>
 			<url>file://${project.basedir}/../repository</url>
-		</pluginRepository>	
+		</pluginRepository>
 	</pluginRepositories>
 	<dependencies>
 		<!-- vaadin and add-ons -->
