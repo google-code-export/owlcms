@@ -189,6 +189,7 @@ Upload.Receiver, ApplicationView {
 				new IsIncludedIn(sessionNameSet), // sessionName
 				new Optional(new ParseInt()), // registration total
 		};
+		
 		try {
 			final String[] header = cbr.getCSVHeader(true);
 			Lifter lifter;
