@@ -85,7 +85,7 @@ public class InputCSVHelper implements InputSheet {
 				new StrRegEx("[mfMF]"), // gender
 				null, // club, as is.
 				new StrRegEx("(19|20)[0-9][0-9]", new ParseInt()), // birth year
-				new IsIncludedIn(categoryNameSet, new AsCategory()), // registrationCategory
+				new Optional(new IsIncludedIn(categoryNameSet, new AsCategory())), // registrationCategory
 				new IsIncludedIn(sessionNameSet, new AsCompetitionSession()), // sessionName
 				new Optional(new ParseInt()), // registration total
 		};
