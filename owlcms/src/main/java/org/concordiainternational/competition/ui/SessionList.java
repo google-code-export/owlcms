@@ -110,7 +110,7 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
         table.addGeneratedColumn("platform", new CommonColumnGenerator(app)); //$NON-NLS-1$
         
         setExpandRatios();
-        table.setColumnExpandRatio("name", 0.3F);
+        //table.setColumnExpandRatio("name", 0.3F);
         table.setColumnExpandRatio("actions", 1.2F);
         
     }
