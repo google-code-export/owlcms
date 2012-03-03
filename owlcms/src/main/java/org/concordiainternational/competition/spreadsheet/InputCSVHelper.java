@@ -11,12 +11,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.concordiainternational.competition.data.Category;
 import org.concordiainternational.competition.data.CategoryLookup;
@@ -26,87 +24,134 @@ import org.concordiainternational.competition.data.CompetitionSessionLookup;
 import org.concordiainternational.competition.data.Lifter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.supercsv.cellprocessor.CellProcessorAdaptor;
 import org.supercsv.cellprocessor.Optional;
-import org.supercsv.cellprocessor.ParseDate;
 import org.supercsv.cellprocessor.ParseInt;
 import org.supercsv.cellprocessor.constraint.IsIncludedIn;
+import org.supercsv.cellprocessor.constraint.StrRegEx;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
+import org.supercsv.util.CSVContext;
 
-import com.extentech.ExtenXLS.WorkSheetHandle;
 import com.extentech.formats.XLS.CellNotFoundException;
 import com.extentech.formats.XLS.WorkSheetNotFoundException;
 import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
+/**
+ * Read registration data in CSV format.
+ * The file is expected to contain a header line, as illustrated:
+ * <pre>lastName,firstName,gender,club,birthDate,registrationCategory,competitionSession,qualifyingTotal
+Lamy,Jean-François,M,C-I,1961,m69,H1,140</pre>
+ *
+ * Note that the birthDate field is actually a birth year.
+ * registrationCategory and competitionSession must be valid entries in the database.
+ *  
+ * @author Jean-François Lamy
+ *
+ */
 public class InputCSVHelper implements InputSheet {
-	final private static Logger logger = LoggerFactory.getLogger(InputCSVHelper.class);
-
-	// constants
-	final static int START_ROW = 7;
-	static final int GENDER_COLUMN = 4;
-	static final int BODY_WEIGHT_COLUMN = 6;
-
+	final private Logger logger = LoggerFactory.getLogger(InputCSVHelper.class);
 	private CompetitionSessionLookup competitionSessionLookup;
 	private CategoryLookupByName categoryLookupByName;
+	private CellProcessor[] processors;
 
-	InputCSVHelper(HbnSessionManager hbnSessionManager, LifterReader reader) {
-		new CategoryLookup(hbnSessionManager);
-		categoryLookupByName = new CategoryLookupByName(hbnSessionManager);
-		competitionSessionLookup = new CompetitionSessionLookup(hbnSessionManager);
+	InputCSVHelper(HbnSessionManager hbnSessionManager) {
+		initProcessors(hbnSessionManager);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.concordiainternational.competition.spreadsheet.InputSheet#getAllLifters(java.io.InputStream, com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager)
+	/**
+	 * Configure the cell validators and value converters.
+	 * 
+	 * @param hbnSessionManager to access current database.
 	 */
+	private void initProcessors(HbnSessionManager hbnSessionManager) {
+		categoryLookupByName = new CategoryLookupByName(hbnSessionManager);
+		competitionSessionLookup = new CompetitionSessionLookup(hbnSessionManager);
+		
+		List<CompetitionSession> sessionList = CompetitionSession.getAll();
+		Set<Object> sessionNameSet = new HashSet<Object>();
+		for (CompetitionSession s : sessionList) {
+			sessionNameSet.add(s.getName());
+		}
+		List<Category> categoryList = CategoryLookup.getSharedInstance().getCategories();
+		Set<Object> categoryNameSet = new HashSet<Object>();
+		for (Category c : categoryList) {
+			categoryNameSet.add(c.getName());
+		}
+		processors = new CellProcessor[] {
+				null, // last name, as is.
+				null, // first name, as is.
+				new StrRegEx("[mfMF]"), // gender
+				null, // club, as is.
+				new StrRegEx("(19|20)[0-9][0-9]", new ParseInt()), // birth year
+				new IsIncludedIn(categoryNameSet, new AsCategory()), // registrationCategory
+				new IsIncludedIn(sessionNameSet, new AsCompetitionSession()), // sessionName
+				new Optional(new ParseInt()), // registration total
+		};
+	}
+
+
 	@Override
 	public synchronized List<Lifter> getAllLifters(InputStream is, HbnSessionManager sessionMgr) throws IOException,
 	CellNotFoundException, WorkSheetNotFoundException {
 		LinkedList<Lifter> allLifters = new LinkedList<Lifter>() ;
 
 		CsvBeanReader cbr = new CsvBeanReader(new InputStreamReader(is), CsvPreference.EXCEL_PREFERENCE);
-		List<CompetitionSession> sessionList = CompetitionSession.getAll();
-		Set<Object> sessionNameSet = new TreeSet<Object>();
-		for (CompetitionSession s : sessionList) {
-			sessionNameSet.add(s.getName());
-		}
-		List<Category> categoryList = CategoryLookup.getSharedInstance().getCategories();
-		Set<Object> categoryNameSet = new TreeSet<Object>();
-		for (Category c : categoryList) {
-			categoryNameSet.add(c.getName());
-		}
-
-		final CellProcessor[] processors = new CellProcessor[] {
-				null, // last name, as is.
-				null, // first name, as is.
-				new IsIncludedIn(new HashSet<Object>(Arrays.asList("M","F"))), // gender
-				null, // club, as is.
-				new ParseDate("yyyy"), // birth year
-				new IsIncludedIn(categoryNameSet), // registrationCategory
-				new IsIncludedIn(sessionNameSet), // sessionName
-				new Optional(new ParseInt()), // registration total
-		};
-
 		try {
 			final String[] header = cbr.getCSVHeader(true);
 			Lifter lifter;
 			while( (lifter = cbr.read(Lifter.class, header, processors)) != null) {
-				logger.warn("lifter {}", lifter);
+				logger.debug("adding {}", toString(lifter));
+				allLifters.add(lifter);
 			} 
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} finally {
 			try {
 				cbr.close();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				// ignored
 			}
 		}
 		return allLifters;
 	}
 
+	@SuppressWarnings("unused")
+	private class AsCategory extends CellProcessorAdaptor {
 
+		public AsCategory() {
+			super();
+		}
 
+		public AsCategory(CellProcessor next) {
+			super(next);
+		}
+
+		@Override
+		public Object execute(Object value, CSVContext context) {
+			final Category result = categoryLookupByName.lookup((String) value);
+	        return next.execute(result, context);
+		}
+	}
+
+	@SuppressWarnings("unused")
+	private class AsCompetitionSession extends CellProcessorAdaptor {
+
+		public AsCompetitionSession() {
+			super();
+		}
+
+		public AsCompetitionSession(CellProcessor next) {
+			super(next);
+		}
+
+		@Override
+		public Object execute(Object value, CSVContext context) {
+			final CompetitionSession result = competitionSessionLookup.lookup((String) value);
+	        return next.execute(result, context);
+		}
+	}
 	/*
 	 * (non-Javadoc)
 	 */
@@ -129,19 +174,5 @@ public class InputCSVHelper implements InputSheet {
 	public static String toString(Lifter lifter) {
 		return toString(lifter, true);
 	}
-
-
-	Category getCategory(WorkSheetHandle sheet, int row, int column) throws CellNotFoundException {
-		categoryLookupByName.lookup("m69");
-		return null;
-	}
-
-
-
-	public CompetitionSession getCompetitionSession(WorkSheetHandle sheet, int row, int column) throws CellNotFoundException {
-		competitionSessionLookup.lookup("F1");
-		return null;
-	}
-
 
 }

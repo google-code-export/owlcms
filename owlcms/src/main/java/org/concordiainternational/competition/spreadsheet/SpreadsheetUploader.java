@@ -9,24 +9,14 @@ package org.concordiainternational.competition.spreadsheet;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
-import java.util.TreeSet;
 
 import javax.servlet.ServletContext;
 
-import org.concordiainternational.competition.data.Category;
-import org.concordiainternational.competition.data.CategoryLookup;
-import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
@@ -35,13 +25,6 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.supercsv.cellprocessor.Optional;
-import org.supercsv.cellprocessor.ParseDate;
-import org.supercsv.cellprocessor.ParseInt;
-import org.supercsv.cellprocessor.constraint.IsIncludedIn;
-import org.supercsv.cellprocessor.ift.CellProcessor;
-import org.supercsv.io.CsvBeanReader;
-import org.supercsv.prefs.CsvPreference;
 
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.FileResource;
@@ -166,44 +149,16 @@ Upload.Receiver, ApplicationView {
 	}
 
 	private void processCSV(DownloadStream ds) {
-		InputStream is = ds.getStream();
-		CsvBeanReader cbr = new CsvBeanReader(new InputStreamReader(is), CsvPreference.EXCEL_PREFERENCE);
-		List<CompetitionSession> sessionList = CompetitionSession.getAll();
-		Set<Object> sessionNameSet = new TreeSet<Object>();
-		for (CompetitionSession s : sessionList) {
-			sessionNameSet.add(s.getName());
-		}
-		List<Category> categoryList = CategoryLookup.getSharedInstance().getCategories();
-		Set<Object> categoryNameSet = new TreeSet<Object>();
-		for (Category c : categoryList) {
-			categoryNameSet.add(c.getName());
-		}
-		
-		final CellProcessor[] processors = new CellProcessor[] {
-				null, // last name, as is.
-				null, // first name, as is.
-				new IsIncludedIn(new HashSet<Object>(Arrays.asList("M","F"))), // gender
-				null, // club, as is.
-				new ParseDate("yyyy"), // birth year
-				new IsIncludedIn(categoryNameSet), // registrationCategory
-				new IsIncludedIn(sessionNameSet), // sessionName
-				new Optional(new ParseInt()), // registration total
-		};
-		
 		try {
-			final String[] header = cbr.getCSVHeader(true);
-			Lifter lifter;
-			while( (lifter = cbr.read(Lifter.class, header, processors)) != null) {
-				logger.warn("lifter {}", lifter);
-			} 
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				cbr.close();
-			} catch (IOException e) {
-				// ignored
+			final Session hbnSession = app.getHbnSession();
+			InputCSVHelper iCSV = new InputCSVHelper(app);
+			List<Lifter> lifters = iCSV.getAllLifters(ds.getStream(), app);
+			for (Lifter curLifter : lifters) {
+				hbnSession.save(curLifter);
 			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+			throw new SystemError(t);
 		}
 	}
 
