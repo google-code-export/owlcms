@@ -12,6 +12,7 @@ import java.util.Locale;
 
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.ui.Bookmarkable;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.utils.ItemAdapter;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
      * @param locale
      * @return
      */
-    public SessionSelect(final CompetitionApplication competitionApplication, final Locale locale) {
+    public SessionSelect(final CompetitionApplication competitionApplication, final Locale locale, final Bookmarkable view) {
         final Label groupLabel = new Label(Messages.getString("CompetitionApplication.CurrentGroup", locale)); //$NON-NLS-1$
         groupLabel.setSizeUndefined();
 
@@ -54,8 +55,18 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
         sessionSelect.setNullSelectionItemId(null);
         
         final CompetitionSession currentGroup = competitionApplication.getCurrentCompetitionSession();
-        
-        sessionSelect.select((currentGroup != null ? currentGroup.getId() : null));
+        logger.warn("constructor currentGroup: {}",(currentGroup != null ? currentGroup.getName() : null));
+        selectedId = currentGroup != null ? currentGroup.getId() : null;
+        if (selectedId != null) {
+            selectedItem = sessionSelect.getContainerDataSource().getItem(selectedId);
+            value = (CompetitionSession) ItemAdapter.getObject(selectedItem);
+
+        } else {
+        	selectedItem = null;
+        	value = null;
+        }
+
+
         listener = new ValueChangeListener() {
             private static final long serialVersionUID = -4650521592205383913L;
 
@@ -73,13 +84,17 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
                 	selectedItem = null;
                 	value = null;
                 }
-                logger.debug("valueChange {}",value);
-                 
+                logger.warn("listener selected group : {}",value.getName());
                 CompetitionApplication.getCurrent().setCurrentCompetitionSession(value);
+                CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(view.getFragment(), false);
+
             }
 
         };
         sessionSelect.addListener(listener);
+        logger.warn("constructor prior to select");
+		sessionSelect.select(selectedId);
+        logger.warn("constructor selected group : {}",sessionSelect.getValue());
 
         this.addComponent(groupLabel);
         this.setComponentAlignment(groupLabel, Alignment.MIDDLE_LEFT);

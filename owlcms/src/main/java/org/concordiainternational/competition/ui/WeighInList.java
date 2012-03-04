@@ -13,7 +13,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CompetitionSession;
+import org.concordiainternational.competition.data.CompetitionSessionLookup;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.RuleViolationException;
@@ -43,7 +45,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
-public class WeighInList extends LifterHbnList implements ApplicationView {
+public class WeighInList extends LifterHbnList implements ApplicationView, Bookmarkable {
 
     private static final long serialVersionUID = -6455130090728823622L;
     private boolean admin = false;
@@ -67,7 +69,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
         } else {
             table.removeGeneratedColumn("actions"); //$NON-NLS-1$
         }
-
+		CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
     }
 
     @Override
@@ -102,7 +104,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
     @Override
     protected void createToolbarButtons(HorizontalLayout tableToolbar1) {
 
-        sessionSelect = new SessionSelect((CompetitionApplication) app, app.getLocale());
+        sessionSelect = new SessionSelect((CompetitionApplication) app, app.getLocale(), this);
         tableToolbar1.addComponent(sessionSelect);
         super.createToolbarButtons(tableToolbar1);
 
@@ -172,6 +174,19 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
             editButton.addListener(editClickListener);
             tableToolbar1.addComponent(editButton);
         }
+        
+        final Button refreshButton = new Button(Messages.getString("ResultList.Refresh", locale)); //$NON-NLS-1$
+        final Button.ClickListener refreshClickListener = new Button.ClickListener() { //$NON-NLS-1$
+            private static final long serialVersionUID = 7744958942977063130L;
+
+            @Override
+			public void buttonClick(ClickEvent event) {
+            	CategoryLookup.getSharedInstance().reload();
+                populateAndConfigureTable();
+            }
+        };
+        refreshButton.addListener(refreshClickListener);
+        tableToolbar1.addComponent(refreshButton);
 
     }
 
@@ -478,12 +493,17 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
         return true;
     }
 
-    /**
-     * @return
-     */
+    /* (non-Javadoc)
+	 * @see org.concordiainternational.competition.ui.Bookmarkable#getFragment()
+	 */
     @Override
 	public String getFragment() {
-        return viewName+"/"+(platformName == null ? "" : platformName)+"/"+(groupName == null ? "" : groupName);
+    	CompetitionSession session = CompetitionApplication.getCurrent().getCurrentCompetitionSession();
+    	String sessionName = null;
+    	if (session != null) {
+    		sessionName = session.getName();
+    	}
+        return viewName+"/"+(platformName == null ? "" : platformName)+"/"+(sessionName == null ? "" : sessionName);
     }
     
 
@@ -508,6 +528,8 @@ public class WeighInList extends LifterHbnList implements ApplicationView {
         
         if (params.length >= 3) {
             groupName = params[2];
+            final CompetitionApplication cApp = (CompetitionApplication)app;
+            cApp.setCurrentCompetitionSession(new CompetitionSessionLookup(cApp).lookup(groupName));
         } else {
             groupName = null;
         }

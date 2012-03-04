@@ -173,7 +173,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
     protected void createToolbarButtons(HorizontalLayout tableToolbar1) {
         // we do not call super because the default buttons are inappropriate.
         final Locale locale = app.getLocale();
-        sessionSelect = new SessionSelect((CompetitionApplication) app, locale);
+        sessionSelect = new SessionSelect((CompetitionApplication) app, locale, parentView);
         tableToolbar1.addComponent(sessionSelect);
 
         {
@@ -423,7 +423,5 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
         // table.select(firstLifterItem); // so we change it.
         // this.clearSelection();
     }
-    
-
 
 }
