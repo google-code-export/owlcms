@@ -53,7 +53,7 @@ public class InputSheetHelper implements InputSheet {
 	private WorkSheetHandle workSheet;
 
     InputSheetHelper(HbnSessionManager hbnSessionManager, LifterReader reader) {
-        categoryLookup = new CategoryLookup(hbnSessionManager);
+        categoryLookup = CategoryLookup.getSharedInstance(hbnSessionManager);
         categoryLookupByName = new CategoryLookupByName(hbnSessionManager);
         competitionSessionLookup = new CompetitionSessionLookup(hbnSessionManager);
         this.reader = reader;

@@ -49,7 +49,8 @@ public class SpreadsheetTest {
         Assert.assertNotNull(hbnSessionManager);
         Assert.assertNotNull(hbnSessionManager.getHbnSession());
         hbnSessionManager.getHbnSession().beginTransaction();
-        CategoryLookup.getSharedInstance(hbnSessionManager);
+        CategoryLookup categoryLookup = CategoryLookup.getSharedInstance(hbnSessionManager);
+        categoryLookup.reload();
     }
 
     @After
@@ -75,7 +76,7 @@ public class SpreadsheetTest {
         //tempFile.deleteOnExit();
         logger.debug("temporary file is set to "+tempFile.getAbsolutePath());
         FileOutputStream os = new FileOutputStream(tempFile);
-        new ResultSheet(new CategoryLookup(hbnSessionManager), new CompetitionApplication(), (CompetitionSession) null)
+        new ResultSheet(CategoryLookup.getSharedInstance(), new CompetitionApplication(), (CompetitionSession) null)
                 .writeLifters(lifters, os);
     }
 

@@ -41,7 +41,8 @@ public class CategoryLookupTest {
         Assert.assertNotNull(hbnSessionManager.getHbnSession());
         hbnSessionManager.getHbnSession().beginTransaction();
         categories = new CategoryContainer(hbnSessionManager,true);
-        categoryLookup = new CategoryLookup(hbnSessionManager);
+        categoryLookup = CategoryLookup.getSharedInstance(hbnSessionManager);
+        categoryLookup.reload();
         categoryLookupByName = new CategoryLookupByName(hbnSessionManager);
     }
 

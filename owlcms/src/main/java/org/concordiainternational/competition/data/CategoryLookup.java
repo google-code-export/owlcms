@@ -37,7 +37,7 @@ public class CategoryLookup {
      * @param hbnSessionManager
      *            required because we are using Hibernate to filter categories.
      */
-    public CategoryLookup(HbnSessionManager hbnSessionManager) {
+    private CategoryLookup(HbnSessionManager hbnSessionManager) {
         this.hbnSessionManager = hbnSessionManager;
         reload();
     }

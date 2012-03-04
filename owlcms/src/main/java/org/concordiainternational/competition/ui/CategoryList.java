@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.Locale;
 
 import org.concordiainternational.competition.data.Category;
+import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
@@ -72,6 +73,17 @@ public class CategoryList extends GenericHbnList<Category> implements Applicatio
                 Messages.getString("Common.actions", locale), //$NON-NLS-1$
         };
         return COL_HEADERS;
+    }
+    
+    /**
+     * This method is used in response to a button click.
+     */
+    @Override
+    public void toggleEditable() {
+        super.toggleEditable();
+        if (!table.isEditable()) {
+        	CategoryLookup.getSharedInstance().reload();
+        }
     }
 
     /* (non-Javadoc)
