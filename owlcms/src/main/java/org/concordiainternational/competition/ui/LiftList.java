@@ -181,7 +181,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
     protected void createToolbarButtons(HorizontalLayout tableToolbar1) {
         // we do not call super() because the default buttons are inappropriate.
         if (mode == AnnouncerView.Mode.ANNOUNCER) {
-            SessionSelect groupSelect = new SessionSelect((CompetitionApplication) app, app.getLocale());
+            SessionSelect groupSelect = new SessionSelect((CompetitionApplication) app, app.getLocale(),parentView);
             tableToolbar1.addComponent(groupSelect);
 
             final Button refreshButton = new Button(Messages.getString("ResultList.Refresh", app.getLocale())); //$NON-NLS-1$

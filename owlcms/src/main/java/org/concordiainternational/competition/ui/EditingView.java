@@ -13,7 +13,7 @@ import org.concordiainternational.competition.data.Lifter;
 import com.vaadin.data.Item;
 import com.vaadin.ui.Component;
 
-public interface EditingView extends Component {
+public interface EditingView extends Component, Bookmarkable {
 
     /**
      * @return true if editor in bottom pane is pinned (not to be updated)
