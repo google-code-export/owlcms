@@ -84,7 +84,7 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
                 	selectedItem = null;
                 	value = null;
                 }
-                logger.warn("listener selected group : {}",value.getName());
+                if (value != null) logger.warn("listener selected group : {}",value.getName());
                 CompetitionApplication.getCurrent().setCurrentCompetitionSession(value);
                 CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(view.getFragment(), false);
 
