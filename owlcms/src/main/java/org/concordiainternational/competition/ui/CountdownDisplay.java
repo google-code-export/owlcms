@@ -14,6 +14,7 @@ import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionEventListener;
+import org.concordiainternational.competition.decision.IDecisionController;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
@@ -24,6 +25,9 @@ import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.event.Action;
+import com.vaadin.event.Action.Handler;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Alignment;
@@ -38,7 +42,7 @@ public class CountdownDisplay extends VerticalLayout implements
 	CountdownTimerListener,
 	DecisionEventListener, 
 	CloseListener,
-	URIHandler
+	URIHandler, Handler
 	{
     public final static Logger logger = LoggerFactory.getLogger(CountdownDisplay.class);
     private static final long serialVersionUID = 1437157542240297372L;
@@ -53,6 +57,12 @@ public class CountdownDisplay extends VerticalLayout implements
 	private DecisionLightsWindow decisionLights;
 	private UpdateEventListener updateEventListener;
 	protected boolean shown;
+	private ShortcutAction action1ok;
+	private ShortcutAction action1fail;
+	private ShortcutAction action2ok;
+	private ShortcutAction action2fail;
+	private ShortcutAction action3ok;
+	private ShortcutAction action3fail;
 
     public CountdownDisplay(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
@@ -377,23 +387,30 @@ public class CountdownDisplay extends VerticalLayout implements
 	 */
 	@Override
 	public void registerAsListener() {
-		app.getMainWindow().addListener((CloseListener)this);
+		Window mainWindow = app.getMainWindow();
+		mainWindow.addListener((CloseListener)this);
 		registerAsGroupDataListener(platformName, masterData);
 		masterData.getRefereeDecisionController().addListener(this);
         final CountdownTimer timer = masterData.getTimer();
         timer.setCountdownDisplay(this);
+        if (action1ok == null) addActions();
+        mainWindow.addActionHandler(this);
+        logger.warn("added action handler");
 	}
-	
+
+
 	/**
 	 * Undo what registerAsListener did.
 	 */
 	@Override
 	public void unregisterAsListener() {
-		app.getMainWindow().removeListener((CloseListener)this);
+		Window mainWindow = app.getMainWindow();
+		mainWindow.removeListener((CloseListener)this);
 		masterData.removeListener(updateEventListener);
 		masterData.getRefereeDecisionController().removeListener(this);
         final CountdownTimer timer = masterData.getTimer();
         timer.setCountdownDisplay(null);
+        mainWindow.removeActionHandler(this);
 	}
 	
 	
@@ -417,5 +434,40 @@ public class CountdownDisplay extends VerticalLayout implements
 	public void setDecisionLights(DecisionLightsWindow decisionLights) {
 		this.decisionLights = decisionLights;
 	}
+
+	private void addActions() {
+		action1ok = new ShortcutAction("1+",ShortcutAction.KeyCode.NUM1, null);
+		action1fail = new ShortcutAction("1-",ShortcutAction.KeyCode.NUM2, null);
+		action2ok = new ShortcutAction("2+",ShortcutAction.KeyCode.NUM3, null);
+		action2fail = new ShortcutAction("2-",ShortcutAction.KeyCode.NUM4, null);
+		action3ok = new ShortcutAction("3+",ShortcutAction.KeyCode.NUM5, null);
+		action3fail = new ShortcutAction("3-",ShortcutAction.KeyCode.NUM6, null);
+	}
+
+	@Override
+	public Action[] getActions(Object target, Object sender) {
+		return new Action[]{action1ok,action1fail,action2ok,action2fail,action3ok,action3fail};
+	}
+
+
+	@Override
+	public void handleAction(Action action, Object sender, Object target) {
+//		if (target == this && sender == this) {
+			IDecisionController refereeDecisionController = masterData.getRefereeDecisionController();
+			if (action == action1ok) {
+				refereeDecisionController.decisionMade(0, true);
+			} else if (action == action1fail) {
+				refereeDecisionController.decisionMade(0, false);
+			} else if (action == action2ok) {
+				refereeDecisionController.decisionMade(1, true);
+			} else if (action == action2fail) {
+				refereeDecisionController.decisionMade(1, false);
+			} else if (action == action3ok) {
+				refereeDecisionController.decisionMade(2, true);
+			} else if (action == action3fail) {
+				refereeDecisionController.decisionMade(2, false);
+			} 
+		}
+//	}
 
 }
