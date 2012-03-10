@@ -55,7 +55,7 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
         sessionSelect.setNullSelectionItemId(null);
         
         final CompetitionSession currentGroup = competitionApplication.getCurrentCompetitionSession();
-        logger.warn("constructor currentGroup: {}",(currentGroup != null ? currentGroup.getName() : null));
+        logger.trace("constructor currentGroup: {}",(currentGroup != null ? currentGroup.getName() : null));
         selectedId = currentGroup != null ? currentGroup.getId() : null;
         if (selectedId != null) {
             selectedItem = sessionSelect.getContainerDataSource().getItem(selectedId);
@@ -84,7 +84,7 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
                 	selectedItem = null;
                 	value = null;
                 }
-                if (value != null) logger.warn("listener selected group : {}",value.getName());
+                if (value != null) logger.trace("listener selected group : {}",value.getName());
                 CompetitionApplication.getCurrent().setCurrentCompetitionSession(value);
                 CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(view.getFragment(), false);
 
@@ -92,9 +92,7 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
 
         };
         sessionSelect.addListener(listener);
-        logger.warn("constructor prior to select");
 		sessionSelect.select(selectedId);
-        logger.warn("constructor selected group : {}",sessionSelect.getValue());
 
         this.addComponent(groupLabel);
         this.setComponentAlignment(groupLabel, Alignment.MIDDLE_LEFT);
