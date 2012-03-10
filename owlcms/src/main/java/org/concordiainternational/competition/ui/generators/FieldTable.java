@@ -57,10 +57,12 @@ public class FieldTable extends Table {
 			Property property) {
         // Format by property type
         if (property.getType() == Double.class) {
-        	if (((String)colId).endsWith("inclair")) {          
-                return threeDecimals.format((Double) property.getValue());
+        	Double value = (Double) property.getValue();
+        	if (value == null) value = 0.0;
+			if (((String)colId).endsWith("inclair")) {          
+                return threeDecimals.format(value);
         	} else {
-        		return twoDecimals.format((Double) property.getValue());
+        		return twoDecimals.format(value);
         	}
         }
 		return super.formatPropertyValue(rowId, colId, property);
