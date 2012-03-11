@@ -17,7 +17,13 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.Port;
 
+import org.concordiainternational.competition.utils.LoggerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Speakers {
+	final static Logger logger = LoggerFactory.getLogger(Speakers.class);
+	
 	public static void main(String[] args) throws Exception {
 		List<Mixer> mixers = getOutputs();
 		for (Mixer mixer: mixers) {
@@ -67,6 +73,7 @@ public class Speakers {
 			new Sound(mixer,"/sounds/initialWarning2.wav").emit();
 			new Tone(mixer, 1100, 1200, 1.0).emit();
 		} catch (Exception e) {
+			LoggerUtils.logException(logger, e);
 			throw new RuntimeException(e);
 		}	    
 	}

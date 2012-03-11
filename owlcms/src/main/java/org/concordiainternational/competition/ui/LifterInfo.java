@@ -413,7 +413,7 @@ public class LifterInfo extends VerticalLayout implements
                 timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
 //                final ClassResource resource = new ClassResource("/sounds/finalWarning.mp3", app); //$NON-NLS-1$
 //                playSound(resource);
-                playSound("/sounds/finalWarning.wav");
+                playSound("/sounds/finalWarning2.wav");
             }
             setBlocked(false);
         }
@@ -430,7 +430,7 @@ public class LifterInfo extends VerticalLayout implements
                 timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
 //                final ClassResource resource = new ClassResource("/sounds/initialWarning.mp3", app); //$NON-NLS-1$
 //                playSound(resource);
-                playSound("/sounds/initialWarning.wav");
+                playSound("/sounds/initialWarning2.wav");
             }
             setBlocked(false);
         }
@@ -482,7 +482,7 @@ public class LifterInfo extends VerticalLayout implements
                 timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
 //                final ClassResource resource = new ClassResource("/sounds/timeOver.mp3", app); //$NON-NLS-1$
 //                playSound(resource);
-                playSound("/sounds/timeOver.wav");
+                playSound("/sounds/timeOver2.wav");
                 if (timerDisplay != null) {
                     timerDisplay.setEnabled(false);
                 }
