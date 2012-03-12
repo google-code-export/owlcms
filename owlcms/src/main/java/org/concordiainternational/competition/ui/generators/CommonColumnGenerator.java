@@ -523,7 +523,6 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 		// changed (in this case, the category depends on body weight and
 		// gender).
 		final Lifter.UpdateEventListener listener = new Lifter.UpdateEventListener() {
-			private static final long serialVersionUID = 830792013255211060L;
 
 			@Override
 			public void updateEvent(Lifter.UpdateEvent updateEvent) {

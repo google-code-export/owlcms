@@ -32,6 +32,7 @@ public class TeamSheet extends ResultSheet {
 		super(hbnSessionManager);
 	}
 
+	@SuppressWarnings("unused")
 	private int lifterRankWithinTeam;
 
     private String previousClub;

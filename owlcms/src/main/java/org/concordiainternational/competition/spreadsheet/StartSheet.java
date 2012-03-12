@@ -144,10 +144,8 @@ public class StartSheet extends ResultSheet {
 
         // process data sheet
         rownum = InputSheetHelper.START_ROW;
-        int i = 0;
         for (Lifter curLifter : lifters) {
             writeLifter(curLifter, workSheet, categoryLookup);
-            i++;
         }
         removeLastRowIfInserting(workSheet, rownum);
 
