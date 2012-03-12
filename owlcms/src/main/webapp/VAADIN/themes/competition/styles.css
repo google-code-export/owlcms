@@ -1,6 +1,6 @@
 @import url(../reindeer/styles.css);
 /*
- * Copyright 2009-2012, Jean-François Lamy
+ * Copyright 2009-2012, Jean-Franï¿½ois Lamy
  * 
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at
@@ -623,6 +623,11 @@ button.yesButton {
 	text-align: center;
 	display: table-cell;
 	vertical-align: middle;
+}
+
+table.publicAddressOverlay {
+	width: 100%;
+	height: 100%;
 }
 
 .publicAddressOverlay tr td .v-label {
