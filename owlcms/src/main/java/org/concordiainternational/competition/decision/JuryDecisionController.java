@@ -96,14 +96,10 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
         logger.info("decision by jury {}: {}", refereeNo + 1, (accepted ? "lift" : "no lift"));
 
         decisionsMade = 0;
-        int pros = 0;
-        int cons = 0;
         for (int i = 0; i < juryDecisions.length; i++) {
             final Boolean accepted2 = juryDecisions[i].accepted;
             if (accepted2 != null) {
                 decisionsMade++;
-                if (accepted2) pros++;
-                else cons++;
             }
         }
 

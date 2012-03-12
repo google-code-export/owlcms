@@ -117,12 +117,10 @@ public class SinclairSheet extends ResultSheet {
 
         // process data sheet
         rownum = InputSheetHelper.START_ROW;
-        int i = 0;
         for (Lifter curLifter : lifters) {
             if (gender == null || gender.equals(curLifter.getGender())) {
                 writeSinclairLifter(curLifter, workSheet, categoryLookup);
             }
-            i++;
         }
         removeLastRowIfInserting(workSheet, rownum);
 

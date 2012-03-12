@@ -148,12 +148,10 @@ public class MastersIndividualSheet extends IndividualSheet {
 
         // process data sheet
         rownum = InputSheetHelper.START_ROW;
-        int i = 0;
         for (Lifter curLifter : lifters) {
             if (gender == null || gender.equals(curLifter.getGender())) {
                 writeIndividualLifter(curLifter, workSheet, categoryLookup);
             }
-            i++;
         }
         removeLastRowIfInserting(workSheet, rownum);
 
