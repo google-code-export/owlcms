@@ -19,7 +19,7 @@
 		<relativePath>../owlcmsParent</relativePath>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.concordiainternational</groupId>
+	
 	<artifactId>owlcms</artifactId>
 	<packaging>war</packaging>
 
