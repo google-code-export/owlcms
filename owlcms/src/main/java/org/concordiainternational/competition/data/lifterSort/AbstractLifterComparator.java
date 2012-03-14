@@ -230,6 +230,15 @@ public class AbstractLifterComparator {
         Integer lifter2Value = lifter2.getTotal();
         return lifter1Value.compareTo(lifter2Value);
     }
+    
+	int compareCustomScore(Lifter lifter1, Lifter lifter2) {
+        Double lifter1Value = lifter1.getCustomScore();
+        Double lifter2Value = lifter2.getCustomScore();
+        final Double notScored = 0D;
+        if (lifter1Value == null) lifter1Value = notScored;
+        if (lifter2Value == null) lifter2Value = notScored;
+        return lifter1Value.compareTo(lifter2Value);
+	} 
 
     int compareBodyWeight(Lifter lifter1, Lifter lifter2) {
         Double lifter1Value = lifter1.getBodyWeight();

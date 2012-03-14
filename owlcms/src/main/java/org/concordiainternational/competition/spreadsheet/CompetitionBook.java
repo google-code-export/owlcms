@@ -112,6 +112,9 @@ public class CompetitionBook extends ResultSheet {
             teamRankingLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.COMBINED);
             lifterSorter.assignCategoryRanksAndPoints(teamRankingLifters, Ranking.COMBINED);
 
+            teamRankingLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.CUSTOM);
+            lifterSorter.assignCategoryRanksAndPoints(teamRankingLifters, Ranking.CUSTOM);
+            
             // this final sort is necessary to put all the lifters from the same
             // team together.
             LifterSorter.teamRankingOrder(teamRankingLifters, Ranking.TOTAL);
@@ -200,6 +203,16 @@ public class CompetitionBook extends ResultSheet {
             } catch (Exception e) {
                 LoggerUtils.logException(logger, e);
             }
+            
+            // Team Custom ranking
+            try {
+                workSheet = workBookHandle.getWorkSheet("Spécial équipes");
+                new TeamSheet(hbnSessionManager).writeTeamSheet(teamRankingLifters, workSheet, Ranking.CUSTOM, clubs, null);
+            } catch (WorkSheetNotFoundException wnf) {
+            } catch (Exception e) {
+                LoggerUtils.logException(logger, e);
+            }
+            
             // write out
             writeWorkBook(workBookHandle, out);
         } finally {

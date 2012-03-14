@@ -277,6 +277,8 @@ public class Lifter implements MethodEventSource, Notifier {
     @Transient
     private EventRouter eventRouter;
 
+	private Double customScore;
+
     /**
      * This method is the Java object for the method in the Listener interface.
      * It allows the framework to know how to pass the event information.
@@ -466,6 +468,11 @@ public class Lifter implements MethodEventSource, Notifier {
         return 0; // no match - bomb-out.
     }
 
+    /* *****************************************************************************************
+     * Actual persisted properties.
+     */
+    
+    
     /**
      * @return the birthDate
      */
@@ -473,9 +480,6 @@ public class Lifter implements MethodEventSource, Notifier {
         return birthDate;
     };
 
-    /* *****************************************************************************************
-     * Actual persisted properties.
-     */
 
     /**
      * @return the bodyWeight
@@ -680,6 +684,10 @@ public class Lifter implements MethodEventSource, Notifier {
     public boolean getCurrentLifter() {
         return currentLifter;
     }
+    
+	public Double getCustomScore() {
+		return customScore;
+	}
 
     /**
      * @return the firstName
@@ -2112,7 +2120,5 @@ public class Lifter implements MethodEventSource, Notifier {
 			return false;
 		return true;
 	}
-    
-    
 
 }
