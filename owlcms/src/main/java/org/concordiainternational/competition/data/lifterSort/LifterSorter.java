@@ -9,19 +9,15 @@ package org.concordiainternational.competition.data.lifterSort;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.TreeSet;
 
 import javax.persistence.Entity;
 
 import org.concordiainternational.competition.data.Category;
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.Lifter;
-import org.concordiainternational.competition.data.Team;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +32,7 @@ public class LifterSorter implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(LifterSorter.class);
 
     public enum Ranking {
-        SNATCH, CLEANJERK, TOTAL, COMBINED, SINCLAIR, ALL
+        SNATCH, CLEANJERK, TOTAL, COMBINED, SINCLAIR, ALL, CUSTOM
     }
 
     /**
@@ -161,7 +157,8 @@ public class LifterSorter implements Serializable {
      * @param lifters
      * @param sinclair
      */
-    private void teamPointsOrder(List<Lifter> toBeSorted, Ranking rankingType) {
+    @SuppressWarnings("unused")
+	private void teamPointsOrder(List<Lifter> toBeSorted, Ranking rankingType) {
         Collections.sort(toBeSorted, new TeamPointsOrderComparator(rankingType));
     }
 
@@ -169,7 +166,8 @@ public class LifterSorter implements Serializable {
      * @param lifters
      * @param combined
      */
-    private void combinedPointsOrder(List<Lifter> toBeSorted, Ranking rankingType) {
+    @SuppressWarnings("unused")
+	private void combinedPointsOrder(List<Lifter> toBeSorted, Ranking rankingType) {
         Collections.sort(toBeSorted, new CombinedPointsOrderComparator(rankingType));
     }
 
@@ -635,34 +633,34 @@ public class LifterSorter implements Serializable {
         return false; // o1 is null but not o2
     }
 
-    public Collection<Team> fullResults(List<Lifter> lifters) {
-        resultsOrder(lifters, Ranking.SNATCH);
-        assignCategoryRanksAndPoints(lifters, Ranking.SNATCH);
-        teamPointsOrder(lifters, Ranking.SNATCH);
-        assignRanksWithinTeam(lifters, Ranking.SNATCH);
-
-        resultsOrder(lifters, Ranking.CLEANJERK);
-        assignCategoryRanksAndPoints(lifters, Ranking.CLEANJERK);
-        teamPointsOrder(lifters, Ranking.CLEANJERK);
-        assignRanksWithinTeam(lifters, Ranking.CLEANJERK);
-
-        resultsOrder(lifters, Ranking.TOTAL);
-        assignCategoryRanksAndPoints(lifters, Ranking.TOTAL);
-        teamPointsOrder(lifters, Ranking.TOTAL);
-        assignRanksWithinTeam(lifters, Ranking.TOTAL);
-
-        combinedPointsOrder(lifters, Ranking.COMBINED);
-        assignCategoryRanksAndPoints(lifters, Ranking.COMBINED);
-        teamPointsOrder(lifters, Ranking.COMBINED);
-        assignRanksWithinTeam(lifters, Ranking.COMBINED);
-
-        resultsOrder(lifters, Ranking.SINCLAIR);
-        assignCategoryRanksAndPoints(lifters, Ranking.SINCLAIR);
-        teamPointsOrder(lifters, Ranking.SINCLAIR);
-        assignRanksWithinTeam(lifters, Ranking.SINCLAIR);
-
-        HashSet<Team> teams = new HashSet<Team>();
-        return new TreeSet<Team>(teams);
-    }
+//    public Collection<Team> fullResults(List<Lifter> lifters) {
+//        resultsOrder(lifters, Ranking.SNATCH);
+//        assignCategoryRanksAndPoints(lifters, Ranking.SNATCH);
+//        teamPointsOrder(lifters, Ranking.SNATCH);
+//        assignRanksWithinTeam(lifters, Ranking.SNATCH);
+//
+//        resultsOrder(lifters, Ranking.CLEANJERK);
+//        assignCategoryRanksAndPoints(lifters, Ranking.CLEANJERK);
+//        teamPointsOrder(lifters, Ranking.CLEANJERK);
+//        assignRanksWithinTeam(lifters, Ranking.CLEANJERK);
+//
+//        resultsOrder(lifters, Ranking.TOTAL);
+//        assignCategoryRanksAndPoints(lifters, Ranking.TOTAL);
+//        teamPointsOrder(lifters, Ranking.TOTAL);
+//        assignRanksWithinTeam(lifters, Ranking.TOTAL);
+//
+//        combinedPointsOrder(lifters, Ranking.COMBINED);
+//        assignCategoryRanksAndPoints(lifters, Ranking.COMBINED);
+//        teamPointsOrder(lifters, Ranking.COMBINED);
+//        assignRanksWithinTeam(lifters, Ranking.COMBINED);
+//
+//        resultsOrder(lifters, Ranking.SINCLAIR);
+//        assignCategoryRanksAndPoints(lifters, Ranking.SINCLAIR);
+//        teamPointsOrder(lifters, Ranking.SINCLAIR);
+//        assignRanksWithinTeam(lifters, Ranking.SINCLAIR);
+//
+//        HashSet<Team> teams = new HashSet<Team>();
+//        return new TreeSet<Team>(teams);
+//    }
 
 }

@@ -87,6 +87,15 @@ public class TeamSheet extends ResultSheet {
             workSheet.add(lifter.getTotal(), lifterIndex, 6);
             break;
         }
+        case CUSTOM: {
+        	Double customScore = lifter.getCustomScore();
+			if (customScore != null && customScore > 0.01D) {
+				workSheet.add(customScore, lifterIndex, 6);
+        	} else {
+                workSheet.add(lifter.getTotal(), lifterIndex, 6);
+        	}
+            break;
+        }
         }
 
         if (lifter.isInvited()) {

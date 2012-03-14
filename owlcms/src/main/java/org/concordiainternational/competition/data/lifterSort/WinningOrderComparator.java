@@ -52,6 +52,8 @@ public class WinningOrderComparator extends AbstractLifterComparator implements 
             return compareCleanJerkResultOrder(lifter1, lifter2);
         case TOTAL:
             return compareTotalResultOrder(lifter1, lifter2);
+        case CUSTOM:
+            return compareCustomResultOrder(lifter1, lifter2);    
         case SINCLAIR:
             if (Competition.isMasters()) {
                 return compareSMMResultOrder(lifter1, lifter2);
@@ -287,4 +289,41 @@ public class WinningOrderComparator extends AbstractLifterComparator implements 
 
         return compare;
     }
+    
+    /**
+     * Determine who ranks first. If the body weights are the same, the lifter
+     * who reached total first is ranked first.
+     * 
+     * This variant allows judges to award a score based on a formula, with bonuses
+     * or penalties, manually.  Used for the under-12 championship in Quebec.
+     * 
+     * @param lifter1
+     * @param lifter2
+     * @return
+     */
+    public int compareCustomResultOrder(Lifter lifter1, Lifter lifter2) {
+        int compare = 0;
+
+        if (Competition.isMasters()) {
+            compare = compareGender(lifter1, lifter2);
+            if (compare != 0) return compare;
+
+            compare = compareAgeGroup(lifter1, lifter2);
+            if (compare != 0) return -compare;
+        }
+
+        compare = compareRegistrationCategory(lifter1, lifter2);
+
+        if (compare != 0) return compare;
+        
+        compare = compareCustomScore(lifter1, lifter2);
+        if (compare != 0) return -compare; // we want reverse order - smaller comes after
+
+        compare = compareTotal(lifter1, lifter2);
+        if (compare != 0) return -compare; // we want reverse order - smaller comes after
+
+        return sharedCoefficientComparison(lifter1, lifter2);
+    }
+
+   
 }
