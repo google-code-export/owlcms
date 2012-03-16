@@ -1720,7 +1720,11 @@ public class Lifter implements MethodEventSource, Notifier {
 		return customScore;
 	}
     
-    public void setCustomRank(Integer customRank) {
+	public void setCustomScore(Double customScore) {
+		this.customScore = customScore;
+	}
+
+	public void setCustomRank(Integer customRank) {
         this.customRank = customRank;
     }
     

@@ -49,7 +49,8 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
 
     private HorizontalLayout topPart;
     private ResultList resultList;
-    private LifterCardEditor lifterCardEditor;
+
+	private LifterCardEditor lifterCardEditor;
     private CompetitionApplication app;
     private boolean stickyEditor = false;
     private SessionData groupData;
@@ -397,6 +398,13 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
 	public DownloadStream handleURI(URL context, String relativeUri) {
 		registerAsListener();
 		return null;
+	}
+
+    /**
+	 * @return the resultList
+	 */
+	public ResultList getResultList() {
+		return resultList;
 	}
 
 }
