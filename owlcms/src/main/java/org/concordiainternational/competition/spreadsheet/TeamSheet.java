@@ -32,12 +32,13 @@ public class TeamSheet extends ResultSheet {
 		super(hbnSessionManager);
 	}
 
-	@SuppressWarnings("unused")
 	private int lifterRankWithinTeam;
 
     private String previousClub;
 
     private String previousGender;
+
+	private LifterSorter lifterSorter = new LifterSorter();
 
     private static final int CLUB_OFFSET = 6; // first row for clubs (starting
                                               // at 0)
@@ -88,12 +89,7 @@ public class TeamSheet extends ResultSheet {
             break;
         }
         case CUSTOM: {
-        	Double customScore = lifter.getCustomScore();
-			if (customScore != null && customScore > 0.01D) {
-				workSheet.add(customScore, lifterIndex, 6);
-        	} else {
-                workSheet.add(lifter.getTotal(), lifterIndex, 6);
-        	}
+			workSheet.add(lifter.getCustomScore(), lifterIndex, 6);
             break;
         }
         }
@@ -104,7 +100,7 @@ public class TeamSheet extends ResultSheet {
 			workSheet.add(message, lifterIndex, 6); //$NON-NLS-1$
             //workSheet.add((Integer)0, lifterIndex, 9);
         } else {
-            final Integer rank = LifterSorter.getRank(lifter, rankingType);
+            final Integer rank = lifterSorter .getRank(lifter, rankingType);
             if (rank <= 0) {
                 workSheet.add(rank, lifterIndex, 7);
                 // rank within team is computed by the Excel spreadsheet through
@@ -178,8 +174,7 @@ public class TeamSheet extends ResultSheet {
     }
 
 
-	public void writeTeamSheetAll(List<Lifter> lifters, WorkSheetHandle workSheet, Ranking rankingType, TreeSet<String> clubs,
-            String gender) throws Exception {
+	public void writeTeamSheetCombined(List<Lifter> lifters, WorkSheetHandle workSheet, TreeSet<String> clubs, String gender) throws Exception {
 
         setFooterLeft(workSheet);
 

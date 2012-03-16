@@ -313,7 +313,6 @@ public class WinningOrderComparator extends AbstractLifterComparator implements 
         }
 
         compare = compareRegistrationCategory(lifter1, lifter2);
-
         if (compare != 0) return compare;
         
         compare = compareCustomScore(lifter1, lifter2);

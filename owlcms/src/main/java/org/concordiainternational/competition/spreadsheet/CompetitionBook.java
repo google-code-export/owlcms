@@ -97,26 +97,23 @@ public class CompetitionBook extends ResultSheet {
             List<Lifter> teamRankingLifters;
             List<Lifter> sinclairLifters;
             teamRankingLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.SNATCH);
-            lifterSorter.assignCategoryRanksAndPoints(teamRankingLifters, Ranking.SNATCH);
+            lifterSorter.assignCategoryRanks(teamRankingLifters, Ranking.SNATCH);
 
             teamRankingLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.CLEANJERK);
-            lifterSorter.assignCategoryRanksAndPoints(teamRankingLifters, Ranking.CLEANJERK);
+            lifterSorter.assignCategoryRanks(teamRankingLifters, Ranking.CLEANJERK);
 
             teamRankingLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.TOTAL);
-            lifterSorter.assignCategoryRanksAndPoints(teamRankingLifters, Ranking.TOTAL);
+            lifterSorter.assignCategoryRanks(teamRankingLifters, Ranking.TOTAL);
+            
+            teamRankingLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.CUSTOM);
+            lifterSorter.assignCategoryRanks(teamRankingLifters, Ranking.CUSTOM);
 
             sinclairLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.SINCLAIR);
             teamRankingLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.SINCLAIR);
             lifterSorter.assignSinclairRanksAndPoints(teamRankingLifters, Ranking.SINCLAIR);
-
-            teamRankingLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.COMBINED);
-            lifterSorter.assignCategoryRanksAndPoints(teamRankingLifters, Ranking.COMBINED);
-
-            teamRankingLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.CUSTOM);
-            lifterSorter.assignCategoryRanksAndPoints(teamRankingLifters, Ranking.CUSTOM);
             
-            // this final sort is necessary to put all the lifters from the same
-            // team together.
+            // this final sort is used to put all the lifters from the same
+            // team together.  The ranking is arbitrary, TOTAL happens to be convenient.
             LifterSorter.teamRankingOrder(teamRankingLifters, Ranking.TOTAL);
 
             // get the data sheet
@@ -194,15 +191,6 @@ public class CompetitionBook extends ResultSheet {
             } catch (Exception e) {
                 LoggerUtils.logException(logger, e);
             }
-
-            // Team Sum ranking
-            try {
-                workSheet = workBookHandle.getWorkSheet("Somme équipes");
-                new TeamSheet(hbnSessionManager).writeTeamSheetAll(teamRankingLifters, workSheet, Ranking.ALL, clubs, null);
-            } catch (WorkSheetNotFoundException wnf) {
-            } catch (Exception e) {
-                LoggerUtils.logException(logger, e);
-            }
             
             // Team Custom ranking
             try {
@@ -212,7 +200,17 @@ public class CompetitionBook extends ResultSheet {
             } catch (Exception e) {
                 LoggerUtils.logException(logger, e);
             }
+
+            // Team Combined ranking; write each team three times (sn, cj, tot).
+            try {
+            	workSheet = workBookHandle.getWorkSheet("Somme équipes");
+                new TeamSheet(hbnSessionManager).writeTeamSheetCombined(teamRankingLifters, workSheet, clubs, null);
+            } catch (WorkSheetNotFoundException wnf) {
+            } catch (Exception e) {
+                LoggerUtils.logException(logger, e);
+            }
             
+
             // write out
             writeWorkBook(workBookHandle, out);
         } finally {
