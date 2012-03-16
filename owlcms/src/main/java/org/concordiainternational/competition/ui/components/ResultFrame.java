@@ -663,6 +663,7 @@ public class ResultFrame extends VerticalLayout implements
 					case BLOCK:
 						waitingForDecisionLightsReset = true;
 						decisionLights.setVisible(true);
+						break;
 					}
 				}
 			}
