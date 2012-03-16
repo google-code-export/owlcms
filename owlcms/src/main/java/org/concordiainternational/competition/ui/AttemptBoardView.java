@@ -700,6 +700,7 @@ public class AttemptBoardView extends VerticalLayout implements
 							showDecisionLights(true);
 							decisionLights.setVisible(true);
 						}
+						break;
 					}
 				}
 			}
