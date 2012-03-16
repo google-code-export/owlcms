@@ -76,7 +76,8 @@ public class AnnouncerView extends VerticalSplitPanel implements
     private HorizontalLayout topPart;
     private LifterInfo announcerInfo;
     private LiftList liftList;
-    private LifterCardEditor lifterCardEditor;
+
+	private LifterCardEditor lifterCardEditor;
     private CompetitionApplication app;
     private boolean stickyEditor = false;
     private SessionData masterData;
@@ -609,4 +610,10 @@ public class AnnouncerView extends VerticalSplitPanel implements
 		return notifications;
 	}
 
+    /**
+	 * @return the liftList
+	 */
+	public LiftList getLiftList() {
+		return liftList;
+	}
 }

@@ -32,6 +32,7 @@ import org.vaadin.notifique.Notifique.Message;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.MethodProperty;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.terminal.DownloadStream;
@@ -41,6 +42,7 @@ import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
@@ -168,13 +170,13 @@ public class LifterInfo extends VerticalLayout implements
 			label.setData("lifter");
 			this.addComponent(label);
 			this.setSpacing(true);
+			if (isBottom()) { 
+				bottomDisplayOptions(lifter1, groupData1);
+			}
 			if (done)
 				return; // lifter has already performed all lifts.
 			if (lifter1.isCurrentLifter() && isTop()) { //$NON-NLS-1$
 				topDisplayOptions(lifter1, groupData1);
-			} else if (lifter1.isCurrentLifter()
-					&& isBottom()) { //$NON-NLS-1$
-				bottomDisplayOptions(lifter1, groupData1);
 			} else if (isDisplay()) { //$NON-NLS-1$
 				currentLifterDisplayOptions(lifter1, groupData1);
 			}
@@ -336,11 +338,28 @@ public class LifterInfo extends VerticalLayout implements
     }
 
     /**
-     * Nothing to display in the lifter editor.
+     * Additional things to display in the lifter editor.
      * 
      * @param groupData1
      */
-    private void bottomDisplayOptions(Lifter lifter1, final SessionData groupData1) {
+    @SuppressWarnings("serial")
+	private void bottomDisplayOptions(final Lifter lifter1, final SessionData groupData1) {
+    	if (parentView instanceof ResultView) {
+	    		FormLayout customScoreFL = new FormLayout();
+	    		TextField field = new TextField(Messages.getString("LifterInfo.customScore",CompetitionApplication.getCurrentLocale()));
+	    		field.setWidth("5em");
+	    		customScoreFL.addComponent(field);
+	    		field.setPropertyDataSource(new MethodProperty<Lifter>(lifter1, "customScore"));
+	    		field.setImmediate(true);
+	    		field.addListener(new ValueChangeListener() {
+					
+					@Override
+					public void valueChange(ValueChangeEvent event) {
+			    		((ResultView)parentView).getResultList().getGroupData().persistPojo(lifter1);
+					}
+				});
+	    		this.addComponent(customScoreFL);
+    	}
     }
 
     /**
