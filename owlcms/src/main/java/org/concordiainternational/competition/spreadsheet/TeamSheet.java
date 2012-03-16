@@ -32,7 +32,7 @@ public class TeamSheet extends ResultSheet {
 		super(hbnSessionManager);
 	}
 
-	private int lifterRankWithinTeam;
+    private int lifterRankWithinTeam;
 
     private String previousClub;
 
@@ -211,5 +211,11 @@ public class TeamSheet extends ResultSheet {
 
         writeClubs(workSheet, clubs);
 	}
+
+
+	public int getLifterRankWithinTeam() {
+		return lifterRankWithinTeam;
+	}
+
 
 }
