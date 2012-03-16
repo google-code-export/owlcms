@@ -32,7 +32,7 @@ public class LifterSorter implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(LifterSorter.class);
 
     public enum Ranking {
-        SNATCH, CLEANJERK, TOTAL, COMBINED, SINCLAIR, ALL, CUSTOM
+        SNATCH, CLEANJERK, TOTAL, COMBINED, SINCLAIR, CUSTOM
     }
 
     /**
@@ -334,16 +334,17 @@ public class LifterSorter implements Serializable {
             }
 
             if (curLifter.isInvited()) {
-                logger.debug("lifter {}  totalRank={} total={}", new Object[] { curLifter, -1, curLifter.getTotal() }); //$NON-NLS-1$
+                logger.trace("lifter {}  totalRank={} total={}",
+                		new Object[] { curLifter, -1, curLifter.getTotal() }); //$NON-NLS-1$
                 curLifter.setRank(-1);
             } else if (rank <= 3 && curLifter.getTotal() > 0) {
-                logger
-                        .debug(
-                            "lifter {}  totalRank={} total={}", new Object[] { curLifter, rank, curLifter.getTotal() }); //$NON-NLS-1$
+                logger.trace("lifter {}  totalRank={} total={}",
+                		new Object[] { curLifter, rank, curLifter.getTotal() }); //$NON-NLS-1$
                 curLifter.setRank(rank);
                 rank++;
             } else {
-                logger.debug("lifter {}  totalRank={} total={}", new Object[] { curLifter, 0, curLifter.getTotal() }); //$NON-NLS-1$
+                logger.trace("lifter {}  totalRank={} total={}",
+                		new Object[] { curLifter, 0, curLifter.getTotal() }); //$NON-NLS-1$
                 curLifter.setRank(0);
                 rank++;
             }
@@ -357,7 +358,7 @@ public class LifterSorter implements Serializable {
      * 
      * @param sortedList
      */
-    public void assignCategoryRanksAndPoints(List<Lifter> sortedList, Ranking rankingType) {
+    public void assignCategoryRanks(List<Lifter> sortedList, Ranking rankingType) {
         Category prevCategory = null;
         Integer prevAgeGroup = null;
         Integer curAgeGroup = null;
@@ -365,7 +366,7 @@ public class LifterSorter implements Serializable {
         int rank = 1;
         for (Lifter curLifter : sortedList) {
             Category curCategory = null;
-            if (WinningOrderComparator.useRegistrationCategory) {
+            if (WinningOrderComparator.useRegistrationCategory || rankingType == Ranking.CUSTOM) {
                 curCategory = curLifter.getRegistrationCategory();
             } else {
                 curCategory = curLifter.getCategory();
@@ -379,9 +380,8 @@ public class LifterSorter implements Serializable {
             }
 
             if (curLifter.isInvited() || !curLifter.getTeamMember()) {
-                logger
-                        .trace(
-                            "not counted {}  {} totalRank={} total={} {}", new Object[] { curLifter, rankingType, -1, curLifter.getTotal(), curLifter.isInvited() }); //$NON-NLS-1$
+                logger.trace("not counted {}  {}Rank={} total={} {}",
+                		new Object[] { curLifter, rankingType, -1, curLifter.getTotal(), curLifter.isInvited() }); //$NON-NLS-1$
                 setRank(curLifter, -1, rankingType);
                 setPoints(curLifter, 0, rankingType);
             } else {
@@ -390,15 +390,13 @@ public class LifterSorter implements Serializable {
                 // }
                 final double rankingTotal = getRankingTotal(curLifter, rankingType);
                 if (rankingTotal > 0) {
-                    logger
-                            .debug(
-                                "lifter {}  {} totalRank={} total={}", new Object[] { curLifter, rankingType, rank, rankingTotal }); //$NON-NLS-1$
                     setRank(curLifter, rank, rankingType);
+                    logger.trace("lifter {}  {}rank={} total={}",
+                    		new Object[] { curLifter, rankingType, getRank(curLifter, rankingType), rankingTotal }); //$NON-NLS-1$
                     rank++;
                 } else {
-                    logger
-                            .debug(
-                                "lifter {}  {} totalRank={} total={}", new Object[] { curLifter, rankingType, 0, rankingTotal }); //$NON-NLS-1$
+                    logger.trace("lifter {}  {}rank={} total={}",
+                    		new Object[] { curLifter, rankingType, 0, rankingTotal }); //$NON-NLS-1$
                     setRank(curLifter, 0, rankingType);
                     rank++;
                 }
@@ -431,24 +429,21 @@ public class LifterSorter implements Serializable {
             }
 
             if (curLifter.isInvited() || !curLifter.getTeamMember()) {
-                logger
-                        .debug(
-                            "invited {}  {} totalRank={} total={} {}", new Object[] { curLifter, rankingType, -1, curLifter.getTotal(), curLifter.isInvited() }); //$NON-NLS-1$
+                logger.trace("invited {}  {}rank={} total={} {}",
+                		new Object[] { curLifter, rankingType, -1, curLifter.getTotal(), curLifter.isInvited() }); //$NON-NLS-1$
                 setRank(curLifter, -1, rankingType);
                 setPoints(curLifter, 0, rankingType);
             } else {
                 setTeamRank(curLifter, 0, rankingType);
                 final double rankingTotal = getRankingTotal(curLifter, rankingType);
                 if (rankingTotal > 0) {
-                    logger
-                            .debug(
-                                "lifter {}  {} totalRank={} total={}", new Object[] { curLifter, rankingType, rank, rankingTotal }); //$NON-NLS-1$
-                    setRank(curLifter, rank, rankingType);
+                	setRank(curLifter, rank, rankingType);
+                    logger.trace("lifter {}  {}rank={} {}={} total={}",
+                    		new Object[] { curLifter, rankingType, rank, rankingTotal }); //$NON-NLS-1$
                     rank++;
                 } else {
-                    logger
-                            .debug(
-                                "lifter {}  {} totalRank={} total={}", new Object[] { curLifter, rankingType, 0, rankingTotal }); //$NON-NLS-1$
+                    logger.trace("lifter {}  {}rank={} total={}",
+                    		new Object[] { curLifter, rankingType, 0, rankingTotal }); //$NON-NLS-1$
                     setRank(curLifter, 0, rankingType);
                     rank++;
                 }
@@ -468,14 +463,19 @@ public class LifterSorter implements Serializable {
         switch (rankingType) {
         case SNATCH:
             curLifter.setSnatchRank(i);
+            break;
         case CLEANJERK:
             curLifter.setCleanJerkRank(i);
+            break;
         case TOTAL:
             curLifter.setTotalRank(i);
-        case COMBINED:
-            return;
+            break;
         case SINCLAIR:
             curLifter.setSinclairRank(i);
+            break;
+        case CUSTOM:
+            curLifter.setCustomRank(i);
+            break;
         }
     }
 
@@ -519,18 +519,22 @@ public class LifterSorter implements Serializable {
      * @param rankingType
      */
     private void setPoints(Lifter curLifter, float points, Ranking rankingType) {
-        logger.debug(curLifter + " " + rankingType + " points=" + points);
+        logger.trace(curLifter + " " + rankingType + " points=" + points);
         switch (rankingType) {
         case SNATCH:
-            curLifter.setSnatchPoints(points);
+        	curLifter.setSnatchPoints(points);
+        	break;
         case CLEANJERK:
-            curLifter.setCleanJerkPoints(points);
+        	curLifter.setCleanJerkPoints(points);
+        	break;
         case TOTAL:
-            curLifter.setTotalPoints(points);
-        case SINCLAIR:
-            curLifter.setSinclairPoints(points);
+        	curLifter.setTotalPoints(points);
+        	break;
+        case CUSTOM:
+        	curLifter.setCustomPoints(points); 
+        	break;
         case COMBINED:
-            return; // computed
+        	return; // computed
         }
     }
 
@@ -547,8 +551,8 @@ public class LifterSorter implements Serializable {
             return pointsFormula(curLifter.getCleanJerkRank(), curLifter);
         case TOTAL:
             return pointsFormula(curLifter.getTotalRank(), curLifter);
-        case SINCLAIR:
-            return pointsFormula(curLifter.getSinclairRank(), curLifter);
+        case CUSTOM:
+            return pointsFormula(curLifter.getCustomRank(), curLifter);            
         case COMBINED:
             return pointsFormula(curLifter.getSnatchRank(), curLifter)
                 + pointsFormula(curLifter.getCleanJerkRank(), curLifter)
@@ -578,14 +582,18 @@ public class LifterSorter implements Serializable {
         switch (rankingType) {
         case SNATCH:
             curLifter.setTeamSnatchRank(i);
+            break;
         case CLEANJERK:
             curLifter.setTeamCleanJerkRank(i);
+            break;
         case TOTAL:
             curLifter.setTeamTotalRank(i);
+            break;
         case SINCLAIR:
             curLifter.setTeamSinclairRank(i);
+            break;
         case COMBINED:
-            curLifter.setTeamCombinedRank(i);
+            return; // there is no combined rank
         }
     }
 
@@ -594,7 +602,7 @@ public class LifterSorter implements Serializable {
      * @param rankingType
      * @return
      */
-    public static int getRank(Lifter curLifter, Ranking rankingType) {
+    public Integer getRank(Lifter curLifter, Ranking rankingType) {
         switch (rankingType) {
         case SNATCH:
             return curLifter.getSnatchRank();
@@ -604,6 +612,8 @@ public class LifterSorter implements Serializable {
             return curLifter.getSinclairRank();
         case TOTAL:
             return curLifter.getRank();
+        case CUSTOM:
+            return curLifter.getCustomRank();            
         }
         return 0;
     }
@@ -623,8 +633,12 @@ public class LifterSorter implements Serializable {
             return curLifter.getTotal();
         case SINCLAIR:
             return curLifter.getSinclair();
+        case CUSTOM:
+            return curLifter.getCustomScore();
+        case COMBINED:
+            return 0D; // no such thing
         }
-        return 0;
+        return 0D;
     }
 
     static private boolean equals(Object o1, Object o2) {

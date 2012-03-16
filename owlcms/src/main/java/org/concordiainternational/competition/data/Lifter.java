@@ -197,24 +197,24 @@ public class Lifter implements MethodEventSource, Notifier {
     Integer cleanJerkRank;
     Integer totalRank;
     Integer sinclairRank;
+    Integer customRank;
 
     Float snatchPoints;
     Float cleanJerkPoints;
     Float totalPoints; // points based on totalRank
     Float sinclairPoints;
-
-    Float combinedPoints; // sum of snatch + cleanJerk + total points
+    Float customPoints;
 
     Integer teamSinclairRank;
     Integer teamSnatchRank;
     Integer teamCleanJerkRank;
 
     Integer teamTotalRank;
-
     Integer teamCombinedRank;
-    Boolean teamMember = true; // false if substitute; note that we consider
-    // null to be true.;
+    
+    Boolean teamMember = true; // false if substitute; note that we consider null to be true.;
     Integer qualifyingTotal = 0;
+    
     /*
      * Computed properties. We create them here because we want the
      * corresponding accessors to be discovered by introspection. Setters are
@@ -684,10 +684,6 @@ public class Lifter implements MethodEventSource, Notifier {
     public boolean getCurrentLifter() {
         return currentLifter;
     }
-    
-	public Double getCustomScore() {
-		return customScore;
-	}
 
     /**
      * @return the firstName
@@ -1060,7 +1056,7 @@ public class Lifter implements MethodEventSource, Notifier {
         if (cleanJerkTotal == 0) return 0;
         return snatchTotal + cleanJerkTotal;
     }
-
+    
     public Float getTotalPoints() {
         if (totalPoints == null) return 0.0F;
         return totalPoints;
@@ -1718,9 +1714,22 @@ public class Lifter implements MethodEventSource, Notifier {
     public void setTotalRank(Integer totalRank) {
         this.totalRank = totalRank;
     }
+    
+	public Double getCustomScore() {
+		if (customScore == null || customScore < 0.01) return new Double(getTotal());
+		return customScore;
+	}
+    
+    public void setCustomRank(Integer customRank) {
+        this.customRank = customRank;
+    }
+    
+	public Integer getCustomRank() {
+		return this.customRank;
+	}
 
-    public void setSinclairPoints(float totalPoints) {
-        this.sinclairPoints = totalPoints;
+	public void setCustomPoints(float customPoints) {
+        this.customPoints = customPoints;
     }
 
     public void successfulLift() {
@@ -2120,5 +2129,6 @@ public class Lifter implements MethodEventSource, Notifier {
 			return false;
 		return true;
 	}
+
 
 }
