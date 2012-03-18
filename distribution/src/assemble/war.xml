@@ -7,13 +7,11 @@
 		<format>dir</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
-	<dependencySets>
-		<dependencySet>
-			<includes>
-				<include>org.concordiainternational:owlcms</include>
-			</includes>
+	<files>
+		<file>
+			<source>../owlcms/target/owlcms-${project.version}.war</source>
 			<outputDirectory>/</outputDirectory>
-			<unpack>false</unpack>
-		</dependencySet>
-	</dependencySets>
+			<destName>owlcms-${project.version}.war</destName>
+		</file>
+	</files>
 </assembly>
