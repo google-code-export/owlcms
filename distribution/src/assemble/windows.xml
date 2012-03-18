@@ -7,23 +7,21 @@
 		<format>dir</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
-	<dependencySets>
-		<dependencySet>
-			<includes>
-				<include>org.concordiainternational:owlcms</include>
-			</includes>
-			<outputDirectory>owlcms</outputDirectory>
-			<unpack>true</unpack>
-		</dependencySet>
-	</dependencySets>
 	<files>
 		<file>
 			<source>../../wiki/ReleaseNotes.wiki</source>
 			<outputDirectory>doc</outputDirectory>
 			<destName>release notes.txt</destName>
 		</file>
-	</files>	
+	</files>
 	<fileSets>
+		<fileSet>
+			<directory>../owlcms/target/owlcms-${project.version}</directory>
+			<includes>
+				<include>**</include>
+			</includes>
+			<outputDirectory>owlcms</outputDirectory>
+		</fileSet>
 		<fileSet>
 			<directory>../launch/src/main/scripts</directory>
 			<includes>

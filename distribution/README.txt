@@ -2,7 +2,7 @@ Steps to create a release.
 
 1) Prepare the distribution.
 
-- Make sure that owlcms/pom.xml owlcms/doc/releasenotes.txt and distribution/pom.xml all
+- Make sure that owlcms/pom.xml wiki/ReleaseNotes.wick and distribution/pom.xml all
   have correct version numbers.
   
 a. cd to owlcmsParent
