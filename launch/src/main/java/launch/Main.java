@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2012, Jean-François Lamy
+ * Copyright 2009-2012, Jean-Franï¿½ois Lamy
  * 
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, 
@@ -34,7 +34,16 @@ public class Main {
     		installDir = System.getProperty("user.dir");
     	}
         // The web application is one level below.
-        String webappDir = installDir+"/"+APPLICATION_NAME;
+    	String installPath = new File(installDir).getAbsolutePath();
+        String webappPath = installPath+"/"+APPLICATION_NAME;
+        File webappFile = new File(webappPath);
+        if (!webappFile.exists()) {
+        	System.err.println("webapp location not found: "+webappPath);
+        	System.exit(-1);
+        } else {
+        	System.err.println("webapp location found: "+webappPath);
+        }
+        
 
         //The port that we should run on can be set into an environment variable
         String webPort = System.getenv("OWLCMS_PORT");
@@ -45,7 +54,8 @@ public class Main {
         // configure the application and its URL
         Tomcat tomcat = new Tomcat();
         tomcat.setPort(Integer.valueOf(webPort));
-        tomcat.addWebapp("/"+APPLICATION_NAME, new File(webappDir).getCanonicalPath());
+        tomcat.setBaseDir(installPath+"/tomcatWork."+webPort);
+		tomcat.addWebapp("/"+APPLICATION_NAME, webappPath);
         System.setProperty("net.sf.ehcache.skipUpdateCheck","true");
 
         // start the server and wait
