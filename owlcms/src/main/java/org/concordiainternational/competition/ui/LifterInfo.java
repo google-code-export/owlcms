@@ -285,10 +285,10 @@ public class LifterInfo extends VerticalLayout implements
                 if (showTimerControls) {
                     automaticStartTime.setValue(false);
                     automaticStartTime.setVisible(showTimerControls);
-                    buttons.showTimerControls(groupData.getTimer().isRunning());
+                    timerControls.showTimerControls(groupData.getTimer().isRunning());
                 } else {
                     automaticStartTime.setVisible(false);
-                    buttons.hideTimerControls();
+                    timerControls.hideTimerControls();
                     groupData.startTimeAutomatically(false);
                 }
             }
@@ -315,7 +315,7 @@ public class LifterInfo extends VerticalLayout implements
     }
 
 
-    TimerControls buttons;
+    TimerControls timerControls;
     private boolean blocked = true;
 
     /**
@@ -328,9 +328,9 @@ public class LifterInfo extends VerticalLayout implements
 
         createTimerDisplay(groupData1);
 
-        buttons = new TimerControls(lifter1, groupData1, true, mode, this, showTimerControls, app);
+        timerControls = new TimerControls(lifter1, groupData1, true, mode, this, showTimerControls, app);
         this.addComponent(new Label());
-        this.addComponent(buttons);
+        this.addComponent(timerControls);
         if (mode == Mode.ANNOUNCER) {
             FormLayout timekeeperOptions = timekeeperOptions();
             this.addComponent(timekeeperOptions);
@@ -519,7 +519,7 @@ public class LifterInfo extends VerticalLayout implements
         synchronized (app) {
         	timerDisplay.setEnabled(false); // show that timer has stopped.
             timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
-            buttons.enableStopStart(false);
+            timerControls.enableStopStart(false);
             setBlocked(false);
         }
         showNotification(originatingApp, reason);
@@ -532,8 +532,8 @@ public class LifterInfo extends VerticalLayout implements
     	
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {
-	        if (buttons != null) {
-	        	buttons.enableStopStart(false);
+	        if (timerControls != null) {
+	        	timerControls.enableStopStart(false);
 	        }
 	        if (timerDisplay != null) {
 	            timerDisplay.setEnabled(false);
@@ -594,7 +594,7 @@ public class LifterInfo extends VerticalLayout implements
     public void start(int timeRemaining) {
         setBlocked(false);
         synchronized (app) {
-	        if (buttons != null) buttons.enableStopStart(true);
+	        if (timerControls != null) timerControls.enableStopStart(true);
 	        if (timerDisplay != null) {
 	            timerDisplay.setEnabled(true);
 	        }
@@ -608,7 +608,7 @@ public class LifterInfo extends VerticalLayout implements
 
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {
-	        if (buttons != null) buttons.enableStopStart(false);
+	        if (timerControls != null) timerControls.enableStopStart(false);
 	        if (timerDisplay != null) {
 	            timerDisplay.setEnabled(false);
 	        }
@@ -698,7 +698,7 @@ public class LifterInfo extends VerticalLayout implements
 				case SHOW:
 					 shown = true;
 					 displayNotification(updateEvent);
-					 if (buttons != null) { buttons.hideLiftControls(); }
+					 if (timerControls != null) { timerControls.hideLiftControls(); }
 					 break;
 					 // go on to UPDATE;
 				case UPDATE:
@@ -709,7 +709,7 @@ public class LifterInfo extends VerticalLayout implements
 				case RESET:
 					shown = false;
 					prevEvent = null;
-					if (buttons != null) { buttons.showLiftControls(); }
+					if (timerControls != null) { timerControls.showLiftControls(); }
 					break;
 				}				
 			}

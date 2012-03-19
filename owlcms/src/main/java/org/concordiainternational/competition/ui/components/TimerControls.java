@@ -22,13 +22,17 @@ import org.concordiainternational.competition.webapp.WebApplicationConfiguration
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.event.Action;
+import com.vaadin.event.Action.Handler;
+import com.vaadin.event.ActionManager;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.GridLayout;
 
-public class TimerControls extends GridLayout {
+public class TimerControls extends GridLayout implements ShortcutAction.Notifier {
 
     private static final String ANNOUNCER_BUTTON_WIDTH = "9em";
 	private static final String ANNOUNCER_SMALL_BUTTON_WIDTH = "4em";
@@ -60,7 +64,14 @@ public class TimerControls extends GridLayout {
     private Mode mode;
     private LifterInfo lifterInfo;
     private boolean timerVisible = false;
-
+    
+	private boolean timerShortcutsEnabled = false;
+	private ShortcutAction actionStart;
+	private ShortcutAction actionStop;
+	private ShortcutAction actionOneMinute;
+	private ShortcutAction actionTwoMinutes;
+	private ActionManager actionManager;
+	
     public TimerControls(final Lifter lifter, final SessionData groupData, boolean top, AnnouncerView.Mode mode,
             LifterInfo lifterInfo, boolean timerVisible, CompetitionApplication app) {
         super(4, 3);
@@ -100,6 +111,9 @@ public class TimerControls extends GridLayout {
             configureTwoMinutes(lifter, groupData, locale);
             configureOkLift(lifter, groupData, locale);
             configureFailedLift(lifter, groupData, locale);
+            
+            setActions(lifter,groupData);
+//            CompetitionApplication.getCurrent().getMainWindow().addActionHandler(this);
 
             this.addComponent(announce, 0, 0, 1, 0);
             this.addComponent(changeWeight, 2, 0, 3, 0);
@@ -156,7 +170,9 @@ public class TimerControls extends GridLayout {
         }
     }
 
-    public void enableStopStart(boolean running) {
+
+
+	public void enableStopStart(boolean running) {
     	final boolean isTimeKeeper = mode == Mode.TIMEKEEPER;
     	if (!running) {
     		stop.setEnabled(false);
@@ -253,24 +269,7 @@ public class TimerControls extends GridLayout {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                final long currentTimeMillis = System.currentTimeMillis();
-                // ignore two clicks on the same button in quick succession
-                if ((currentTimeMillis - lifterInfo.getLastOkButtonClick()) > MIN_CLICK_DELAY) {
-                    logger.debug("Ok: délai acceptable: {}-{}={}",
-                        new Object[] { currentTimeMillis, lifterInfo.getLastOkButtonClick(),
-                                (currentTimeMillis - lifterInfo.getLastOkButtonClick()) });
-                    lifterInfo.setLastOkButtonClick(currentTimeMillis);
-                    logger.debug("Ok: dernier click accepté: {} {}", (lifterInfo.getLastOkButtonClick()), lifterInfo);
-                    timingLogger.debug("okLift"); //$NON-NLS-1$
-                    // call group data first because this resets the timers
-                    logger.info("successful lift for {} {}", lifter.getLastName(), lifter.getFirstName()); //$NON-NLS-1$
-                    lifterInfo.setBlocked(true);
-                    groupData.liftDone(lifter, true);
-                    lifter.successfulLift();
-                } else {
-                    logger.debug("Ok: délai INacceptable: {}", currentTimeMillis - lifterInfo.getLastOkButtonClick());
-                }
-
+                okLiftDoIt(lifter, groupData);
             }
         };
         okLift.addListener(okLiftListener);
@@ -326,21 +325,7 @@ public class TimerControls extends GridLayout {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                logger.info("start clicked");
-                final CountdownTimer timer = groupData.getTimer();
-                groupData.manageTimerOwner(lifter, groupData, timer);
-
-                final boolean running = timer.isRunning();
-                timingLogger.debug("start timer.isRunning()={}", running); //$NON-NLS-1$
-                if (running) {
-                	// do nothing
-                } else {
-                    lifterInfo.setBlocked(false); // !!!!
-                    timer.restart();
-                    groupData.setLifterAsHavingStarted(lifter);
-                    groupData.getRefereeDecisionController().setBlocked(false);
-                    enableStopStart(true);
-                }
+                startDoIt(lifter, groupData);
             }
         };
         start.addListener(startListener);
@@ -360,20 +345,7 @@ public class TimerControls extends GridLayout {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                logger.info("stop clicked");
-                final CountdownTimer timer = groupData.getTimer();
-                groupData.manageTimerOwner(lifter, groupData, timer);
-
-                final boolean running = timer.isRunning();
-                timingLogger.debug("stop timer.isRunning()={}", running); //$NON-NLS-1$
-                if (running) {
-                    lifterInfo.setBlocked(true);
-                    timer.pause(TimeStoppedNotificationReason.STOP_START_BUTTON); // pause() does not clear the associated
-                                   // lifter
-                    enableStopStart(false);
-                } else {
-                	// do nothing.
-                }
+                stopDoIt(lifter, groupData);
             }
         };
         stop.addListener(stopListener);
@@ -394,18 +366,7 @@ public class TimerControls extends GridLayout {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                final CountdownTimer timer = groupData.getTimer();
-                final boolean running = timer.isRunning();
-                timingLogger.debug("oneMinute"); //$NON-NLS-1$
-
-                // call group data first because this resets the timers
-                logger.info("resetting to one minute for {}", lifter); //$NON-NLS-1$
-                if (running) {
-                    timer.forceTimeRemaining(60000); // pause() does not clear
-                                                     // the associated lifter
-                }
-                groupData.setForcedByTimekeeper(true, 60000);
-                enableStopStart(false);
+                oneMinuteDoIt(lifter, groupData);
 
             }
         };
@@ -426,20 +387,9 @@ public class TimerControls extends GridLayout {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                final CountdownTimer timer = groupData.getTimer();
-                final boolean running = timer.isRunning();
-                timingLogger.debug("twoMinutes"); //$NON-NLS-1$
-
-                // call group data first because this resets the timers
-                logger.info("resetting to two minutes for {}", lifter); //$NON-NLS-1$
-                if (running) {
-                    timer.forceTimeRemaining(120000); // pause() does not clear
-                                                      // the associated lifter
-                }
-
-                groupData.setForcedByTimekeeper(true, 120000);
-                enableStopStart(false);
+                twoMinutesDoIt(lifter, groupData);
             }
+
         };
         twoMinutes.addListener(twoMinutesListener);
         twoMinutes.setWidth(ANNOUNCER_SMALL_BUTTON_WIDTH);
@@ -554,13 +504,19 @@ public class TimerControls extends GridLayout {
     	enableStopStart(running);
         oneMinute.setVisible(true);
         twoMinutes.setVisible(true);
+        setTimerShortcutsEnabled(true);
     }
 
-    public void hideTimerControls() {
+	private void setTimerShortcutsEnabled(boolean b) {
+		this.timerShortcutsEnabled = b;
+	}
+
+	public void hideTimerControls() {
         start.setVisible(false);
         stop.setVisible(false);
         oneMinute.setVisible(false);
         twoMinutes.setVisible(false);
+        setTimerShortcutsEnabled(false);
     }
 
     public void showLiftControls() {
@@ -576,4 +532,142 @@ public class TimerControls extends GridLayout {
         okLift.setEnabled(false);
         failedLift.setEnabled(false);
     }
+
+	private void okLiftDoIt(final Lifter lifter, final SessionData groupData) {
+		final long currentTimeMillis = System.currentTimeMillis();
+		// ignore two clicks on the same button in quick succession
+		if ((currentTimeMillis - lifterInfo.getLastOkButtonClick()) > MIN_CLICK_DELAY) {
+		    logger.debug("Ok: délai acceptable: {}-{}={}",
+		        new Object[] { currentTimeMillis, lifterInfo.getLastOkButtonClick(),
+		                (currentTimeMillis - lifterInfo.getLastOkButtonClick()) });
+		    lifterInfo.setLastOkButtonClick(currentTimeMillis);
+		    logger.debug("Ok: dernier click accepté: {} {}", (lifterInfo.getLastOkButtonClick()), lifterInfo);
+		    timingLogger.debug("okLift"); //$NON-NLS-1$
+		    // call group data first because this resets the timers
+		    logger.info("successful lift for {} {}", lifter.getLastName(), lifter.getFirstName()); //$NON-NLS-1$
+		    lifterInfo.setBlocked(true);
+		    groupData.liftDone(lifter, true);
+		    lifter.successfulLift();
+		} else {
+		    logger.debug("Ok: délai INacceptable: {}", currentTimeMillis - lifterInfo.getLastOkButtonClick());
+		}
+	}
+
+	private void startDoIt(final Lifter lifter, final SessionData groupData) {
+		logger.info("start clicked");
+		final CountdownTimer timer = groupData.getTimer();
+		groupData.manageTimerOwner(lifter, groupData, timer);
+
+		final boolean running = timer.isRunning();
+		timingLogger.debug("start timer.isRunning()={}", running); //$NON-NLS-1$
+		if (running) {
+			// do nothing
+		} else {
+		    lifterInfo.setBlocked(false); // !!!!
+		    timer.restart();
+		    groupData.setLifterAsHavingStarted(lifter);
+		    groupData.getRefereeDecisionController().setBlocked(false);
+		    enableStopStart(true);
+		}
+	}
+
+	private void stopDoIt(final Lifter lifter, final SessionData groupData) {
+		logger.info("stop clicked");
+		final CountdownTimer timer = groupData.getTimer();
+		groupData.manageTimerOwner(lifter, groupData, timer);
+
+		final boolean running = timer.isRunning();
+		timingLogger.debug("stop timer.isRunning()={}", running); //$NON-NLS-1$
+		if (running) {
+		    lifterInfo.setBlocked(true);
+		    timer.pause(TimeStoppedNotificationReason.STOP_START_BUTTON); // pause() does not clear the associated
+		                   // lifter
+		    enableStopStart(false);
+		} else {
+			// do nothing.
+		}
+	}
+
+	private void oneMinuteDoIt(final Lifter lifter, final SessionData groupData) {
+		final CountdownTimer timer = groupData.getTimer();
+		final boolean running = timer.isRunning();
+		timingLogger.debug("oneMinute"); //$NON-NLS-1$
+
+		// call group data first because this resets the timers
+		logger.info("resetting to one minute for {}", lifter); //$NON-NLS-1$
+		if (running) {
+		    timer.forceTimeRemaining(60000); // pause() does not clear
+		                                     // the associated lifter
+		}
+		groupData.setForcedByTimekeeper(true, 60000);
+		enableStopStart(false);
+	}
+	
+	private void twoMinutesDoIt(final Lifter lifter,
+			final SessionData groupData) {
+		final CountdownTimer timer = groupData.getTimer();
+        final boolean running = timer.isRunning();
+        timingLogger.debug("twoMinutes"); //$NON-NLS-1$
+
+        // call group data first because this resets the timers
+        logger.info("resetting to two minutes for {}", lifter); //$NON-NLS-1$
+        if (running) {
+            timer.forceTimeRemaining(120000); // pause() does not clear
+                                              // the associated lifter
+        }
+
+        groupData.setForcedByTimekeeper(true, 120000);
+        enableStopStart(false);
+	}
+	
+    private void setActions(final Lifter lifter, final SessionData groupData) {
+    	actionManager = new ActionManager();
+    	
+    	//FIXME - implement Action.Listener in shortcut actions, binding to lifter and groupData.
+    	
+    	actionStart = new ShortcutAction("start",ShortcutAction.KeyCode.G, new int[]{ShortcutAction.SHORTHAND_CHAR_ALT});
+    	actionStop = new ShortcutAction("stop",ShortcutAction.KeyCode.P, new int[]{ShortcutAction.SHORTHAND_CHAR_ALT});
+    	actionOneMinute = new ShortcutAction("stop",ShortcutAction.KeyCode.NUM1, new int[]{ShortcutAction.SHORTHAND_CHAR_ALT});
+    	actionTwoMinutes = new ShortcutAction("stop",ShortcutAction.KeyCode.NUM2, new int[]{ShortcutAction.SHORTHAND_CHAR_ALT});
+	}
+
+	@Override
+	public void addActionHandler(Handler actionHandler) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeActionHandler(Handler actionHandler) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public <T extends Action & com.vaadin.event.Action.Listener> void addAction(
+			T action) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public <T extends Action & com.vaadin.event.Action.Listener> void removeAction(
+			T action) {
+		// TODO Auto-generated method stub
+		
+	}
+
+//	@Override
+//	public Action[] getActions(Object target, Object sender) {
+//		return new Action[]{actionStart,actionStop,actionOneMinute,actionTwoMinutes};
+//	}
+//
+//	@Override
+//	public void handleAction(Action action, Object sender, Object target) {
+//		if (action == actionStart) startDoIt(lifter, groupData);
+//		else if (action == actionStart) stopDoIt(lifter, groupData);
+//		else if (action == actionOneMinute) oneMinuteDoIt(lifter, groupData);
+//		else if (action == actionTwoMinutes) twoMinutesDoIt(lifter, groupData);
+//	}
+
 }
