@@ -327,7 +327,7 @@ public class LifterInfo extends VerticalLayout implements
     private void topDisplayOptions(final Lifter lifter1, final SessionData groupData1) {
 
         createTimerDisplay(groupData1);
-
+        if (timerControls != null) timerControls.unregisterListeners();
         timerControls = new TimerControls(lifter1, groupData1, true, mode, this, showTimerControls, app);
         this.addComponent(new Label());
         this.addComponent(timerControls);
