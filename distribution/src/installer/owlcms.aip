@@ -9,6 +9,7 @@
     <ROW Property="ARPNOREPAIR" Value="1"/>
     <ROW Property="ARPURLINFOABOUT" Value="http://owlcms.googlecode.com"/>
     <ROW Property="CTRLS" Value="3"/>
+    <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:1"/>
     <ROW Property="Manufacturer" Value="Olympic Weightlifting" ValueLocId="*"/>
     <ROW Property="ProductCode" Value="1033:{52A89BCB-BAB3-4A88-81BE-89BA8C770B9E} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
