@@ -20,10 +20,10 @@
 
 	<logger name="org.concordiainternational.org" level="INFO" /> 
     <logger name="org.concordiainternational.competition.nec" level="DEBUG" />
-     <logger name="org.concordiainternational.competition.timer" level="DEBUG" />
+
     <!--
         <logger name="com.vaadin.event" level="DEBUG" />
-        
+    	<logger name="org.concordiainternational.competition.timer" level="DEBUG" />        
         <logger name="org.concordiainternational.competition.publicAddress" level="WARN" />
         <logger name="org.concordiainternational.competition.ui.AnnouncerView" level="TRACE" />
         <logger name="org.concordiainternational.competition.ui.GroupData" level="TRACE" />

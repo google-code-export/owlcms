@@ -40,16 +40,21 @@ public class CountdownTimer implements Serializable {
 
     final private static int DECREMENT = 100; // milliseconds
     private int startTime;
-    Timer timer = null;
+    private Timer timer = null;
     private CountdownTask countdownTask;
 
     /*
      * listeners : the display for the lifter and the buzzer controller are
-     * treated specially as they require then all other listeners are treated in
-     * whatever order.
+     * treated specially as they require immediate attention.
+     * then all other listeners are treated in whatever order.
      */
     private Set<CountdownTimerListener> listeners = new HashSet<CountdownTimerListener>();
     private CountdownTimerListener countdownDisplay = null;
+    
+    /**
+     * Buzzer is controlled by LifterInfo on announcer console
+     * (legacy design -- buzzer used to be on client side)
+     */
     private LifterInfo masterBuzzer = null;
 
     public CountdownTimer() {
@@ -76,8 +81,10 @@ public class CountdownTimer implements Serializable {
         timer = new Timer();
 
         countdownTask = new CountdownTask(this, startTime, DECREMENT);
-        timer.scheduleAtFixedRate(countdownTask, 0, // start right away
-            DECREMENT); // 100ms precision is good enough)
+        timer.scheduleAtFixedRate(countdownTask,
+        		0, // start right away
+        		DECREMENT); // 100ms precision is good enough
+        
         final Set<CountdownTimerListener> listeners2 = getListeners();
         logger.trace("start: {}  - {} listeners", startTime, listeners2.size()); //$NON-NLS-1$
         if (countdownDisplay != null) {
@@ -88,7 +95,7 @@ public class CountdownTimer implements Serializable {
         }
         for (CountdownTimerListener curListener : listeners2) {
         	// avoid duplicate notifications
-        	if (curListener != masterBuzzer) {
+        	if (curListener != masterBuzzer && curListener != countdownDisplay) {
         		curListener.start(startTime);
         	}
         }
@@ -282,7 +289,7 @@ public class CountdownTimer implements Serializable {
     }
 
     public void addListener(CountdownTimerListener timerListener) {
-        logger.debug("listening to {}", timerListener); //$NON-NLS-1$
+        logger.debug("{} listened by {}", this, timerListener); //$NON-NLS-1$
         listeners.add(timerListener);
     }
 
@@ -352,6 +359,11 @@ public class CountdownTimer implements Serializable {
             logger.error(t.getMessage());
         }
     }
+
+	public void cancel() {
+		logger.debug("cancelling timer");
+		this.timer.cancel();
+	}
 
 
 

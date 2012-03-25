@@ -118,7 +118,7 @@ class CountdownTask extends TimerTask implements Serializable {
         // Under linux, cancelling the timer also cancel the sounds
         if (ticks <= -1000) {
         	logger.info("end: " + ticks / 1000 + " " + (System.currentTimeMillis() - startMillis)); //$NON-NLS-1$ //$NON-NLS-2$
-            this.countdownTimer.timer.cancel();
+            this.countdownTimer.cancel();
         } else {
             ticks = ticks - decrement;
         }
