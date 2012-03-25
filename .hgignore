@@ -1,0 +1,31 @@
+
+syntax: regexp
+^touchdiv/target$
+syntax: regexp
+^owlcms/target$
+syntax: regexp
+^launch/target$
+syntax: regexp
+^owlcms/src/main/webapp/VAADIN/widgetsets$
+syntax: regexp
+^owlcmsParent/src/main/installer/owlcms-cache$
+syntax: regexp
+^owlcmsParent/src/main/installer/owlcms-SetupFiles$
+syntax: regexp
+^distribution/target$
+syntax: regexp
+^launch/bin$
+syntax: regexp
+^distribution/src/installer/owlcms-cache$
+syntax: regexp
+^distribution/src/installer/owlcms-SetupFiles$
+syntax: regexp
+^distribution/build\.credentials\.properties$
+syntax: regexp
+^owlcms/db$
+syntax: glob
+doc/release notes.txt
+syntax: regexp
+^touchdiv/bin$
+syntax: regexp
+^owlcms/src/main/webapp/registration$
