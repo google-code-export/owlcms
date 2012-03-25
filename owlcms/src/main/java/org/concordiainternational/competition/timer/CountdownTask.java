@@ -69,7 +69,7 @@ class CountdownTask extends TimerTask implements Serializable {
     }
     
 	/**
-	 * Round up to decrement interval (1000ms)
+	 * Round up to decrement interval (100ms)
 	 * @param countdownFrom
 	 * @param decrement1
 	 * @return
@@ -117,6 +117,7 @@ class CountdownTask extends TimerTask implements Serializable {
         // leave the timer running for one second extra
         // Under linux, cancelling the timer also cancel the sounds
         if (ticks <= -1000) {
+        	logger.info("end: " + ticks / 1000 + " " + (System.currentTimeMillis() - startMillis)); //$NON-NLS-1$ //$NON-NLS-2$
             this.countdownTimer.timer.cancel();
         } else {
             ticks = ticks - decrement;
