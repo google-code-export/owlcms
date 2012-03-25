@@ -128,6 +128,7 @@ public class CompetitionBook extends ResultSheet {
                 } else {
                     new IndividualSheet(hbnSessionManager).writeIndividualSheet(lifters, workSheet, "M");
                 }
+                workSheet.setSheetName(Messages.getString("CompetionBook.M6", CompetitionApplication.getCurrentLocale()));
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
                 LoggerUtils.logException(logger, e);
@@ -141,6 +142,7 @@ public class CompetitionBook extends ResultSheet {
                 } else {
                     new IndividualSheet(hbnSessionManager).writeIndividualSheet(lifters, workSheet, "F");
                 }
+                workSheet.setSheetName(Messages.getString("CompetionBook.F6", CompetitionApplication.getCurrentLocale()));
 
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
@@ -151,6 +153,7 @@ public class CompetitionBook extends ResultSheet {
             try {
                 workSheet = workBookHandle.getWorkSheet("Hommes Sinclair");
                 new SinclairSheet(hbnSessionManager).writeSinclairSheet(sinclairLifters, workSheet, "M");
+                workSheet.setSheetName(Messages.getString("CompetionBook.MS", CompetitionApplication.getCurrentLocale()));
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
                 LoggerUtils.logException(logger, e);
@@ -160,6 +163,7 @@ public class CompetitionBook extends ResultSheet {
             try {
                 workSheet = workBookHandle.getWorkSheet("Femmes Sinclair");
                 new SinclairSheet(hbnSessionManager).writeSinclairSheet(sinclairLifters, workSheet, "F");
+                workSheet.setSheetName(Messages.getString("CompetionBook.FS", CompetitionApplication.getCurrentLocale()));
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
                 LoggerUtils.logException(logger, e);
@@ -169,6 +173,7 @@ public class CompetitionBook extends ResultSheet {
             try {
                 workSheet = workBookHandle.getWorkSheet("Hommes équipes");
                 new TeamSheet(hbnSessionManager).writeTeamSheet(teamRankingLifters, workSheet, Ranking.TOTAL, clubs, "M");
+                workSheet.setSheetName(Messages.getString("CompetionBook.MT", CompetitionApplication.getCurrentLocale()));
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
                 LoggerUtils.logException(logger, e);
@@ -178,6 +183,7 @@ public class CompetitionBook extends ResultSheet {
             try {
                 workSheet = workBookHandle.getWorkSheet("Femmes équipes");
                 new TeamSheet(hbnSessionManager).writeTeamSheet(teamRankingLifters, workSheet, Ranking.TOTAL, clubs, "F");
+                workSheet.setSheetName(Messages.getString("CompetionBook.FT", CompetitionApplication.getCurrentLocale()));
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
                 LoggerUtils.logException(logger, e);
@@ -186,6 +192,7 @@ public class CompetitionBook extends ResultSheet {
             // Team Total ranking
             try {
                 workSheet = workBookHandle.getWorkSheet("Mixte équipes");
+                workSheet.setSheetName(Messages.getString("CompetionBook.AT", CompetitionApplication.getCurrentLocale()));
                 new TeamSheet(hbnSessionManager).writeTeamSheet(teamRankingLifters, workSheet, Ranking.TOTAL, clubs, null);
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
@@ -195,6 +202,7 @@ public class CompetitionBook extends ResultSheet {
             // Team Custom ranking
             try {
                 workSheet = workBookHandle.getWorkSheet("Spécial équipes");
+                workSheet.setSheetName(Messages.getString("CompetionBook.XT", CompetitionApplication.getCurrentLocale()));
                 new TeamSheet(hbnSessionManager).writeTeamSheet(teamRankingLifters, workSheet, Ranking.CUSTOM, clubs, null);
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
@@ -204,6 +212,7 @@ public class CompetitionBook extends ResultSheet {
             // Team Combined ranking; write each team three times (sn, cj, tot).
             try {
             	workSheet = workBookHandle.getWorkSheet("Somme équipes");
+            	workSheet.setSheetName(Messages.getString("CompetionBook.CT", CompetitionApplication.getCurrentLocale()));
                 new TeamSheet(hbnSessionManager).writeTeamSheetCombined(teamRankingLifters, workSheet, clubs, null);
             } catch (WorkSheetNotFoundException wnf) {
             } catch (Exception e) {
