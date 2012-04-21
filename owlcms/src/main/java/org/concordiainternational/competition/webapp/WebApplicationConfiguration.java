@@ -13,13 +13,11 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Random;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -51,7 +49,7 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
  *         database and other global features (serial communication ports)
  */
 
-public class WebApplicationConfiguration implements HbnSessionManager, ServletContextListener, EntityManagerFactory {
+public class WebApplicationConfiguration implements HbnSessionManager, ServletContextListener {
 	private static Logger logger = LoggerFactory.getLogger(WebApplicationConfiguration.class);
 
 	private static SessionFactory sessionFactory = null;
@@ -413,7 +411,12 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 		Connection connection = null;
 		try {
 			connection = cnf.buildSettings().getConnectionProvider().getConnection();
-			connection.createStatement().execute("SHUTDOWN"); //$NON-NLS-1$
+			Statement stmt = connection.createStatement();
+			try {
+				stmt.execute("SHUTDOWN"); //$NON-NLS-1$
+			} finally {
+				stmt.close();
+			}
 		} catch (HibernateException e) {
 			LoggerUtils.logException(logger, e);
 		} catch (SQLException e) {
@@ -465,31 +468,6 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 		} catch (Exception e) {
 			logger.warn("Could not open port {} {}",comPortName,e.getMessage());
 		}
-	}
-
-
-	@Override
-	public EntityManager createEntityManager() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public EntityManager createEntityManager(@SuppressWarnings("rawtypes") Map map) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void close() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean isOpen() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 }

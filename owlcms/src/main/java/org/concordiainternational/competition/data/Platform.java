@@ -17,8 +17,10 @@ import javax.persistence.Id;
 import javax.sound.sampled.Mixer;
 
 import org.concordiainternational.competition.decision.Speakers;
+import org.concordiainternational.competition.nec.NECDisplay;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.LiftList;
+import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.criterion.Order;
@@ -136,6 +138,7 @@ public class Platform implements Serializable {
         if (list.size() == 1) {
             final Platform platform = (Platform) list.get(0);
             platform.setMixerName(platform.mixerName);
+            platform.setHasDisplay(platform.hasDisplay);
 			return platform;
         } else {
             return null;
@@ -153,6 +156,13 @@ public class Platform implements Serializable {
 
     public void setHasDisplay(Boolean hasDisplay) {
         this.hasDisplay = hasDisplay;
+        if (hasDisplay) {
+        	NECDisplay display = WebApplicationConfiguration.necDisplay;
+        	if (display != null) {
+        		// ensure that last platform with checkbox has display.
+        		display.setPlatform(this);
+        	}
+        }
     }
 
     public static int getSize() {
@@ -366,6 +376,15 @@ public class Platform implements Serializable {
 				logger.debug("Platform: {}: changing mixer to {}",this.name,mixerName);
 				break;
 			}
+		}
+	}
+
+	public NECDisplay getNECDisplay() {
+		if (hasDisplay) {
+			NECDisplay necDisplay = WebApplicationConfiguration.necDisplay;
+			return necDisplay;
+		} else {
+			return null;
 		}
 	}
     

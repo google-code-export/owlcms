@@ -44,7 +44,6 @@ import org.concordiainternational.competition.utils.EventHelper;
 import org.concordiainternational.competition.utils.IdentitySet;
 import org.concordiainternational.competition.utils.LoggerUtils;
 import org.concordiainternational.competition.utils.NotificationManager;
-import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.hibernate.Session;
 import org.hibernate.StaleObjectStateException;
 import org.slf4j.MDC;
@@ -502,7 +501,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         if (lifter.getAttemptsDone() >= 6) {
             displayNothing();
         } else {
-            if (getNECDisplay() != null) getNECDisplay().writeLifterInfo(lifter, false);
+            if (getNECDisplay() != null) getNECDisplay().writeLifterInfo(lifter, false, getPlatform());
         }
     }
 
@@ -511,7 +510,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         if (lifter.getAttemptsDone() >= 6) {
             displayNothing();
         } else {
-            if (getNECDisplay() != null) getNECDisplay().writeLifterInfo(lifter, true);
+            if (getNECDisplay() != null) getNECDisplay().writeLifterInfo(lifter, true, getPlatform());
         }
     }
 
@@ -610,9 +609,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     }
 
     public NECDisplay getNECDisplay() {
-        Platform platform1 = app.getPlatform();
-        if (platform1 != null && platform1.getHasDisplay()) {
-            return WebApplicationConfiguration.necDisplay;
+        if (getPlatform() != null) {
+            return getPlatform().getNECDisplay();
         } else {
             return null;
         }
