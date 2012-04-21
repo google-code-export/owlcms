@@ -2,30 +2,37 @@ Steps to create a release.
 
 1) Prepare the distribution.
 
-- Make sure that owlcms/pom.xml wiki/ReleaseNotes.wick and distribution/pom.xml all
-  have correct version numbers.
+a. Make sure that 
+		owlcms/pom.xml
+		wiki/ReleaseNotes.wiki
+		distribution/pom.xml 
+		
+   all have correct version numbers.
   
-a. cd to owlcmsParent
+b. cd to owlcmsParent
 		mvn clean
 		(if under Eclipse, right-click on owlcmsParent project and select "run as/maven clean")
 		
-b. If the widgetset needs building (first build, or Vaadin version has changed.)
+c. If the widgetset needs building (first build, or Vaadin version has changed.)
 
    cd to owlcms
 		mvn clean compile vaadin:update-widgetset gwt:compile -P compile-widgetset   
 		(if under Eclipse, run  widgetset.launch  using right-click on the .launch file)
 		
-c. cd to owlcmsParent
-		mvn install
-		(if under Eclipse,
-		- menu Project/Clean/Clean all projects...
-		- right-click on owlcmsParent project and select "run as/maven install")
+d. cd to owlcmsParent
 		
-d. cd distribution 
+		if under Eclipse,
+		- menu Project/Clean/Clean all projects + rebuild automatically
+		- right-click on owlcmsParent project and select "run as/maven install"
+		
+		else run
+		mvn install
+		
+e. cd distribution 
 		mvn clean assembly:single 
     	(if under Eclipse, run  "prepare uploads.launch" using right-click on the .launch file)
     	
-- commit, push.
+f. commit, push.
 
 
 
