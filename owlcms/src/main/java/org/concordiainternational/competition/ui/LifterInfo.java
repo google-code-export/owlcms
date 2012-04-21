@@ -289,7 +289,7 @@ public class LifterInfo extends VerticalLayout implements
                 } else {
                     automaticStartTime.setVisible(false);
                     timerControls.hideTimerControls();
-                    groupData.startTimeAutomatically(false);
+                    groupData.setStartTimeAutomatically(false);
                 }
             }
 
@@ -301,9 +301,9 @@ public class LifterInfo extends VerticalLayout implements
             public void valueChange(ValueChangeEvent event) {
                 startTimeAutomatically = (Boolean) event.getProperty().getValue();
                 if (startTimeAutomatically) {
-                    groupData.startTimeAutomatically(true);
+                    groupData.setStartTimeAutomatically(true);
                 } else {
-                    groupData.startTimeAutomatically(false);
+                    groupData.setStartTimeAutomatically(false);
                 }
             }
         });
