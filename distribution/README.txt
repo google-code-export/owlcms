@@ -59,6 +59,6 @@ Because we use the Free edition, these steps are manual.
   - commit with "Release x.y.z" as comment
   - tag with "x.y.z"
   - push
-  - in project "distribution" run the maven goals:   antrun:run     (configuration "upload")
+  - in project "distribution" run the maven goals:   antrun:run     (under eclipse "upload to code.google.com.launch")
     (this will send the files to the code.google.com/p/owlcms site)
  
