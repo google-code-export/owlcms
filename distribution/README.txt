@@ -17,7 +17,9 @@ b. If the widgetset needs building (first build, or Vaadin version has changed.)
 		
 c. cd to owlcmsParent
 		mvn install
-		(if under Eclipse, right-click on owlcmsParent project and select "run as/maven install")
+		(if under Eclipse,
+		- menu Project/Clean/Clean all projects...
+		- right-click on owlcmsParent project and select "run as/maven install")
 		
 d. cd distribution 
 		mvn clean assembly:single 
