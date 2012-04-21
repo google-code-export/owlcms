@@ -459,7 +459,9 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             logger.info("call of lifter {} : {}ms FORCED BY TIMEKEEPER", lifter, timeRemaining); //$NON-NLS-1$
         } else {
             final int remaining = getTimeAllowed(); // timeAllowed(lifter);
-            if (!getTimeKeepingInUse()) getTimer().setTimeRemaining(remaining);
+            if (!getTimeKeepingInUse()) {
+            	getTimer().setTimeRemaining(remaining);
+            }
             logger.info("call of lifter {} : {}ms ", lifter, remaining); //$NON-NLS-1$
             setForcedByTimeKeeper(false);
         }
@@ -574,7 +576,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         return forcedByTimekeeper;
     }
 
-    public void startTimeAutomatically(boolean b) {
+    public void setStartTimeAutomatically(boolean b) {
         // if we start time automatically, announcing a lifter is the same as starting
         // the clock
         startTimeAutomatically = b;

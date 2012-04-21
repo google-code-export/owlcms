@@ -448,9 +448,7 @@ public class TimerControls extends GridLayout {
 			public void buttonClick(ClickEvent event) {
 				timingLogger.debug("announce"); //$NON-NLS-1$
 				checkDecisionHasBeenDisplayed(groupData, locale);
-				groupData.callLifter(lifter); // will call start which will
-				// cause the timer buttons to do
-				// their thing.
+				groupData.callLifter(lifter); // will call start which will cause the timer buttons to do their thing.
 				enableStopStart(groupData.getTimer().isRunning());
 				announce.setEnabled(false);
 				changeWeight.setEnabled(true);
