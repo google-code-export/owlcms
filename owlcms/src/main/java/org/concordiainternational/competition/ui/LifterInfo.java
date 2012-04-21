@@ -853,7 +853,10 @@ public class LifterInfo extends VerticalLayout implements
 			if (timer != null) timer.setMasterBuzzer(this);
         }
 		// timer countdown events; bottom information does not show timer.
-        if (timer != null && ! isBottom()) timer.addListener(this);
+		// if already master buzzer, do not register twice.
+        if (timer != null && ! isBottom() && !(timer.getMasterBuzzer() == this)) {
+        	timer.addListener(this);
+        } 
 
 	}
 
