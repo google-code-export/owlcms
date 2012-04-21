@@ -29,7 +29,7 @@
 			<Parameter name="dbPath" value="e:/dev/db/competition" override="false"/>
 		This enables the server to keep the values when deploying versions of the
 		war. Note: We recommend *against* using conf/Catalina/localhost/owlcms.xml for this
-		purpose unless you truly know what you are doing.
+		purpose due to the unpredictable nature of Tomcat context deployments.
 	  -->
 	<context-param>
 		<description>
@@ -39,14 +39,6 @@
 		</description>
 		<param-name>dbPath</param-name>
 		<param-value>db/competition</param-value>
-	</context-param>
-	<context-param>
-		<description>
-			Communication port used to drive an external LED display.  Leave empty
-			if no such port is used.
-		</description>	
-		<param-name>comPort</param-name>
-		<param-value></param-value>
 	</context-param>
 
 	<listener>
