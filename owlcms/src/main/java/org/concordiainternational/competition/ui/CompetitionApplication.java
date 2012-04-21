@@ -639,6 +639,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
                 if (application == CompetitionApplication.this) {
                     closeHibernateSession();
                 }
+                current.remove();
             }
 
             @Override

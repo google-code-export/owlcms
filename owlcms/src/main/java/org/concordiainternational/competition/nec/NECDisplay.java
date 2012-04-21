@@ -21,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 
 import org.concordiainternational.competition.data.Lifter;
+import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.utils.LoggerUtils;
@@ -30,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Drive an old-style 3x20 LED Scoreboard Model unknown, reverse-engineered from
- * legacy control application.
+ * legacy application.
  * 
  * @author jflamy
  * 
@@ -45,6 +46,7 @@ public class NECDisplay implements Serializable {
 
 	private boolean opened = false;
     private Lifter currentLifter;
+    private Platform platform; // make sure only one platform at a time.
 
 
     public NECDisplay() throws NoSuchPortException, PortInUseException, IOException, UnsupportedCommOperationException {
@@ -60,11 +62,16 @@ public class NECDisplay implements Serializable {
         }
     }
 
+    
     /**
      * @param curLifter
      * @throws IOException
      */
-    public void writeLifterInfo(final Lifter curLifter, boolean weightOnly) {
+    public void writeLifterInfo(final Lifter curLifter, boolean weightOnly, Platform curPlatform) {
+    	if (!curPlatform.equals(platform)) {
+    		logger.error("writing on wrong platform ({}): {}", curPlatform, curLifter);
+    		return;
+    	}
         if (curLifter == null) return;
         if (!weightOnly) this.setCurrentLifter(curLifter);
 
@@ -213,7 +220,7 @@ public class NECDisplay implements Serializable {
         try {
             portId = CommPortIdentifier.getPortIdentifier(comPortName1);
         } catch (NoSuchPortException e) {
-            logger.trace("running on COM1"); //$NON-NLS-1$
+            logger.warn("could not open {}, running on COM1",comPortName1); //$NON-NLS-1$
             portId = CommPortIdentifier.getPortIdentifier("COM1"); //$NON-NLS-1$
         }
         serialPort = (SerialPort) portId.open(NECDisplay.class.getName(), 200); // 200ms
@@ -392,6 +399,15 @@ public class NECDisplay implements Serializable {
 	public void setComPortName(String comPortName) throws NoSuchPortException, PortInUseException, IOException, UnsupportedCommOperationException {
 		this.comPortName = comPortName;
 		init(comPortName);
+	}
+
+	public Platform getPlatform() {
+		return platform;
+	}
+
+	public void setPlatform(Platform owner) {
+		logger.warn("setting NEC platform to {}",owner);
+		this.platform = owner;
 	}
 
 }
