@@ -10,6 +10,7 @@ package org.concordiainternational.competition.ui;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.concordiainternational.competition.data.CompetitionSession;
@@ -365,7 +366,12 @@ public class CompetitionApplicationComponents {
         @Override
 		public ResultFrame get(boolean initFromFragment, String viewName) {
             try {
-                resultBoard = (new ResultFrame(initFromFragment, viewName,"jsp/resultBoard.jsp?platformName=")); //$NON-NLS-1$
+            	Locale locale = CompetitionApplication.getCurrentLocale();
+            	String localeSuffix = "";
+            	if ("en".equals(locale.getLanguage())) {
+            		localeSuffix = "-en";
+            	}
+                resultBoard = (new ResultFrame(initFromFragment, viewName,"jsp/resultBoard"+localeSuffix+".jsp?platformName=")); //$NON-NLS-1$
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
@@ -382,7 +388,12 @@ public class CompetitionApplicationComponents {
         @Override
 		public ResultFrame get(boolean initFromFragment, String viewName) {
             try {
-                resultBoard = (new ResultFrame(initFromFragment, viewName,"jsp/simpleResultBoard.jsp?platformName=")); //$NON-NLS-1$
+            	Locale locale = CompetitionApplication.getCurrentLocale();
+            	String localeSuffix = "";
+            	if ("en".equals(locale.getLanguage())) {
+            		localeSuffix = "-en";
+            	}
+                resultBoard = (new ResultFrame(initFromFragment, viewName,"jsp/simpleResultBoard"+localeSuffix+".jsp?platformName=")); //$NON-NLS-1$
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
@@ -399,7 +410,12 @@ public class CompetitionApplicationComponents {
         @Override
 		public ResultFrame get(boolean initFromFragment, String viewName) {
             try {
-                liftOrderBoard = (new ResultFrame(initFromFragment, viewName,"jsp/warmupRoom.jsp?platformName=")); //$NON-NLS-1$
+            	Locale locale = CompetitionApplication.getCurrentLocale();
+            	String localeSuffix = "";
+            	if ("en".equals(locale.getLanguage())) {
+            		localeSuffix = "-en";
+            	}
+                liftOrderBoard = (new ResultFrame(initFromFragment, viewName,"jsp/warmupRoom"+localeSuffix+".jsp?platformName=")); //$NON-NLS-1$
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
@@ -416,7 +432,12 @@ public class CompetitionApplicationComponents {
         @Override
 		public ResultFrame get(boolean initFromFragment, String viewName) {
             try {
-                summaryLifterView = (new ResultFrame(initFromFragment, viewName, "jsp/liftingOrder.jsp?platformName=")); //$NON-NLS-1$
+            	Locale locale = CompetitionApplication.getCurrentLocale();
+            	String localeSuffix = "";
+            	if ("en".equals(locale.getLanguage())) {
+            		localeSuffix = "-en";
+            	}
+                summaryLifterView = (new ResultFrame(initFromFragment, viewName, "jsp/liftingOrder"+localeSuffix+".jsp?platformName=")); //$NON-NLS-1$
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
