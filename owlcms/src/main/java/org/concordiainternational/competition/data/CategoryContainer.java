@@ -10,10 +10,11 @@ package org.concordiainternational.competition.data;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
+import com.vaadin.data.Container;
 import com.vaadin.data.hbnutil.HbnContainer;
 
 @SuppressWarnings("serial")
-public class CategoryContainer extends HbnContainer<Category> {
+public class CategoryContainer extends CriteriaContainer<Category> {
 
 	private boolean activeOnly = false;
 
@@ -22,7 +23,7 @@ public class CategoryContainer extends HbnContainer<Category> {
      * 
      * @param application
      */
-    public CategoryContainer(HbnSessionManager sessMgr) {
+    public CategoryContainer(EntityManager sessMgr) {
         super(Category.class, sessMgr);
     }
     

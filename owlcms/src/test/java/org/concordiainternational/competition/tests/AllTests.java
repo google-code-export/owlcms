@@ -16,6 +16,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.nec.NECDisplay;
 import org.concordiainternational.competition.spreadsheet.InputSheetHelper;
@@ -39,9 +41,9 @@ public class AllTests implements HbnSessionManager {
      * @return
      */
     @Override
-    public Session getHbnSession() {
+    public EntityManager getHbnSession() {
         final boolean testMode = true;
-        return WebApplicationConfiguration.getSessionFactory(testMode, "tests").getCurrentSession(); //$NON-NLS-1$
+        return WebApplicationConfiguration.getSessionFactory(testMode, "tests").createEntityManager(); //$NON-NLS-1$
     }
 
     // private String iterateContainer(Container.Ordered container) {
