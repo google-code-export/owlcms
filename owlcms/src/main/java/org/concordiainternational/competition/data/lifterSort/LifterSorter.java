@@ -400,8 +400,8 @@ public class LifterSorter implements Serializable {
                     setRank(curLifter, 0, rankingType);
                     rank++;
                 }
-                // final float points = computePoints(curLifter,rankingType);
-                // setPoints(curLifter,points,rankingType);
+                final float points = computePoints(curLifter,rankingType);
+                setPoints(curLifter,points,rankingType);
 
             }
             prevCategory = curCategory;
