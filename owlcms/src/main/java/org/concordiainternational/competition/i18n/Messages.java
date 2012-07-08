@@ -30,6 +30,16 @@ public class Messages {
         }
     }
     
+    public static String getStringNullIfMissing(String key, Locale locale) {
+        try {
+            // ResourceBundle caches the bundles, so this is not as inefficient
+            // as it seems.
+            return ResourceBundle.getBundle(BUNDLE_NAME, locale).getString(key);
+        } catch (MissingResourceException e) {
+            return null;
+        }
+    }
+    
     public static String getStringWithException(String key, Locale locale) throws MissingResourceException {
     	return ResourceBundle.getBundle(BUNDLE_NAME, locale).getString(key);
     }
