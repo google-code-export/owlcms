@@ -62,7 +62,14 @@ public class TeamRankingComparator extends AbstractLifterComparator implements C
             final int compareTo = totalPoints1.compareTo(totalPoints2);
             logger.trace(lifter1 + " " + totalPoints1 + " [" + compareTo + "]" + lifter2 + " " + totalPoints2);
             return compareTo;
+        case COMBINED:
+            final Float combinedPoints1 = lifter1.getCombinedPoints();
+            final Float combinedPoints2 = lifter2.getCombinedPoints();
+            final int compareCombined = combinedPoints1.compareTo(combinedPoints2);
+            logger.trace(lifter1 + " " + combinedPoints1 + " [" + compareCombined + "]" + lifter2 + " " + combinedPoints2);
+            return compareCombined;
         }
+        
         return 0;
     }
 
