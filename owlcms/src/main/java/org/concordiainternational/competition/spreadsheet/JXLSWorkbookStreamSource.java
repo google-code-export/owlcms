@@ -58,9 +58,8 @@ public abstract class JXLSWorkbookStreamSource implements StreamResource.StreamS
     }
 
     protected void init() {
-        getSortedLifters();
         setReportingBeans(new HashMap<String,Object>());
-        getReportingBeans().put("lifters",lifters);
+        getSortedLifters();
         getReportingBeans().put("masters",Competition.isMasters());
 	}
     
@@ -82,9 +81,12 @@ public abstract class JXLSWorkbookStreamSource implements StreamResource.StreamS
                     try {
                     	XLSTransformer transformer = new XLSTransformer();
                     	configureTransformer(transformer);
-                        Workbook workbook = transformer.transformXLS(getTemplate(),getReportingBeans());
+                        HashMap<String, Object> reportingBeans2 = getReportingBeans();
+						Workbook workbook = transformer.transformXLS(getTemplate(),reportingBeans2);
                         postProcess(workbook);
                         workbook.write(out);
+                    } catch (IOException e) {
+                    	// ignore
                     } catch (Throwable e) {
                     	LoggerUtils.logException(logger, e);
                         throw new RuntimeException(e);
@@ -123,7 +125,13 @@ public abstract class JXLSWorkbookStreamSource implements StreamResource.StreamS
 		row.getCell(cellnum+1).setCellStyle(blank);
 	}
 
-	public abstract InputStream getTemplate() throws IOException ;
+	public InputStream getTemplate() throws IOException {
+		String templateName = "/competitionBook/CompetitionBook_Total_"+CompetitionApplication.getCurrentSupportedLocale().getLanguage()+".xls";
+		final InputStream resourceAsStream = app.getResourceAsStream(templateName);
+		if (resourceAsStream == null) {
+			throw new IOException("Resource not found: " + templateName);} //$NON-NLS-1$
+		return resourceAsStream;
+	}
 
     public int size() {
         return lifters.size();
