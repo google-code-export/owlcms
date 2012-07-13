@@ -382,7 +382,7 @@ public class LifterInfo extends VerticalLayout implements
 
         // we set the value to the time allowed for the current lifter as
         // computed by groupData
-        int timeAllowed = groupData1.getTimeAllowed();
+        int timeAllowed = groupData1.getDisplayTime();  // was getTimeAllowed();
         final CountdownTimer timer = groupData1.getTimer();
         final boolean running = timer.isRunning();
         logger.debug("timeAllowed={} timer.isRunning()={}", timeAllowed, running); //$NON-NLS-1$

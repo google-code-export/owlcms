@@ -29,6 +29,7 @@ import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.hbnutil.HbnContainer;
 import com.vaadin.data.util.FilesystemContainer;
+import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.service.ApplicationContext;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
@@ -36,8 +37,6 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Window.CloseEvent;
-import com.vaadin.ui.Window.CloseListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.DateField;
@@ -49,6 +48,8 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.Select;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 
 public class CompetitionEditor extends VerticalLayout implements ApplicationView {
 
@@ -123,12 +124,13 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         addTextField(formLayout, locale, competitionItem, "federationAddress", ""); //$NON-NLS-1$ //$NON-NLS-2$
         addTextField(formLayout, locale, competitionItem, "federationWebSite", ""); //$NON-NLS-1$ //$NON-NLS-2$
         addTextField(formLayout, locale, competitionItem, "federationEMail", ""); //$NON-NLS-1$ //$NON-NLS-2$
-        displayFN = addTextField(formLayout, locale, competitionItem, "resultTemplateFileName", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        displayFN = addFileDisplay(formLayout, locale, competitionItem, "resultTemplateFileName", ""); //$NON-NLS-1$ //$NON-NLS-2$
         editFN = addFileSelector(formLayout, locale, competitionItem, "resultTemplateFileName", ""); //$NON-NLS-1$ //$NON-NLS-2$)
 
         editable = false;
         setReadOnly(formLayout, true);
         editFN.setVisible(false);
+        editFN.setImmediate(true);
         displayFN.setWidth("120ex");
 
         return formLayout;
@@ -151,11 +153,9 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         WebApplicationContext wContext = (WebApplicationContext) context;
 
         final Property itemProperty = competitionItem.getItemProperty(fieldName);;
-        final HbnContainer<Competition>.EntityItem<Competition> ci = competitionItem;
-        final Competition competition = (Competition) ci.getPojo();
-        
         FilesystemContainer fsContainer;
         String relativeLocation = "/WEB-INF/classes/templates/teamResults";
+        relativeLocation = "/WEB-INF/classes/templates/competitionBook";
 		String realPath = wContext.getHttpSession().getServletContext().getRealPath(relativeLocation);
 
 		File file = new File(realPath);
@@ -172,10 +172,8 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
 
             @Override
             public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-                itemProperty.setValue(event.getProperty());
-                logger.debug("property: {}, object field: {}.",
-                		itemProperty.getValue(),
-                		competition.getResultTemplateFileName());
+                Property property = event.getProperty();
+                itemProperty.setValue(property);
             }
         });
         fileSelector.setImmediate(true);
@@ -230,6 +228,30 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         field.setWidth("60ex"); //$NON-NLS-1$
         formLayout.addComponent(field);
         if (itemProperty.getValue() == null) itemProperty.setValue(initialValue); //$NON-NLS-1$
+        return field;
+    }
+    
+    /**
+     * @param formLayout
+     * @param locale
+     * @param competitionItem
+     * @param fieldName
+     * @return
+     * @throws ReadOnlyException
+     * @throws ConversionException
+     */
+    private TextField addFileDisplay(final Layout formLayout, final Locale locale,
+            final HbnContainer<Competition>.EntityItem<Competition> competitionItem, final String fieldName,
+            final String initialValue) throws ReadOnlyException, ConversionException {
+        final Property itemProperty = competitionItem.getItemProperty(fieldName);
+        Object stringValue = itemProperty.getValue();
+        if (stringValue == null) stringValue = initialValue; //$NON-NLS-1$
+        File value = (File) new File((String) stringValue);
+
+        TextField field = new TextField(Messages.getString("Competition." + fieldName, locale), new ObjectProperty<String>(value.getName(),String.class)); //$NON-NLS-1$
+        field.setWidth("60ex"); //$NON-NLS-1$
+        formLayout.addComponent(field);
+
         return field;
     }
 

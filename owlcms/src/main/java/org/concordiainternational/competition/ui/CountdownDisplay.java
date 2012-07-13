@@ -190,10 +190,10 @@ public class CountdownDisplay extends VerticalLayout implements
      * @param groupData
      */
     private void updateTime(final SessionData groupData) {
-        // we set the value to the time allowed for the current lifter as
+        // we set the value to the time remaining for the current lifter as
         // computed by groupData
-        int timeAllowed = groupData.getTimeAllowed();
-        pushTime(timeAllowed);
+        int timeRemaining = groupData.getDisplayTime();
+        pushTime(timeRemaining);
     }
 
     @Override
@@ -202,8 +202,8 @@ public class CountdownDisplay extends VerticalLayout implements
     }
 
     @Override
-    public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
-        pushTime(startTime);
+    public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+        pushTime(timeRemaining);
     }
 
     @Override

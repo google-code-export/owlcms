@@ -457,11 +457,14 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             setForcedByTimekeeper(false, timeRemaining);
             logger.info("call of lifter {} : {}ms FORCED BY TIMEKEEPER", lifter, timeRemaining); //$NON-NLS-1$
         } else {
-            final int remaining = getTimeAllowed(); // timeAllowed(lifter);
             if (!getTimeKeepingInUse()) {
-            	getTimer().setTimeRemaining(remaining);
+            	int allowed = getTimeAllowed();
+                getTimer().setTimeRemaining(allowed);
+                logger.info("call of lifter {} : {}ms allowed", lifter, allowed); //$NON-NLS-1$
+            } else {
+                logger.info("call of lifter {} : {}ms remaining", lifter, timeRemaining); //$NON-NLS-1$
             }
-            logger.info("call of lifter {} : {}ms ", lifter, remaining); //$NON-NLS-1$
+
             setForcedByTimeKeeper(false);
         }
 
@@ -996,6 +999,15 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     public int getTimeAllowed() {
         return timeAllowed;
     }
+    
+    public int getTimeRemaining() {
+        if (timer != null) {
+            return timer.getTimeRemaining();
+        } else {
+            return timeAllowed;
+        }
+
+    }
 
     public boolean getAllowAll() {
         return allowAll;
@@ -1223,6 +1235,14 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
 		}
 	}
+
+    public int getDisplayTime() {
+        if (currentLifter != timer.getOwner()) {
+            return getTimeAllowed();
+        } else {
+            return getTimeRemaining();
+        }
+    }
 
 
 }
