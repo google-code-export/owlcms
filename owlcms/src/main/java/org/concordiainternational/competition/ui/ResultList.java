@@ -17,7 +17,7 @@ import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.lifterSort.WinningOrderComparator;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.publicAddress.PublicAddressForm;
-import org.concordiainternational.competition.spreadsheet.CompetitionBook;
+import org.concordiainternational.competition.spreadsheet.JXLSCompetitionBook;
 import org.concordiainternational.competition.spreadsheet.JXLSResultSheet;
 import org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource;
 import org.concordiainternational.competition.spreadsheet.MastersGroupResults;
@@ -240,16 +240,27 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
                 @Override
 				public void buttonClick(ClickEvent event) {
                     teamResultSpreadsheetButton.setComponentError(null);
-                    final OutputSheetStreamSource<CompetitionBook> streamSource = new OutputSheetStreamSource<CompetitionBook>(
-                            CompetitionBook.class, (CompetitionApplication) app, true);
-                    if (streamSource.size() == 0) {
-                        setComponentError(new SystemError(Messages.getString("ResultList.NoResults", locale))); //$NON-NLS-1$
-                        throw new RuntimeException(Messages.getString("ResultList.NoResults", locale)); //$NON-NLS-1$
-                    }
+                    
+                	final JXLSWorkbookStreamSource streamSource = new JXLSCompetitionBook();
+                	if (streamSource.size() == 0) {
+                		setComponentError(new SystemError(Messages.getString("ResultList.NoResults", locale))); //$NON-NLS-1$
+                		throw new RuntimeException(Messages.getString("ResultList.NoResults", locale)); //$NON-NLS-1$
+                	}
 
-                    String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss") //$NON-NLS-1$
-                            .format(new Date());
-                    ((UserActions) app).openSpreadsheet(streamSource, "teamResults_" + now); //$NON-NLS-1$
+                	String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss") //$NON-NLS-1$
+                	.format(new Date());
+                	((UserActions) app).openSpreadsheet(streamSource, "results_" + now); //$NON-NLS-1$
+                  
+//                    final OutputSheetStreamSource<CompetitionBook> streamSource = new OutputSheetStreamSource<CompetitionBook>(
+//                            CompetitionBook.class, (CompetitionApplication) app, true);
+//                    if (streamSource.size() == 0) {
+//                        setComponentError(new SystemError(Messages.getString("ResultList.NoResults", locale))); //$NON-NLS-1$
+//                        throw new RuntimeException(Messages.getString("ResultList.NoResults", locale)); //$NON-NLS-1$
+//                    }
+//
+//                    String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss") //$NON-NLS-1$
+//                            .format(new Date());
+//                    ((UserActions) app).openSpreadsheet(streamSource, "teamResults_" + now); //$NON-NLS-1$
                 }
             };
             teamResultSpreadsheetButton.addListener(teamResultClickListener);

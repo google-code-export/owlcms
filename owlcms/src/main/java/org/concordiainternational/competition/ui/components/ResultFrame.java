@@ -381,11 +381,11 @@ public class ResultFrame extends VerticalLayout implements
      * @param groupData
      */
     private void updateTime(final SessionData groupData) {
-        // we set the value to the time allowed for the current lifter as
+        // we set the value to the time remaining for the current lifter as
         // computed by groupData
-        int timeAllowed = groupData.getTimeAllowed();
+        int timeRemaining = groupData.getDisplayTime();
         final CountdownTimer timer = groupData.getTimer();
-        timeDisplay.setValue(TimeFormatter.formatAsSeconds(timeAllowed));
+        timeDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
         timer.addListener(this);
     }
 
@@ -395,8 +395,8 @@ public class ResultFrame extends VerticalLayout implements
     }
 
     @Override
-    public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
-        timeDisplay.setValue(TimeFormatter.formatAsSeconds(startTime));
+    public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+        timeDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
     }
 
     @Override
