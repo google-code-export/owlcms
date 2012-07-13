@@ -42,7 +42,7 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
 
     private static final long serialVersionUID = 1L;
     final private static int TEAMSHEET_FIRST_ROW = 5;
-    
+
     @SuppressWarnings("unused")
     private Logger logger = LoggerFactory.getLogger(JXLSCompetitionBook.class);
 
@@ -60,12 +60,11 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
     public InputStream getTemplate() throws IOException {
         String resultTemplateFileName = SheetUtils.getCompetition().getResultTemplateFileName();
         File templateFile = new File(resultTemplateFileName);
+        if (!templateFile.exists()) {
+            // can't happen unless system is misconfigured.
+            throw new IOException("resource not found: " + resultTemplateFileName); //$NON-NLS-1$
+        }
         FileInputStream resourceAsStream = new FileInputStream(templateFile);
-        
-        //String templateName = "/competitionBook/CompetitionBook_Total_"+CompetitionApplication.getCurrentSupportedLocale().getLanguage()+".xls";
-//        final InputStream resourceAsStream = app.getResourceAsStream(templateName);
-//        if (resourceAsStream == null) {
-//            throw new IOException("resource not found: " + templateName);} //$NON-NLS-1$
         return resourceAsStream;
     }
 
