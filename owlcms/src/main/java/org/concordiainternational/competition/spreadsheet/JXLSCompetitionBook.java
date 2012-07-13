@@ -7,6 +7,8 @@
  */
 package org.concordiainternational.competition.spreadsheet;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -39,9 +41,11 @@ import org.slf4j.LoggerFactory;
 public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
 
     private static final long serialVersionUID = 1L;
+    final private static int TEAMSHEET_FIRST_ROW = 5;
+    
     @SuppressWarnings("unused")
     private Logger logger = LoggerFactory.getLogger(JXLSCompetitionBook.class);
-    final private static int TEAMSHEET_FIRST_ROW = 5;
+
 
     public JXLSCompetitionBook(){
         // by default, we exclude athletes who did not weigh in.
@@ -54,10 +58,14 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
 
     @Override
     public InputStream getTemplate() throws IOException {
-        String templateName = "/competitionBook/CompetitionBook_Total_"+CompetitionApplication.getCurrentSupportedLocale().getLanguage()+".xls";
-        final InputStream resourceAsStream = app.getResourceAsStream(templateName);
-        if (resourceAsStream == null) {
-            throw new IOException("resource not found: " + templateName);} //$NON-NLS-1$
+        String resultTemplateFileName = SheetUtils.getCompetition().getResultTemplateFileName();
+        File templateFile = new File(resultTemplateFileName);
+        FileInputStream resourceAsStream = new FileInputStream(templateFile);
+        
+        //String templateName = "/competitionBook/CompetitionBook_Total_"+CompetitionApplication.getCurrentSupportedLocale().getLanguage()+".xls";
+//        final InputStream resourceAsStream = app.getResourceAsStream(templateName);
+//        if (resourceAsStream == null) {
+//            throw new IOException("resource not found: " + templateName);} //$NON-NLS-1$
         return resourceAsStream;
     }
 
