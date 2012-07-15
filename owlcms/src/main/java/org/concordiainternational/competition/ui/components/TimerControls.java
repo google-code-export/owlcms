@@ -11,7 +11,6 @@ import java.util.Locale;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.i18n.Messages;
-import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.ui.AnnouncerView;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.ui.CompetitionApplication;
@@ -164,6 +163,9 @@ public class TimerControls extends GridLayout {
 			this.addComponent(oneMinute, 2, 1, 2, 1);
 			this.addComponent(twoMinutes, 3, 1, 3, 1);
 			enableStopStart(groupData.getTimer().isRunning());
+
+            registerListeners(lifter,groupData);
+			setTimerShortcutsEnabled(true);
 		}
 	}
 
@@ -231,22 +233,7 @@ public class TimerControls extends GridLayout {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
-				final long currentTimeMillis = System.currentTimeMillis();
-				// ignore two clicks on the same button in quick succession
-				if (currentTimeMillis - lifterInfo.getLastFailedButtonClick() > MIN_CLICK_DELAY) {
-					logger.debug("Failed: délai acceptable: {}", currentTimeMillis
-							- lifterInfo.getLastFailedButtonClick());
-					lifterInfo.setLastFailedButtonClick(currentTimeMillis);
-					timingLogger.debug("failedLift"); //$NON-NLS-1$
-					// call group data first because this resets the timers
-					logger.info("failed lift for {} {}", lifter.getLastName(), lifter.getFirstName()); //$NON-NLS-1$
-					lifterInfo.setBlocked(true);
-					groupData.liftDone(lifter, false);
-					lifter.failedLift();
-				} else {
-					logger.debug("Failed: délai INacceptable: {}", currentTimeMillis
-							- lifterInfo.getLastFailedButtonClick());
-				}
+				failedLiftDoIt(lifter, groupData);
 			}
 		};
 		failedLift.addListener(failedLiftListener);
@@ -502,7 +489,7 @@ public class TimerControls extends GridLayout {
 		setTimerShortcutsEnabled(true);
 	}
 
-	private void setTimerShortcutsEnabled(boolean b) {
+	public void setTimerShortcutsEnabled(boolean b) {
 		this.timerShortcutsEnabled = b;
 	}
 
@@ -541,82 +528,79 @@ public class TimerControls extends GridLayout {
 			// call group data first because this resets the timers
 			logger.info("successful lift for {} {}", lifter.getLastName(), lifter.getFirstName()); //$NON-NLS-1$
 			lifterInfo.setBlocked(true);
-			groupData.liftDone(lifter, true);
-			lifter.successfulLift();
+			groupData.okLiftUpdateModel();
 		} else {
-			logger.debug("Ok: délai INacceptable: {}", currentTimeMillis - lifterInfo.getLastOkButtonClick());
+			logger.debug("Ok: délai Inacceptable: {}", currentTimeMillis - lifterInfo.getLastOkButtonClick());
 		}
 	}
 
-	private void startDoIt(final Lifter lifter, final SessionData groupData) {
-		logger.info("start clicked");
-		final CountdownTimer timer = groupData.getTimer();
-		groupData.manageTimerOwner(lifter, groupData, timer);
+    private void failedLiftDoIt(final Lifter lifter, final SessionData groupData) {
+        final long currentTimeMillis = System.currentTimeMillis();
+        // ignore two clicks on the same button in quick succession
+        if (currentTimeMillis - lifterInfo.getLastFailedButtonClick() > MIN_CLICK_DELAY) {
+            logger.debug("Failed: délai acceptable: {}", currentTimeMillis
+                    - lifterInfo.getLastFailedButtonClick());
+            lifterInfo.setLastFailedButtonClick(currentTimeMillis);
+            timingLogger.debug("failedLift"); //$NON-NLS-1$
+            // call group data first because this resets the timers
+            logger.info("failed lift for {} {}", lifter.getLastName(), lifter.getFirstName()); //$NON-NLS-1$
+            lifterInfo.setBlocked(true);
+            groupData.failedListUpdateModel();
+        } else {
+            logger.debug("Failed: délai Inacceptable: {}", currentTimeMillis
+                    - lifterInfo.getLastFailedButtonClick());
+        }
+    }
 
-		final boolean running = timer.isRunning();
-		timingLogger.debug("start timer.isRunning()={}", running); //$NON-NLS-1$
-		if (running) {
-			// do nothing
+	public void startDoIt(final Lifter lifter, final SessionData groupData) {
+		logger.info("start clicked");
+		groupData.setTimeKeepingInUse(true);
+		if (groupData.getTimer().isRunning()) {
+		    // do nothing
+		    timingLogger.debug("start timer.isRunning()={}", true); //$NON-NLS-1$
 		} else {
-			lifterInfo.setBlocked(false); // !!!!
-			timer.restart();
-			groupData.setLifterAsHavingStarted(lifter);
-			groupData.getRefereeDecisionController().setBlocked(false);
-			enableStopStart(true);
+		    lifterInfo.setBlocked(false); // !!!!
+	        enableStopStart(true);
+		    timingLogger.debug("start timer.isRunning()={}", false); //$NON-NLS-1$
+		    groupData.startUpdateModel();
+
 		}
 	}
 
 	private void stopDoIt(final Lifter lifter, final SessionData groupData) {
 		logger.info("stop clicked");
-		final CountdownTimer timer = groupData.getTimer();
-		groupData.manageTimerOwner(lifter, groupData, timer);
-
-		final boolean running = timer.isRunning();
-		timingLogger.debug("stop timer.isRunning()={}", running); //$NON-NLS-1$
-		if (running) {
+		groupData.setTimeKeepingInUse(true);
+		if (groupData.getTimer().isRunning()) {
+		    timingLogger.debug("stop timer.isRunning()={}", true); //$NON-NLS-1$
 			lifterInfo.setBlocked(true);
-			timer.pause(TimeStoppedNotificationReason.STOP_START_BUTTON); // pause() does not clear the associated
-			// lifter
+			groupData.stopUpdateModel();
 			enableStopStart(false);
 		} else {
+		    timingLogger.debug("stop timer.isRunning()={}", false); //$NON-NLS-1$
 			// do nothing.
 		}
 	}
 
 	private void oneMinuteDoIt(final Lifter lifter, final SessionData groupData) {
-		final CountdownTimer timer = groupData.getTimer();
-		final boolean running = timer.isRunning();
 		timingLogger.debug("oneMinute"); //$NON-NLS-1$
 
 		// call group data first because this resets the timers
 		logger.info("resetting to one minute for {}", lifter); //$NON-NLS-1$
-		if (running) {
-			timer.forceTimeRemaining(60000); // pause() does not clear
-			// the associated lifter
-		}
-		groupData.setForcedByTimekeeper(true, 60000);
+		groupData.oneMinuteUpdateModel();
 		enableStopStart(false);
 	}
 
-	private void twoMinutesDoIt(final Lifter lifter,
-			final SessionData groupData) {
-		final CountdownTimer timer = groupData.getTimer();
-		final boolean running = timer.isRunning();
+	private void twoMinutesDoIt(final Lifter lifter, final SessionData groupData) {
 		timingLogger.debug("twoMinutes"); //$NON-NLS-1$
 
 		// call group data first because this resets the timers
 		logger.info("resetting to two minutes for {}", lifter); //$NON-NLS-1$
-		if (running) {
-			timer.forceTimeRemaining(120000); // pause() does not clear
-			// the associated lifter
-		}
-
-		groupData.setForcedByTimekeeper(true, 120000);
+		groupData.twoMinuteUpdateModel();
 		enableStopStart(false);
 	}
 
 	@SuppressWarnings("serial")
-	abstract class ShortcutActionListener extends ShortcutAction implements Action.Listener {
+	private abstract class ShortcutActionListener extends ShortcutAction implements Action.Listener {
 
 		public ShortcutActionListener(String caption, int kc, int[] m) {
 			super(caption, kc, m);
@@ -687,6 +671,7 @@ public class TimerControls extends GridLayout {
 		Window mainWindow = CompetitionApplication.getCurrent().getMainWindow();
 		initActions(mainWindow, lifter, groupData);
 	}
+
 
 
 }
