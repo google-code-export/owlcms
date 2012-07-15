@@ -425,7 +425,7 @@ DecisionEventListener
         int timeRemaining = groupData.getDisplayTime();
         final CountdownTimer timer = groupData.getTimer();
         if (!paShown){
-            timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
+            showTimeRemaining(timeRemaining);
         }
         timer.addListener(this);
     }
@@ -438,8 +438,16 @@ DecisionEventListener
     @Override
     public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
         if (!paShown){
+            showTimeRemaining(timeRemaining);
+        }
+    }
+
+
+    private void showTimeRemaining(int timeRemaining) {
+        synchronized (app) {
             timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
         }
+        app.push();
     }
 
     @Override
@@ -469,24 +477,22 @@ DecisionEventListener
             previousTimeRemaining = timeRemaining;
         }
 
-        synchronized (app) {
-            if (!paShown){
-                timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
-            }
-        }
-        app.push();
+        showTimeRemaining(timeRemaining);
     }
 
     @Override
     public void pause(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+        showTimeRemaining(timeRemaining);
     }
 
     @Override
     public void start(int timeRemaining) {
+        showTimeRemaining(timeRemaining);
     }
 
     @Override
     public void stop(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+        showTimeRemaining(timeRemaining);
     }
 
     /* (non-Javadoc)
