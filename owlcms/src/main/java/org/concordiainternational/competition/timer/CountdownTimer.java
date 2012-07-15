@@ -39,7 +39,7 @@ public class CountdownTimer implements Serializable {
     private Lifter owner = null;
 
     final private static int DECREMENT = 100; // milliseconds
-    private int startTime;
+    private int timeRemaining;
     private Timer timer = null;
     private CountdownTask countdownTask;
 
@@ -73,30 +73,30 @@ public class CountdownTimer implements Serializable {
             countdownTask.cancel();
         }
         if (owner == null) return;
-        if (startTime <= 0) {
-            startTime = 0;
+        if (timeRemaining <= 0) {
+            setTimeRemaining(0);
             return;
         }
 
         timer = new Timer();
 
-        countdownTask = new CountdownTask(this, startTime, DECREMENT);
+        countdownTask = new CountdownTask(this, timeRemaining, DECREMENT);
         timer.scheduleAtFixedRate(countdownTask,
         		0, // start right away
         		DECREMENT); // 100ms precision is good enough
         
         final Set<CountdownTimerListener> listeners2 = getListeners();
-        logger.trace("start: {}  - {} listeners", startTime, listeners2.size()); //$NON-NLS-1$
+        logger.trace("start: {}  - {} listeners", timeRemaining, listeners2.size()); //$NON-NLS-1$
         if (countdownDisplay != null) {
-            countdownDisplay.start(startTime);
+            countdownDisplay.start(timeRemaining);
         }
         if (masterBuzzer != null) {
-            masterBuzzer.start(startTime);
+            masterBuzzer.start(timeRemaining);
         }
         for (CountdownTimerListener curListener : listeners2) {
         	// avoid duplicate notifications
         	if (curListener != masterBuzzer && curListener != countdownDisplay) {
-        		curListener.start(startTime);
+        		curListener.start(timeRemaining);
         	}
         }
     }
@@ -120,7 +120,7 @@ public class CountdownTimer implements Serializable {
 	public void pause(TimeStoppedNotificationReason reason) {
         logger.debug("enter pause {} {}", getTimeRemaining()); //$NON-NLS-1$
         if (countdownTask != null) {
-            startTime = (int) countdownTask.getBestTimeRemaining();
+            setTimeRemaining((int) countdownTask.getBestTimeRemaining());
         }
         if (timer != null) {
             timer.cancel();
@@ -130,12 +130,12 @@ public class CountdownTimer implements Serializable {
             countdownTask.cancel();
             countdownTask = null;
         }
-        logger.info("pause: {}", startTime); //$NON-NLS-1$
+        logger.info("pause: {}", timeRemaining); //$NON-NLS-1$
         if (countdownDisplay != null) {
-            countdownDisplay.pause(startTime, CompetitionApplication.getCurrent(), reason);
+            countdownDisplay.pause(timeRemaining, CompetitionApplication.getCurrent(), reason);
         }
         if (masterBuzzer != null) {
-            masterBuzzer.pause(startTime, CompetitionApplication.getCurrent(), reason);
+            masterBuzzer.pause(timeRemaining, CompetitionApplication.getCurrent(), reason);
         }
         
         final HashSet<CountdownTimerListener> listenerSet = (HashSet<CountdownTimerListener>) getListeners();
@@ -151,10 +151,10 @@ public class CountdownTimer implements Serializable {
         				// application is null, the listener is an orphan
         				listenerSet.remove(curListener);
         			} else {
-        				curListener.pause(startTime, CompetitionApplication.getCurrent(), reason);
+        				curListener.pause(timeRemaining, CompetitionApplication.getCurrent(), reason);
         			}
         		} else {
-        			curListener.pause(startTime, CompetitionApplication.getCurrent(), reason);
+        			curListener.pause(timeRemaining, CompetitionApplication.getCurrent(), reason);
         		}
         	}
         }
@@ -173,15 +173,15 @@ public class CountdownTimer implements Serializable {
         timer = null;
         if (countdownTask != null) {
             countdownTask.cancel();
-            startTime = (int) countdownTask.getBestTimeRemaining();
+            setTimeRemaining((int) countdownTask.getBestTimeRemaining());
         }
         setOwner(null);
-        logger.info("stop: {}", startTime); //$NON-NLS-1$
+        logger.info("stop: {}", timeRemaining); //$NON-NLS-1$
         if (countdownDisplay != null) {
-            countdownDisplay.stop(startTime, CompetitionApplication.getCurrent(), reason);
+            countdownDisplay.stop(timeRemaining, CompetitionApplication.getCurrent(), reason);
         }
         if (masterBuzzer != null) {
-            masterBuzzer.stop(startTime, CompetitionApplication.getCurrent(), reason);
+            masterBuzzer.stop(timeRemaining, CompetitionApplication.getCurrent(), reason);
         }
         for (CountdownTimerListener curListener : getListeners()) {
         	// avoid duplicate notifications
@@ -189,10 +189,10 @@ public class CountdownTimer implements Serializable {
         		if (curListener instanceof AbstractComponent) {
         			final Application application = ((AbstractComponent) curListener).getApplication();
 					if (application != null) {
-						curListener.stop(startTime, CompetitionApplication.getCurrent(), reason);
+						curListener.stop(timeRemaining, CompetitionApplication.getCurrent(), reason);
 					}
         		} else {
-        			curListener.stop(startTime, CompetitionApplication.getCurrent(), reason);
+        			curListener.stop(timeRemaining, CompetitionApplication.getCurrent(), reason);
         		}
         	}
         }
@@ -216,10 +216,10 @@ public class CountdownTimer implements Serializable {
         setTimeRemaining(remainingTime);
         logger.info("forceTimeRemaining: {}", getTimeRemaining()); //$NON-NLS-1$
         if (countdownDisplay != null) {
-            countdownDisplay.forceTimeRemaining(startTime, CompetitionApplication.getCurrent(), reason);
+            countdownDisplay.forceTimeRemaining(timeRemaining, CompetitionApplication.getCurrent(), reason);
         }
         if (masterBuzzer != null) {
-            masterBuzzer.forceTimeRemaining(startTime, CompetitionApplication.getCurrent(), reason);
+            masterBuzzer.forceTimeRemaining(timeRemaining, CompetitionApplication.getCurrent(), reason);
         }
         
         for (CountdownTimerListener curListener : getListeners()) {
@@ -251,7 +251,7 @@ public class CountdownTimer implements Serializable {
      */
     public void setTimeRemaining(int i) {
         logger.debug("setTimeRemaining {}" + i);
-        this.startTime = i;
+        this.timeRemaining = i;
     }
 
     // private void logException(Logger logger2, Exception exception) {
@@ -261,7 +261,7 @@ public class CountdownTimer implements Serializable {
     // }
 
     public int getTimeRemaining() {
-        return startTime;
+        return timeRemaining;
     }
 
     /**
