@@ -46,6 +46,8 @@ import org.concordiainternational.competition.utils.LoggerUtils;
 import org.concordiainternational.competition.utils.NotificationManager;
 import org.hibernate.Session;
 import org.hibernate.StaleObjectStateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
@@ -71,6 +73,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
     private static final long serialVersionUID = -7621561459948739065L;
     private static XLogger logger = XLoggerFactory.getXLogger(SessionData.class);
+    static final Logger timingLogger = LoggerFactory.getLogger("org.concordiainternational.competition.timer.TimingLogger"); //$NON-NLS-1$
     public static final String MASTER_KEY = "GroupData_"; //$NON-NLS-1$
 
     public List<Lifter> lifters;
@@ -454,7 +457,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         // if so leave it alone.
         final int timeRemaining = getTimer().getTimeRemaining();
         if (isForcedByTimekeeper() && (timeRemaining == 120000 || timeRemaining == 60000)) {
-            setForcedByTimekeeper(false, timeRemaining);
+            setForcedByTimekeeper(true, timeRemaining);
             logger.info("call of lifter {} : {}ms FORCED BY TIMEKEEPER", lifter, timeRemaining); //$NON-NLS-1$
         } else {
             if (!getTimeKeepingInUse()) {
@@ -1139,8 +1142,12 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         groupData.setTimeKeepingInUse(true);
             
         if (lifter != timing.getOwner()) {
-            final int remaining = groupData.getTimeAllowed();
-            timing.setTimeRemaining(remaining);
+            if (!isForcedByTimekeeper()) {
+                final int remaining = groupData.getTimeAllowed();
+                timing.setTimeRemaining(remaining);
+            } else {
+                logger.info("forced by timekeeper: {} remaining",getTimeRemaining());
+            }
             timing.setOwner(lifter); // enforce rule 6.5.15 -- lifter
                               // only gets 2 minutes if clock did
                               // not start for someone else
@@ -1242,6 +1249,47 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         } else {
             return getTimeRemaining();
         }
+    }
+
+    public void startUpdateModel() {
+        final CountdownTimer timer1 = this.getTimer();
+        final Lifter lifter = getCurrentLifter();
+        manageTimerOwner(lifter, this, timer1);
+        final boolean running = timer1.isRunning();
+        timingLogger.debug("start timer.isRunning()={}", running); //$NON-NLS-1$
+        timer1.restart();
+        setLifterAsHavingStarted(lifter);
+        getRefereeDecisionController().setBlocked(false);
+    }
+
+    public void stopUpdateModel() {
+        getTimer().pause(); // pause() does not clear the associated lifter
+    }
+
+    public void oneMinuteUpdateModel() {
+        if (getTimer().isRunning()) {
+            timer.forceTimeRemaining(60000); // pause() does not clear the associated lifter
+        }
+        setForcedByTimekeeper(true, 60000);
+    }
+
+    public void twoMinuteUpdateModel() {
+        if (getTimer().isRunning()) {
+            timer.forceTimeRemaining(120000); // pause() does not clear the associated lifter
+        }
+        setForcedByTimekeeper(true, 120000);
+    }
+
+    public void okLiftUpdateModel() {
+        Lifter currentLifter2 = getCurrentLifter();
+        liftDone(currentLifter2, true);
+        currentLifter2.successfulLift();
+    }
+
+    public void failedListUpdateModel() {
+        Lifter currentLifter2 = getCurrentLifter();
+        liftDone(currentLifter2, false);
+        currentLifter2.failedLift();
     }
 
 
