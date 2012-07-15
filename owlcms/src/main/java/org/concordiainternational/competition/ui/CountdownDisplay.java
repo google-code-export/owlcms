@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.event.Action;
-import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.URIHandler;
@@ -38,12 +37,12 @@ import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
 public class CountdownDisplay extends VerticalLayout implements 
-	ApplicationView,  
-	CountdownTimerListener,
-	DecisionEventListener, 
-	CloseListener,
-	URIHandler, Handler
-	{
+ApplicationView,  
+CountdownTimerListener,
+DecisionEventListener, 
+CloseListener,
+URIHandler
+{
     public final static Logger logger = LoggerFactory.getLogger(CountdownDisplay.class);
     private static final long serialVersionUID = 1437157542240297372L;
 
@@ -53,16 +52,21 @@ public class CountdownDisplay extends VerticalLayout implements
     private Label timeDisplay = new Label();
     private int lastTimeRemaining;
     private String viewName;
-	private Window popUp = null;
-	private DecisionLightsWindow decisionLights;
-	private UpdateEventListener updateEventListener;
-	protected boolean shown;
-	private ShortcutAction action1ok;
-	private ShortcutAction action1fail;
-	private ShortcutAction action2ok;
-	private ShortcutAction action2fail;
-	private ShortcutAction action3ok;
-	private ShortcutAction action3fail;
+    private Window popUp = null;
+    private DecisionLightsWindow decisionLights;
+    private UpdateEventListener updateEventListener;
+    protected boolean shown;
+    
+    private ShortcutActionListener action1ok;
+    private ShortcutActionListener action1fail;
+    private ShortcutActionListener action2ok;
+    private ShortcutActionListener action2fail;
+    private ShortcutActionListener action3ok;
+    private ShortcutActionListener action3fail;
+    private ShortcutActionListener startAction;
+    private ShortcutActionListener stopAction;
+    private ShortcutActionListener oneMinuteAction;
+    private ShortcutActionListener twoMinutesAction;
 
     public CountdownDisplay(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
@@ -70,30 +74,30 @@ public class CountdownDisplay extends VerticalLayout implements
         } else {
             this.viewName = viewName;
         }
-        
+
         this.app = CompetitionApplication.getCurrent();
-        
+
         if (platformName == null) {
-        	// get the default platform name
+            // get the default platform name
             platformName = CompetitionApplicationComponents.initPlatformName();
         } else if (app.getPlatform() == null) {
-        	app.setPlatformByName(platformName);
+            app.setPlatformByName(platformName);
         }
-       
+
         synchronized (app) {
-        	boolean prevDisabled = app.getPusherDisabled();
-        	try {
-        		app.setPusherDisabled(true);
-        		create(app, platformName);
-        		masterData = app.getMasterData(platformName);
-        		
-        		app.getMainWindow().addURIHandler(this);
-        		
-        		registerAsListener();
-        		display(platformName, masterData);
-        	} finally {
-        		app.setPusherDisabled(prevDisabled);
-        	}
+            boolean prevDisabled = app.getPusherDisabled();
+            try {
+                app.setPusherDisabled(true);
+                create(app, platformName);
+                masterData = app.getMasterData(platformName);
+
+                app.getMainWindow().addURIHandler(this);
+
+                registerAsListener();
+                display(platformName, masterData);
+            } finally {
+                app.setPusherDisabled(prevDisabled);
+            }
         }
     }
 
@@ -104,16 +108,16 @@ public class CountdownDisplay extends VerticalLayout implements
             logger.debug("{} listening to: {}", platformName1, masterData1); //$NON-NLS-1$	
             //masterData.addListener(SessionData.UpdateEvent.class, this, "update"); //$NON-NLS-1$
 
-             updateEventListener = new SessionData.UpdateEventListener() {
+            updateEventListener = new SessionData.UpdateEventListener() {
 
                 @Override
                 public void updateEvent(UpdateEvent updateEvent) {
                     new Thread(new Runnable() {
-						@Override
-						public void run() {
-							display(platformName1, masterData1);
-						}
-					}).start();
+                        @Override
+                        public void run() {
+                            display(platformName1, masterData1);
+                        }
+                    }).start();
                 }
 
             };
@@ -252,7 +256,7 @@ public class CountdownDisplay extends VerticalLayout implements
     @Override
     public void stop(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
     }
-    
+
 
     /* (non-Javadoc)
      * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()
@@ -266,10 +270,10 @@ public class CountdownDisplay extends VerticalLayout implements
      * @return
      */
     @Override
-	public String getFragment() {
+    public String getFragment() {
         return viewName+"/"+platformName;
     }
-    
+
 
     /* (non-Javadoc)
      * @see org.concordiainternational.competition.ui.components.ApplicationView#setParametersFromFragment(java.lang.String)
@@ -286,188 +290,255 @@ public class CountdownDisplay extends VerticalLayout implements
         if (params.length >= 2) {
             platformName = params[1];
         } else {
-        	platformName = CompetitionApplicationComponents.initPlatformName();
+            platformName = CompetitionApplicationComponents.initPlatformName();
         }
     }
-    
+
 
     @Override
     public void updateEvent(final DecisionEvent updateEvent) {
         new Thread(new Runnable() {
-			@Override
-			public void run() {
-				synchronized (app) {
-					switch (updateEvent.getType()) {
-					case DOWN:
-						logger.info("received DOWN event");
-						showLights(updateEvent);
-						break;
-						
-					case SHOW:
-						// if window is not up, show it.
-						shown = true;
-						logger.info("received SHOW event {}",shown);
-						showLights(updateEvent);
-						break;
+            @Override
+            public void run() {
+                synchronized (app) {
+                    switch (updateEvent.getType()) {
+                    case DOWN:
+                        logger.info("received DOWN event");
+                        showLights(updateEvent);
+                        break;
 
-					case RESET:
-						// we are done
-						logger.info("received RESET event");
-						hideLights(updateEvent);
-						shown = false;
-						break;
-						
-					case WAITING:
-						logger.info("ignoring WAITING event");
-						break;
-						
-					case UPDATE:
-						logger.debug("received UPDATE event {}",shown);
-						// we need to show that referees have changed their mind.
-						if (shown) {
-							showLights(updateEvent);
-						}
-						break;
-					
-					case BLOCK:
-						logger.debug("received BLOCK event {}",shown);
-						showLights(updateEvent);
-						break;
-					}
-				}
-				app.push();
-			}
-		}).start();
+                    case SHOW:
+                        // if window is not up, show it.
+                        shown = true;
+                        logger.info("received SHOW event {}",shown);
+                        showLights(updateEvent);
+                        break;
+
+                    case RESET:
+                        // we are done
+                        logger.info("received RESET event (hiding decision lights)");
+                        hideLights(updateEvent);
+                        shown = false;
+                        break;
+
+                    case WAITING:
+                        logger.info("ignoring WAITING event");
+                        break;
+
+                    case UPDATE:
+                        logger.debug("received UPDATE event {}",shown);
+                        // we need to show that referees have changed their mind.
+                        if (shown) {
+                            showLights(updateEvent);
+                        }
+                        break;
+
+                    case BLOCK:
+                        logger.debug("received BLOCK event {}",shown);
+                        showLights(updateEvent);
+                        break;
+                    }
+                }
+                app.push();
+            }
+        }).start();
     }
 
-    
-	/**
-	 * Make sure decision lights are shown, and relay the event to the display component.
-	 * @param updateEvent
-	 */
-	private void showLights(DecisionEvent updateEvent) {
-		// create window
-		if (popUp == null) {
-			logger.debug("creating window");
-			Window mainWindow = app.getMainWindow();
-			decisionLights = new DecisionLightsWindow(false, false);
-			popUp = new Window(platformName);
-			popUp.addStyleName("decisionLightsWindow");
-			popUp.setSizeFull();
-			mainWindow.addWindow(popUp);
-			popUp.setContent(decisionLights);
-		}
-		popUp.setVisible(true);
-		
-		// relay the event
-		logger.debug("relaying");
-		decisionLights.updateEvent(updateEvent);
-		
-	}
-	
-	/**
-	 * Hide the decision lights.
-	 * @param updateEvent
-	 */
-	private void hideLights(DecisionEvent updateEvent) {
-		// relay the event (just in case)
-		if (decisionLights != null) {
-			decisionLights.updateEvent(updateEvent);
-		}
-		
-		// close window
-		if (popUp != null) {
-			popUp.setVisible(false);
-		}
-	}
 
-	
-	/**
-	 * Resister to all necessary listening events
-	 */
-	@Override
-	public void registerAsListener() {
-		Window mainWindow = app.getMainWindow();
-		mainWindow.addListener((CloseListener)this);
-		registerAsGroupDataListener(platformName, masterData);
-		masterData.getRefereeDecisionController().addListener(this);
+    /**
+     * Make sure decision lights are shown, and relay the event to the display component.
+     * @param updateEvent
+     */
+    private void showLights(DecisionEvent updateEvent) {
+        // create window
+        if (popUp == null) {
+            logger.debug("creating window");
+            Window mainWindow = app.getMainWindow();
+            decisionLights = new DecisionLightsWindow(false, false);
+            popUp = new Window(platformName);
+            popUp.addStyleName("decisionLightsWindow");
+            popUp.setSizeFull();
+            mainWindow.addWindow(popUp);
+            popUp.setContent(decisionLights);
+        }
+        popUp.setVisible(true);
+
+        // relay the event
+        logger.debug("relaying");
+        decisionLights.updateEvent(updateEvent);
+
+    }
+
+    /**
+     * Hide the decision lights.
+     * @param updateEvent
+     */
+    private void hideLights(DecisionEvent updateEvent) {
+        // relay the event (just in case)
+        if (decisionLights != null) {
+            decisionLights.updateEvent(updateEvent);
+        }
+
+        // close window
+        if (popUp != null) {
+            popUp.setVisible(false);
+        }
+    }
+
+
+    /**
+     * Resister to all necessary listening events
+     */
+    @Override
+    public void registerAsListener() {
+        Window mainWindow = app.getMainWindow();
+        mainWindow.addListener((CloseListener)this);
+        registerAsGroupDataListener(platformName, masterData);
+        masterData.getRefereeDecisionController().addListener(this);
         final CountdownTimer timer = masterData.getTimer();
         timer.setCountdownDisplay(this);
-        if (action1ok == null) addActions();
-        mainWindow.addActionHandler(this);
+        addActions(mainWindow);
         logger.warn("added action handler");
-	}
+    }
 
 
-	/**
-	 * Undo what registerAsListener did.
-	 */
-	@Override
-	public void unregisterAsListener() {
-		Window mainWindow = app.getMainWindow();
-		mainWindow.removeListener((CloseListener)this);
-		masterData.removeListener(updateEventListener);
-		masterData.getRefereeDecisionController().removeListener(this);
+    /**
+     * Undo what registerAsListener did.
+     */
+    @Override
+    public void unregisterAsListener() {
+        Window mainWindow = app.getMainWindow();
+        mainWindow.removeListener((CloseListener)this);
+        masterData.removeListener(updateEventListener);
+        masterData.getRefereeDecisionController().removeListener(this);
         final CountdownTimer timer = masterData.getTimer();
         timer.setCountdownDisplay(null);
-        mainWindow.removeActionHandler(this);
-	}
-	
-	
-	@Override
-	public DownloadStream handleURI(URL context, String relativeUri) {
-		registerAsListener();
-		return null;
-	}
-
-	@Override
-	public void windowClose(CloseEvent e) {
-		unregisterAsListener();
-	}
+        removeActions(mainWindow);
+    }
 
 
-	public DecisionLightsWindow getDecisionLights() {
-		return decisionLights;
-	}
+
+    @Override
+    public DownloadStream handleURI(URL context, String relativeUri) {
+        registerAsListener();
+        return null;
+    }
+
+    @Override
+    public void windowClose(CloseEvent e) {
+        unregisterAsListener();
+    }
 
 
-	public void setDecisionLights(DecisionLightsWindow decisionLights) {
-		this.decisionLights = decisionLights;
-	}
-
-	private void addActions() {
-		action1ok = new ShortcutAction("1+",ShortcutAction.KeyCode.NUM1, null);
-		action1fail = new ShortcutAction("1-",ShortcutAction.KeyCode.NUM2, null);
-		action2ok = new ShortcutAction("2+",ShortcutAction.KeyCode.NUM3, null);
-		action2fail = new ShortcutAction("2-",ShortcutAction.KeyCode.NUM4, null);
-		action3ok = new ShortcutAction("3+",ShortcutAction.KeyCode.NUM5, null);
-		action3fail = new ShortcutAction("3-",ShortcutAction.KeyCode.NUM6, null);
-	}
-
-	@Override
-	public Action[] getActions(Object target, Object sender) {
-		return new Action[]{action1ok,action1fail,action2ok,action2fail,action3ok,action3fail};
-	}
+    public DecisionLightsWindow getDecisionLights() {
+        return decisionLights;
+    }
 
 
-	@Override
-	public void handleAction(Action action, Object sender, Object target) {
-//		if (target == this && sender == this) {
-			IDecisionController refereeDecisionController = masterData.getRefereeDecisionController();
-			if (action == action1ok) {
-				refereeDecisionController.decisionMade(0, true);
-			} else if (action == action1fail) {
-				refereeDecisionController.decisionMade(0, false);
-			} else if (action == action2ok) {
-				refereeDecisionController.decisionMade(1, true);
-			} else if (action == action2fail) {
-				refereeDecisionController.decisionMade(1, false);
-			} else if (action == action3ok) {
-				refereeDecisionController.decisionMade(2, true);
-			} else if (action == action3fail) {
-				refereeDecisionController.decisionMade(2, false);
-			} 
-		}
-//	}
+    public void setDecisionLights(DecisionLightsWindow decisionLights) {
+        this.decisionLights = decisionLights;
+    }
 
+    @SuppressWarnings("serial")
+    private abstract class ShortcutActionListener extends ShortcutAction implements Action.Listener {
+
+        public ShortcutActionListener(String caption, int kc, int[] m) {
+            super(caption, kc, m);
+        }
+
+        public ShortcutActionListener(String caption, int kc) {
+            super(caption, kc, null);
+        }
+
+    }
+
+    @SuppressWarnings("serial")
+    private void addActions(Action.Notifier actionNotifier) {
+        final IDecisionController refereeDecisionController = masterData.getRefereeDecisionController();
+        startAction = new ShortcutActionListener("start", ShortcutAction.KeyCode.G){
+            @Override
+            public void handleAction(Object sender, Object target) {
+                masterData.startUpdateModel();
+            }
+        };
+        stopAction = new ShortcutActionListener("stop",ShortcutAction.KeyCode.P){
+            @Override
+            public void handleAction(Object sender, Object target) {
+                masterData.stopUpdateModel();
+            }
+        };
+        oneMinuteAction = new ShortcutActionListener("1 minute",ShortcutAction.KeyCode.O){
+            @Override
+            public void handleAction(Object sender, Object target) {
+                masterData.oneMinuteUpdateModel();
+            }
+        };
+        twoMinutesAction = new ShortcutActionListener("2 minutes",ShortcutAction.KeyCode.T){
+            @Override
+            public void handleAction(Object sender, Object target) {
+                masterData.twoMinuteUpdateModel();    
+            }
+        };
+
+        action1ok = new ShortcutActionListener("1+",ShortcutAction.KeyCode.NUM1) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                refereeDecisionController.decisionMade(0, true);
+            }
+        };
+        action1fail = new ShortcutActionListener("1-",ShortcutAction.KeyCode.NUM2){
+            @Override
+            public void handleAction(Object sender, Object target) {
+                refereeDecisionController.decisionMade(0, false);
+            }
+        };
+        action2ok = new ShortcutActionListener("2+",ShortcutAction.KeyCode.NUM3){
+            @Override
+            public void handleAction(Object sender, Object target) {
+                refereeDecisionController.decisionMade(1, true);
+            }
+        };
+        action2fail = new ShortcutActionListener("2-",ShortcutAction.KeyCode.NUM4){
+            @Override
+            public void handleAction(Object sender, Object target) {
+                refereeDecisionController.decisionMade(1, false);
+            }
+        };
+        action3ok = new ShortcutActionListener("3+",ShortcutAction.KeyCode.NUM5){
+            @Override
+            public void handleAction(Object sender, Object target) {
+                refereeDecisionController.decisionMade(2, true);
+            }
+        };
+        action3fail = new ShortcutActionListener("3-",ShortcutAction.KeyCode.NUM6){
+            @Override
+            public void handleAction(Object sender, Object target) {
+                refereeDecisionController.decisionMade(2, false);
+            }
+        };
+
+        actionNotifier.addAction(startAction);
+        actionNotifier.addAction(stopAction);
+        actionNotifier.addAction(oneMinuteAction);
+        actionNotifier.addAction(twoMinutesAction);
+        actionNotifier.addAction(action1ok);
+        actionNotifier.addAction(action1fail);
+        actionNotifier.addAction(action2ok);
+        actionNotifier.addAction(action2fail);
+        actionNotifier.addAction(action3ok);
+        actionNotifier.addAction(action3fail);
+    }
+
+    private void removeActions(Action.Notifier actionNotifier) {
+        actionNotifier.removeAction(startAction);
+        actionNotifier.removeAction(stopAction);
+        actionNotifier.removeAction(oneMinuteAction);
+        actionNotifier.removeAction(twoMinutesAction);
+        actionNotifier.removeAction(action1ok);
+        actionNotifier.removeAction(action1fail);
+        actionNotifier.removeAction(action2ok);
+        actionNotifier.removeAction(action2fail);
+        actionNotifier.removeAction(action3ok);
+        actionNotifier.removeAction(action3fail);
+    }
 }
