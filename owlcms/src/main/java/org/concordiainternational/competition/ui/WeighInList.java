@@ -212,7 +212,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
                 }
 
                 String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date()); //$NON-NLS-1$
-                ((UserActions) app).openSpreadsheet(streamSource, "lifterCards_" + now); //$NON-NLS-1$
+                ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("WeighInList.CardsPrefix", locale) + now); //$NON-NLS-1$
             }
         };
         lifterCardsButton.addListener(listener);
@@ -241,7 +241,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
                 }
 
                 String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date()); //$NON-NLS-1$
-                ((UserActions) app).openSpreadsheet(streamSource, "startSheet_" + now); //$NON-NLS-1$
+                ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("WeighInList.WeighInPrefix", locale) + now); //$NON-NLS-1$
             }
         };
         weighInListButton.addListener(listener);
@@ -270,7 +270,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
                 }
 
                 String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date()); //$NON-NLS-1$
-                ((UserActions) app).openSpreadsheet(streamSource, "jurySheet_" + now); //$NON-NLS-1$
+                ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("WeighInList.JuryPrefix", locale) + now); //$NON-NLS-1$
             }
         };
         juryListButton.addListener(listener);
@@ -299,7 +299,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
                 }
 
                 String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date()); //$NON-NLS-1$
-                ((UserActions) app).openSpreadsheet(streamSource, "startList_" + now); //$NON-NLS-1$
+                ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("WeighInList.StartListPrefix", locale) + now); //$NON-NLS-1$
             }
         };
         startListButton.addListener(listener);
