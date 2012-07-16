@@ -207,7 +207,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
 
                     String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss") //$NON-NLS-1$
                             .format(new Date());
-                    ((UserActions) app).openSpreadsheet(streamSource, "results_" + now); //$NON-NLS-1$
+                    ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("ResultList.ResultsPrefix", locale) + now); //$NON-NLS-1$
                 }
 
                 /**
@@ -224,7 +224,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
 
                     String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss") //$NON-NLS-1$
                             .format(new Date());
-                    ((UserActions) app).openSpreadsheet(streamSource, "results_" + now); //$NON-NLS-1$
+                    ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("ResultList.ResultsPrefix", locale) + now); //$NON-NLS-1$
                 }
             };
             resultSpreadsheetButton.addListener(listener);
@@ -249,7 +249,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
 
                 	String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss") //$NON-NLS-1$
                 	.format(new Date());
-                	((UserActions) app).openSpreadsheet(streamSource, "results_" + now); //$NON-NLS-1$
+                	((UserActions) app).openSpreadsheet(streamSource, Messages.getString("ResultList.TeamPrefix", locale) + now); //$NON-NLS-1$
                   
 //                    final OutputSheetStreamSource<CompetitionBook> streamSource = new OutputSheetStreamSource<CompetitionBook>(
 //                            CompetitionBook.class, (CompetitionApplication) app, true);
