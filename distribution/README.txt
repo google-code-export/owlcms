@@ -47,10 +47,11 @@ Because we use the Free edition, these steps are manual.
     ignore the warning (the files will not be removed, that's what we want)
   - drag the three directories from distribution/target/owlcms-x.y.z-windows  to Application Data/owlcms
   - accept the warnings about overwrite
+  - update the product details page for the product version, select "major upgrade"
   - save owlcms.aip
-  - build the installer once.  In spite of completing, it will not show "build ok",
+  - build the installer once.  In spite of completing with "total build time", it will not show "build finished successfully".
     wait a few seconds after the end and cancel.
-  - build the installer a second time. This time it will complete with "build ok", hit "ok".
+  - build the installer a second time. This time it will complete with "build finished successfully", hit "ok".
   - go to the distribution project and refresh (F5)
   - test the installer (it is created in src/installer/owlcms-SetupFiles)
 
