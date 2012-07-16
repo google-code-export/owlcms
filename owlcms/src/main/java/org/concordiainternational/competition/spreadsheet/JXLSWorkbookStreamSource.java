@@ -60,6 +60,9 @@ public abstract class JXLSWorkbookStreamSource implements StreamResource.StreamS
     protected void init() {
         setReportingBeans(new HashMap<String,Object>());
         getSortedLifters();
+        if (lifters != null) {
+            getReportingBeans().put("lifters",lifters);
+        }
         getReportingBeans().put("masters",Competition.isMasters());
 	}
     
