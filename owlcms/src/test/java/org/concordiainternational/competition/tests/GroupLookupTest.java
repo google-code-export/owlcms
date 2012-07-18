@@ -11,15 +11,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import org.concordiainternational.competition.data.CompetitionContainer;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.CompetitionSessionLookup;
+import org.concordiainternational.competition.webapp.EntityManagerProvider;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.vaadin.data.hbnutil.HbnContainer;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 /**
  * @author jflamy
@@ -27,22 +26,22 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
  */
 public class GroupLookupTest {
 
-    HbnSessionManager hbnSessionManager = AllTests.getSessionManager();
-    HbnContainer<CompetitionSession> competitionSessions = null;
+    EntityManagerProvider provider = new AllTests();
+    CompetitionContainer competitionSessions = null;
     CompetitionSessionLookup competitionSessionLookup = null;
 
     @Before
     public void setupTest() {
-        Assert.assertNotNull(hbnSessionManager);
-        Assert.assertNotNull(hbnSessionManager.getHbnSession());
-        hbnSessionManager.getHbnSession().beginTransaction();
-        competitionSessions = new HbnContainer<CompetitionSession>(CompetitionSession.class, hbnSessionManager);
-        competitionSessionLookup = new CompetitionSessionLookup(hbnSessionManager);
+        Assert.assertNotNull(provider);
+        Assert.assertNotNull(provider.getEntityManager());
+        provider.getEntityManager().getTransaction().begin();
+        competitionSessions = new CompetitionContainer(provider.getEntityManager());
+        competitionSessionLookup = new CompetitionSessionLookup();
     }
 
     @After
     public void tearDownTest() {
-        hbnSessionManager.getHbnSession().close();
+        provider.getEntityManager().close();
     }
 
     /**

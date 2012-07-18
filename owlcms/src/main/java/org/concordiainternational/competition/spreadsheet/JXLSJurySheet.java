@@ -59,7 +59,7 @@ public class JXLSJurySheet extends JXLSWorkbookStreamSource {
 
 	@Override
 	protected void getSortedLifters()  {
-		this.lifters = LifterSorter.displayOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAllPojos());
+		this.lifters = LifterSorter.displayOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAll());
 	    LifterSorter.assignMedals(lifters);
 	}
 

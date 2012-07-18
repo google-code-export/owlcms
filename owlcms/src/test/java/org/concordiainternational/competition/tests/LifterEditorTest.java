@@ -16,15 +16,15 @@ import java.util.Collection;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.webapp.EntityManagerProvider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.vaadin.addons.criteriacontainer.NestedBeanItem;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.hbnutil.HbnContainer.EntityItem;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
 
@@ -36,7 +36,7 @@ public class LifterEditorTest {
 
     private static final String REFERENCE_STRING = "20"; //$NON-NLS-1$
     private static final Integer REFERENCE_INTEGER = 20;
-    HbnSessionManager hbnSessionManager = AllTests.getSessionManager();
+    EntityManagerProvider hbnSessionManager = new AllTests();
     LifterContainer hbnLifters = null;
     BeanItemContainer<Lifter> lifters = null;
     final String lineSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
@@ -44,18 +44,17 @@ public class LifterEditorTest {
     @Before
     public void setupTest() {
         assertNotNull(hbnSessionManager);
-        assertNotNull(hbnSessionManager.getHbnSession());
-        hbnSessionManager.getHbnSession().beginTransaction();
-        // for this test, the initial data does not include body weights, so we
-        // use false
+        assertNotNull(hbnSessionManager.getEntityManager());
+        hbnSessionManager.getEntityManager().getTransaction().begin();
+        // for this test, the initial data does not include body weights, so we use false
         // on the constructor to disable exclusion of incomplete data.
         hbnLifters = new LifterContainer(new CompetitionApplication(), false);
-        lifters = new BeanItemContainer<Lifter>(Lifter.class,hbnLifters.getAllPojos());
+        lifters = new BeanItemContainer<Lifter>(Lifter.class,hbnLifters.getAll());
     }
 
     @After
     public void tearDownTest() {
-        hbnSessionManager.getHbnSession().close();
+        hbnSessionManager.getEntityManager().close();
     }
 
     @Test
@@ -68,7 +67,8 @@ public class LifterEditorTest {
 
     @Test
     public void testProperties() {
-        Collection<String> hbnProperties = hbnLifters.getContainerPropertyIds();
+        @SuppressWarnings("unchecked")
+        Collection<String> hbnProperties = (Collection<String>) hbnLifters.getContainerPropertyIds();
         Collection<String> lifterProperties = lifters.getContainerPropertyIds();
         lifterProperties.removeAll(hbnProperties);
         assertTrue("transient properties are visible in bean", lifterProperties.size() > 0); //$NON-NLS-1$
@@ -106,13 +106,14 @@ public class LifterEditorTest {
         assertEquals(s1.getValue(), REFERENCE_STRING);
     }
 
-    @SuppressWarnings("rawtypes")
+
 	@Test
     public void checkSameness() {
         Item lifterItem = lifters.getItem(lifters.lastItemId());
         Lifter lifter = ((Lifter) ((BeanItem<?>) lifterItem).getBean());
-        final EntityItem hbnLifterItem = (EntityItem) hbnLifters.getItem(lifter.getId());
-        Lifter hbnLifter = ((Lifter) hbnLifterItem.getPojo());
+        @SuppressWarnings("unchecked")
+        final NestedBeanItem<Lifter> hbnLifterItem = (NestedBeanItem<Lifter>) hbnLifters.getItem(lifter.getId());
+        Lifter hbnLifter = ((Lifter) hbnLifterItem.getBean());
         assertEquals(hbnLifter, lifter);
     }
 

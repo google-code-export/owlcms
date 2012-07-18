@@ -9,47 +9,42 @@ package org.concordiainternational.competition.data;
 
 import javax.persistence.EntityManager;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 import org.vaadin.addons.criteriacontainer.CriteriaContainer;
 
+import com.vaadin.data.util.filter.Compare;
+
 @SuppressWarnings("serial")
-public class CategoryContainer extends CriteriaContainerWrapper<Category> {
+public class CategoryContainer extends CriteriaContainer<Category> {
 
 	private boolean activeOnly = false;
 
 	/**
-     * Default constructor, shows all athletes.
+     * Default constructor, shows all items.
      * 
      * @param application
      */
-    public CategoryContainer(EntityManager sessMgr) {
-        super(Category.class, sessMgr);
+    public CategoryContainer(EntityManager em) {
+        super(em,false,true,Category.class,50);
     }
     
     /**
-     * Alternate constructor that shows only athletes that have weighed-in.
+     * Alternate constructor that shows only active items
      * 
      * @param application
      * @param excludeNotWeighed
      */
-    public CategoryContainer(EntityManager sessMgr, boolean activeOnly) {
-    	this(sessMgr);
+    public CategoryContainer(EntityManager entityManager, boolean activeOnly) {
+    	this(entityManager);
         this.activeOnly  = activeOnly;
+        setFilters();
+        
     }
 
-    /*
-     * This class adds filtering criteria other than simple textual filtering as
-     * implemented by the Filterable interface. (non-Javadoc)
-     * 
-     * @see
-     * com.vaadin.data.hbnutil.HbnContainer#addSearchCriteria(org.hibernate.
-     * Criteria)
-     */
-    public Criteria addSearchCriteria(Criteria criteria) {
-    	if (activeOnly) {
-    		criteria.add(Restrictions.eq("active", Boolean.TRUE));
-    	}
-		return criteria;
+    private void setFilters() {
+        removeAllContainerFilters();
+        if (activeOnly) {
+           addContainerFilter(new Compare.Equal(Category_.active.getName(), activeOnly));
+        }
     }
+
 }

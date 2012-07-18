@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import org.concordiainternational.competition.data.CompetitionSession;
+import org.concordiainternational.competition.data.CompetitionSessionContainer;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.Bookmarkable;
 import org.concordiainternational.competition.ui.CompetitionApplication;
@@ -21,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.hbnutil.HbnContainer;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -107,10 +107,10 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
 	 * @param sessionSelect1
 	 * @return
 	 */
-	private HbnContainer<CompetitionSession> loadData(
+	private CompetitionSessionContainer loadData(
 			final CompetitionApplication competitionApplication,
 			final Select sessionSelect1) {
-		final HbnContainer<CompetitionSession> sessionDataSource = new HbnContainer<CompetitionSession>(CompetitionSession.class, competitionApplication);
+		final CompetitionSessionContainer sessionDataSource = new CompetitionSessionContainer(competitionApplication.getEntityManager());
         sessionSelect1.setContainerDataSource(sessionDataSource);
         sessionSelect1.setItemCaptionPropertyId("name"); //$NON-NLS-1$
 		return sessionDataSource;

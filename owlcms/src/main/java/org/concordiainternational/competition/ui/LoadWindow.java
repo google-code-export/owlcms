@@ -355,7 +355,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
 			} else {
 			    availablePlates.getItemProperty("officialBar").setValue(computeOfficialBarWeight());
 			}
-			CompetitionApplication.getCurrent().getHbnSession().merge(masterData.getPlatform());
+			CompetitionApplication.getCurrent().getEntityManager().merge(masterData.getPlatform());
 			//logger.debug("value change, after merge, collars: {}",masterData.getPlatform().getNbC_2_5());
 			imageArea.computeImageArea(masterData, masterData.getPlatform());
 			masterData.fireBlackBoardEvent(new PlatesInfoEvent(this));

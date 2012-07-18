@@ -11,8 +11,6 @@ import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 
-import com.vaadin.Application;
-
 /**
  * This class specializes the List component to use the LifterContainer class.
  * LifterContainer takes into account the currently active filters set in the
@@ -21,10 +19,10 @@ import com.vaadin.Application;
  * @author jflamy
  * 
  */
-public abstract class LifterHbnList extends GenericHbnList<Lifter> {
+public abstract class LifterPersistedList extends GenericPersistedList<Lifter> {
     private static final long serialVersionUID = 1L;
 
-    public LifterHbnList(Application app, String caption) {
+    public LifterPersistedList(CompetitionApplication app, String caption) {
         super(app, Lifter.class, caption);
     }
 
@@ -33,7 +31,7 @@ public abstract class LifterHbnList extends GenericHbnList<Lifter> {
      */
     @Override
     protected void loadData() {
-        final LifterContainer cont = new LifterContainer((CompetitionApplication) app);
+        final LifterContainer cont = new LifterContainer(app);
         table.setContainerDataSource(cont);
     }
 

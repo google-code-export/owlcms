@@ -11,9 +11,13 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.sound.sampled.Mixer;
 
 import org.concordiainternational.competition.decision.Speakers;
@@ -23,8 +27,6 @@ import org.concordiainternational.competition.ui.LiftList;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,19 +124,25 @@ public class Platform implements Serializable {
         return id;
     }
 
-    @SuppressWarnings("unchecked")
+
     static public List<Platform> getAll() {
-        final List<Platform> list = CompetitionApplication.getCurrent().getHbnSession().createCriteria(Platform.class).addOrder(
-            Order.asc("name")) //$NON-NLS-1$
-                .list();
-        return list;
+        EntityManager em = CompetitionApplication.getCurrent().getEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Platform> cq = cb.createQuery(Platform.class);
+        Root<Platform> r = cq.from(Platform.class);
+        cq.orderBy(cb.asc(r.get(Platform_.name)));
+        return em.createQuery(cq).getResultList();
     }
 
-    @SuppressWarnings("unchecked")
+
     static public Platform getByName(String name) {
-        final List<Platform> list = CompetitionApplication.getCurrent().getHbnSession().createCriteria(Platform.class).add(
-            Restrictions.eq("name", name)) //$NON-NLS-1$
-                .list();
+        EntityManager em = CompetitionApplication.getCurrent().getEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Platform> cq = cb.createQuery(Platform.class);
+        Root<Platform> r = cq.from(Platform.class);
+        cq.where(cb.equal(r.get(Platform_.name), name));
+        cq.orderBy(cb.asc(r.get(Platform_.name)));
+        final List<Platform> list = em.createQuery(cq).getResultList();
         if (list.size() == 1) {
             final Platform platform = (Platform) list.get(0);
             platform.setMixerName(platform.mixerName);

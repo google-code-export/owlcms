@@ -8,6 +8,7 @@
 package org.concordiainternational.competition.data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -16,10 +17,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.criteria.CriteriaQuery;
 
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.hibernate.Session;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -129,7 +130,7 @@ public class Category implements Serializable {
     }
 
     public static void insertStandardCategories(EntityManager sess, Locale locale) {
-        if (sess.createCriteria(Category.class).list().size() == 0) {
+        if (getAll().size() == 0) {
             sess.persist(new Category(Messages.getString("Category.f40", locale), 0.0, 40.0, Gender.F.toString(), false)); //$NON-NLS-1$
             sess.persist(new Category(Messages.getString("Category.f44", locale), 0.0, 44.0, Gender.F.toString(), false)); //$NON-NLS-1$
             sess.persist(new Category(Messages.getString("Category.f48", locale), 0.0, 48.0, Gender.F.toString(), true)); //$NON-NLS-1$
@@ -164,9 +165,11 @@ public class Category implements Serializable {
     }
 
 
-    @SuppressWarnings("unchecked")
     static public List<Category> getAll() {
-        return CompetitionApplication.getCurrent().getHbnSession().createCriteria(Category.class).list();
+        EntityManager em = CompetitionApplication.getCurrent().getEntityManager();
+        CriteriaQuery<Category> cq = em.getCriteriaBuilder().createQuery(Category.class);
+        cq.from(Category.class);
+        return em.createQuery(cq).getResultList();
     }
 
 	@Override
@@ -230,6 +233,21 @@ public class Category implements Serializable {
 			return false;
 		return true;
 	}
+
+    /**
+     * @return list of active categories.
+     */
+    public static List<Category> getAllActive() {
+        // in memory; not worth creating a query.
+        List<Category> allCategories = getAll();
+        ArrayList<Category> activeCategories = new ArrayList<Category>(allCategories.size());
+        for (Category curCat : allCategories) {
+            if (curCat.isActive()) {
+                activeCategories.add(curCat);
+            }
+        }
+        return activeCategories;
+    }
     
     
 }

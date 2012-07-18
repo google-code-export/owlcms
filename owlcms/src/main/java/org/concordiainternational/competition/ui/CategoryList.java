@@ -15,13 +15,13 @@ import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
-import org.concordiainternational.competition.ui.list.GenericHbnList;
+import org.concordiainternational.competition.ui.list.GenericPersistedList;
 
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
-public class CategoryList extends GenericHbnList<Category> implements ApplicationView {
+public class CategoryList extends GenericPersistedList<Category> implements ApplicationView {
 
     private static final long serialVersionUID = -6455130090728823622L;
     private String viewName;

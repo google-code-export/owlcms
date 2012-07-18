@@ -22,24 +22,22 @@ import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter.Ranking;
 import org.concordiainternational.competition.data.lifterSort.WinningOrderComparator;
 import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.webapp.EntityManagerProvider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.vaadin.data.hbnutil.HbnContainer;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
-
 public class LifterSorterTest {
 
-    HbnSessionManager hbnSessionManager = AllTests.getSessionManager();
-    HbnContainer<Lifter> hbnLifters = null;
+    EntityManagerProvider hbnSessionManager = new AllTests();
+    LifterContainer hbnLifters = null;
     List<Lifter> lifters = null;
 
     @Before
     public void setupTest() {
         assertNotNull(hbnSessionManager);
-        assertNotNull(hbnSessionManager.getHbnSession());
-        hbnSessionManager.getHbnSession().beginTransaction();
+        assertNotNull(hbnSessionManager.getEntityManager());
+        hbnSessionManager.getEntityManager().getTransaction().begin();
 
         // mock the application
         final CompetitionApplication application = new CompetitionApplication();
@@ -49,12 +47,12 @@ public class LifterSorterTest {
         // use false
         // on the constructor to disable exclusion of incomplete data.
         hbnLifters = new LifterContainer(new CompetitionApplication(), false);
-        lifters = (hbnLifters.getAllPojos());
+        lifters = (hbnLifters.getAll());
     }
 
     @After
     public void tearDownTest() {
-        hbnSessionManager.getHbnSession().close();
+        hbnSessionManager.getEntityManager().close();
     }
 
     @Test

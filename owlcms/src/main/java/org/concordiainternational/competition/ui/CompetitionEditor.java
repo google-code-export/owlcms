@@ -14,20 +14,22 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 
+import javax.persistence.EntityManager;
+
 import org.concordiainternational.competition.data.Competition;
+import org.concordiainternational.competition.data.CompetitionContainer;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.addons.criteriacontainer.NestedBeanItem;
 
 import com.vaadin.data.Buffered.SourceException;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ConversionException;
 import com.vaadin.data.Property.ReadOnlyException;
 import com.vaadin.data.Validator.InvalidValueException;
-import com.vaadin.data.hbnutil.HbnContainer;
 import com.vaadin.data.util.FilesystemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.service.ApplicationContext;
@@ -66,6 +68,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
 
     private String viewName;
 
+    @SuppressWarnings("unchecked")
     public CompetitionEditor(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
             setParametersFromFragment();
@@ -77,12 +80,16 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         final Locale locale = app.getLocale();
         this.setReadOnly(true);
 
-        HbnContainer<Competition> cmp = new HbnContainer<Competition>(Competition.class, app);
+        CompetitionContainer cmp = new CompetitionContainer(app.getEntityManager());
+        Object newItemId;
+        NestedBeanItem<Competition> competitionItem = null;
         if (cmp.size() == 0) {
-            cmp.saveEntity(new Competition());
+            newItemId = cmp.addItem();
+            competitionItem = (NestedBeanItem<Competition>) cmp.getItem(newItemId);
+        } else {
+            competitionItem = (NestedBeanItem<Competition>) cmp.getItem(0);
         }
-        final Object firstItemId = cmp.firstItemId();
-        HbnContainer<Competition>.EntityItem<Competition> competitionItem = cmp.getItem(firstItemId);
+
 
         final FormLayout formLayout = new FormLayout();
 
@@ -110,7 +117,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
      * @throws FileNotFoundException 
      */
     private FormLayout createFormLayout(final FormLayout formLayout, final Locale locale,
-            HbnContainer<Competition> cmp, final HbnContainer<Competition>.EntityItem<Competition> competitionItem)
+            CompetitionContainer cmp, final NestedBeanItem<Competition> competitionItem)
             {
 
         addTextField(formLayout, locale, competitionItem, "competitionName", ""); //$NON-NLS-1$ //$NON-NLS-2$
@@ -147,7 +154,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
      * @throws FileNotFoundException 
      */
     private Select addFileSelector(FormLayout formLayout, Locale locale,
-            HbnContainer<Competition>.EntityItem<Competition> competitionItem, String fieldName, String initialValue)  {
+            NestedBeanItem<Competition> competitionItem, String fieldName, String initialValue)  {
 
         final ApplicationContext context = app.getContext();
         WebApplicationContext wContext = (WebApplicationContext) context;
@@ -221,7 +228,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
      * @throws ConversionException
      */
     private TextField addTextField(final Layout formLayout, final Locale locale,
-            final HbnContainer<Competition>.EntityItem<Competition> competitionItem, final String fieldName,
+            final NestedBeanItem<Competition> competitionItem, final String fieldName,
             final Object initialValue) throws ReadOnlyException, ConversionException {
         final Property itemProperty = competitionItem.getItemProperty(fieldName);
         TextField field = new TextField(Messages.getString("Competition." + fieldName, locale), itemProperty); //$NON-NLS-1$
@@ -241,7 +248,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
      * @throws ConversionException
      */
     private TextField addFileDisplay(final Layout formLayout, final Locale locale,
-            final HbnContainer<Competition>.EntityItem<Competition> competitionItem, final String fieldName,
+            final NestedBeanItem<Competition> competitionItem, final String fieldName,
             final String initialValue) throws ReadOnlyException, ConversionException {
         final Property itemProperty = competitionItem.getItemProperty(fieldName);
         Object stringValue = itemProperty.getValue();
@@ -265,7 +272,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
      * @throws ConversionException
      */
     private DateField addDateField(final Layout formLayout, final Locale locale,
-            final HbnContainer<Competition>.EntityItem<Competition> competitionItem, final String fieldName,
+            final NestedBeanItem<Competition> competitionItem, final String fieldName,
             final Object initialValue) throws ReadOnlyException, ConversionException {
         final Property itemProperty = competitionItem.getItemProperty(fieldName);
         DateField field = new DateField(Messages.getString("Competition." + fieldName, locale), itemProperty); //$NON-NLS-1$
@@ -282,7 +289,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
      * @param cmp
      */
     private HorizontalLayout createTitleBar(final Locale locale, final FormLayout formLayout,
-            final HbnContainer<Competition> cmp, final HbnContainer<Competition>.EntityItem<Competition> competitionItem) {
+            final CompetitionContainer cmp, final NestedBeanItem<Competition> competitionItem) {
         final HorizontalLayout hl = new HorizontalLayout();
         final Label cap = new Label(Messages.getString("CompetitionApplication.Competition", locale)); //$NON-NLS-1$
         cap.setWidth("20ex"); //$NON-NLS-1$
@@ -315,11 +322,11 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
                 }
             }
 
-            private void saveItem(HbnContainer<Competition>.EntityItem<Competition> cmItem) {
-                Competition competition = (Competition) cmItem.getPojo();
-                final Session session = app.getHbnSession();
-                session.merge(competition);
-                session.flush();
+            private void saveItem(NestedBeanItem<Competition> cmItem) {
+                Competition competition = cmItem.getBean();
+                final EntityManager em = app.getEntityManager();
+                em.merge(competition);
+                em.flush();
             };
         });
         return hl;

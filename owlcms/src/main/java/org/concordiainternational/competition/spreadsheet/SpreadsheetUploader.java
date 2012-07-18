@@ -15,6 +15,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
 
 import org.concordiainternational.competition.data.Lifter;
@@ -22,7 +23,6 @@ import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.components.ApplicationView;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,31 +149,39 @@ Upload.Receiver, ApplicationView {
 	}
 
 	private void processCSV(DownloadStream ds) {
-		try {
-			final Session hbnSession = app.getHbnSession();
-			InputCSVHelper iCSV = new InputCSVHelper(app);
-			List<Lifter> lifters = iCSV.getAllLifters(ds.getStream(), app);
+        EntityManager entityManager = null;
+        try {
+			InputCSVHelper iCSV = new InputCSVHelper();
+			entityManager = app.getEntityManager();
+            List<Lifter> lifters = iCSV.getAllLifters(ds.getStream(), entityManager);
 			for (Lifter curLifter : lifters) {
-				hbnSession.save(curLifter);
+				entityManager.persist(curLifter);
 			}
 		} catch (Throwable t) {
 			t.printStackTrace();
 			throw new SystemError(t);
-		}
+        } finally {
+            entityManager.flush();
+            entityManager.close();
+        }
 	}
 
 	private void processXLS(DownloadStream ds) {
+	    EntityManager entityManager = null;
 		try {
 			final WeighInSheet weighInSheet = new WeighInSheet(app);
-			final Session hbnSession = app.getHbnSession();
-			weighInSheet.readHeader(ds.getStream(), app);
-			List<Lifter> lifters = weighInSheet.getAllLifters(ds.getStream(), app);
+			entityManager = app.getEntityManager();
+			weighInSheet.readHeader(ds.getStream(), entityManager);
+			List<Lifter> lifters = weighInSheet.getAllLifters(ds.getStream(), entityManager);
 			for (Lifter curLifter : lifters) {
-				hbnSession.save(curLifter);
+                entityManager.persist(curLifter);
 			}
 		} catch (Throwable t) {
 			t.printStackTrace();
 			throw new SystemError(t);
+		} finally {
+            entityManager.flush();
+		    entityManager.close();
 		}
 	}
 

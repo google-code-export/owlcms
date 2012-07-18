@@ -11,18 +11,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.concordiainternational.competition.data.Lifter;
 
 import com.extentech.formats.XLS.CellNotFoundException;
 import com.extentech.formats.XLS.WorkSheetNotFoundException;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 public interface InputSheet {
 
-    public abstract List<Lifter> getAllLifters(InputStream is, HbnSessionManager session) throws CellNotFoundException,
+    public abstract List<Lifter> getAllLifters(InputStream is, EntityManager session) throws CellNotFoundException,
             IOException, WorkSheetNotFoundException, InterruptedException, Throwable;
 
-    public abstract List<Lifter> getGroupLifters(InputStream is, String aGroup, HbnSessionManager session)
+    public abstract List<Lifter> getGroupLifters(InputStream is, String aGroup, EntityManager session)
             throws CellNotFoundException, IOException, WorkSheetNotFoundException, InterruptedException, Throwable;
+
 
 }

@@ -7,30 +7,20 @@
  */
 package org.concordiainternational.competition.tests;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.List;
 
 import org.concordiainternational.competition.data.CategoryLookup;
-import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.spreadsheet.InputSheet;
-import org.concordiainternational.competition.spreadsheet.ResultSheet;
 import org.concordiainternational.competition.spreadsheet.WeighInSheet;
-import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.webapp.EntityManagerProvider;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 /**
  * @author jflamy
@@ -38,24 +28,22 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
  */
 public class SpreadsheetTest {
 
-    HbnSessionManager hbnSessionManager = AllTests.getSessionManager();
+    EntityManagerProvider hbnSessionManager = new AllTests();
     Logger logger = LoggerFactory.getLogger(SpreadsheetTest.class);
-    static private String loadResults;
-    static private File tempFile;
     static private List<Lifter> lifters;
 
     @Before
     public void setupTest() {
         Assert.assertNotNull(hbnSessionManager);
-        Assert.assertNotNull(hbnSessionManager.getHbnSession());
-        hbnSessionManager.getHbnSession().beginTransaction();
+        Assert.assertNotNull(hbnSessionManager.getEntityManager());
+        hbnSessionManager.getEntityManager().getTransaction().begin();
         CategoryLookup categoryLookup = CategoryLookup.getSharedInstance(hbnSessionManager);
         categoryLookup.reload();
     }
 
     @After
     public void tearDownTest() {
-        hbnSessionManager.getHbnSession().close();
+        hbnSessionManager.getEntityManager().close();
     }
 
     /**
@@ -65,29 +53,11 @@ public class SpreadsheetTest {
     @Test
     public void getAllLifters() throws Throwable {
         InputStream is = AllTests.class.getResourceAsStream("/testData/roundTripInputSheet.xls"); //$NON-NLS-1$
-        InputSheet results = new WeighInSheet(AllTests.getSessionManager());
-        lifters = results.getAllLifters(is, hbnSessionManager);
-        loadResults = AllTests.longDump(lifters, false);
+        InputSheet results = new WeighInSheet(hbnSessionManager);
+        lifters = results.getAllLifters(is, hbnSessionManager.getEntityManager());
+        AllTests.longDump(lifters, false);
     }
 
-    @Ignore
-    public void writeAllLifters() throws Throwable {
-        tempFile = File.createTempFile("myApp", ".xls"); //$NON-NLS-1$ //$NON-NLS-2$
-        //tempFile.deleteOnExit();
-        logger.debug("temporary file is set to "+tempFile.getAbsolutePath());
-        FileOutputStream os = new FileOutputStream(tempFile);
-        new ResultSheet(CategoryLookup.getSharedInstance(), new CompetitionApplication(), (CompetitionSession) null)
-                .writeLifters(lifters, os);
-    }
-
-    @Ignore
-    public void reloadFromOutput() throws Throwable {
-        InputStream is = new FileInputStream(tempFile);
-        ResultSheet readAgain = new ResultSheet(AllTests.getSessionManager());
-        lifters = readAgain.getAllLifters(is, hbnSessionManager);
-        String loadAgainResults = AllTests.longDump(lifters, false);
-        assertEquals("roundtrip failed", loadResults, loadAgainResults); //$NON-NLS-1$
-    }
 
 
 }

@@ -42,17 +42,15 @@ import org.hibernate.event.def.OverrideMergeEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
-
 /**
  * @author jflamy Called when the application is started to initialize the
  *         database and other global features (serial communication ports)
  */
 
-public class WebApplicationConfiguration implements HbnSessionManager, ServletContextListener {
+public class WebApplicationConfiguration implements ServletContextListener, EntityManagerProvider {
 	private static Logger logger = LoggerFactory.getLogger(WebApplicationConfiguration.class);
 
-	private static EntityManagerFactory sessionFactory = null;
+	private static EntityManagerFactory entityManagerFactory = null;
 	private static final boolean TEST_MODE = false;
 
 	public static final boolean NECShowsLifterImmediately = true;
@@ -71,14 +69,12 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 	 * 
 	 * @return a Hibernate session factory
 	 */
-	public static EntityManagerFactory getSessionFactory() {
-		// this call sets the default values if the parameterized constructor
-		// has not
+	public static EntityManagerFactory getEntityManagerFactory() {
+		// this call sets the default values if the parameterized constructor has not
 		// been called first (which is normally the case). If the full
-		// constructor
-		// has been called first, then the existing factory is returned.
-		if (sessionFactory != null) return sessionFactory;
-		else throw new RuntimeException("should have called getSessionFactory(testMode,dbPath) first."); //$NON-NLS-1$
+		// constructor has been called first, then the existing factory is returned.
+		if (entityManagerFactory != null) return entityManagerFactory;
+		else throw new RuntimeException("should have called getEntityManagerFactory(testMode,dbPath) first."); //$NON-NLS-1$
 	}
 
 	/**
@@ -90,8 +86,8 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 	 * @param dbPath
 	 * @return
 	 */
-	public static EntityManagerFactory getSessionFactory(boolean testMode, String dbPath) {
-		if (sessionFactory == null) {
+	public static EntityManagerFactory getEntityManagerFactory(boolean testMode, String dbPath) {
+		if (entityManagerFactory == null) {
 			try {
 				cnf = new AnnotationConfiguration();
 				//derbySetup(testMode, dbPath, cnf);
@@ -122,10 +118,10 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 				// listeners
 				cnf.setListener("merge", new OverrideMergeEventListener()); //$NON-NLS-1$
 
-				sessionFactory = (EntityManagerFactory) cnf.buildSessionFactory();
+				entityManagerFactory = (EntityManagerFactory) cnf.buildSessionFactory();
 				// create the standard categories, etc.
 				// if argument is > 0, create sample data as well.
-				EntityManager sess = sessionFactory.createEntityManager();
+				EntityManager sess = entityManagerFactory.createEntityManager();
 				sess.joinTransaction();
 				Category.insertStandardCategories(sess, Locale.getDefault());
 				insertInitialData(5, sess, testMode);
@@ -138,7 +134,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 			}
 		}
 
-		return sessionFactory;
+		return entityManagerFactory;
 	}
 
 	/**
@@ -228,7 +224,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 	 * @param testMode
 	 */
 	public static void insertInitialData(int liftersToLoad, EntityManager sess, boolean testMode) {
-		if (sess.createCriteria(CompetitionSession.class).list().size() == 0) {
+		if (CompetitionSession.getAll().size() == 0) {
 			// empty database
 			Competition competition = new Competition();
 			competition.setFederation(Messages.getString("Competition.defaultFederation", Locale.getDefault())); //$NON-NLS-1$
@@ -378,21 +374,21 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 	}
 
 	/*
-	 * We implement HbnSessionManager as a convenience; when a domain class
+	 * We implement EntityManagerProvider as a convenience; when a domain class
 	 * needs access to persistance, and we don't want to pass in another
-	 * HbnSessionManager such as the application, we use this one. (non-Javadoc)
+	 * EntityManager such as the application, we use this one. (non-Javadoc)
 	 * 
 	 * @see
 	 * com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager#getHbnSession()
 	 */
 	@Override
-	public EntityManager getHbnSession() {
-		return getSessionFactory().createEntityManager();
+	public EntityManager getEntityManager() {
+		return getEntityManagerFactory().createEntityManager();
 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
-		WebApplicationConfiguration.getSessionFactory().close(); // Free all
+		WebApplicationConfiguration.getEntityManagerFactory().close(); // Free all
 		// templates,
 		// should free
 		// H2
@@ -438,9 +434,9 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 		String dbPath = sCtx.getInitParameter("dbPath"); //$NON-NLS-1$
 		String appName = sCtx.getServletContextName();
 		if (dbPath != null) {
-			WebApplicationConfiguration.getSessionFactory(TEST_MODE, dbPath).createEntityManager();
+			WebApplicationConfiguration.getEntityManagerFactory(TEST_MODE, dbPath).createEntityManager();
 		} else {
-			WebApplicationConfiguration.getSessionFactory(TEST_MODE, "db/" + appName).createEntityManager(); //$NON-NLS-1$
+			WebApplicationConfiguration.getEntityManagerFactory(TEST_MODE, "db/" + appName).createEntityManager(); //$NON-NLS-1$
 		}
 		if (necDisplay != null) {
 			necDisplay.close();
@@ -469,5 +465,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 			logger.warn("Could not open port {} {}",comPortName,e.getMessage());
 		}
 	}
+
+
 
 }

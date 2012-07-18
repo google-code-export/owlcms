@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,15 +22,13 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.criteria.CriteriaQuery;
 
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.hibernate.Session;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -227,21 +226,22 @@ public class CompetitionSession implements Serializable, Comparable<Object> {
         return lifters;
     }
 
-    public void deleteLifters(HbnSessionManager hbnSessionManager) {
-        final Session session = hbnSessionManager.getHbnSession();
+    public void deleteLifters(EntityManager entityManager) {
         for (Lifter curLifter : getLifters()) {
-            session.delete(curLifter);
+            entityManager.remove(curLifter);
         }
-        session.flush();
+        entityManager.flush();
     }
 
     public void setLifters(Set<Lifter> lifters) {
         this.lifters = lifters;
     }
 
-    @SuppressWarnings("unchecked")
     static public List<CompetitionSession> getAll() {
-        return CompetitionApplication.getCurrent().getHbnSession().createCriteria(CompetitionSession.class).list();
+        EntityManager em = CompetitionApplication.getCurrent().getEntityManager();
+        CriteriaQuery<CompetitionSession> cq = em.getCriteriaBuilder().createQuery(CompetitionSession.class);
+        cq.from(CompetitionSession.class);
+        return em.createQuery(cq).getResultList();
     }
 
 	@Override

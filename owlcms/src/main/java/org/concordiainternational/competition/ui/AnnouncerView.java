@@ -123,7 +123,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
             masterData.setMasterApplication(this.app);
             
             if (groupName != null && groupName.length() > 0) {
-                switchGroup(new CompetitionSessionLookup(app).lookup(groupName));
+                switchGroup(new CompetitionSessionLookup().lookup(groupName));
             } else {
                 app.setCurrentCompetitionSession(currentGroup);
                 if (currentGroup != null) {

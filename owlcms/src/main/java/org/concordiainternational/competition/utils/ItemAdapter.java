@@ -10,9 +10,9 @@ package org.concordiainternational.competition.utils;
 import java.util.Locale;
 
 import org.concordiainternational.competition.i18n.Messages;
+import org.vaadin.addons.beantuplecontainer.BeanTupleItem;
 
 import com.vaadin.data.Item;
-import com.vaadin.data.hbnutil.HbnContainer.EntityItem;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Table;
 
@@ -22,11 +22,10 @@ public class ItemAdapter {
      * @param item
      * @return
      */
-    @SuppressWarnings("rawtypes")
 	public static Object getObject(final Item item) {
         Object obj = null;
-        if (item instanceof EntityItem) {
-            obj = ((EntityItem) item).getPojo();
+        if (item instanceof BeanTupleItem) {
+            obj = ((BeanTupleItem) item).getTuple();
         } else if (item instanceof BeanItem) {
             obj = ((BeanItem<?>) item).getBean();
         } else {

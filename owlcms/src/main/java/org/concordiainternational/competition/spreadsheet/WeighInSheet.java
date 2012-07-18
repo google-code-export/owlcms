@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.CompetitionSession;
@@ -18,6 +20,7 @@ import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.webapp.EntityManagerProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +28,6 @@ import com.extentech.ExtenXLS.WorkSheetHandle;
 import com.extentech.formats.XLS.CellNotFoundException;
 import com.extentech.formats.XLS.CellTypeMismatchException;
 import com.extentech.formats.XLS.WorkSheetNotFoundException;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 /**
  * The start sheet format is able to produce a round-trip. It implements both
@@ -49,20 +51,20 @@ public class WeighInSheet extends OutputSheet implements InputSheet, LifterReade
     public WeighInSheet() {
     }
     
-    public WeighInSheet(HbnSessionManager hbnSessionManager) {
-    	createInputSheetHelper(hbnSessionManager);
+    public WeighInSheet(EntityManagerProvider hbnSessionManager) {
+    	createInputSheetHelper();
     }
 
     public WeighInSheet(CategoryLookup categoryLookup, CompetitionApplication app, CompetitionSession competitionSession) {
         super(categoryLookup, app, competitionSession);
-        createInputSheetHelper(app);
+        createInputSheetHelper();
     }
 
     @Override
 	public void init(CategoryLookup categoryLookup1, CompetitionApplication app1,
 			CompetitionSession competitionSession1) {
 		super.init(categoryLookup1, app1, competitionSession1);
-		createInputSheetHelper(app1);
+		createInputSheetHelper();
 	}
     
     /**
@@ -170,18 +172,18 @@ public class WeighInSheet extends OutputSheet implements InputSheet, LifterReade
 
     @Override
     protected List<Lifter> getLifters(boolean excludeNotWeighed) {
-        return LifterSorter.displayOrderCopy(new LifterContainer(app, excludeNotWeighed).getAllPojos());
+        return LifterSorter.displayOrderCopy(new LifterContainer(app, excludeNotWeighed).getAll());
     }
 
 
-	public void readHeader(InputStream is, HbnSessionManager session) 
+	public void readHeader(InputStream is, EntityManager session) 
 	throws CellNotFoundException, WorkSheetNotFoundException, IOException {
 		lifterReaderHelper.readHeader(is, session);
 		return;
 	}
 	
 	@Override
-	public List<Lifter> getAllLifters(InputStream is, HbnSessionManager session)
+	public List<Lifter> getAllLifters(InputStream is, EntityManager session)
 			throws CellNotFoundException, IOException,
 			WorkSheetNotFoundException, InterruptedException, Throwable {
 		return lifterReaderHelper.getAllLifters(is, session);
@@ -189,15 +191,15 @@ public class WeighInSheet extends OutputSheet implements InputSheet, LifterReade
 
 	@Override
 	public List<Lifter> getGroupLifters(InputStream is, String aGroup,
-			HbnSessionManager session) throws CellNotFoundException,
+			EntityManager session) throws CellNotFoundException,
 			IOException, WorkSheetNotFoundException, InterruptedException,
 			Throwable {
 		return lifterReaderHelper.getGroupLifters(is, aGroup, session);
 	}
 
 	@Override
-	public void createInputSheetHelper(HbnSessionManager hbnSessionManager) {
-		lifterReaderHelper = new InputSheetHelper(hbnSessionManager,this);		
+	public void createInputSheetHelper() {
+		lifterReaderHelper = new InputSheetHelper(this);		
 	}
 
 	@Override

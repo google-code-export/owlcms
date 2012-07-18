@@ -18,9 +18,7 @@ import org.concordiainternational.competition.ui.generators.CommonFieldFactory;
 import org.concordiainternational.competition.ui.generators.FieldTable;
 import org.concordiainternational.competition.utils.ItemAdapter;
 
-import com.vaadin.Application;
 import com.vaadin.data.Item;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.ui.Alignment;
@@ -36,7 +34,7 @@ import com.vaadin.ui.Window.Notification;
 public abstract class GenericList<T> extends VerticalLayout {
 
     private static final long serialVersionUID = -3014859089271158928L;
-    protected Application app;
+    protected CompetitionApplication app;
     public Table table;
     protected Class<T> parameterizedClass;
     private String tableCaption;
@@ -44,7 +42,7 @@ public abstract class GenericList<T> extends VerticalLayout {
     protected Button toggleEditModeButton;
     protected Button addRowButton;
 
-    public GenericList(Application app, Class<T> parameterizedClass, String caption) {
+    public GenericList(CompetitionApplication app, Class<T> parameterizedClass, String caption) {
         super();
         this.app = app;
         this.parameterizedClass = parameterizedClass;
@@ -65,36 +63,36 @@ public abstract class GenericList<T> extends VerticalLayout {
      * below it.
      */
     protected void buildView() {
-    	final CompetitionApplication app1 = CompetitionApplication.getCurrent();
-    	// we synchronize because specializations of this class may do all sorts of
-    	// event-based things in their construction, and we don't want them to call
-    	// the push() method while in the constructor (this causes the session to drop.)
-    	synchronized (app1) {
-    		boolean prevDisabled = app1.getPusherDisabled();
-    		try {
-    			app1.setPusherDisabled(true);
+        final CompetitionApplication app1 = CompetitionApplication.getCurrent();
+        // we synchronize because specializations of this class may do all sorts of
+        // event-based things in their construction, and we don't want them to call
+        // the push() method while in the constructor (this causes the session to drop.)
+        synchronized (app1) {
+            boolean prevDisabled = app1.getPusherDisabled();
+            try {
+                app1.setPusherDisabled(true);
 
-    			this.setSizeFull();
-    			this.setMargin(true);
+                this.setSizeFull();
+                this.setMargin(true);
 
-    			tableToolbar = createTableToolbar();
-    			this.addComponent(tableToolbar);
+                tableToolbar = createTableToolbar();
+                this.addComponent(tableToolbar);
 
-    			populateAndConfigureTable();
+                populateAndConfigureTable();
 
-    			this.addComponent(table);
-    			positionTable();
-    			setButtonVisibility();
-    		} finally {
-    			app1.setPusherDisabled(prevDisabled);
-    		}
-    	}
+                this.addComponent(table);
+                positionTable();
+                setButtonVisibility();
+            } finally {
+                app1.setPusherDisabled(prevDisabled);
+            }
+        }
 
     }
 
     /**
-	 * 
-	 */
+     * 
+     */
     protected void positionTable() {
         // make table consume all extra space
         this.setSizeFull();
@@ -141,7 +139,7 @@ public abstract class GenericList<T> extends VerticalLayout {
     protected void populateAndConfigureTable() {
 
         // FieldTable always generates fields to ensure consistent formatting.
-    	table = new FieldTable();
+        table = new FieldTable();
 
         table.setWidth("100%"); //$NON-NLS-1$
         table.setSelectable(true);
@@ -181,7 +179,7 @@ public abstract class GenericList<T> extends VerticalLayout {
      * By default, the same factory used by default for Form items is used.
      */
     protected void setTableFieldFactory() {
-        table.setTableFieldFactory(new CommonFieldFactory((HbnSessionManager) app));
+        table.setTableFieldFactory(new CommonFieldFactory(app));
     }
 
     /**
@@ -197,12 +195,12 @@ public abstract class GenericList<T> extends VerticalLayout {
             Action[] actions = new Action[] { add, remove };
 
             @Override
-			public Action[] getActions(Object target, Object sender) {
+            public Action[] getActions(Object target, Object sender) {
                 return actions;
             }
 
             @Override
-			public void handleAction(Action action, Object sender, Object targetId) {
+            public void handleAction(Action action, Object sender, Object targetId) {
                 if (action == add) {
                     newItem();
                 } else if (action == remove) {
@@ -249,7 +247,11 @@ public abstract class GenericList<T> extends VerticalLayout {
 
     protected abstract void setButtonVisibility();
 
-    protected abstract void clearCache();
+    public void clearCache() {
+        // brute force
+        table = null;
+        populateAndConfigureTable();
+    }
 
     protected abstract void loadData();
 
@@ -320,38 +322,38 @@ public abstract class GenericList<T> extends VerticalLayout {
         this.positionTable();
     }
 
-	/**
-	 * Guess expansion ratios.
-	 * Empirical; there is probably a better way.
-	 */
-	protected void setExpandRatios() {
-		Object[] visibleColumns = table.getVisibleColumns();
-		for (int i = 0; i < visibleColumns.length; i++) {
-	    	Object columnId = visibleColumns[i];
-	    	if (columnId.equals("lastName") ||columnId.equals("firstName")) {
-	    		table.setColumnExpandRatio(columnId, 1.0F);
-	    	} else {
-	    		table.setColumnExpandRatio(columnId, 0.0F);
-	    	}
-	    	
-	    }
-	}
-	
-	protected void editCompetitionSession(Object itemId, Item item) {
-    	if (itemId == null) {
-    		CompetitionApplication.getCurrent().getMainWindow().showNotification(
-    			Messages.getString("ResultList.sessionNotSelected", CompetitionApplication.getCurrentLocale()),
-    			Notification.TYPE_ERROR_MESSAGE);
-    		return;
-    	}
+    /**
+     * Guess expansion ratios.
+     * Empirical; there is probably a better way.
+     */
+    protected void setExpandRatios() {
+        Object[] visibleColumns = table.getVisibleColumns();
+        for (int i = 0; i < visibleColumns.length; i++) {
+            Object columnId = visibleColumns[i];
+            if (columnId.equals("lastName") ||columnId.equals("firstName")) {
+                table.setColumnExpandRatio(columnId, 1.0F);
+            } else {
+                table.setColumnExpandRatio(columnId, 0.0F);
+            }
+
+        }
+    }
+
+    protected void editCompetitionSession(Object itemId, Item item) {
+        if (itemId == null) {
+            CompetitionApplication.getCurrent().getMainWindow().showNotification(
+                    Messages.getString("ResultList.sessionNotSelected", CompetitionApplication.getCurrentLocale()),
+                    Notification.TYPE_ERROR_MESSAGE);
+            return;
+        }
         SessionForm form = new SessionForm();
-        
+
         form.setItemDataSource(item);
         form.setReadOnly(false);
 
         CompetitionSession competitionSession = (CompetitionSession) ItemAdapter.getObject(item);
         //logger.debug("retrieved session {} {}",System.identityHashCode(competitionSession), competitionSession.getReferee3());
-		Window editingWindow = new Window(competitionSession.getName());
+        Window editingWindow = new Window(competitionSession.getName());
         form.setWindow(editingWindow);
         form.setParentList(this);
         editingWindow.getContent().addComponent(form);

@@ -84,7 +84,7 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
         groupData = SessionData.getIndependentInstance();
         final CompetitionSession currentGroup = groupData.getCurrentSession();
         if (groupName != null && groupName.length() > 0) {
-            switchGroup(new CompetitionSessionLookup(app).lookup(groupName));
+            switchGroup(new CompetitionSessionLookup().lookup(groupName));
         } else {
             app.setCurrentCompetitionSession(currentGroup);
             if (currentGroup != null) {

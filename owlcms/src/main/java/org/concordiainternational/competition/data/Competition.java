@@ -13,12 +13,13 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.criteria.CriteriaQuery;
 
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -157,12 +158,9 @@ public class Competition implements Serializable {
 
     static Integer invitedThreshold = null;
 
-    @SuppressWarnings("unchecked")
     public static int invitedIfBornBefore() {
         if (invitedThreshold != null) return invitedThreshold;
-        final CompetitionApplication currentApp = CompetitionApplication.getCurrent();
-        final Session hbnSession = currentApp.getHbnSession();
-        List<Competition> competitions = hbnSession.createCriteria(Competition.class).list();
+        List<Competition> competitions = getAll();
         if (competitions.size() > 0) {
             final Competition competition = competitions.get(0);
             invitedThreshold = competition.getInvitedIfBornBefore();
@@ -171,20 +169,19 @@ public class Competition implements Serializable {
         return invitedThreshold;
     }
 
-    @SuppressWarnings("unchecked")
+
     static public List<Competition> getAll() {
-        final List<Competition> list = CompetitionApplication.getCurrent().getHbnSession().createCriteria(Competition.class).list();
-        return list;
+        EntityManager em = CompetitionApplication.getCurrent().getEntityManager();
+        CriteriaQuery<Competition> cq = em.getCriteriaBuilder().createQuery(Competition.class);
+        cq.from(Competition.class);
+        return em.createQuery(cq).getResultList();
     }
 
     static Boolean isMasters = null;
 
-    @SuppressWarnings("unchecked")
     public static boolean isMasters() {
         if (isMasters != null) return isMasters;
-        final CompetitionApplication currentApp = CompetitionApplication.getCurrent();
-        final Session hbnSession = currentApp.getHbnSession();
-        List<Competition> competitions = hbnSession.createCriteria(Competition.class).list();
+        List<Competition> competitions = getAll();
         if (competitions.size() > 0) {
             final Competition competition = competitions.get(0);
             isMasters = competition.getMasters();

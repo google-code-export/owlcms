@@ -10,11 +10,12 @@ package org.concordiainternational.competition.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.generators.CommonFieldFactory;
 import org.concordiainternational.competition.ui.list.GenericList;
 import org.concordiainternational.competition.utils.ItemAdapter;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +60,7 @@ public class SessionForm extends Form  {
 		public void buttonClick(ClickEvent event) {
 			commit();
 			Object object = ItemAdapter.getObject(item);
-			Session hbnSession = CompetitionApplication.getCurrent().getHbnSession();
+			EntityManager hbnSession = CompetitionApplication.getCurrent().getEntityManager();
 			hbnSession.merge(object);
 			hbnSession.flush();
 			closeWindow();

@@ -18,7 +18,7 @@ import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.generators.CommonColumnGenerator;
-import org.concordiainternational.competition.ui.list.GenericHbnList;
+import org.concordiainternational.competition.ui.list.GenericPersistedList;
 import org.concordiainternational.competition.utils.ItemAdapter;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -37,7 +37,7 @@ import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 import com.vaadin.ui.Window;
 
-public class SessionList extends GenericHbnList<CompetitionSession> implements ApplicationView {
+public class SessionList extends GenericPersistedList<CompetitionSession> implements ApplicationView {
 
     private static final long serialVersionUID = -6455130090728823622L;
     private String viewName;
@@ -180,7 +180,7 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
         Set<Lifter> lifters = competitionSession.getLifters();
         if (lifters != null && lifters.size() > 0) {
             nbLifters = lifters.size();
-            competitionSession.deleteLifters((CompetitionApplication) app);
+            competitionSession.deleteLifters(app.getEntityManager());
         }
         Locale locale = CompetitionApplication.getCurrentLocale();
 		String messageTemplate = Messages.getString("GroupList.erased", locale); //$NON-NLS-1$

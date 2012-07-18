@@ -129,10 +129,8 @@ public abstract class OutputSheet {
      * @throws CellTypeMismatchException
      * @throws CellNotFoundException
      */
-    @SuppressWarnings("unchecked")
     protected void writeHeader(WorkSheetHandle workSheet) throws CellTypeMismatchException, CellNotFoundException {
-        List<Competition> competitions = CompetitionApplication.getCurrent().getHbnSession().createCriteria(
-            Competition.class).list();
+        List<Competition> competitions = Competition.getAll();
         if (competitions.size() > 0) {
             final Competition competition = competitions.get(0);
             workSheet.getCell("A1").setVal(competition.getFederation()); //$NON-NLS-1$

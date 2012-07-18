@@ -14,7 +14,9 @@ import org.concordiainternational.competition.ui.CompetitionApplication;
  * @author jflamy
  *
  */
-public class TouchKitApplication extends CompetitionApplication {
+@SuppressWarnings("unused")
+public class TouchKitApplication //extends CompetitionApplication
+{
     private static final long serialVersionUID = 5474522369804563317L;
 
 //	@SuppressWarnings("unused")

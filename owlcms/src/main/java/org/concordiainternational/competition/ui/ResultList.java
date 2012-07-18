@@ -20,8 +20,6 @@ import org.concordiainternational.competition.publicAddress.PublicAddressForm;
 import org.concordiainternational.competition.spreadsheet.JXLSCompetitionBook;
 import org.concordiainternational.competition.spreadsheet.JXLSResultSheet;
 import org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource;
-import org.concordiainternational.competition.spreadsheet.MastersGroupResults;
-import org.concordiainternational.competition.spreadsheet.OutputSheetStreamSource;
 import org.concordiainternational.competition.ui.components.SessionSelect;
 import org.concordiainternational.competition.ui.generators.CommonColumnGenerator;
 import org.concordiainternational.competition.ui.generators.LiftCellStyleGenerator;
@@ -49,20 +47,20 @@ import com.vaadin.ui.Table;
  */
 
 public class ResultList extends GenericBeanList<Lifter> implements Property.ValueChangeListener, 
-        EditableList {
+EditableList {
     private static final Logger logger = LoggerFactory.getLogger(ResultList.class);
     private static final long serialVersionUID = -6455130090728823622L;
     private Application app = CompetitionApplication.getCurrent();
     private EditingView parentView;
     transient private SessionData data = null; // do not serialize
-	private SessionSelect sessionSelect;
+    private SessionSelect sessionSelect;
 
     private static String[] NATURAL_COL_ORDER = null;
     private static String[] COL_HEADERS = null;
 
     public ResultList(SessionData groupData, EditingView parentView) {
         super(CompetitionApplication.getCurrent(), Lifter.class, Messages.getString(
-            "ResultList.title", CompetitionApplication.getCurrentLocale())); //$NON-NLS-1$
+                "ResultList.title", CompetitionApplication.getCurrentLocale())); //$NON-NLS-1$
         this.parentView = parentView;
         this.data = groupData;
 
@@ -74,12 +72,12 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
      * editor once it has loaded the right lifter.
      */
     @Override
-	public void clearSelection() {
+    public void clearSelection() {
         table.select(null); // hide selection from table.
     }
 
     @Override
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public Lifter getFirstLifter() {
         BeanItem<Lifter> item = (BeanItem<Lifter>) table.getItem(table.firstItemId());
         if (item != null) return (Lifter) item.getBean();
@@ -87,7 +85,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
     }
 
     @Override
-	public Item getFirstLifterItem() {
+    public Item getFirstLifterItem() {
         return table.getItem(table.firstItemId());
     }
 
@@ -117,7 +115,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
     }
 
     @Override
-	public void setGroupData(SessionData data) {
+    public void setGroupData(SessionData data) {
         this.data = data;
     }
 
@@ -144,7 +142,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
                 // override, but don't reload the lifter info
                 parentView.setStickyEditor(false, false);
                 parentView.editLifter(lifter, item); // only bottom part
-                                                     // changes.
+                // changes.
             }
         }
     }
@@ -158,14 +156,14 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
         table.setColumnAlignment("totalRank",Table.ALIGN_RIGHT);
         table.setColumnAlignment("lastName",Table.ALIGN_LEFT);
         table.setColumnAlignment("firstName",Table.ALIGN_LEFT);
-        
+
         if (WinningOrderComparator.useRegistrationCategory) {
             table.addGeneratedColumn("registrationCategory", columnGenerator); //$NON-NLS-1$
         } else {
             table.addGeneratedColumn("category", columnGenerator); //$NON-NLS-1$
         }
         table.addGeneratedColumn("total", columnGenerator); //$NON-NLS-1$
-        
+
         setExpandRatios();
     }
 
@@ -182,7 +180,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
                 private static final long serialVersionUID = -8473648982746209221L;
 
                 @Override
-				public void buttonClick(ClickEvent event) {
+                public void buttonClick(ClickEvent event) {
                     resultSpreadsheetButton.setComponentError(null);
 
                     if (!Competition.isMasters()) {
@@ -197,16 +195,14 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
                  * @throws RuntimeException
                  */
                 private void regularCompetition(final Locale locale1) throws RuntimeException {
-                	final JXLSWorkbookStreamSource streamSource = new JXLSResultSheet();
-//                    final OutputSheetStreamSource<ResultSheet> streamSource = new OutputSheetStreamSource<ResultSheet>(
-//                            ResultSheet.class, (CompetitionApplication) app, true);
+                    final JXLSWorkbookStreamSource streamSource = new JXLSResultSheet();
                     if (streamSource.size() == 0) {
                         setComponentError(new SystemError(Messages.getString("ResultList.NoResults", locale1))); //$NON-NLS-1$
                         throw new RuntimeException(Messages.getString("ResultList.NoResults", locale1)); //$NON-NLS-1$
                     }
 
                     String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss") //$NON-NLS-1$
-                            .format(new Date());
+                    .format(new Date());
                     ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("ResultList.ResultsPrefix", locale) + now); //$NON-NLS-1$
                 }
 
@@ -215,16 +211,16 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
                  * @throws RuntimeException
                  */
                 private void mastersCompetition(final Locale locale1) throws RuntimeException {
-                    final OutputSheetStreamSource<MastersGroupResults> streamSource = new OutputSheetStreamSource<MastersGroupResults>(
-                            MastersGroupResults.class, (CompetitionApplication) app, true);
-                    if (streamSource.size() == 0) {
-                        setComponentError(new SystemError(Messages.getString("ResultList.NoResults", locale1))); //$NON-NLS-1$
-                        throw new RuntimeException(Messages.getString("ResultList.NoResults", locale1)); //$NON-NLS-1$
-                    }
-
-                    String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss") //$NON-NLS-1$
-                            .format(new Date());
-                    ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("ResultList.ResultsPrefix", locale) + now); //$NON-NLS-1$
+                    //                    final OutputSheetStreamSource<MastersGroupResults> streamSource = new OutputSheetStreamSource<MastersGroupResults>(
+                    //                            MastersGroupResults.class, (CompetitionApplication) app, true);
+                    //                    if (streamSource.size() == 0) {
+                    //                        setComponentError(new SystemError(Messages.getString("ResultList.NoResults", locale1))); //$NON-NLS-1$
+                    //                        throw new RuntimeException(Messages.getString("ResultList.NoResults", locale1)); //$NON-NLS-1$
+                    //                    }
+                    //
+                    //                    String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss") //$NON-NLS-1$
+                    //                            .format(new Date());
+                    //                    ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("ResultList.ResultsPrefix", locale) + now); //$NON-NLS-1$
                 }
             };
             resultSpreadsheetButton.addListener(listener);
@@ -233,34 +229,23 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
 
         {
             final Button teamResultSpreadsheetButton = new Button(Messages.getString(
-                "ResultList.TeamResultSheet", locale)); //$NON-NLS-1$
+                    "ResultList.TeamResultSheet", locale)); //$NON-NLS-1$
             final Button.ClickListener teamResultClickListener = new Button.ClickListener() { //$NON-NLS-1$
                 private static final long serialVersionUID = -8473648982746209221L;
 
                 @Override
-				public void buttonClick(ClickEvent event) {
+                public void buttonClick(ClickEvent event) {
                     teamResultSpreadsheetButton.setComponentError(null);
-                    
-                	final JXLSWorkbookStreamSource streamSource = new JXLSCompetitionBook();
-                	if (streamSource.size() == 0) {
-                		setComponentError(new SystemError(Messages.getString("ResultList.NoResults", locale))); //$NON-NLS-1$
-                		throw new RuntimeException(Messages.getString("ResultList.NoResults", locale)); //$NON-NLS-1$
-                	}
 
-                	String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss") //$NON-NLS-1$
-                	.format(new Date());
-                	((UserActions) app).openSpreadsheet(streamSource, Messages.getString("ResultList.TeamPrefix", locale) + now); //$NON-NLS-1$
-                  
-//                    final OutputSheetStreamSource<CompetitionBook> streamSource = new OutputSheetStreamSource<CompetitionBook>(
-//                            CompetitionBook.class, (CompetitionApplication) app, true);
-//                    if (streamSource.size() == 0) {
-//                        setComponentError(new SystemError(Messages.getString("ResultList.NoResults", locale))); //$NON-NLS-1$
-//                        throw new RuntimeException(Messages.getString("ResultList.NoResults", locale)); //$NON-NLS-1$
-//                    }
-//
-//                    String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss") //$NON-NLS-1$
-//                            .format(new Date());
-//                    ((UserActions) app).openSpreadsheet(streamSource, "teamResults_" + now); //$NON-NLS-1$
+                    final JXLSWorkbookStreamSource streamSource = new JXLSCompetitionBook();
+                    if (streamSource.size() == 0) {
+                        setComponentError(new SystemError(Messages.getString("ResultList.NoResults", locale))); //$NON-NLS-1$
+                        throw new RuntimeException(Messages.getString("ResultList.NoResults", locale)); //$NON-NLS-1$
+                    }
+
+                    String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss") //$NON-NLS-1$
+                    .format(new Date());
+                    ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("ResultList.TeamPrefix", locale) + now); //$NON-NLS-1$
                 }
             };
             teamResultSpreadsheetButton.addListener(teamResultClickListener);
@@ -272,35 +257,35 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
             private static final long serialVersionUID = 7744958942977063130L;
 
             @Override
-			public void buttonClick(ClickEvent event) {
+            public void buttonClick(ClickEvent event) {
                 logger.debug("reloading"); //$NON-NLS-1$
                 data.refresh(false);
             }
         };
         refreshButton.addListener(refreshClickListener);
         tableToolbar1.addComponent(refreshButton);
-        
+
         final Button editButton = new Button(Messages.getString("ResultList.edit", locale)); //$NON-NLS-1$
         final Button.ClickListener editClickListener = new Button.ClickListener() { //$NON-NLS-1$
             private static final long serialVersionUID = 7744958942977063130L;
 
             @Override
-			public void buttonClick(ClickEvent event) {
-            	editCompetitionSession(sessionSelect.getSelectedId(),sessionSelect.getSelectedItem());
+            public void buttonClick(ClickEvent event) {
+                editCompetitionSession(sessionSelect.getSelectedId(),sessionSelect.getSelectedItem());
             }
         };
         editButton.addListener(editClickListener);
         tableToolbar1.addComponent(editButton);
-        
+
         final Button publicAddressButton = new Button(Messages.getString("LiftList.publicAddress", app.getLocale())); //$NON-NLS-1$
         final Button.ClickListener publicAddressClickListener = new Button.ClickListener() { //$NON-NLS-1$
             private static final long serialVersionUID = 7744958942977063130L;
 
             @Override
-			public void buttonClick(ClickEvent event) {
-            	CompetitionApplication current = CompetitionApplication.getCurrent();
-            	SessionData masterData = current.getMasterData(current.getPlatformName());
-				PublicAddressForm.editPublicAddress(ResultList.this, masterData);
+            public void buttonClick(ClickEvent event) {
+                CompetitionApplication current = CompetitionApplication.getCurrent();
+                SessionData masterData = current.getMasterData(current.getPlatformName());
+                PublicAddressForm.editPublicAddress(ResultList.this, masterData);
             }
         };
         publicAddressButton.addListener(publicAddressClickListener);
@@ -333,7 +318,7 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
                 Messages.getString("Lifter.total", locale), //$NON-NLS-1$
                 Messages.getString("Lifter.sinclair", locale), //$NON-NLS-1$
                 Messages.getString("Lifter.sinclairCat", locale), //$NON-NLS-1$
-                
+
         };
         return COL_HEADERS;
     }
@@ -353,17 +338,17 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
                 (WinningOrderComparator.useRegistrationCategory ? "registrationCategory" //$NON-NLS-1$
                         : (Competition.isMasters() ? "mastersLongCategory" //$NON-NLS-1$
                                 : "category")), //$NON-NLS-1$		
-                "bodyWeight", //$NON-NLS-1$
-                "club", //$NON-NLS-1$
-                "snatch1ActualLift", //$NON-NLS-1$
-                "snatch2ActualLift", //$NON-NLS-1$
-                "snatch3ActualLift", //$NON-NLS-1$
-                "cleanJerk1ActualLift", //$NON-NLS-1$
-                "cleanJerk2ActualLift", //$NON-NLS-1$
-                "cleanJerk3ActualLift", //$NON-NLS-1$
-                "total", //$NON-NLS-1$
-                "sinclair", //$NON-NLS-1$
-                "categorySinclair", //$NON-NLS-1$
+                                "bodyWeight", //$NON-NLS-1$
+                                "club", //$NON-NLS-1$
+                                "snatch1ActualLift", //$NON-NLS-1$
+                                "snatch2ActualLift", //$NON-NLS-1$
+                                "snatch3ActualLift", //$NON-NLS-1$
+                                "cleanJerk1ActualLift", //$NON-NLS-1$
+                                "cleanJerk2ActualLift", //$NON-NLS-1$
+                                "cleanJerk3ActualLift", //$NON-NLS-1$
+                                "total", //$NON-NLS-1$
+                                "sinclair", //$NON-NLS-1$
+                                "categorySinclair", //$NON-NLS-1$
         };
         return NATURAL_COL_ORDER;
     }
@@ -382,9 +367,9 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
      */
     @Override
     protected void loadData() {
-    	
+
         List<Lifter> lifters = data.getResultOrder();
-//        logger.debug("loading data lifters={}",lifters);
+        //        logger.debug("loading data lifters={}",lifters);
         if (lifters != null && !lifters.isEmpty()) {
             final BeanItemContainer<Lifter> cont = new BeanItemContainer<Lifter>(Lifter.class,lifters);
             table.setContainerDataSource(cont);
@@ -397,11 +382,11 @@ public class ResultList extends GenericBeanList<Lifter> implements Property.Valu
     @Override
     protected void populateAndConfigureTable() {
         super.populateAndConfigureTable(); // this creates a new table and calls
-                                           // loadData (below)
-        
+        // loadData (below)
+
         table.setColumnExpandRatio("lastName",100F);
         table.setColumnExpandRatio("firstName",100F);
-        
+
         if (table.size() > 0) {
             table.setEditable(false);
             table.addListener(this); // listen to selection events

@@ -20,12 +20,10 @@ import org.concordiainternational.competition.ui.components.PlatformSelect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.Application;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Validator;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 import com.vaadin.data.validator.DoubleValidator;
 import com.vaadin.ui.AbstractField;
 import com.vaadin.ui.CheckBox;
@@ -45,10 +43,10 @@ public class CommonFieldFactory extends DefaultFieldFactory {
 	@SuppressWarnings("unused")
 	private static Logger logger = LoggerFactory.getLogger(CommonFieldFactory.class);
 
-    private Application app;
+    private CompetitionApplication app;
 
-    public CommonFieldFactory(HbnSessionManager app) {
-        this.app = (Application) app;
+    public CommonFieldFactory(CompetitionApplication app2) {
+        this.app = app2;
     }
 
 
