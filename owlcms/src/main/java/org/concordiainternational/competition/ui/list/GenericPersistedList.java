@@ -8,10 +8,9 @@
 package org.concordiainternational.competition.ui.list;
 
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.vaadin.addons.criteriacontainer.CriteriaContainer;
 
-import com.vaadin.Application;
-import com.vaadin.data.hbnutil.HbnContainer;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -20,11 +19,11 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
 
-public abstract class GenericHbnList<T> extends GenericList<T> {
+public abstract class GenericPersistedList<T> extends GenericList<T> {
 
     private static final long serialVersionUID = 8085082497600453476L;
 
-    public GenericHbnList(Application app, Class<T> parameterizedClass, String caption) {
+    public GenericPersistedList(CompetitionApplication app, Class<T> parameterizedClass, String caption) {
         super(app, parameterizedClass, caption);
     }
 
@@ -34,15 +33,8 @@ public abstract class GenericHbnList<T> extends GenericList<T> {
     @Override
     protected void loadData() {
         // System.err.println("GenericHbnList: loadData()");
-        final HbnContainer<T> cont = new HbnContainer<T>(parameterizedClass, (HbnSessionManager) app);
+        final CriteriaContainer<T> cont = new CriteriaContainer<T>(app.getEntityManager(), true, true, parameterizedClass, 100);
         table.setContainerDataSource(cont);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void clearCache() {
-        // System.err.println("GenericHbnList: clearCache()");
-        ((HbnContainer<T>) table.getContainerDataSource()).clearCache();
     }
 
     /**

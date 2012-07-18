@@ -11,18 +11,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import javax.persistence.EntityManager;
+
 import org.concordiainternational.competition.data.Category;
 import org.concordiainternational.competition.data.CategoryContainer;
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CategoryLookupByName;
 import org.concordiainternational.competition.data.Gender;
+import org.concordiainternational.competition.webapp.EntityManagerProvider;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.vaadin.data.hbnutil.HbnContainer;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 /**
  * @author jflamy
@@ -30,25 +30,26 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
  */
 public class CategoryLookupTest {
 
-    HbnSessionManager hbnSessionManager = AllTests.getSessionManager();
-    HbnContainer<Category> categories = null;
+    EntityManagerProvider managerProvider = new AllTests();
+    CategoryContainer categories = null;
     CategoryLookup categoryLookup = null;
     CategoryLookupByName categoryLookupByName;
 
     @Before
     public void setupTest() {
-        Assert.assertNotNull(hbnSessionManager);
-        Assert.assertNotNull(hbnSessionManager.getHbnSession());
-        hbnSessionManager.getHbnSession().beginTransaction();
-        categories = new CategoryContainer(hbnSessionManager,true);
-        categoryLookup = CategoryLookup.getSharedInstance(hbnSessionManager);
+        Assert.assertNotNull(managerProvider);
+        EntityManager entityManager = managerProvider.getEntityManager();
+        Assert.assertNotNull(entityManager);
+        entityManager.getTransaction().begin();
+        categories = new CategoryContainer(entityManager,true);
+        categoryLookup = CategoryLookup.getSharedInstance(entityManager);
         categoryLookup.reload();
-        categoryLookupByName = new CategoryLookupByName(hbnSessionManager);
+        categoryLookupByName = new CategoryLookupByName();
     }
 
     @After
     public void tearDownTest() {
-        hbnSessionManager.getHbnSession().close();
+        managerProvider.getEntityManager().close();
     }
 
     /**

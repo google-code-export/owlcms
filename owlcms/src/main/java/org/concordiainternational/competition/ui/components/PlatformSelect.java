@@ -11,18 +11,18 @@ import java.io.Serializable;
 import java.util.Set;
 
 import org.concordiainternational.competition.data.Platform;
+import org.concordiainternational.competition.data.PlatformContainer;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.utils.ItemAdapter;
 
-import com.vaadin.data.hbnutil.HbnContainer;
 import com.vaadin.ui.ListSelect;
 
 @SuppressWarnings("unchecked")
 public class PlatformSelect extends ListSelect implements Serializable {
 
     private static final long serialVersionUID = -5471881649385421098L;
-    HbnContainer<Platform> dataSource;
+    PlatformContainer dataSource;
     CompetitionApplication app;
 
     /**
@@ -33,7 +33,7 @@ public class PlatformSelect extends ListSelect implements Serializable {
     public PlatformSelect() {
         final PlatformSelect platformSelect = this;
         app = CompetitionApplication.getCurrent();
-        dataSource = new HbnContainer<Platform>(Platform.class, app);
+        dataSource = new PlatformContainer(app.getEntityManager());
         platformSelect.setContainerDataSource(dataSource);
         platformSelect.setItemCaptionPropertyId("name"); //$NON-NLS-1$
         platformSelect.setImmediate(true);

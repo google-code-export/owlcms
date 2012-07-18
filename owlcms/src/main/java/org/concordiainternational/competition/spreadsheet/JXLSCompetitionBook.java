@@ -28,7 +28,6 @@ import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter.Ranking;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,13 +67,11 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         return resourceAsStream;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void init() {
         super.init();
 
-        final Session hbnSession = CompetitionApplication.getCurrent().getHbnSession();
-        List<Competition> competitionList = hbnSession.createCriteria(Competition.class).list();
+        List<Competition> competitionList = Competition.getAll();
         Competition competition = competitionList.get(0);
         getReportingBeans().put("competition",competition);
     }
@@ -84,7 +81,10 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
     protected void getSortedLifters() {
         HashMap<String, Object> reportingBeans = getReportingBeans();
 
-        this.lifters = new LifterContainer(CompetitionApplication.getCurrent(),isExcludeNotWeighed()).getAllPojos();
+        LifterContainer lc = new LifterContainer(CompetitionApplication.getCurrent());
+        lc.setExcludeNonWeighed(isExcludeNotWeighed());
+        lc.setCurrentSession(CompetitionApplication.getCurrent().getCurrentCompetitionSession());
+        lifters = lc.getAll();
         if (lifters.isEmpty()) {
             // prevent outputting silliness.
             throw new RuntimeException(Messages.getString(

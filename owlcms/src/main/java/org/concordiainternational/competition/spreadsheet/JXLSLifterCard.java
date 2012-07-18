@@ -69,7 +69,7 @@ public class JXLSLifterCard extends JXLSWorkbookStreamSource {
 
 	@Override
 	protected void getSortedLifters()  {
-		this.lifters = LifterSorter.registrationOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAllPojos());
+		this.lifters = LifterSorter.registrationOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAll());
 	}
 
 	/* (non-Javadoc)

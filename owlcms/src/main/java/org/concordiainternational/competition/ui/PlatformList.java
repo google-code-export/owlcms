@@ -15,15 +15,15 @@ import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.Speakers;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
-import org.concordiainternational.competition.ui.list.GenericHbnList;
+import org.concordiainternational.competition.ui.list.GenericPersistedList;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.LoggerFactory;
+import org.vaadin.addons.criteriacontainer.NestedBeanItem;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.data.hbnutil.HbnContainer.EntityItem;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -37,7 +37,7 @@ import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
-public class PlatformList extends GenericHbnList<Platform> implements ApplicationView {
+public class PlatformList extends GenericPersistedList<Platform> implements ApplicationView {
 
     private static final long serialVersionUID = -6455130090728823622L;
     private String viewName;
@@ -156,10 +156,10 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
 	                	// ensure that the setMixerName() method is called right away.  But
 	                	// we would like audio feedback right away if there are multiple audio devices.
 	                	ls.addListener(new ValueChangeListener() {
-							@SuppressWarnings("rawtypes")
 							@Override
 							public void valueChange(ValueChangeEvent event) {
-								Platform pl = (Platform)((EntityItem) item).getPojo();
+								@SuppressWarnings("unchecked")
+                                Platform pl = ((NestedBeanItem<Platform>) item).getBean();
 								pl.setMixerName((String) event.getProperty().getValue());
 								new Speakers().testSound(pl.getMixer());
 							}

@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.persistence.EntityManager;
+
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.CompetitionSessionLookup;
@@ -30,11 +32,8 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.SessionSelect;
 import org.concordiainternational.competition.ui.generators.CommonColumnGenerator;
 import org.concordiainternational.competition.ui.generators.LiftCellStyleGenerator;
-import org.concordiainternational.competition.ui.list.LifterHbnList;
+import org.concordiainternational.competition.ui.list.LifterPersistedList;
 import org.concordiainternational.competition.utils.ItemAdapter;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.SystemError;
@@ -45,7 +44,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
-public class WeighInList extends LifterHbnList implements ApplicationView, Bookmarkable {
+public class WeighInList extends LifterPersistedList implements ApplicationView, Bookmarkable {
 
     private static final long serialVersionUID = -6455130090728823622L;
     private boolean admin = false;
@@ -96,10 +95,6 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
         table.setContainerDataSource(cont);
     }
 
-    @Override
-    public void clearCache() {
-        ((LifterContainer) table.getContainerDataSource()).clearCache();
-    }
 
     @Override
     protected void createToolbarButtons(HorizontalLayout tableToolbar1) {
@@ -319,26 +314,20 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
      * Delete lifters from current group (all lifters if no current group)
      */
     protected void clearAllLifters() {
-        final Session session = CompetitionApplication.getCurrent().getHbnSession();
+        final EntityManager session = CompetitionApplication.getCurrent().getEntityManager();
         final List<Lifter> list = allLifters(true);
         for (Lifter curLifter : list) {
-            session.delete(curLifter);
+            session.remove(curLifter);
         }
         this.refresh();
     }
 
-    @SuppressWarnings("unchecked")
     protected List<Lifter> allLifters(boolean restrictToCurrentGroup) {
-        final CompetitionApplication compApp = (CompetitionApplication) app;
-        final Session session = compApp.getHbnSession();
-        Criteria crit = session.createCriteria(Lifter.class);
-        final CompetitionSession currentGroup = compApp.getCurrentCompetitionSession();
-        final String name = (currentGroup != null ? (String) currentGroup.getName() : null);
-        if (restrictToCurrentGroup && currentGroup != null) {
-            crit.createCriteria("competitionSession").add( //$NON-NLS-1$
-                Restrictions.eq("name", name)); //$NON-NLS-1$
+        LifterContainer cont = new LifterContainer(app.getEntityManager());
+        if (restrictToCurrentGroup) {
+            cont.setCurrentSession(app.getCurrentCompetitionSession());
         }
-        return (List<Lifter>) crit.list();
+        return cont.getAll();
     }
 
     private String[] NATURAL_COL_ORDER = null;
@@ -529,7 +518,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
         if (params.length >= 3) {
             groupName = params[2];
             final CompetitionApplication cApp = (CompetitionApplication)app;
-            cApp.setCurrentCompetitionSession(new CompetitionSessionLookup(cApp).lookup(groupName));
+            cApp.setCurrentCompetitionSession(new CompetitionSessionLookup().lookup(groupName));
         } else {
             groupName = null;
         }

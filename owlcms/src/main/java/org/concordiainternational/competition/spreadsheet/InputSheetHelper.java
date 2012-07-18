@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.concordiainternational.competition.data.Category;
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CategoryLookupByName;
@@ -22,7 +24,6 @@ import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.CompetitionSessionLookup;
 import org.concordiainternational.competition.data.Gender;
 import org.concordiainternational.competition.data.Lifter;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,6 @@ import com.extentech.ExtenXLS.WorkBookHandle;
 import com.extentech.ExtenXLS.WorkSheetHandle;
 import com.extentech.formats.XLS.CellNotFoundException;
 import com.extentech.formats.XLS.WorkSheetNotFoundException;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 public class InputSheetHelper implements InputSheet {
     final private static Logger logger = LoggerFactory.getLogger(InputSheetHelper.class);
@@ -52,10 +52,10 @@ public class InputSheetHelper implements InputSheet {
 
 	private WorkSheetHandle workSheet;
 
-    InputSheetHelper(HbnSessionManager hbnSessionManager, LifterReader reader) {
-        categoryLookup = CategoryLookup.getSharedInstance(hbnSessionManager);
-        categoryLookupByName = new CategoryLookupByName(hbnSessionManager);
-        competitionSessionLookup = new CompetitionSessionLookup(hbnSessionManager);
+    InputSheetHelper(LifterReader reader) {
+        categoryLookup = CategoryLookup.getSharedInstance();
+        categoryLookupByName = new CategoryLookupByName();
+        competitionSessionLookup = new CompetitionSessionLookup();
         this.reader = reader;
     }
 
@@ -63,7 +63,7 @@ public class InputSheetHelper implements InputSheet {
      * @see org.concordiainternational.competition.spreadsheet.InputSheet#getAllLifters(java.io.InputStream, com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager)
      */
     @Override
-	public synchronized List<Lifter> getAllLifters(InputStream is, HbnSessionManager sessionMgr) throws IOException,
+	public synchronized List<Lifter> getAllLifters(InputStream is, EntityManager sessionMgr) throws IOException,
             CellNotFoundException, WorkSheetNotFoundException {
 
 
@@ -109,11 +109,11 @@ public class InputSheetHelper implements InputSheet {
 		}
 	}
     
-	public void readHeader(InputStream is, HbnSessionManager sessionMgr) 
+	public void readHeader(InputStream is, EntityManager sessionMgr) 
 	throws CellNotFoundException, WorkSheetNotFoundException, IOException {
 		try {
 			getWorkSheet(is);
-            readHeader(sessionMgr.getHbnSession());
+            readHeader(sessionMgr);
         } finally {
             // close workbook file and hide lock
             if (workBookHandle != null) workBookHandle.close();
@@ -130,7 +130,7 @@ public class InputSheetHelper implements InputSheet {
      * org.concordia_international.reader.ResultSheet#getGroup(java.lang.String)
      */
     @Override
-	public List<Lifter> getGroupLifters(InputStream is, String aGroup, HbnSessionManager session) throws IOException,
+	public List<Lifter> getGroupLifters(InputStream is, String aGroup, EntityManager session) throws IOException,
             CellNotFoundException, WorkSheetNotFoundException {
         List<Lifter> groupLifters = new ArrayList<Lifter>();
         for (Lifter curLifter : getAllLifters(is, session)) {
@@ -241,9 +241,8 @@ public class InputSheetHelper implements InputSheet {
         }
     }
     
-    @SuppressWarnings( { "unchecked" })
-    public void readHeader(Session hbnSession) throws CellNotFoundException {
-        List<Competition> competitions = hbnSession.createCriteria(Competition.class).list();
+    public void readHeader(EntityManager sessionMgr) throws CellNotFoundException {
+        List<Competition> competitions = Competition.getAll();
         if (competitions.size() > 0) {
             final Competition competition = competitions.get(0);
             competition.setFederation(workSheet.getCell("A1").getStringVal()); //$NON-NLS-1$

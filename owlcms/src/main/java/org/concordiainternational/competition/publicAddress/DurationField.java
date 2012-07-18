@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Field;
-import com.vaadin.ui.FieldWrapper;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -27,7 +26,7 @@ import com.vaadin.ui.VerticalLayout;
  *
  */
 @SuppressWarnings("serial")
-public class DurationField extends FieldWrapper<Integer>{
+public class DurationField extends org.vaadin.addon.customfield.FieldWrapper<Integer>{
 
 	private Logger logger = LoggerFactory.getLogger(DurationField.class);
 

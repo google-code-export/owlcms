@@ -11,9 +11,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.vaadin.data.hbnutil.HbnContainer;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
-
 /**
  * Utility class to compute a lifter's category. Category definitions are
  * retrieved from the database. Only categories marked as active are considered
@@ -25,14 +22,12 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 public class CategoryLookupByName {
 
     private List<Category> categories;
-    private HbnSessionManager hbnSessionManager;
 
     /**
-     * @param hbnSessionManager
-     *            required because we are using Hibernate to filter categories.
+     * @param EntityManager
+     *            required because we are using JPA to filter categories.
      */
-    public CategoryLookupByName(HbnSessionManager hbnSessionManager) {
-        this.hbnSessionManager = hbnSessionManager;
+    public CategoryLookupByName() {
         reload();
     }
 
@@ -79,16 +74,13 @@ public class CategoryLookupByName {
      * Reload cache from database. Only categories marked as active are loaded.
      */
     public void reload() {
-        final HbnContainer<Category> categoriesFromDb = new HbnContainer<Category>(Category.class, hbnSessionManager);
-        categoriesFromDb.addContainerFilter("active", "true", false, false); //$NON-NLS-1$ //$NON-NLS-2$
-        categories = categoriesFromDb.getAllPojos();
+        categories = Category.getAllActive();
         Collections.sort(categories, sortComparator);
     }
 
     public Category lookup(String catString) {
         // in order to use the predefined Java sorting routine, we place the
-        // data from our lifter
-        // inside a fake Category, and search for it.
+        // data from our lifter inside a fake Category, and search for it.
         int index = Collections.binarySearch(categories, new Category(catString.toLowerCase().trim(), 0.0, 0.0, null,
                 false), nameComparator);
         if (index >= 0) return categories.get(index);

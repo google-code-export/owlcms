@@ -16,6 +16,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+
 import org.concordiainternational.competition.data.Category;
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CategoryLookupByName;
@@ -36,7 +38,6 @@ import org.supercsv.util.CSVContext;
 
 import com.extentech.formats.XLS.CellNotFoundException;
 import com.extentech.formats.XLS.WorkSheetNotFoundException;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 /**
  * Read registration data in CSV format.
@@ -56,18 +57,17 @@ public class InputCSVHelper implements InputSheet {
 	private CategoryLookupByName categoryLookupByName;
 	private CellProcessor[] processors;
 
-	InputCSVHelper(HbnSessionManager hbnSessionManager) {
-		initProcessors(hbnSessionManager);
+	InputCSVHelper() {
+		initProcessors();
 	}
 
 	/**
 	 * Configure the cell validators and value converters.
-	 * 
-	 * @param hbnSessionManager to access current database.
+	 * @param EntityManager to access current database.
 	 */
-	private void initProcessors(HbnSessionManager hbnSessionManager) {
-		categoryLookupByName = new CategoryLookupByName(hbnSessionManager);
-		competitionSessionLookup = new CompetitionSessionLookup(hbnSessionManager);
+	private void initProcessors() {
+		categoryLookupByName = new CategoryLookupByName();
+		competitionSessionLookup = new CompetitionSessionLookup();
 		
 		List<CompetitionSession> sessionList = CompetitionSession.getAll();
 		Set<Object> sessionNameSet = new HashSet<Object>();
@@ -93,7 +93,7 @@ public class InputCSVHelper implements InputSheet {
 
 
 	@Override
-	public synchronized List<Lifter> getAllLifters(InputStream is, HbnSessionManager sessionMgr) throws IOException,
+	public synchronized List<Lifter> getAllLifters(InputStream is, EntityManager sessionMgr) throws IOException,
 	CellNotFoundException, WorkSheetNotFoundException {
 		LinkedList<Lifter> allLifters = new LinkedList<Lifter>() ;
 
@@ -156,7 +156,7 @@ public class InputCSVHelper implements InputSheet {
 	 * (non-Javadoc)
 	 */
 	@Override
-	public List<Lifter> getGroupLifters(InputStream is, String aGroup, HbnSessionManager session) throws IOException,
+	public List<Lifter> getGroupLifters(InputStream is, String aGroup, EntityManager session) throws IOException,
 	CellNotFoundException, WorkSheetNotFoundException {
 		List<Lifter> groupLifters = new ArrayList<Lifter>();
 		for (Lifter curLifter : getAllLifters(is, session)) {

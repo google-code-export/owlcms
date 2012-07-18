@@ -16,6 +16,7 @@ import java.net.SocketException;
 import java.net.URL;
 import java.util.Locale;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,9 +32,8 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.Menu;
 import org.concordiainternational.competition.ui.components.ResultFrame;
 import org.concordiainternational.competition.utils.Localized;
+import org.concordiainternational.competition.webapp.EntityManagerProvider;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -43,7 +43,6 @@ import org.vaadin.artur.icepush.ICEPush;
 
 import com.vaadin.Application;
 import com.vaadin.data.Buffered;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 import com.vaadin.event.ListenerMethod;
 import com.vaadin.service.ApplicationContext;
 import com.vaadin.service.ApplicationContext.TransactionListener;
@@ -69,7 +68,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
-public class CompetitionApplication extends Application implements HbnSessionManager, UserActions, Serializable  {
+public class CompetitionApplication extends Application implements EntityManagerProvider, UserActions, Serializable  {
     private static final long serialVersionUID = -1774806616519381075L;
 
     /**
@@ -338,13 +337,23 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * Used to get current Hibernate session. Also ensures an open Hibernate
      * transaction.
      */
-    @Override
-	public Session getHbnSession() {
-        Session currentSession = getCurrentSession();
+	public EntityManager startTransaction() {
+        EntityManager currentSession = getEntityManager();
         if (!currentSession.getTransaction().isActive()) {
-            currentSession.beginTransaction();
+            currentSession.getTransaction().begin();
         }
         return currentSession;
+    }
+    
+    private void endTransaction() {
+        EntityManager sess = getEntityManager();
+        if (sess.getTransaction().isActive()) {
+            sess.getTransaction().commit();
+            if (sess.isOpen()) sess.flush();
+        }
+        if (sess.isOpen()) {
+            sess.close();
+        }
     }
 
     
@@ -637,7 +646,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
                 // Transaction listener gets fired for all (Http) sessions
                 // of Vaadin applications, checking to be this one.
                 if (application == CompetitionApplication.this) {
-                    closeHibernateSession();
+                    endTransaction();
                 }
                 current.remove();
             }
@@ -806,29 +815,6 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         }
     }
 
-    private void closeHibernateSession() {
-        Session sess = getCurrentSession();
-        if (sess.getTransaction().isActive()) {
-            sess.getTransaction().commit();
-            if (sess.isOpen()) sess.flush();
-        }
-        if (sess.isOpen()) {
-            sess.close();
-        }
-    }
-
-    /**
-     * Get a Hibernate session so objects can be stored. If running as a junit
-     * test, we call the session factory with parameters that tell it not to
-     * persist the database.
-     * 
-     * @return a Hibernate session
-     * @throws HibernateException
-     */
-    private Session getCurrentSession() throws HibernateException {
-        return WebApplicationConfiguration.getSessionFactory().getCurrentSession();
-    }
-
     protected void displayView(String frag) {
         logger.debug("request to display view {}", frag); //$NON-NLS-1$
         ApplicationView view = components.getViewByName(frag, true); // initialize from URI fragment
@@ -858,6 +844,17 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 	public MobileMenu getMobileMenu() {
 		return mobileMenu;
 	}
-    
+
+
+    /**
+     *  If running as a junit
+     * test, we call the session factory with parameters that tell it not to
+     * persist the database.
+     */
+    @Override
+    public EntityManager getEntityManager() {
+        return WebApplicationConfiguration.getEntityManagerFactory().createEntityManager();
+    }
+
 }
 

@@ -59,11 +59,9 @@ public class SheetUtils {
      * @return
      * @throws HibernateException
      */
-    @SuppressWarnings("unchecked")
     static Competition getCompetition() throws HibernateException {
         if (competition == null) {
-            List<Competition> competitions = CompetitionApplication.getCurrent().getHbnSession().createCriteria(
-                Competition.class).list();
+            List<Competition> competitions = Competition.getAll();
             if (competitions.size() > 0) competition = competitions.get(0);
         }
         return competition;

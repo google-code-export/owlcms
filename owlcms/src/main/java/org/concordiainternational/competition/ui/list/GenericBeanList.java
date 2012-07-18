@@ -10,9 +10,11 @@ package org.concordiainternational.competition.ui.list;
 import java.io.Serializable;
 import java.util.List;
 
-import com.vaadin.Application;
-import com.vaadin.data.hbnutil.HbnContainer;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaQuery;
+
+import org.concordiainternational.competition.ui.CompetitionApplication;
+
 import com.vaadin.data.util.BeanItemContainer;
 
 /**
@@ -30,7 +32,7 @@ public abstract class GenericBeanList<T extends Serializable> extends GenericLis
     private static final long serialVersionUID = -5396475029309979597L;
     protected List<T> allPojos;
 
-    public GenericBeanList(Application app, Class<T> parameterizedClass, String caption) {
+    public GenericBeanList(CompetitionApplication app, Class<T> parameterizedClass, String caption) {
         super(app, parameterizedClass, caption);
     }
 
@@ -50,18 +52,12 @@ public abstract class GenericBeanList<T extends Serializable> extends GenericLis
      */
     @Override
     protected void loadData() {
-        final HbnContainer<T> hbnCont = new HbnContainer<T>(parameterizedClass, (HbnSessionManager) app);
-        allPojos = hbnCont.getAllPojos();
-        final BeanItemContainer<T> cont = new BeanItemContainer<T>(parameterizedClass,allPojos);
+        EntityManager em = CompetitionApplication.getCurrent().getEntityManager();
+        CriteriaQuery<T> cq = em.getCriteriaBuilder().createQuery(parameterizedClass);
+        cq.from(parameterizedClass);
+        final BeanItemContainer<T> cont = new BeanItemContainer<T>(parameterizedClass,em.createQuery(cq).getResultList());
         table.setContainerDataSource(cont);
     }
 
-    @Override
-    public void clearCache() {
-        // the following is brute force!
-        //System.err.println("GenericBeanList: clearCache()"); //$NON-NLS-1$
-        table = null;
-        populateAndConfigureTable();
-    }
 
 }

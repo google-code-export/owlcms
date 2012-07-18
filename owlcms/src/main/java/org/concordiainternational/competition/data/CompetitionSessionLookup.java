@@ -11,8 +11,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.vaadin.data.hbnutil.HbnContainer;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 /**
  * Utility class to compute a lifter's group. Group definitions are retrieved
@@ -25,14 +23,10 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 public class CompetitionSessionLookup {
 
     private List<CompetitionSession> competitionSessions;
-    private HbnSessionManager hbnSessionManager;
 
     /**
-     * @param hbnSessionManager
-     *            required because we are using Hibernate to filter groups.
      */
-    public CompetitionSessionLookup(HbnSessionManager hbnSessionManager) {
-        this.hbnSessionManager = hbnSessionManager;
+    public CompetitionSessionLookup() {
         reload();
     }
 
@@ -60,8 +54,7 @@ public class CompetitionSessionLookup {
      * Reload cache from database. Only groups marked as active are loaded.
      */
     public void reload() {
-        final HbnContainer<CompetitionSession> groupsFromDb = new HbnContainer<CompetitionSession>(CompetitionSession.class, hbnSessionManager);
-        competitionSessions = groupsFromDb.getAllPojos();
+        competitionSessions = CompetitionSession.getAll();
         Collections.sort(competitionSessions, nameComparator);
     }
 

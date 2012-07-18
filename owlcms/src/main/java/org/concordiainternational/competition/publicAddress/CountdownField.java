@@ -20,7 +20,6 @@ import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CustomField;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -29,7 +28,7 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.TextField;
 
 @SuppressWarnings("serial")
-public class CountdownField extends CustomField implements MessageTimerListener {
+public class CountdownField extends org.vaadin.addon.customfield.CustomField implements MessageTimerListener {
 	
 	private static Logger logger = LoggerFactory.getLogger(CountdownField.class);
 

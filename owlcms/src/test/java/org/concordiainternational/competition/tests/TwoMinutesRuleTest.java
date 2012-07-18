@@ -22,6 +22,7 @@ import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
 import org.concordiainternational.competition.ui.SessionData;
+import org.concordiainternational.competition.webapp.EntityManagerProvider;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.junit.After;
 import org.junit.Before;
@@ -29,22 +30,20 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.data.hbnutil.HbnContainer;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 import com.vaadin.ui.Panel;
 
 public class TwoMinutesRuleTest {
     final static Logger logger = LoggerFactory.getLogger(TwoMinutesRuleTest.class);
-    HbnSessionManager hbnSessionManager = AllTests.getSessionManager();
-    HbnContainer<Lifter> hbnLifters = null;
+    EntityManagerProvider hbnSessionManager = AllTests.getSessionManager();
+    LifterContainer hbnLifters = null;
     List<Lifter> lifters = null;
     SessionData groupData;
 
     @Before
     public void setupTest() {
         assertNotNull(hbnSessionManager);
-        assertNotNull(hbnSessionManager.getHbnSession());
-        hbnSessionManager.getHbnSession().beginTransaction();
+        assertNotNull(hbnSessionManager.getEntityManager());
+        hbnSessionManager.getEntityManager().getTransaction().begin();
 
         // mock the application
         final CompetitionApplication application = new CompetitionApplication();
@@ -59,7 +58,7 @@ public class TwoMinutesRuleTest {
         hbnLifters = new LifterContainer(application, false);
 
         // initialize the competition data with the lifters
-        lifters = (hbnLifters.getAllPojos());
+        lifters = (hbnLifters.getAll());
 
         // set up the port
         String portName = null;
@@ -78,7 +77,7 @@ public class TwoMinutesRuleTest {
 
     @After
     public void tearDownTest() {
-        hbnSessionManager.getHbnSession().close();
+        hbnSessionManager.getEntityManager().close();
         if (WebApplicationConfiguration.necDisplay != null) WebApplicationConfiguration.necDisplay.close();
     }
 

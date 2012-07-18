@@ -15,7 +15,6 @@ import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,13 +35,11 @@ public class JXLSStartingList extends JXLSWorkbookStreamSource {
 
 	Logger logger = LoggerFactory.getLogger(JXLSStartingList.class);
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void init() {
 		super.init();
-		
-		final Session hbnSession = CompetitionApplication.getCurrent().getHbnSession();
-		List<Competition> competitionList = hbnSession.createCriteria(Competition.class).list();
+
+		List<Competition> competitionList = Competition.getAll();
 		Competition competition = competitionList.get(0);
 		getReportingBeans().put("competition",competition);
 	}
@@ -58,7 +55,7 @@ public class JXLSStartingList extends JXLSWorkbookStreamSource {
 
 	@Override
 	protected void getSortedLifters()  {
-		this.lifters = LifterSorter.registrationOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAllPojos());
+		this.lifters = LifterSorter.registrationOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAll());
 	}
 
 }

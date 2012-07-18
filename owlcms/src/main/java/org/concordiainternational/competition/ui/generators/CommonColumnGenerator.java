@@ -17,16 +17,16 @@ import javax.persistence.EntityManager;
 import org.concordiainternational.competition.data.Category;
 import org.concordiainternational.competition.data.CategoryContainer;
 import org.concordiainternational.competition.data.CompetitionSession;
+import org.concordiainternational.competition.data.CompetitionSessionContainer;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.Platform;
+import org.concordiainternational.competition.data.PlatformContainer;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.utils.ItemAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.addons.beantuplecontainer.BeanTupleItem;
 import org.vaadin.addons.criteriacontainer.CriteriaContainer;
-import org.vaadin.addons.criteriacontainer.CriteriaQueryDefinition;
 
 import com.vaadin.Application;
 import com.vaadin.data.Item;
@@ -53,18 +53,14 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 	private static final Logger logger = LoggerFactory.getLogger(CommonColumnGenerator.class);
 
 	private CategoryContainer activeCategories;
-	private CriteriaContainer<Platform> platforms;
-	private CriteriaContainer<CompetitionSession> competitionSessions;
+	private PlatformContainer platforms;
+	private CompetitionSessionContainer competitionSessions;
 	private CompetitionApplication app;
 
 	public CommonColumnGenerator(Application app) {
-		activeCategories = new CategoryContainer((EntityManager) app, true);
-		
-		CriteriaQueryDefinition<Platform> qd = new CriteriaQueryDefinition<Platform>((EntityManager) app,true,100,Platform.class); 
-		platforms = new CriteriaContainer<Platform>(qd);
-		
-		CriteriaQueryDefinition<CompetitionSession> qd2 = new CriteriaQueryDefinition<CompetitionSession>((EntityManager) app,true,100,CompetitionSession.class); 
-		competitionSessions = new CriteriaContainer<CompetitionSession>(qd2);
+		EntityManager em = CompetitionApplication.getCurrent().getEntityManager();
+        activeCategories = new CategoryContainer(em, true);
+		platforms = new PlatformContainer(em);
 		this.app = (CompetitionApplication) app;
 	}
 
@@ -867,7 +863,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 	 * @param competitionSessions
 	 * @param first
 	 */
-	private void setupGroupSelection(AbstractSelect groupSelect, HbnContainer<CompetitionSession> competitionSessions, boolean first) {
+	private void setupGroupSelection(AbstractSelect groupSelect, CompetitionSessionContainer competitionSessions, boolean first) {
 		if (first) {
 			//          groups.addContainerFilter("active", "true", true, false); //$NON-NLS-1$ //$NON-NLS-2$
 			// groups.setFilteredGetItemIds(true);

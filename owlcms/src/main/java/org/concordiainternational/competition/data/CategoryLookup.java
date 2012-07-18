@@ -11,12 +11,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.webapp.EntityManagerProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.vaadin.data.hbnutil.HbnContainer;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 /**
  * Utility class to compute a lifter's category. Category definitions are
@@ -31,27 +31,29 @@ public class CategoryLookup {
     private static Logger logger = LoggerFactory.getLogger(CategoryLookup.class);
     private static CategoryLookup sharedCategoryLookup;
     private List<Category> categories;
-    private HbnSessionManager hbnSessionManager;
-
     /**
-     * @param hbnSessionManager
+     * @param EntityManager
      *            required because we are using Hibernate to filter categories.
      */
-    private CategoryLookup(HbnSessionManager hbnSessionManager) {
-        this.hbnSessionManager = hbnSessionManager;
+    private CategoryLookup(EntityManager entityManager) {
         reload();
     }
 
-    public static synchronized CategoryLookup getSharedInstance() {
+
+    public static synchronized CategoryLookup getSharedInstance(EntityManagerProvider managerProvider) {
         if (sharedCategoryLookup == null) {
-            sharedCategoryLookup = new CategoryLookup(null);
+            sharedCategoryLookup = new CategoryLookup(managerProvider.getEntityManager());
         }
         return sharedCategoryLookup;
     }
     
-    public static synchronized CategoryLookup getSharedInstance(HbnSessionManager hbnSessionManager) {
+    public static CategoryLookup getSharedInstance() {
+        return getSharedInstance(CompetitionApplication.getCurrent());
+    }
+    
+    public static synchronized CategoryLookup getSharedInstance(EntityManager entityManager) {
         if (sharedCategoryLookup == null) {
-            sharedCategoryLookup = new CategoryLookup(hbnSessionManager);
+            sharedCategoryLookup = new CategoryLookup(entityManager);
         }
         return sharedCategoryLookup;
     }
@@ -127,27 +129,13 @@ public class CategoryLookup {
      * Reload cache from database. Only categories marked as active are loaded.
      */
     public void reload() {
-        // LoggerUtils.logException(logger, new
-        // Exception("reloading categories"));
-        HbnContainer<Category> activeCategoriesFromDb;
-
-        HbnSessionManager sessMgr = hbnSessionManager;
-        if (sessMgr == null) {
-            sessMgr = CompetitionApplication.getCurrent();
-            // patch for junit.
-//            if (sessMgr == null) {
-//            	sessMgr = AllTests.getSessionManager();
-//            }
-        }
-        activeCategoriesFromDb = new CategoryContainer(sessMgr,true); // only active categories
-        categories = activeCategoriesFromDb.getAllPojos();
+        categories = Category.getAllActive();
         Collections.sort(categories, sortComparator);
         //logger.debug("categories={}",categories);
     }
 
     public Category lookup(String gender, Double bodyWeight) {
-        // in order to use the predefined Java sorting routine, we place the
-        // data from our lifter
+        // in order to use the predefined Java sorting routine, we place the data from our lifter
         // inside a fake Category, and search for it.
         if (bodyWeight == null || gender == null || bodyWeight < 0.1 || gender.trim().isEmpty()) return null;
         int index = Collections.binarySearch(categories,
@@ -163,5 +151,8 @@ public class CategoryLookup {
     public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
+
+
+
 
 }

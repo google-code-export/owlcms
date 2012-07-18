@@ -20,12 +20,14 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.persistence.Version;
+import javax.persistence.criteria.CriteriaQuery;
 
 import org.concordiainternational.competition.data.lifterSort.LifterSorter.Ranking;
 import org.concordiainternational.competition.i18n.Messages;
@@ -292,9 +294,12 @@ public class Lifter implements MethodEventSource, Notifier {
         UpdateEventListener.class, // an object implementing this interface...
         "updateEvent"); // ... will be called with this method. //$NON-NLS-1$;
 
-    @SuppressWarnings("unchecked")
+
     static public List<Lifter> getAll() {
-        return CompetitionApplication.getCurrent().getHbnSession().createCriteria(Lifter.class).list();
+        EntityManager em = CompetitionApplication.getCurrent().getEntityManager();
+        CriteriaQuery<Lifter> cq = em.getCriteriaBuilder().createQuery(Lifter.class);
+        cq.from(Lifter.class);
+        return em.createQuery(cq).getResultList();
     }
 
     public static boolean isEmpty(String value) {
