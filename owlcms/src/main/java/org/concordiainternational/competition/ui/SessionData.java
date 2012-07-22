@@ -45,8 +45,6 @@ import org.concordiainternational.competition.utils.EventHelper;
 import org.concordiainternational.competition.utils.IdentitySet;
 import org.concordiainternational.competition.utils.LoggerUtils;
 import org.concordiainternational.competition.utils.NotificationManager;
-import org.concordiainternational.competition.webapp.EntityManagerProvider;
-import org.hibernate.StaleObjectStateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -189,7 +187,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             logger.debug("current group is empty"); //$NON-NLS-1$
         } else {
             logger.debug("loading data for group {}", currentSession); //$NON-NLS-1$
-            final LifterContainer lifterContainer = new LifterContainer(app);
+            final LifterContainer lifterContainer = new LifterContainer();
             lifterContainer.setExcludeNonWeighed(true);
             lifterContainer.setCurrentSession(currentSession);
             // hbnCont will filter automatically to application.getCurrentGroup
@@ -235,8 +233,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      */
     public void persistPojo(Object object) {
         try {
-            ((EntityManagerProvider) app).getEntityManager().merge(object);
-        } catch (StaleObjectStateException e) {
+            CompetitionApplication.getEntityManager().merge(object);
+        } catch (IllegalArgumentException e) {
             throw new RuntimeException(Messages.getString("SessionData.UserHasBeenDeleted", CompetitionApplication
                     .getCurrentLocale()));
         }
@@ -1059,7 +1057,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 	 * @param currentLifter2
 	 */
 	private void saveLifter(final Lifter currentLifter2) {
-		EntityManager session = app.getEntityManager();
+		EntityManager session = CompetitionApplication.getEntityManager();
 		session.merge(currentLifter2);
 		session.flush();
 		try {

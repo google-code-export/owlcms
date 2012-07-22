@@ -81,7 +81,7 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
     protected void getSortedLifters() {
         HashMap<String, Object> reportingBeans = getReportingBeans();
 
-        LifterContainer lc = new LifterContainer(CompetitionApplication.getCurrent());
+        LifterContainer lc = new LifterContainer();
         lc.setExcludeNonWeighed(isExcludeNotWeighed());
         lc.setCurrentSession(CompetitionApplication.getCurrent().getCurrentCompetitionSession());
         lifters = lc.getAll();

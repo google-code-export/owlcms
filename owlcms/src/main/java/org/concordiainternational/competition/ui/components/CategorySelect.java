@@ -33,7 +33,7 @@ public class CategorySelect extends ListSelect implements Serializable {
     public CategorySelect() {
         final ListSelect categorySelect = this;
         app = CompetitionApplication.getCurrent();
-        dataSource = new CategoryContainer(app.getEntityManager());
+        dataSource = new CategoryContainer();
         categorySelect.setContainerDataSource(dataSource);
         categorySelect.setItemCaptionPropertyId("name"); //$NON-NLS-1$
         categorySelect.setImmediate(true);

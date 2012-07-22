@@ -14,7 +14,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.webapp.EntityManagerProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,19 +38,12 @@ public class CategoryLookup {
         reload();
     }
 
-
-    public static synchronized CategoryLookup getSharedInstance(EntityManagerProvider managerProvider) {
-        if (sharedCategoryLookup == null) {
-            sharedCategoryLookup = new CategoryLookup(managerProvider.getEntityManager());
-        }
-        return sharedCategoryLookup;
-    }
     
     public static CategoryLookup getSharedInstance() {
-        return getSharedInstance(CompetitionApplication.getCurrent());
+        return getSharedInstance(CompetitionApplication.getNewGlobalEntityManager());
     }
     
-    public static synchronized CategoryLookup getSharedInstance(EntityManager entityManager) {
+    private static synchronized CategoryLookup getSharedInstance(EntityManager entityManager) {
         if (sharedCategoryLookup == null) {
             sharedCategoryLookup = new CategoryLookup(entityManager);
         }

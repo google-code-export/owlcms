@@ -13,13 +13,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Random;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -32,13 +32,8 @@ import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.decision.Speakers;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.nec.NECDisplay;
-import org.concordiainternational.competition.utils.LoggerUtils;
-import org.hibernate.HibernateException;
-import org.hibernate.cfg.AnnotationConfiguration;
-import org.hibernate.cfg.Environment;
-import org.hibernate.dialect.DerbyDialect;
-import org.hibernate.dialect.H2Dialect;
-import org.hibernate.event.def.OverrideMergeEventListener;
+import org.hibernate.Session;
+import org.hibernate.jdbc.Work;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,19 +42,18 @@ import org.slf4j.LoggerFactory;
  *         database and other global features (serial communication ports)
  */
 
-public class WebApplicationConfiguration implements ServletContextListener, EntityManagerProvider {
+public class WebApplicationConfiguration implements ServletContextListener {
 	private static Logger logger = LoggerFactory.getLogger(WebApplicationConfiguration.class);
 
 	private static EntityManagerFactory entityManagerFactory = null;
-	private static final boolean TEST_MODE = false;
 
 	public static final boolean NECShowsLifterImmediately = true;
 
 	public static final boolean DEFAULT_STICKINESS = true;
 
-	private static AnnotationConfiguration cnf;
-
 	public static NECDisplay necDisplay = null;
+
+    private static String persistenceUnit;
 
 	/**
 	 * this constructor sets the default values if the full parameterized
@@ -77,154 +71,14 @@ public class WebApplicationConfiguration implements ServletContextListener, Enti
 		else throw new RuntimeException("should have called getEntityManagerFactory(testMode,dbPath) first."); //$NON-NLS-1$
 	}
 
-	/**
-	 * Full constructor, normally invoked first.
-	 * 
-	 * @param testMode
-	 *            true if the database runs in memory, false is there is a
-	 *            physical database
-	 * @param dbPath
-	 * @return
-	 */
-	public static EntityManagerFactory getEntityManagerFactory(boolean testMode, String dbPath) {
-		if (entityManagerFactory == null) {
-			try {
-				cnf = new AnnotationConfiguration();
-				//derbySetup(testMode, dbPath, cnf);
-				h2Setup(testMode, dbPath, cnf);
-				cnf.setProperty(Environment.USER, "sa"); //$NON-NLS-1$
-				cnf.setProperty(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread"); //$NON-NLS-1$
-
-				// the classes we store in the database.
-				cnf.addAnnotatedClass(Lifter.class);
-				cnf.addAnnotatedClass(CompetitionSession.class);
-				cnf.addAnnotatedClass(Platform.class);
-				cnf.addAnnotatedClass(Category.class);
-				cnf.addAnnotatedClass(Competition.class);
-				cnf.addAnnotatedClass(CompetitionSession.class);
-
-				//                cnf.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.EhCacheProvider"); //$NON-NLS-1$
-				cnf.setProperty("hibernate.cache.region.factory_class", "net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory"); //$NON-NLS-1$ //$NON-NLS-2$
-				cnf.setProperty("hibernate.cache.use_second_level_cache", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-				cnf.setProperty("hibernate.cache.use_query_cache", "true"); //$NON-NLS-1$ //$NON-NLS-2$
-				// cnf.setProperty(Environment.CACHE_PROVIDER,"org.hibernate.cache.HashtableCacheProvider");
-
-				// the following line is necessary because the Lifter class uses
-				// the Lift class several times (one for each lift), which would normally force
-				// us to override the column names to ensure they are unique. Hibernate
-				// supports this with an extension.
-				// cnf.setNamingStrategy(DefaultComponentSafeNamingStrategy.INSTANCE);
-
-				// listeners
-				cnf.setListener("merge", new OverrideMergeEventListener()); //$NON-NLS-1$
-
-				entityManagerFactory = (EntityManagerFactory) cnf.buildSessionFactory();
-				// create the standard categories, etc.
-				// if argument is > 0, create sample data as well.
-				EntityManager sess = entityManagerFactory.createEntityManager();
-				sess.joinTransaction();
-				Category.insertStandardCategories(sess, Locale.getDefault());
-				insertInitialData(5, sess, testMode);
-				sess.flush();
-				sess.close();
-			} catch (Throwable ex) {
-				// Make sure you log the exception, as it might be swallowed
-				ex.printStackTrace(System.err);
-				throw new ExceptionInInitializerError(ex);
-			}
-		}
-
-		return entityManagerFactory;
-	}
-
-	/**
-	 * @param testMode
-	 * @param dbPath
-	 * @param cnf1
-	 * @throws IOException 
-	 */
-	private static void h2Setup(boolean testMode, String dbPath, AnnotationConfiguration cnf1) throws IOException {
-		cnf1.setProperty(Environment.DRIVER, "org.h2.Driver"); //$NON-NLS-1$
-		if (testMode) {
-			cnf1.setProperty(Environment.URL, "jdbc:h2:mem:competition"); //$NON-NLS-1$
-			cnf1.setProperty(Environment.SHOW_SQL, "false"); //$NON-NLS-1$
-			cnf1.setProperty(Environment.HBM2DDL_AUTO, "create-drop"); //$NON-NLS-1$
-		} else {
-			File file = new File(dbPath).getParentFile(); //$NON-NLS-1$
-			if (!file.exists()) {
-				boolean status = file.mkdirs();
-				if (! status) {
-					throw new RuntimeException("could not create directories for "+file.getCanonicalPath());
-				}
-			}
-
-			cnf1.setProperty(Environment.SHOW_SQL, "false"); //$NON-NLS-1$
-			cnf1.setProperty(Environment.URL, "jdbc:h2:file:" + dbPath); //$NON-NLS-1$
-			String ddlMode = "create"; //$NON-NLS-1$
-			file = new File(dbPath + ".h2.db"); //$NON-NLS-1$            
-			if (file.exists()) {
-				ddlMode = "update"; //$NON-NLS-1$
-			} else {
-				file = new File(dbPath + ".data.db"); //$NON-NLS-1$
-				if (file.exists()) {
-					ddlMode = "update"; //$NON-NLS-1$
-				}
-			}
-			logger.info("Using Hibernate mode {} (file {} exists={}", new Object[] { ddlMode, file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
-			cnf1.setProperty(Environment.HBM2DDL_AUTO, ddlMode);
-			// throw new
-			// ExceptionInInitializerError("Production database configuration not specified");
-		}
-		cnf1.setProperty(Environment.DIALECT, H2Dialect.class.getName());
-	}
-
-	/**
-	 * @param testMode
-	 * @param dbPath
-	 * @param cnf1
-	 */
-	@SuppressWarnings("unused")
-	private static void derbySetup(boolean testMode, String dbPath, AnnotationConfiguration cnf1) {
-		if (testMode) {
-			cnf1.setProperty(Environment.DRIVER, "org.h2.Driver"); //$NON-NLS-1$
-			cnf1.setProperty(Environment.URL, "jdbc:h2:mem:competition"); //$NON-NLS-1$
-			cnf1.setProperty(Environment.SHOW_SQL, "false"); //$NON-NLS-1$
-			cnf1.setProperty(Environment.HBM2DDL_AUTO, "create-drop"); //$NON-NLS-1$
-		} else {
-			cnf1.setProperty(Environment.DRIVER, "org.apache.derby.jdbc.EmbeddedDriver"); //$NON-NLS-1$
-			cnf1.setProperty(Environment.SHOW_SQL, "false"); //$NON-NLS-1$
-
-			String ddlMode = "create"; //$NON-NLS-1$
-			String suffix=";create=true";
-
-			File file = new File(dbPath); //$NON-NLS-1$
-			if (file.exists()) {
-				ddlMode = "update"; //$NON-NLS-1$
-			} else {
-				file = new File(dbPath); //$NON-NLS-1$
-				if (file.exists()) {
-					ddlMode = "update"; //$NON-NLS-1$
-				}
-			}
-			logger.info(
-					"Using Hibernate mode {} (file {} exists={}",
-					new Object[] { ddlMode, file.getAbsolutePath(), Boolean.toString(file.exists()) }); //$NON-NLS-1$
-			cnf1.setProperty(Environment.HBM2DDL_AUTO, ddlMode);
-			cnf1.setProperty(Environment.URL, "jdbc:derby:" + dbPath + suffix); //$NON-NLS-1$
-			// throw new ExceptionInInitializerError("Production database configuration not specified");
-		}
-		cnf1.setProperty(Environment.DIALECT, DerbyDialect.class.getName());
-	}
 
 	/**
 	 * Insert initial data if the database is empty.
-	 * 
-	 * @param liftersToLoad
 	 * @param sess
 	 * @param testMode
 	 */
-	public static void insertInitialData(int liftersToLoad, EntityManager sess, boolean testMode) {
-		if (CompetitionSession.getAll().size() == 0) {
+	public static void insertInitialData(EntityManager sess, boolean testMode) {
+		if (Competition.getAll().size() == 0) {
 			// empty database
 			Competition competition = new Competition();
 			competition.setFederation(Messages.getString("Competition.defaultFederation", Locale.getDefault())); //$NON-NLS-1$
@@ -244,7 +98,7 @@ public class WebApplicationConfiguration implements ServletContextListener, Enti
 			c.add(Calendar.HOUR_OF_DAY, 2);
 
 			if (testMode) {
-				setupTestData(competition, liftersToLoad, sess, w, c);
+				setupTestData(competition, 5, sess, w, c);
 			} else {
 				setupEmptyCompetition(competition, sess);	
 			}
@@ -264,6 +118,7 @@ public class WebApplicationConfiguration implements ServletContextListener, Enti
 	 * @param sess
 	 */
 	protected static void setupEmptyCompetition(Competition competition, EntityManager sess) {
+	    Category.insertStandardCategories(sess, Locale.getDefault());
 		Platform platform1 = new Platform("Platform"); //$NON-NLS-1$
 		setDefaultMixerName(platform1);
 		platform1.setHasDisplay(false);
@@ -330,18 +185,7 @@ public class WebApplicationConfiguration implements ServletContextListener, Enti
 		insertSampleLifters(liftersToLoad, sess, groupA, groupB, groupC);
 	}
 
-	/**
-	 * @param platform1
-	 */
-	protected static void setDefaultMixerName(Platform platform1) {
-		String mixerName = null;	
-		try {
-			mixerName = Speakers.getOutputNames().get(0);
-			platform1.setMixerName(mixerName);
-		} catch (Exception e) {
-			// leave mixerName null
-		}
-	}
+
 
 	private static void insertSampleLifters(int liftersToLoad, EntityManager sess, CompetitionSession groupA, CompetitionSession groupB,
 			CompetitionSession groupC) {
@@ -373,26 +217,25 @@ public class WebApplicationConfiguration implements ServletContextListener, Enti
 		sess.flush();
 	}
 
-	/*
-	 * We implement EntityManagerProvider as a convenience; when a domain class
-	 * needs access to persistance, and we don't want to pass in another
-	 * EntityManager such as the application, we use this one. (non-Javadoc)
-	 * 
-	 * @see
-	 * com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager#getHbnSession()
-	 */
-	@Override
-	public EntityManager getEntityManager() {
-		return getEntityManagerFactory().createEntityManager();
-	}
-
+    /**
+     * @param platform1
+     */
+    protected static void setDefaultMixerName(Platform platform1) {
+        String mixerName = null;    
+        try {
+            mixerName = Speakers.getOutputNames().get(0);
+            platform1.setMixerName(mixerName);
+        } catch (Exception e) {
+            // leave mixerName null
+        }
+    }
+    
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
-		WebApplicationConfiguration.getEntityManagerFactory().close(); // Free all
-		// templates,
-		// should free
-		// H2
-		h2Shutdown();
+		if (entityManagerFactory != null) {
+		    entityManagerFactory.close();
+		}
+	    derbyShutdown();
 		if (necDisplay != null) {
 			necDisplay.close();
 		}
@@ -400,44 +243,32 @@ public class WebApplicationConfiguration implements ServletContextListener, Enti
 		logger.debug("contextDestroyed() done"); //$NON-NLS-1$
 	}
 
+	
 	/**
-	 * Try to shutdown H2 cleanly.
+	 * Attempt to shutdown embedded Derby cleanly.
 	 */
-	private void h2Shutdown() {
-		Connection connection = null;
-		try {
-			connection = cnf.buildSettings().getConnectionProvider().getConnection();
-			Statement stmt = connection.createStatement();
-			try {
-				stmt.execute("SHUTDOWN"); //$NON-NLS-1$
-			} finally {
-				stmt.close();
-			}
-		} catch (HibernateException e) {
-			LoggerUtils.logException(logger, e);
-		} catch (SQLException e) {
-			LoggerUtils.logException(logger, e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					LoggerUtils.logException(logger, e);
-				}
-			}
-		}
+	private void derbyShutdown() {
+	    EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnit+"-shutdown");
+	    EntityManager em = emf.createEntityManager();
+	    
+	    Session session = (Session) em.getDelegate();
+	    session.doWork(new Work(){
+
+            @Override
+            public void execute(Connection connection) throws SQLException {
+                connection.getMetaData();
+                // nothing, all we wanted was an open connection.
+            }       
+	    });
+	    em.close();
+	    emf.close();
 	}
+	
 
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 		ServletContext sCtx = arg0.getServletContext();
-		String dbPath = sCtx.getInitParameter("dbPath"); //$NON-NLS-1$
-		String appName = sCtx.getServletContextName();
-		if (dbPath != null) {
-			WebApplicationConfiguration.getEntityManagerFactory(TEST_MODE, dbPath).createEntityManager();
-		} else {
-			WebApplicationConfiguration.getEntityManagerFactory(TEST_MODE, "db/" + appName).createEntityManager(); //$NON-NLS-1$
-		}
+
 		if (necDisplay != null) {
 			necDisplay.close();
 			necDisplay = null;
@@ -465,6 +296,24 @@ public class WebApplicationConfiguration implements ServletContextListener, Enti
 			logger.warn("Could not open port {} {}",comPortName,e.getMessage());
 		}
 	}
+
+    public static EntityManagerFactory getPersistentEntityManagerFactory() {
+        if (entityManagerFactory == null) {
+            persistenceUnit = "owlcms-embedded";
+            entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnit);
+        }
+        insertInitialData(entityManagerFactory.createEntityManager(), false);
+        return entityManagerFactory;
+    }
+    
+    public static EntityManagerFactory getTestEntityManagerFactory() {
+        if (entityManagerFactory == null) {
+            persistenceUnit = "owlcms-inmemory";
+            entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnit);
+        }
+        insertInitialData(entityManagerFactory.createEntityManager(), true);
+        return entityManagerFactory;
+    }
 
 
 

@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
 
 import org.concordiainternational.competition.data.Category;
 import org.concordiainternational.competition.data.CategoryContainer;
@@ -52,15 +51,14 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 	private static final long serialVersionUID = 6573562545694966025L;
 	private static final Logger logger = LoggerFactory.getLogger(CommonColumnGenerator.class);
 
-	private CategoryContainer activeCategories;
-	private PlatformContainer platforms;
+	private CategoryContainer categoryContainer;
+	private PlatformContainer platformContainer;
 	private CompetitionSessionContainer competitionSessions;
 	private CompetitionApplication app;
 
 	public CommonColumnGenerator(Application app) {
-		EntityManager em = CompetitionApplication.getCurrent().getEntityManager();
-        activeCategories = new CategoryContainer(em, true);
-		platforms = new PlatformContainer(em);
+        categoryContainer = new CategoryContainer(true);
+		platformContainer = new PlatformContainer();
 		this.app = (CompetitionApplication) app;
 	}
 
@@ -188,7 +186,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 		if (!table.isEditable()) {
 			if (table.getContainerDataSource() instanceof CriteriaContainer<?>) {
 				if (value == null) return new Label("-"); //$NON-NLS-1$
-				Platform platformBean = (platforms.getEntity(value));
+				Platform platformBean = (platformContainer.getEntity(value));
 				return new Label(platformBean.getName());
 			} else {
 				throw new UnsupportedOperationException(Messages.getString("CommonColumnGenerator.0", app.getLocale())); //$NON-NLS-1$
@@ -338,7 +336,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 			if (value instanceof Category) {
 				curCategory = (Category) value;
 			} else {
-				curCategory = activeCategories.getEntity(value);
+				curCategory = categoryContainer.getEntity(value);
 			}
 		}
 		return (curCategory != null ? curCategory.getName() : Messages
@@ -404,7 +402,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 		}
 		if (list == null) {
 			list = new ListSelect();
-			setupCategorySelection(list, activeCategories, firstMultiSelect);
+			setupCategorySelection(list, categoryContainer, firstMultiSelect);
 			if (firstMultiSelect) {
 				firstMultiSelect = false;
 			}
@@ -431,7 +429,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 		}
 		if (categoryListSelect == null) {
 			categoryListSelect = new ListSelect();
-			setupCategorySelection(categoryListSelect, activeCategories, firstCategoryComboBox);
+			setupCategorySelection(categoryListSelect, categoryContainer, firstCategoryComboBox);
 			if (firstCategoryComboBox) {
 				firstCategoryComboBox = false;
 			}
@@ -439,7 +437,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 
 			categoryListSelect.setMultiSelect(true);
 			categoryListSelect.setNullSelectionAllowed(true);
-			categoryListSelect.setRows(activeCategories.size() + nbRowsForNullValue(categoryListSelect));
+			categoryListSelect.setRows(categoryContainer.size() + nbRowsForNullValue(categoryListSelect));
 			lifterIdToCategorySelect.put(itemId, categoryListSelect);
 		}
 		categoryListSelect.setPropertyDataSource(prop);
@@ -597,7 +595,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 		final String separator = Messages.getString("CommonFieldFactory.listSeparator", app.getLocale()); //$NON-NLS-1$
 		for (Long curCategoryId : categoryIds) {
 			// Item s = (categories.getItem(curCategoryId));
-			Category curCategory = (Category) ItemAdapter.getObject(activeCategories.getItem(curCategoryId));
+			Category curCategory = (Category) ItemAdapter.getObject(categoryContainer.getItem(curCategoryId));
 			sb.append(curCategory.getName());
 			sb.append(separator); //$NON-NLS-1$
 		}
@@ -625,7 +623,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 		}
 		if (cb == null) {
 			final ComboBox cb2 = new ComboBox();
-			cb2.setContainerDataSource(platforms);
+			cb2.setContainerDataSource(platformContainer);
 			cb2.setItemCaptionPropertyId("name"); //$NON-NLS-1$
 			cb2.setNewItemsAllowed(true);
 
@@ -650,18 +648,18 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 		}
 		if (platformSelect == null) {
 			platformSelect = new ListSelect();
-			platformSelect.setContainerDataSource(platforms);
+			platformSelect.setContainerDataSource(platformContainer);
 			platformSelect.setItemCaptionPropertyId("name"); //$NON-NLS-1$
 			platformSelect.setNewItemsAllowed(false);
 			platformSelect.setNullSelectionAllowed(true);
 			platformSelect.setMultiSelect(false);
-			platformSelect.setRows(platforms.size() + 1);
+			platformSelect.setRows(platformContainer.size() + 1);
 			if (firstCategoryComboBox) {
 				firstCategoryComboBox = false;
 			}
 			platformSelect.setRequiredError(Messages.getString(
 					"CommonFieldFactory.youMustSelectAPlatform", app.getLocale())); //$NON-NLS-1$
-			platformSelect.setRows(platforms.size() + nbRowsForNullValue(platformSelect));
+			platformSelect.setRows(platformContainer.size() + nbRowsForNullValue(platformSelect));
 			groupIdToPlatformSelect.put(itemId, platformSelect);
 		}
 		platformSelect.setPropertyDataSource(prop);
@@ -694,7 +692,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 			if (value instanceof Platform) {
 				curPlatform = (Platform) value;
 			} else {
-				curPlatform = (Platform) ItemAdapter.getObject(platforms.getItem(value));
+				curPlatform = (Platform) ItemAdapter.getObject(platformContainer.getItem(value));
 			}
 		}
 		return (curPlatform != null ? curPlatform.getName() : Messages
@@ -718,7 +716,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 		}
 		if (categorySelect == null) {
 			categorySelect = new ListSelect();
-			setupCategorySelection(categorySelect, activeCategories, firstCategoryComboBox);
+			setupCategorySelection(categorySelect, categoryContainer, firstCategoryComboBox);
 			if (firstCategoryComboBox) {
 				firstCategoryComboBox = false;
 			}
@@ -747,13 +745,13 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 		}
 		if (categorySelect == null) {
 			categorySelect = new ListSelect();
-			setupCategorySelection(categorySelect, activeCategories, firstCategoryComboBox);
+			setupCategorySelection(categorySelect, categoryContainer, firstCategoryComboBox);
 			if (firstCategoryComboBox) {
 				firstCategoryComboBox = false;
 			}
 			categorySelect.setRequiredError(Messages.getString(
 					"CommonFieldFactory.youMustSelectACategory", app.getLocale())); //$NON-NLS-1$
-			categorySelect.setRows(activeCategories.size() + nbRowsForNullValue(categorySelect));
+			categorySelect.setRows(categoryContainer.size() + nbRowsForNullValue(categorySelect));
 			lifterIdToCategorySelect.put(itemId, categorySelect);
 		}
 		categorySelect.setPropertyDataSource(prop);

@@ -89,7 +89,7 @@ public class WeighInList extends LifterPersistedList implements ApplicationView,
     @Override
     protected void loadData() {
         // load all lifters
-        final LifterContainer cont = new LifterContainer((CompetitionApplication) app, false);
+        final LifterContainer cont = new LifterContainer(false);
         // cont.sort(new String[]{"registrationCategory","lotNumber"}, new
         // boolean[]{true,true});
         table.setContainerDataSource(cont);
@@ -314,7 +314,7 @@ public class WeighInList extends LifterPersistedList implements ApplicationView,
      * Delete lifters from current group (all lifters if no current group)
      */
     protected void clearAllLifters() {
-        final EntityManager session = CompetitionApplication.getCurrent().getEntityManager();
+        final EntityManager session = CompetitionApplication.getEntityManager();
         final List<Lifter> list = allLifters(true);
         for (Lifter curLifter : list) {
             session.remove(curLifter);
@@ -323,7 +323,7 @@ public class WeighInList extends LifterPersistedList implements ApplicationView,
     }
 
     protected List<Lifter> allLifters(boolean restrictToCurrentGroup) {
-        LifterContainer cont = new LifterContainer(app.getEntityManager());
+        LifterContainer cont = new LifterContainer();
         if (restrictToCurrentGroup) {
             cont.setCurrentSession(app.getCurrentCompetitionSession());
         }

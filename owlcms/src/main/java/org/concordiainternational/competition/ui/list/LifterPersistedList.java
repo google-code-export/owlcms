@@ -31,7 +31,7 @@ public abstract class LifterPersistedList extends GenericPersistedList<Lifter> {
      */
     @Override
     protected void loadData() {
-        final LifterContainer cont = new LifterContainer(app);
+        final LifterContainer cont = new LifterContainer();
         table.setContainerDataSource(cont);
     }
 

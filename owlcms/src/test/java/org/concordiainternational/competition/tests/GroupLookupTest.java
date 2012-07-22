@@ -11,12 +11,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import org.concordiainternational.competition.data.CompetitionContainer;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.CompetitionSessionLookup;
-import org.concordiainternational.competition.webapp.EntityManagerProvider;
+import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,22 +27,26 @@ import org.junit.Test;
  */
 public class GroupLookupTest {
 
-    EntityManagerProvider provider = new AllTests();
-    CompetitionContainer competitionSessions = null;
     CompetitionSessionLookup competitionSessionLookup = null;
 
     @Before
     public void setupTest() {
-        Assert.assertNotNull(provider);
-        Assert.assertNotNull(provider.getEntityManager());
-        provider.getEntityManager().getTransaction().begin();
-        competitionSessions = new CompetitionContainer(provider.getEntityManager());
+        EntityManager entityManager = CompetitionApplication.getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
         competitionSessionLookup = new CompetitionSessionLookup();
     }
 
     @After
     public void tearDownTest() {
-        provider.getEntityManager().close();
+        EntityManager entityManager = CompetitionApplication.getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        if (transaction.getRollbackOnly()) {
+            transaction.rollback();
+        } else {
+            transaction.commit();
+        }
+        entityManager.close();
     }
 
     /**

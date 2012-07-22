@@ -16,33 +16,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.nec.NECDisplay;
 import org.concordiainternational.competition.spreadsheet.InputSheetHelper;
-import org.concordiainternational.competition.webapp.EntityManagerProvider;
-import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { CategoryLookupTest.class, GroupLookupTest.class, LifterEditorTest.class, LifterSorterTest.class, LifterTest.class, SpreadsheetTest.class, TwoMinutesRuleTest.class, NECDisplay.class })
-public class AllTests implements EntityManagerProvider {
+public class AllTests {
 
     final static String lineSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
 
-    /**
-     * Return a test session where the database is run in memory
-     * and flushed at the end of the test.
-     * 
-     * @return
-     */
-    @Override
-    public EntityManager getEntityManager() {
-        final boolean testMode = true;
-        return WebApplicationConfiguration.getEntityManagerFactory(testMode, "tests").createEntityManager(); //$NON-NLS-1$
-    }
 
     // private String iterateContainer(Container.Ordered container) {
     // StringBuffer sb = new StringBuffer();
@@ -149,8 +134,6 @@ public class AllTests implements EntityManagerProvider {
         return contents.toString();
     }
 
-    public static EntityManagerProvider getSessionManager() {
-        return new AllTests();
-    }
+
 
 }

@@ -9,12 +9,14 @@ package org.concordiainternational.competition.tests;
 
 import static org.concordiainternational.competition.tests.AllTests.assertEqualsToReferenceFile;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.LifterContainer;
@@ -22,38 +24,39 @@ import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter.Ranking;
 import org.concordiainternational.competition.data.lifterSort.WinningOrderComparator;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.webapp.EntityManagerProvider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class LifterSorterTest {
 
-    EntityManagerProvider hbnSessionManager = new AllTests();
-    LifterContainer hbnLifters = null;
+    LifterContainer lifterContainer = null;
     List<Lifter> lifters = null;
 
     @Before
     public void setupTest() {
-        assertNotNull(hbnSessionManager);
-        assertNotNull(hbnSessionManager.getEntityManager());
-        hbnSessionManager.getEntityManager().getTransaction().begin();
-
-        // mock the application
-        final CompetitionApplication application = new CompetitionApplication();
-        CompetitionApplication.setCurrent(application);
-
-        // for this test, the initial data does not include body weights, so we
-        // use false
+        EntityManager entityManager = CompetitionApplication.getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        
+        // for this test, the initial data does not include body weights, so we use false
         // on the constructor to disable exclusion of incomplete data.
-        hbnLifters = new LifterContainer(new CompetitionApplication(), false);
-        lifters = (hbnLifters.getAll());
+        lifterContainer = new LifterContainer(false);
+        lifters = (lifterContainer.getAll());
     }
 
     @After
     public void tearDownTest() {
-        hbnSessionManager.getEntityManager().close();
-    }
+        EntityManager entityManager = CompetitionApplication.getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        if (transaction.getRollbackOnly()) {
+            transaction.rollback();
+        } else {
+            transaction.commit();
+        }
+        entityManager.close();
+    }   
+    
 
     @Test
     public void initialCheck() {

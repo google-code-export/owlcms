@@ -9,6 +9,7 @@ package org.concordiainternational.competition.data;
 
 import javax.persistence.EntityManager;
 
+import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.vaadin.addons.criteriacontainer.CriteriaContainer;
 
 @SuppressWarnings("serial")
@@ -19,9 +20,12 @@ public class CompetitionContainer extends CriteriaContainer<Competition> {
      * 
      * @param application
      */
-    public CompetitionContainer(EntityManager em) {
+    private CompetitionContainer(EntityManager em) {
         super(em,false,true,Competition.class,50);
     }
-    
 
+    public CompetitionContainer() {
+        this (CompetitionApplication.getNewGlobalEntityManager());
+    }
+    
 }

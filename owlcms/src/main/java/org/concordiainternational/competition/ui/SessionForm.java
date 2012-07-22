@@ -60,9 +60,8 @@ public class SessionForm extends Form  {
 		public void buttonClick(ClickEvent event) {
 			commit();
 			Object object = ItemAdapter.getObject(item);
-			EntityManager hbnSession = CompetitionApplication.getCurrent().getEntityManager();
-			hbnSession.merge(object);
-			hbnSession.flush();
+			EntityManager em = CompetitionApplication.getEntityManager();
+			em.merge(object);
 			closeWindow();
 		}
 	});

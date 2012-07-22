@@ -54,8 +54,6 @@ public class LifterCardEditor extends Panel implements
 
     private static final Logger logger = LoggerFactory.getLogger(LifterCardEditor.class);
 
-    private Button save = null;
-    private Button delete = null;
     private GridLayout grid = null;
     private EditableList liftList;
     LifterInfo lifterCardIdentification;
@@ -185,13 +183,7 @@ public class LifterCardEditor extends Panel implements
         forceAsCurrent.setVisible(lifter != firstLifter);
     }
 
-    public void buttonClick(ClickEvent event) {
-        if (event.getButton() == delete) {
-            liftList.deleteItem(lifter.getId());
-        } else if (event.getButton() == save) {
-            liftList.getGroupData().persistPojo(lifter);
-        }
-    }
+
 
     /**
      * Create the lifter grid to mimic the layout of a standard lifter card used
@@ -607,7 +599,7 @@ public class LifterCardEditor extends Panel implements
     }
 
     public void okHandler() {
-        // we don't know field changed, but it doesn't matter since the sort
+        // we don't know which field changed, but it doesn't matter since the sort
         // order is global.
         valueChange(null);
     }

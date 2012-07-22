@@ -13,8 +13,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import javax.persistence.Entity;
-
 import org.concordiainternational.competition.data.Category;
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.Lifter;
@@ -25,7 +23,7 @@ import org.slf4j.LoggerFactory;
  * @since
  * @author jflamy
  */
-@Entity
+
 public class LifterSorter implements Serializable {
 
     private static final long serialVersionUID = -3507146241019771820L;

@@ -37,7 +37,7 @@ public class OutputSheetStreamSource<T extends OutputSheet> implements StreamRes
     private List<Lifter> lifters;
 
     public OutputSheetStreamSource(Class<T> parameterizedClass, CompetitionApplication app, boolean excludeNotWeighed) {
-        CategoryLookup categoryLookup = CategoryLookup.getSharedInstance(app);
+        CategoryLookup categoryLookup = CategoryLookup.getSharedInstance();
         try {
             this.outputSheet = parameterizedClass.newInstance();
         } catch (Exception t) {
