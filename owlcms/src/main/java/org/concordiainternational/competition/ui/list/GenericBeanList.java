@@ -52,11 +52,16 @@ public abstract class GenericBeanList<T extends Serializable> extends GenericLis
      */
     @Override
     protected void loadData() {
-        EntityManager em = CompetitionApplication.getCurrent().getEntityManager();
-        CriteriaQuery<T> cq = em.getCriteriaBuilder().createQuery(parameterizedClass);
-        cq.from(parameterizedClass);
-        final BeanItemContainer<T> cont = new BeanItemContainer<T>(parameterizedClass,em.createQuery(cq).getResultList());
-        table.setContainerDataSource(cont);
+        EntityManager em = null;
+        try {
+            em = CompetitionApplication.getNewGlobalEntityManager();
+            CriteriaQuery<T> cq = em.getCriteriaBuilder().createQuery(parameterizedClass);
+            cq.from(parameterizedClass);
+            final BeanItemContainer<T> cont = new BeanItemContainer<T>(parameterizedClass,em.createQuery(cq).getResultList());
+            table.setContainerDataSource(cont);
+        } finally {
+            if(em != null) em.close();
+        }  
     }
 
 

@@ -59,7 +59,7 @@ public class JXLSResultSheet extends JXLSWorkbookStreamSource {
 
 	@Override
 	protected void getSortedLifters()  {
-		this.lifters = LifterSorter.resultsOrderCopy(new LifterContainer(CompetitionApplication.getCurrent(),isExcludeNotWeighed()).getAll(),
+		this.lifters = LifterSorter.resultsOrderCopy(new LifterContainer(isExcludeNotWeighed()).getAll(),
 	            Ranking.TOTAL);
 	    LifterSorter.assignMedals(lifters);
 	}

@@ -10,11 +10,15 @@ package org.concordiainternational.competition.webapp;
 import java.io.BufferedWriter;
 import java.io.IOException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.icepush.servlet.MainServlet;
 
 import com.vaadin.terminal.gwt.server.ApplicationServlet;
@@ -23,6 +27,7 @@ import com.vaadin.terminal.gwt.server.ApplicationServlet;
 public class PushServlet extends ApplicationServlet {
 
     private MainServlet pushServlet;
+    private EntityManagerFactory emf = WebApplicationConfiguration.getPersistentEntityManagerFactory();
 
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
@@ -45,8 +50,31 @@ public class PushServlet extends ApplicationServlet {
                 throw new RuntimeException(e);
             }
         } else {
-            // Vaadin request
-            super.service(request, response);
+            // Vaadin request, executed in the context of a transaction.
+            EntityManager em = null;
+            EntityTransaction transaction = null;
+            try {
+                em = emf.createEntityManager();
+                CompetitionApplication.setThreadLocals(emf,em);
+                transaction = em.getTransaction();
+                
+                // service is executed in a transaction, no need to commit.
+                // service can call setRollbackOnly() to prevent commit().
+                transaction.begin();
+                super.service(request, response);
+            } finally {
+                CompetitionApplication.removeThreadLocals();
+                if (transaction != null && transaction.isActive()) {
+                    if (transaction.getRollbackOnly()) {
+                        transaction.rollback();
+                    } else {
+                        transaction.commit();
+                    }
+                }
+                if (em != null) {
+                    em.close();
+                }
+            }
         }
     }
 

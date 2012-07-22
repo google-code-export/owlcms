@@ -14,9 +14,8 @@ import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.spreadsheet.InputSheet;
 import org.concordiainternational.competition.spreadsheet.WeighInSheet;
-import org.concordiainternational.competition.webapp.EntityManagerProvider;
+import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -28,22 +27,20 @@ import org.slf4j.LoggerFactory;
  */
 public class SpreadsheetTest {
 
-    EntityManagerProvider hbnSessionManager = new AllTests();
     Logger logger = LoggerFactory.getLogger(SpreadsheetTest.class);
     static private List<Lifter> lifters;
 
     @Before
     public void setupTest() {
-        Assert.assertNotNull(hbnSessionManager);
-        Assert.assertNotNull(hbnSessionManager.getEntityManager());
-        hbnSessionManager.getEntityManager().getTransaction().begin();
-        CategoryLookup categoryLookup = CategoryLookup.getSharedInstance(hbnSessionManager);
+        CompetitionApplication.getEntityManager().getTransaction().begin();
+        CategoryLookup categoryLookup = CategoryLookup.getSharedInstance();
         categoryLookup.reload();
     }
 
     @After
     public void tearDownTest() {
-        hbnSessionManager.getEntityManager().close();
+        CompetitionApplication.getEntityManager().getTransaction().commit();
+        CompetitionApplication.getEntityManager().close();
     }
 
     /**
@@ -53,8 +50,8 @@ public class SpreadsheetTest {
     @Test
     public void getAllLifters() throws Throwable {
         InputStream is = AllTests.class.getResourceAsStream("/testData/roundTripInputSheet.xls"); //$NON-NLS-1$
-        InputSheet results = new WeighInSheet(hbnSessionManager);
-        lifters = results.getAllLifters(is, hbnSessionManager.getEntityManager());
+        InputSheet results = new WeighInSheet();
+        lifters = results.getAllLifters(is, CompetitionApplication.getEntityManager());
         AllTests.longDump(lifters, false);
     }
 

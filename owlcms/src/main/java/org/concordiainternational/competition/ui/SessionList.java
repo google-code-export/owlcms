@@ -180,7 +180,7 @@ public class SessionList extends GenericPersistedList<CompetitionSession> implem
         Set<Lifter> lifters = competitionSession.getLifters();
         if (lifters != null && lifters.size() > 0) {
             nbLifters = lifters.size();
-            competitionSession.deleteLifters(app.getEntityManager());
+            competitionSession.deleteLifters(CompetitionApplication.getEntityManager());
         }
         Locale locale = CompetitionApplication.getCurrentLocale();
 		String messageTemplate = Messages.getString("GroupList.erased", locale); //$NON-NLS-1$

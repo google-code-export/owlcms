@@ -171,7 +171,7 @@ public class Competition implements Serializable {
 
 
     static public List<Competition> getAll() {
-        EntityManager em = CompetitionApplication.getCurrent().getEntityManager();
+        EntityManager em = CompetitionApplication.getEntityManager();
         CriteriaQuery<Competition> cq = em.getCriteriaBuilder().createQuery(Competition.class);
         cq.from(Competition.class);
         return em.createQuery(cq).getResultList();

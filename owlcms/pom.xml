@@ -413,8 +413,14 @@
 		</dependency>
 
 
-
-		<!-- the dependency on the hibernate-core module (see above) -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>4.1.4.Final</version>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<!-- the dependency on the hibernate-core module (see above) 
 		<dependency>
 			<groupId>javassist</groupId>
 			<artifactId>javassist</artifactId>
@@ -442,6 +448,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		-->
 
 
 		<!-- added to local repository -->

@@ -80,12 +80,12 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         final Locale locale = app.getLocale();
         this.setReadOnly(true);
 
-        CompetitionContainer cmp = new CompetitionContainer(app.getEntityManager());
-        Object newItemId;
+        CompetitionContainer cmp = new CompetitionContainer();
+        
         NestedBeanItem<Competition> competitionItem = null;
         if (cmp.size() == 0) {
-            newItemId = cmp.addItem();
-            competitionItem = (NestedBeanItem<Competition>) cmp.getItem(newItemId);
+            // Can't happen, WebApplicationConfiguration does this.
+            throw new RuntimeException("Can't happen, no Competition in database.");
         } else {
             competitionItem = (NestedBeanItem<Competition>) cmp.getItem(0);
         }
@@ -324,7 +324,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
 
             private void saveItem(NestedBeanItem<Competition> cmItem) {
                 Competition competition = cmItem.getBean();
-                final EntityManager em = app.getEntityManager();
+                final EntityManager em = CompetitionApplication.getEntityManager();
                 em.merge(competition);
                 em.flush();
             };

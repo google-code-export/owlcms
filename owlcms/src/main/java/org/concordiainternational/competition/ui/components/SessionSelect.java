@@ -110,7 +110,7 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
 	private CompetitionSessionContainer loadData(
 			final CompetitionApplication competitionApplication,
 			final Select sessionSelect1) {
-		final CompetitionSessionContainer sessionDataSource = new CompetitionSessionContainer(competitionApplication.getEntityManager());
+		final CompetitionSessionContainer sessionDataSource = new CompetitionSessionContainer();
         sessionSelect1.setContainerDataSource(sessionDataSource);
         sessionSelect1.setItemCaptionPropertyId("name"); //$NON-NLS-1$
 		return sessionDataSource;

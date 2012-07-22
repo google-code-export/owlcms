@@ -166,7 +166,7 @@ public class Category implements Serializable {
 
 
     static public List<Category> getAll() {
-        EntityManager em = CompetitionApplication.getCurrent().getEntityManager();
+        EntityManager em = CompetitionApplication.getEntityManager();
         CriteriaQuery<Category> cq = em.getCriteriaBuilder().createQuery(Category.class);
         cq.from(Category.class);
         return em.createQuery(cq).getResultList();

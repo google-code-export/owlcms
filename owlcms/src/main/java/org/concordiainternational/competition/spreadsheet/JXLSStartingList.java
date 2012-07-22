@@ -55,7 +55,7 @@ public class JXLSStartingList extends JXLSWorkbookStreamSource {
 
 	@Override
 	protected void getSortedLifters()  {
-		this.lifters = LifterSorter.registrationOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAll());
+		this.lifters = LifterSorter.registrationOrderCopy(new LifterContainer(isExcludeNotWeighed()).getAll());
 	}
 
 }

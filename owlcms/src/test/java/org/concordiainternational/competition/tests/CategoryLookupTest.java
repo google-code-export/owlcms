@@ -12,15 +12,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
 import org.concordiainternational.competition.data.Category;
 import org.concordiainternational.competition.data.CategoryContainer;
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CategoryLookupByName;
 import org.concordiainternational.competition.data.Gender;
-import org.concordiainternational.competition.webapp.EntityManagerProvider;
+import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,27 +31,30 @@ import org.junit.Test;
  * 
  */
 public class CategoryLookupTest {
+    
+    private EntityManagerFactory emf = WebApplicationConfiguration.getPersistentEntityManagerFactory();
 
-    EntityManagerProvider managerProvider = new AllTests();
     CategoryContainer categories = null;
     CategoryLookup categoryLookup = null;
     CategoryLookupByName categoryLookupByName;
 
     @Before
     public void setupTest() {
-        Assert.assertNotNull(managerProvider);
-        EntityManager entityManager = managerProvider.getEntityManager();
-        Assert.assertNotNull(entityManager);
-        entityManager.getTransaction().begin();
-        categories = new CategoryContainer(entityManager,true);
-        categoryLookup = CategoryLookup.getSharedInstance(entityManager);
+        EntityManager entityManager = emf.createEntityManager();
+        CompetitionApplication.setThreadLocals(emf,entityManager);
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+
+        categories = new CategoryContainer(true);
+        categoryLookup = CategoryLookup.getSharedInstance();
         categoryLookup.reload();
         categoryLookupByName = new CategoryLookupByName();
     }
 
     @After
     public void tearDownTest() {
-        managerProvider.getEntityManager().close();
+        CompetitionApplication.getEntityManager().close();
+        CompetitionApplication.removeThreadLocals();
     }
 
     /**

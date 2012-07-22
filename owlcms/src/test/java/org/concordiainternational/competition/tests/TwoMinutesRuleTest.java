@@ -9,12 +9,14 @@ package org.concordiainternational.competition.tests;
 
 import static org.concordiainternational.competition.tests.AllTests.assertEqualsToReferenceFile;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.LifterContainer;
@@ -22,7 +24,6 @@ import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
 import org.concordiainternational.competition.ui.SessionData;
-import org.concordiainternational.competition.webapp.EntityManagerProvider;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.junit.After;
 import org.junit.Before;
@@ -34,17 +35,17 @@ import com.vaadin.ui.Panel;
 
 public class TwoMinutesRuleTest {
     final static Logger logger = LoggerFactory.getLogger(TwoMinutesRuleTest.class);
-    EntityManagerProvider hbnSessionManager = AllTests.getSessionManager();
-    LifterContainer hbnLifters = null;
+
+    LifterContainer lifterContainer = null;
     List<Lifter> lifters = null;
     SessionData groupData;
 
     @Before
     public void setupTest() {
-        assertNotNull(hbnSessionManager);
-        assertNotNull(hbnSessionManager.getEntityManager());
-        hbnSessionManager.getEntityManager().getTransaction().begin();
-
+        EntityManager entityManager = CompetitionApplication.getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        transaction.begin();
+        
         // mock the application
         final CompetitionApplication application = new CompetitionApplication();
         CompetitionApplication.setCurrent(application);
@@ -55,10 +56,10 @@ public class TwoMinutesRuleTest {
         // for this test, the initial data does not include body weights, so we
         // use false
         // on the constructor to keep the incomplete data.
-        hbnLifters = new LifterContainer(application, false);
+        lifterContainer = new LifterContainer(false);
 
         // initialize the competition data with the lifters
-        lifters = (hbnLifters.getAll());
+        lifters = (lifterContainer.getAll());
 
         // set up the port
         String portName = null;
@@ -77,9 +78,17 @@ public class TwoMinutesRuleTest {
 
     @After
     public void tearDownTest() {
-        hbnSessionManager.getEntityManager().close();
         if (WebApplicationConfiguration.necDisplay != null) WebApplicationConfiguration.necDisplay.close();
-    }
+        EntityManager entityManager = CompetitionApplication.getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        if (transaction.getRollbackOnly()) {
+            transaction.rollback();
+        } else {
+            transaction.commit();
+        }
+        entityManager.close();
+    }   
+    
 
     @Test
     public void initialCheck() {

@@ -33,7 +33,7 @@ public class PlatformSelect extends ListSelect implements Serializable {
     public PlatformSelect() {
         final PlatformSelect platformSelect = this;
         app = CompetitionApplication.getCurrent();
-        dataSource = new PlatformContainer(app.getEntityManager());
+        dataSource = new PlatformContainer();
         platformSelect.setContainerDataSource(dataSource);
         platformSelect.setItemCaptionPropertyId("name"); //$NON-NLS-1$
         platformSelect.setImmediate(true);

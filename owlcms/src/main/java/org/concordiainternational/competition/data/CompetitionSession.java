@@ -228,7 +228,16 @@ public class CompetitionSession implements Serializable, Comparable<Object> {
 
     public void deleteLifters(EntityManager entityManager) {
         for (Lifter curLifter : getLifters()) {
-            entityManager.remove(curLifter);
+            if (entityManager.contains(curLifter)) {
+                entityManager.remove(curLifter);
+            } else {
+                try {
+                    Lifter nl = entityManager.merge(curLifter);
+                    entityManager.remove(nl);
+                } catch (IllegalArgumentException e) {
+                    // ignore already removed.
+                }
+            }
         }
         entityManager.flush();
     }
@@ -238,7 +247,7 @@ public class CompetitionSession implements Serializable, Comparable<Object> {
     }
 
     static public List<CompetitionSession> getAll() {
-        EntityManager em = CompetitionApplication.getCurrent().getEntityManager();
+        EntityManager em = CompetitionApplication.getEntityManager();
         CriteriaQuery<CompetitionSession> cq = em.getCriteriaBuilder().createQuery(CompetitionSession.class);
         cq.from(CompetitionSession.class);
         return em.createQuery(cq).getResultList();

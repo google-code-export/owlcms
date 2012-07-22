@@ -38,7 +38,6 @@ import org.concordiainternational.competition.utils.LoggerUtils;
 import org.concordiainternational.competition.utils.Notifier;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.OptimisticLockType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +75,6 @@ import com.vaadin.event.MethodEventSource;
  * 
  */
 @Entity
-@org.hibernate.annotations.Entity(optimisticLock = OptimisticLockType.VERSION)
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Lifter implements MethodEventSource, Notifier {
 
@@ -296,7 +294,7 @@ public class Lifter implements MethodEventSource, Notifier {
 
 
     static public List<Lifter> getAll() {
-        EntityManager em = CompetitionApplication.getCurrent().getEntityManager();
+        EntityManager em = CompetitionApplication.getEntityManager();
         CriteriaQuery<Lifter> cq = em.getCriteriaBuilder().createQuery(Lifter.class);
         cq.from(Lifter.class);
         return em.createQuery(cq).getResultList();

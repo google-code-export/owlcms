@@ -9,6 +9,7 @@ package org.concordiainternational.competition.data;
 
 import javax.persistence.EntityManager;
 
+import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.vaadin.addons.criteriacontainer.CriteriaContainer;
 
 import com.vaadin.data.util.filter.Compare;
@@ -23,22 +24,26 @@ public class CategoryContainer extends CriteriaContainer<Category> {
      * 
      * @param application
      */
-    public CategoryContainer(EntityManager em) {
+    private CategoryContainer(EntityManager em) {
         super(em,false,true,Category.class,50);
+    }
+    
+    public CategoryContainer() {
+        this(CompetitionApplication.getNewGlobalEntityManager());
     }
     
     /**
      * Alternate constructor that shows only active items
-     * 
      * @param application
      * @param excludeNotWeighed
      */
-    public CategoryContainer(EntityManager entityManager, boolean activeOnly) {
-    	this(entityManager);
+    public CategoryContainer(boolean activeOnly) {
+    	this();
         this.activeOnly  = activeOnly;
         setFilters();
         
     }
+
 
     private void setFilters() {
         removeAllContainerFilters();

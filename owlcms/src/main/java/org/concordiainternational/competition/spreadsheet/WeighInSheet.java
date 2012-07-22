@@ -172,7 +172,7 @@ public class WeighInSheet extends OutputSheet implements InputSheet, LifterReade
 
     @Override
     protected List<Lifter> getLifters(boolean excludeNotWeighed) {
-        return LifterSorter.displayOrderCopy(new LifterContainer(app, excludeNotWeighed).getAll());
+        return LifterSorter.displayOrderCopy(new LifterContainer(excludeNotWeighed).getAll());
     }
 
 

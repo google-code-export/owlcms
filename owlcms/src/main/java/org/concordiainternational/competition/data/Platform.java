@@ -126,7 +126,7 @@ public class Platform implements Serializable {
 
 
     static public List<Platform> getAll() {
-        EntityManager em = CompetitionApplication.getCurrent().getEntityManager();
+        EntityManager em = CompetitionApplication.getEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Platform> cq = cb.createQuery(Platform.class);
         Root<Platform> r = cq.from(Platform.class);
@@ -136,7 +136,7 @@ public class Platform implements Serializable {
 
 
     static public Platform getByName(String name) {
-        EntityManager em = CompetitionApplication.getCurrent().getEntityManager();
+        EntityManager em = CompetitionApplication.getEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Platform> cq = cb.createQuery(Platform.class);
         Root<Platform> r = cq.from(Platform.class);
@@ -395,5 +395,9 @@ public class Platform implements Serializable {
 			return null;
 		}
 	}
+
+    public static List<Platform> getAllActive() {
+        return getAll();
+    }
     
 }

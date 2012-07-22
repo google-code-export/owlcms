@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.Locale;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,8 +33,6 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.Menu;
 import org.concordiainternational.competition.ui.components.ResultFrame;
 import org.concordiainternational.competition.utils.Localized;
-import org.concordiainternational.competition.webapp.EntityManagerProvider;
-import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -68,7 +67,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
-public class CompetitionApplication extends Application implements EntityManagerProvider, UserActions, Serializable  {
+public class CompetitionApplication extends Application implements UserActions, Serializable  {
     private static final long serialVersionUID = -1774806616519381075L;
 
     /**
@@ -80,8 +79,12 @@ public class CompetitionApplication extends Application implements EntityManager
     public static XLogger traceLogger = XLoggerFactory.getXLogger("Tracing"); //$NON-NLS-1$
 
     private static LocalizedSystemMessages localizedMessages;
+    
     private static InheritableThreadLocal<CompetitionApplication> current = new InheritableThreadLocal<CompetitionApplication>();
     
+    // these are set for each service() or each testing thread.
+    private static InheritableThreadLocal<EntityManager> entityManager = new InheritableThreadLocal<EntityManager>();
+    private static InheritableThreadLocal<EntityManagerFactory> entityManagerFactory = new InheritableThreadLocal<EntityManagerFactory>();
     
 
     public CompetitionApplication() {
@@ -847,14 +850,53 @@ public class CompetitionApplication extends Application implements EntityManager
 
 
     /**
-     *  If running as a junit
-     * test, we call the session factory with parameters that tell it not to
-     * persist the database.
+     * @return a thread-local entity manager
      */
-    @Override
-    public EntityManager getEntityManager() {
-        return WebApplicationConfiguration.getEntityManagerFactory().createEntityManager();
+    public static EntityManager getEntityManager() {
+        return entityManager.get();
     }
+
+    /**
+     * Set a thread-local entity manager.
+     * The entity manager is set for each request (or each test case)
+     * @param em
+     */
+    public static void setEntityManager(EntityManager em) {
+        entityManager.set(em);
+    }
+
+    public static void setEntityManagerFactory(EntityManagerFactory emf) {
+        entityManagerFactory.set(emf);
+    }
+    
+    public static EntityManagerFactory getEntityManagerFactory() {
+        return entityManagerFactory.get();
+    }
+    
+    public static void removeThreadLocals() {
+        entityManager.remove();
+        entityManagerFactory.remove();
+        current.remove();
+    }
+
+    public static void setThreadLocals(EntityManagerFactory emf, EntityManager em) {
+        setEntityManager(em);
+        setEntityManagerFactory(emf);
+        // note that current is set in initializer.
+    }
+
+    /**
+     * Create a new entity manager, to be shared amongst several threads.
+     * Such managers are not closed/flushed for each request, and must be managed
+     * explicitly.  Use with care to avoid creating memory leaks.
+     * 
+     * @return a new entity manager
+     */
+    public static EntityManager getNewGlobalEntityManager() {
+        //FIXME: create a list for cleanup in the webapp context.
+        return getEntityManagerFactory().createEntityManager();
+    }
+
 
 }
 

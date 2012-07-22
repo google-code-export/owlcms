@@ -7,6 +7,8 @@
  */
 package org.concordiainternational.competition.ui.list;
 
+import javax.persistence.EntityManager;
+
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.vaadin.addons.criteriacontainer.CriteriaContainer;
@@ -28,13 +30,22 @@ public abstract class GenericPersistedList<T> extends GenericList<T> {
     }
 
     /**
-     * Load container content to Table
+     * Load container content to Table.
+     * Underlying container has detached entities and entity manager is closed to prevent leaks.
+     * The container's refresh method will therefore fail if invoked.
      */
     @Override
     protected void loadData() {
         // System.err.println("GenericHbnList: loadData()");
-        final CriteriaContainer<T> cont = new CriteriaContainer<T>(app.getEntityManager(), true, true, parameterizedClass, 100);
-        table.setContainerDataSource(cont);
+        EntityManager em = null;
+        try {
+            em = CompetitionApplication.getNewGlobalEntityManager();
+            final CriteriaContainer<T> cont = new CriteriaContainer<T>(em, true, true, parameterizedClass, 100);
+            table.setContainerDataSource(cont);
+        } finally {
+            if (em != null) em.close();
+        }
+
     }
 
     /**

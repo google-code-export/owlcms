@@ -22,24 +22,29 @@
 		<param-value>${url}</param-value>
 	</context-param>
 	
-	<!-- when running on a tomcat server (non-embedded), the values for dbPath and
+    <!-- The location of the database is currently set directly in persistence.xml; this will likely
+	      change to a value that can be overridden in context.xml -->
+	      
+	<!-- when running on a tomcat server (non-embedded), the value of
 	     (if used) comPort should be defined in conf/context.xml
 	     as in the following example: 
 	     	<Parameter name="comPort" value="COM3" override="false"/>
-			<Parameter name="dbPath" value="e:/dev/db/competition" override="false"/>
 		This enables the server to keep the values when deploying versions of the
 		war. Note: We recommend *against* using conf/Catalina/localhost/owlcms.xml for this
 		purpose due to the unpredictable nature of Tomcat context deployments.
-	  -->
+
 	<context-param>
 		<description>
 			File root for the owlcms database (actual files will have a suffix
 			appended, e.g. ".db" or ".log").  May be an absolute path or relative
 			to the current directory
 		</description>
-		<param-name>dbPath</param-name>
-		<param-value>db/competition</param-value>
+		<param-name>comPort</param-name>
+		<param-value>COM1</param-value>
 	</context-param>
+	 -->
+	 
+
 
 	<listener>
 		<description>Ensure orderly release of resources on shutdown</description>
