@@ -12,7 +12,7 @@ public class SharedTestSetup {
     protected void setUpTest() {
         EntityManagerFactory emf = WebApplicationConfiguration.getTestEntityManagerFactory();
         WebApplicationConfiguration.insertInitialData(emf, true);
-        EntityManager entityManager = emf .createEntityManager();
+        EntityManager entityManager = emf.createEntityManager();
         CompetitionApplication.setThreadLocals(emf,entityManager);
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
