@@ -12,13 +12,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.LifterContainer;
-import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -33,7 +28,7 @@ import com.vaadin.data.util.BeanItemContainer;
  * @author jflamy
  * 
  */
-public class LifterEditorTest {
+public class LifterEditorTest extends SharedTestSetup {
 
     private static final String REFERENCE_STRING = "20"; //$NON-NLS-1$
     private static final Integer REFERENCE_INTEGER = 20;
@@ -42,29 +37,17 @@ public class LifterEditorTest {
     BeanItemContainer<Lifter> lifters = null;
     final String lineSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
 
+    @Override
     @Before
-    public void setupTest() {
-        EntityManager entityManager = CompetitionApplication.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
+    public void setUpTest() {
+        super.setUpTest();
         
         // for this test, the initial data does not include body weights, so we use false
         // on the constructor to disable exclusion of incomplete data.
         lifterContainer = new LifterContainer(false);
         lifters = new BeanItemContainer<Lifter>(Lifter.class,lifterContainer.getAll());
     }
-
-    @After
-    public void tearDownTest() {
-        EntityManager entityManager = CompetitionApplication.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        if (transaction.getRollbackOnly()) {
-            transaction.rollback();
-        } else {
-            transaction.commit();
-        }
-        entityManager.close();
-    }    
+ 
     
 
     @Test

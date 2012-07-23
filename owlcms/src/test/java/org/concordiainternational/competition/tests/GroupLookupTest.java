@@ -11,13 +11,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.CompetitionSessionLookup;
-import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,28 +20,16 @@ import org.junit.Test;
  * @author jflamy
  * 
  */
-public class GroupLookupTest {
+public class GroupLookupTest extends SharedTestSetup {
 
     CompetitionSessionLookup competitionSessionLookup = null;
 
+    @Override
     @Before
-    public void setupTest() {
-        EntityManager entityManager = CompetitionApplication.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
+    public void setUpTest() {
+        super.setUpTest();
+        
         competitionSessionLookup = new CompetitionSessionLookup();
-    }
-
-    @After
-    public void tearDownTest() {
-        EntityManager entityManager = CompetitionApplication.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        if (transaction.getRollbackOnly()) {
-            transaction.rollback();
-        } else {
-            transaction.commit();
-        }
-        entityManager.close();
     }
 
     /**

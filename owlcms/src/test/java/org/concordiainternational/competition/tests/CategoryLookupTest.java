@@ -11,18 +11,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-
 import org.concordiainternational.competition.data.Category;
 import org.concordiainternational.competition.data.CategoryContainer;
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CategoryLookupByName;
 import org.concordiainternational.competition.data.Gender;
-import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,20 +23,16 @@ import org.junit.Test;
  * @author jflamy
  * 
  */
-public class CategoryLookupTest {
-    
-    private EntityManagerFactory emf = WebApplicationConfiguration.getPersistentEntityManagerFactory();
+public class CategoryLookupTest extends SharedTestSetup {
 
     CategoryContainer categories = null;
     CategoryLookup categoryLookup = null;
     CategoryLookupByName categoryLookupByName;
 
+    @Override
     @Before
-    public void setupTest() {
-        EntityManager entityManager = emf.createEntityManager();
-        CompetitionApplication.setThreadLocals(emf,entityManager);
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
+    public void setUpTest() {
+        super.setUpTest();
 
         categories = new CategoryContainer(true);
         categoryLookup = CategoryLookup.getSharedInstance();
@@ -51,11 +40,6 @@ public class CategoryLookupTest {
         categoryLookupByName = new CategoryLookupByName();
     }
 
-    @After
-    public void tearDownTest() {
-        CompetitionApplication.getEntityManager().close();
-        CompetitionApplication.removeThreadLocals();
-    }
 
     /**
      * Test method for

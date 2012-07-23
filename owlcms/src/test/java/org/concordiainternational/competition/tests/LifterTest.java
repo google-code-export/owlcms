@@ -12,15 +12,18 @@ import static org.junit.Assert.assertEquals;
 import java.util.Calendar;
 
 import org.concordiainternational.competition.data.Lifter;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
-public class LifterTest {
+public class LifterTest extends SharedTestSetup {
 
     private static Lifter lifter;
 
-    @BeforeClass
-    public static void setupTest() {
+    @Override
+    @Before
+    public void setUpTest() {
+        super.setUpTest();
+        
         lifter = new Lifter();
         lifter.setLastName("Strong"); //$NON-NLS-1$
         lifter.setFirstName("Paul"); //$NON-NLS-1$
