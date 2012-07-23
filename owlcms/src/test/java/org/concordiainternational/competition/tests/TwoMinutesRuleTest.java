@@ -15,9 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
@@ -33,18 +30,18 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.Panel;
 
-public class TwoMinutesRuleTest {
+public class TwoMinutesRuleTest extends SharedTestSetup {
     final static Logger logger = LoggerFactory.getLogger(TwoMinutesRuleTest.class);
 
     LifterContainer lifterContainer = null;
     List<Lifter> lifters = null;
     SessionData groupData;
 
+    @Override
     @Before
-    public void setupTest() {
-        EntityManager entityManager = CompetitionApplication.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
+    public void setUpTest() {
+        super.setUpTest();
+        
         
         // mock the application
         final CompetitionApplication application = new CompetitionApplication();
@@ -76,17 +73,11 @@ public class TwoMinutesRuleTest {
 
     }
 
+    @Override
     @After
     public void tearDownTest() {
+        super.tearDownTest();
         if (WebApplicationConfiguration.necDisplay != null) WebApplicationConfiguration.necDisplay.close();
-        EntityManager entityManager = CompetitionApplication.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        if (transaction.getRollbackOnly()) {
-            transaction.rollback();
-        } else {
-            transaction.commit();
-        }
-        entityManager.close();
     }   
     
 

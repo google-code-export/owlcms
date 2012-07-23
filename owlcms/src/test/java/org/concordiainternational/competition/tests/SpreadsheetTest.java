@@ -10,12 +10,10 @@ package org.concordiainternational.competition.tests;
 import java.io.InputStream;
 import java.util.List;
 
-import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.spreadsheet.InputSheet;
 import org.concordiainternational.competition.spreadsheet.WeighInSheet;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -25,22 +23,16 @@ import org.slf4j.LoggerFactory;
  * @author jflamy
  * 
  */
-public class SpreadsheetTest {
+public class SpreadsheetTest extends SharedTestSetup {
 
     Logger logger = LoggerFactory.getLogger(SpreadsheetTest.class);
     static private List<Lifter> lifters;
 
+    @Override
     @Before
-    public void setupTest() {
-        CompetitionApplication.getEntityManager().getTransaction().begin();
-        CategoryLookup categoryLookup = CategoryLookup.getSharedInstance();
-        categoryLookup.reload();
-    }
-
-    @After
-    public void tearDownTest() {
-        CompetitionApplication.getEntityManager().getTransaction().commit();
-        CompetitionApplication.getEntityManager().close();
+    public void setUpTest() {
+        super.setUpTest();
+        
     }
 
     /**

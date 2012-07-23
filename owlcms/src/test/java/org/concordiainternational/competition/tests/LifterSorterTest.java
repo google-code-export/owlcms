@@ -15,47 +15,29 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter.Ranking;
 import org.concordiainternational.competition.data.lifterSort.WinningOrderComparator;
-import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LifterSorterTest {
+public class LifterSorterTest extends SharedTestSetup {
 
     LifterContainer lifterContainer = null;
     List<Lifter> lifters = null;
 
+    @Override
     @Before
-    public void setupTest() {
-        EntityManager entityManager = CompetitionApplication.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
+    public void setUpTest() {
+        super.setUpTest();
         
         // for this test, the initial data does not include body weights, so we use false
         // on the constructor to disable exclusion of incomplete data.
         lifterContainer = new LifterContainer(false);
         lifters = (lifterContainer.getAll());
     }
-
-    @After
-    public void tearDownTest() {
-        EntityManager entityManager = CompetitionApplication.getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        if (transaction.getRollbackOnly()) {
-            transaction.rollback();
-        } else {
-            transaction.commit();
-        }
-        entityManager.close();
-    }   
     
 
     @Test
