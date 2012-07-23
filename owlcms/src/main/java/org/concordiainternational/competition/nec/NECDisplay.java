@@ -25,6 +25,8 @@ import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.utils.LoggerUtils;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +54,16 @@ public class NECDisplay implements Serializable {
     public NECDisplay() throws NoSuchPortException, PortInUseException, IOException, UnsupportedCommOperationException {
     }
 
+    @Before
+    public void setUpTest() throws NoSuchPortException, PortInUseException, IOException, UnsupportedCommOperationException {
+        init("/dev/pts/1");
+    }
+    
+    @After
+    public void tearDownTest() {
+        close();
+    }
+    
     private void init(String comPortName1) throws NoSuchPortException, PortInUseException, IOException,
             UnsupportedCommOperationException {
         if (opened) return;
@@ -350,9 +362,8 @@ public class NECDisplay implements Serializable {
     }
 
     @Test
-    public void testStrings(String comPortName1) throws IOException, NoSuchPortException, PortInUseException,
+    public void testStrings() throws IOException, NoSuchPortException, PortInUseException,
             UnsupportedCommOperationException {
-    	this.comPortName = comPortName1;
         writeStrings("", "", "          17 KG"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         try {
             Thread.sleep(2000);

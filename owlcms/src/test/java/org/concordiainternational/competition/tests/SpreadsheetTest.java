@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 public class SpreadsheetTest extends SharedTestSetup {
 
     Logger logger = LoggerFactory.getLogger(SpreadsheetTest.class);
-    static private List<Lifter> lifters;
+    private List<Lifter> lifters;
 
     @Override
     @Before
@@ -43,8 +43,8 @@ public class SpreadsheetTest extends SharedTestSetup {
     public void getAllLifters() throws Throwable {
         InputStream is = AllTests.class.getResourceAsStream("/testData/roundTripInputSheet.xls"); //$NON-NLS-1$
         InputSheet results = new WeighInSheet();
-        lifters = results.getAllLifters(is, CompetitionApplication.getEntityManager());
-        AllTests.longDump(lifters, false);
+        lifters = results.getAllLifters(is,CompetitionApplication.getEntityManager());
+        System.out.println(AllTests.longDump(lifters, false));
     }
 
 

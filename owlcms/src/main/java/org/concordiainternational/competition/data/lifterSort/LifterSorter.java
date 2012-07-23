@@ -152,7 +152,7 @@ public class LifterSorter implements Serializable {
     }
 
     /**
-     * @param lifters
+     * @param lifterBeanContainer
      * @param sinclair
      */
     @SuppressWarnings("unused")
@@ -161,7 +161,7 @@ public class LifterSorter implements Serializable {
     }
 
     /**
-     * @param lifters
+     * @param lifterBeanContainer
      * @param combined
      */
     @SuppressWarnings("unused")
@@ -268,7 +268,7 @@ public class LifterSorter implements Serializable {
     /**
      * Sort lifters by team, gender and totalRank so team totals can be computed
      * 
-     * @param lifters
+     * @param lifterBeanContainer
      * @param rankingType
      *            what type of lift or total is being ranked
      * @return
@@ -283,7 +283,7 @@ public class LifterSorter implements Serializable {
      * 
      * Sort lifters by team, gender and totalRank so team totals can be assigned
      * 
-     * @param lifters
+     * @param lifterBeanContainer
      * @return
      */
     static public void teamRankingOrder(List<Lifter> toBeSorted, Ranking rankingType) {

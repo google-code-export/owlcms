@@ -20,7 +20,6 @@ import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.LifterContainer;
 import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.webapp.EntityManagerProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,11 +48,9 @@ public class WeighInSheet extends OutputSheet implements InputSheet, LifterReade
      * {@link #init(CategoryLookup, CompetitionApplication, CompetitionSession)} must also be called.
      */
     public WeighInSheet() {
+        createInputSheetHelper();
     }
-    
-    public WeighInSheet(EntityManagerProvider hbnSessionManager) {
-    	createInputSheetHelper();
-    }
+   
 
     public WeighInSheet(CategoryLookup categoryLookup, CompetitionApplication app, CompetitionSession competitionSession) {
         super(categoryLookup, app, competitionSession);
