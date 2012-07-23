@@ -19,6 +19,7 @@ import java.util.Random;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -43,7 +44,9 @@ import org.slf4j.LoggerFactory;
  */
 
 public class WebApplicationConfiguration implements ServletContextListener {
-	private static Logger logger = LoggerFactory.getLogger(WebApplicationConfiguration.class);
+	private static final String COMPETITION_BOOK_TEMPLATE_RESOURCE_PATH = "/templates/competitionBook/CompetitionBook_Total_en.xls";
+
+    private static Logger logger = LoggerFactory.getLogger(WebApplicationConfiguration.class);
 
 	private static EntityManagerFactory entityManagerFactory = null;
 
@@ -77,36 +80,52 @@ public class WebApplicationConfiguration implements ServletContextListener {
 	 * @param sess
 	 * @param testMode
 	 */
-	public static void insertInitialData(EntityManager sess, boolean testMode) {
-		if (Competition.getAll().size() == 0) {
-			// empty database
-			Competition competition = new Competition();
-			competition.setFederation(Messages.getString("Competition.defaultFederation", Locale.getDefault())); //$NON-NLS-1$
-			competition.setFederationAddress(Messages.getString(
-					"Competition.defaultFederationAddress", Locale.getDefault())); //$NON-NLS-1$
-			competition.setFederationEMail(Messages
-					.getString("Competition.defaultFederationEMail", Locale.getDefault())); //$NON-NLS-1$
-			competition.setFederationWebSite(Messages.getString(
-					"Competition.defaultFederationWebSite", Locale.getDefault())); //$NON-NLS-1$
+	public static void insertInitialData(EntityManagerFactory emf, boolean testMode) {
+	    EntityManager em = emf.createEntityManager();
+	    EntityTransaction transaction = em.getTransaction();
+	    try {
+	        transaction.begin();
+	        if (Competition.getAll(em).size() == 0) {
+	            // empty database
+	            Competition competition = new Competition();
+	            competition.setFederation(Messages.getString("Competition.defaultFederation", Locale.getDefault())); //$NON-NLS-1$
+	            competition.setFederationAddress(Messages.getString(
+	                    "Competition.defaultFederationAddress", Locale.getDefault())); //$NON-NLS-1$
+	            competition.setFederationEMail(Messages
+	                    .getString("Competition.defaultFederationEMail", Locale.getDefault())); //$NON-NLS-1$
+	            competition.setFederationWebSite(Messages.getString(
+	                    "Competition.defaultFederationWebSite", Locale.getDefault())); //$NON-NLS-1$
 
-			Calendar w = Calendar.getInstance();
-			w.set(Calendar.MILLISECOND, 0);
-			w.set(Calendar.SECOND, 0);
-			w.set(Calendar.MINUTE, 0);
-			w.set(Calendar.HOUR_OF_DAY, 8);
-			Calendar c = (Calendar) w.clone();
-			c.add(Calendar.HOUR_OF_DAY, 2);
+	            Calendar w = Calendar.getInstance();
+	            w.set(Calendar.MILLISECOND, 0);
+	            w.set(Calendar.SECOND, 0);
+	            w.set(Calendar.MINUTE, 0);
+	            w.set(Calendar.HOUR_OF_DAY, 8);
+	            Calendar c = (Calendar) w.clone();
+	            c.add(Calendar.HOUR_OF_DAY, 2);
 
-			if (testMode) {
-				setupTestData(competition, 5, sess, w, c);
-			} else {
-				setupEmptyCompetition(competition, sess);	
-			}
-			
-			sess.persist(competition);
-		} else {
-			// database contains data, leave it alone.
-		}
+	            if (testMode) {
+	                setupTestData(competition, 5, w, c, em);
+	            } else {
+	                setupEmptyCompetition(competition, em);	
+	            }
+
+	            em.persist(competition);
+	        } else {
+	            // database contains data, leave it alone.
+	        }
+	    } finally {
+            if (transaction != null && transaction.isActive()) {
+                if (transaction.getRollbackOnly()) {
+                    transaction.rollback();
+                } else {
+                    transaction.commit();
+                }
+            }
+            if (em != null) {
+                em.close();
+            }
+	    }
 
 	}
 
@@ -115,10 +134,10 @@ public class WebApplicationConfiguration implements ServletContextListener {
 	 * Set-up the defaults for using the timekeeping and refereeing features.
 	 * @param competition 
 	 * 
-	 * @param sess
+	 * @param em
 	 */
-	protected static void setupEmptyCompetition(Competition competition, EntityManager sess) {
-	    Category.insertStandardCategories(sess, Locale.getDefault());
+	protected static void setupEmptyCompetition(Competition competition, EntityManager em) {
+	    Category.insertStandardCategories(em, Locale.getDefault());
 		Platform platform1 = new Platform("Platform"); //$NON-NLS-1$
 		setDefaultMixerName(platform1);
 		platform1.setHasDisplay(false);
@@ -141,7 +160,7 @@ public class WebApplicationConfiguration implements ServletContextListener {
 		
 		// competition template
 		File templateFile;
-		URL templateUrl = platform1.getClass().getResource("/templates/teamResults/TeamResultSheetTemplate_Standard.xls");
+		URL templateUrl = platform1.getClass().getResource(COMPETITION_BOOK_TEMPLATE_RESOURCE_PATH);
 		try {
 			templateFile = new File(templateUrl.toURI());
 			competition.setResultTemplateFileName(templateFile.getCanonicalPath());
@@ -150,39 +169,39 @@ public class WebApplicationConfiguration implements ServletContextListener {
 		} catch (IOException e) {
 		}
 
-		sess.persist(platform1);
+		em.persist(platform1);
 		CompetitionSession groupA = new CompetitionSession("A", null, null); //$NON-NLS-1$
-		sess.persist(groupA);
+		em.persist(groupA);
 		CompetitionSession groupB = new CompetitionSession("B", null, null); //$NON-NLS-1$#
-		sess.persist(groupB);
+		em.persist(groupB);
 		CompetitionSession groupC = new CompetitionSession("C", null, null); //$NON-NLS-1$
-		sess.persist(groupC);
+		em.persist(groupC);
 	}
 
 	/**
 	 * @param competition 
 	 * @param liftersToLoad
-	 * @param sess
 	 * @param w
 	 * @param c
+	 * @param em
 	 */
 	protected static void setupTestData(Competition competition, int liftersToLoad,
-			EntityManager sess, Calendar w, Calendar c) {
+			Calendar w, Calendar c, EntityManager em) {
 		Platform platform1 = new Platform("Gym 1"); //$NON-NLS-1$
-		sess.persist(platform1);
+		em.persist(platform1);
 		Platform platform2 = new Platform("Gym 2"); //$NON-NLS-1$
-		sess.persist(platform1);
-		sess.persist(platform2);
+		em.persist(platform1);
+		em.persist(platform2);
 		CompetitionSession groupA = new CompetitionSession("A", w.getTime(), c.getTime()); //$NON-NLS-1$
 		groupA.setPlatform(platform1);
 		CompetitionSession groupB = new CompetitionSession("B", w.getTime(), c.getTime()); //$NON-NLS-1$
 		groupB.setPlatform(platform2);
 		CompetitionSession groupC = new CompetitionSession("C", w.getTime(), c.getTime()); //$NON-NLS-1$
 		groupC.setPlatform(platform1);
-		sess.persist(groupA);
-		sess.persist(groupB);
-		sess.persist(groupC);
-		insertSampleLifters(liftersToLoad, sess, groupA, groupB, groupC);
+		em.persist(groupA);
+		em.persist(groupB);
+		em.persist(groupC);
+		insertSampleLifters(liftersToLoad, em, groupA, groupB, groupC);
 	}
 
 
@@ -302,7 +321,7 @@ public class WebApplicationConfiguration implements ServletContextListener {
             persistenceUnit = "owlcms-embedded";
             entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnit);
         }
-        insertInitialData(entityManagerFactory.createEntityManager(), false);
+        
         return entityManagerFactory;
     }
     
@@ -311,7 +330,6 @@ public class WebApplicationConfiguration implements ServletContextListener {
             persistenceUnit = "owlcms-inmemory";
             entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnit);
         }
-        insertInitialData(entityManagerFactory.createEntityManager(), true);
         return entityManagerFactory;
     }
 

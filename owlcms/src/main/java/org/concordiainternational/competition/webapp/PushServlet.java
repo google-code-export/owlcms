@@ -27,12 +27,14 @@ import com.vaadin.terminal.gwt.server.ApplicationServlet;
 public class PushServlet extends ApplicationServlet {
 
     private MainServlet pushServlet;
-    private EntityManagerFactory emf = WebApplicationConfiguration.getPersistentEntityManagerFactory();
+    private EntityManagerFactory emf = null;
 
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
         pushServlet = new MainServlet(servletConfig.getServletContext());
+        emf = WebApplicationConfiguration.getPersistentEntityManagerFactory();
+        WebApplicationConfiguration.insertInitialData(emf, false);
     }
 
     @Override
