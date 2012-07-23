@@ -107,7 +107,7 @@ public class WebApplicationConfiguration implements ServletContextListener {
 	            if (testMode) {
 	                setupTestData(competition, 5, w, c, em);
 	            } else {
-	                setupEmptyCompetition(competition, em);	
+	                setupEmptyCompetition(competition, new Platform("Gym"), em);	//$NON-NLS-1$
 	            }
 
 	            em.persist(competition);
@@ -136,9 +136,20 @@ public class WebApplicationConfiguration implements ServletContextListener {
 	 * 
 	 * @param em
 	 */
-	protected static void setupEmptyCompetition(Competition competition, EntityManager em) {
-	    Category.insertStandardCategories(em, Locale.getDefault());
-		Platform platform1 = new Platform("Platform"); //$NON-NLS-1$
+	protected static void setupEmptyCompetition(Competition competition, Platform platform1, EntityManager em) {
+	    setupStandardData(competition, platform1, true, em);
+		em.persist(platform1);
+		CompetitionSession groupA = new CompetitionSession("A", null, null); //$NON-NLS-1$
+		em.persist(groupA);
+		CompetitionSession groupB = new CompetitionSession("B", null, null); //$NON-NLS-1$#
+		em.persist(groupB);
+		CompetitionSession groupC = new CompetitionSession("C", null, null); //$NON-NLS-1$
+		em.persist(groupC);
+	}
+
+
+    private static void setupStandardData(Competition competition, Platform platform1, boolean doCategories, EntityManager em) {
+        if (doCategories) Category.insertStandardCategories(em, Locale.getDefault());
 		setDefaultMixerName(platform1);
 		platform1.setHasDisplay(false);
 		platform1.setShowDecisionLights(true);
@@ -158,25 +169,18 @@ public class WebApplicationConfiguration implements ServletContextListener {
 		platform1.setNbL_20(1);
 		platform1.setNbL_25(1);
 		
-		// competition template
-		File templateFile;
-		URL templateUrl = platform1.getClass().getResource(COMPETITION_BOOK_TEMPLATE_RESOURCE_PATH);
-		try {
-			templateFile = new File(templateUrl.toURI());
-			competition.setResultTemplateFileName(templateFile.getCanonicalPath());
-		} catch (URISyntaxException e) {
-			templateFile = new File(templateUrl.getPath());
-		} catch (IOException e) {
-		}
-
-		em.persist(platform1);
-		CompetitionSession groupA = new CompetitionSession("A", null, null); //$NON-NLS-1$
-		em.persist(groupA);
-		CompetitionSession groupB = new CompetitionSession("B", null, null); //$NON-NLS-1$#
-		em.persist(groupB);
-		CompetitionSession groupC = new CompetitionSession("C", null, null); //$NON-NLS-1$
-		em.persist(groupC);
-	}
+	    // competition template
+        File templateFile;
+        URL templateUrl = competition.getClass().getResource(COMPETITION_BOOK_TEMPLATE_RESOURCE_PATH);
+        try {
+            templateFile = new File(templateUrl.toURI());
+            competition.setResultTemplateFileName(templateFile.getCanonicalPath());
+        } catch (URISyntaxException e) {
+            templateFile = new File(templateUrl.getPath());
+        } catch (IOException e) {
+        }
+        return;
+    }
 
 	/**
 	 * @param competition 
@@ -188,8 +192,10 @@ public class WebApplicationConfiguration implements ServletContextListener {
 	protected static void setupTestData(Competition competition, int liftersToLoad,
 			Calendar w, Calendar c, EntityManager em) {
 		Platform platform1 = new Platform("Gym 1"); //$NON-NLS-1$
-		em.persist(platform1);
+	    setupStandardData(competition, platform1, true, em);
 		Platform platform2 = new Platform("Gym 2"); //$NON-NLS-1$
+		setupStandardData(competition, platform1, false, em);
+		
 		em.persist(platform1);
 		em.persist(platform2);
 		CompetitionSession groupA = new CompetitionSession("A", w.getTime(), c.getTime()); //$NON-NLS-1$
@@ -215,7 +221,7 @@ public class WebApplicationConfiguration implements ServletContextListener {
 				"Clavel", "Simons", "Verne", "Scott", "Allison", "Gates", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
 				"Rowling", "Barks", "Ross", "Schneider", "Tate" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 
-		Random r = new Random(0);
+		Random r = new Random(0);  // make sure we get repeatable sequence.
 
 		for (int i = 0; i < liftersToLoad; i++) {
 			Lifter p = new Lifter();

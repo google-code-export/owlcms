@@ -48,13 +48,16 @@ public class CategoryLookupTest extends SharedTestSetup {
      */
     @Test
     public void testReloadAfterRemoval() {
-        int initialSize = categoryLookup.getCategories().size();
-        categories.removeItem(22L); // the first few entries are inactive, and
-                                    // are filtered out.
+        int lookupSize = categoryLookup.getCategories().size();
+        int containerSize = categories.size();
+        if (lookupSize != containerSize) {
+            fail("category lookup data load failed (containerSize=" + containerSize + ", lookupSize=" + lookupSize + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+        categories.removeItem(10L); // the first few entries are inactive, and are filtered out.
         categoryLookup.reload();
         int finalSize = categoryLookup.getCategories().size();
-        if (!(finalSize == (initialSize - 1)))
-            fail("reload after removal failed (finalSize=" + finalSize + ", initialSize=" + initialSize + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        if (!(finalSize == (lookupSize - 1)))
+            fail("reload after removal failed (finalSize=" + finalSize + ", lookupSize=" + lookupSize + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     @Test

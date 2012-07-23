@@ -130,7 +130,7 @@ public class Category implements Serializable {
     }
 
     public static void insertStandardCategories(EntityManager sess, Locale locale) {
-        if (getAll().size() == 0) {
+        if (getAll(sess).size() == 0) {
             sess.persist(new Category(Messages.getString("Category.f40", locale), 0.0, 40.0, Gender.F.toString(), false)); //$NON-NLS-1$
             sess.persist(new Category(Messages.getString("Category.f44", locale), 0.0, 44.0, Gender.F.toString(), false)); //$NON-NLS-1$
             sess.persist(new Category(Messages.getString("Category.f48", locale), 0.0, 48.0, Gender.F.toString(), true)); //$NON-NLS-1$
@@ -138,12 +138,10 @@ public class Category implements Serializable {
             sess.persist(new Category(Messages.getString("Category.f58", locale), 53.0, 58.0, Gender.F.toString(), true)); //$NON-NLS-1$
             sess.persist(new Category(Messages.getString("Category.f63", locale), 58.0, 63.0, Gender.F.toString(), true)); //$NON-NLS-1$
             sess.persist(new Category(Messages.getString("Category.f69", locale), 63.0, 69.0, Gender.F.toString(), true)); //$NON-NLS-1$
-            sess.persist(new Category(
-                    Messages.getString("Category.fgt69", locale), 69.0, 999.0, Gender.F.toString(), false)); //$NON-NLS-1$
+            sess.persist(new Category(Messages.getString("Category.fgt69", locale), 69.0, 999.0, Gender.F.toString(), false)); //$NON-NLS-1$
             sess.persist(new Category(Messages.getString("Category.f75", locale), 69.0, 75.0, Gender.F.toString(), true)); //$NON-NLS-1$
-            sess
-                    .persist(new Category(
-                            Messages.getString("Category.fgt75", locale), 75.0, 999.0, Gender.F.toString(), true)); //$NON-NLS-1$
+            sess.persist(new Category(Messages.getString("Category.fgt75", locale), 75.0, 999.0, Gender.F.toString(), true)); //$NON-NLS-1$
+            
             sess.persist(new Category(Messages.getString("Category.m46", locale), 0.0, 46.0, Gender.M.toString(), false)); //$NON-NLS-1$
             sess.persist(new Category(Messages.getString("Category.m51", locale), 0.0, 51.0, Gender.M.toString(), false)); //$NON-NLS-1$
             sess.persist(new Category(Messages.getString("Category.m56", locale), 0.0, 56.0, Gender.M.toString(), true)); //$NON-NLS-1$
@@ -151,22 +149,21 @@ public class Category implements Serializable {
             sess.persist(new Category(Messages.getString("Category.m69", locale), 62.0, 69.0, Gender.M.toString(), true)); //$NON-NLS-1$
             sess.persist(new Category(Messages.getString("Category.m77", locale), 69.0, 77.0, Gender.M.toString(), true)); //$NON-NLS-1$
             sess.persist(new Category(Messages.getString("Category.m85", locale), 77.0, 85.0, Gender.M.toString(), true)); //$NON-NLS-1$
-            sess.persist(new Category(
-                    Messages.getString("Category.mgt85", locale), 85.0, 999.0, Gender.M.toString(), false)); //$NON-NLS-1$
+            sess.persist(new Category(Messages.getString("Category.mgt85", locale), 85.0, 999.0, Gender.M.toString(), false)); //$NON-NLS-1$
             sess.persist(new Category(Messages.getString("Category.m94", locale), 85.0, 94.0, Gender.M.toString(), true)); //$NON-NLS-1$
-            sess.persist(new Category(
-                    Messages.getString("Category.mgt94", locale), 94.0, 999.0, Gender.M.toString(), false)); //$NON-NLS-1$
-            sess
-                    .persist(new Category(
-                            Messages.getString("Category.m105", locale), 94.0, 105.0, Gender.M.toString(), true)); //$NON-NLS-1$
-            sess.persist(new Category(
-                    Messages.getString("Category.mgt105", locale), 105.0, 999.0, Gender.M.toString(), true)); //$NON-NLS-1$
+            sess.persist(new Category(Messages.getString("Category.mgt94", locale), 94.0, 999.0, Gender.M.toString(), false)); //$NON-NLS-1$
+            sess.persist(new Category(Messages.getString("Category.m105", locale), 94.0, 105.0, Gender.M.toString(), true)); //$NON-NLS-1$
+            sess.persist(new Category(Messages.getString("Category.mgt105", locale), 105.0, 999.0, Gender.M.toString(), true)); //$NON-NLS-1$
         }
     }
 
 
     static public List<Category> getAll() {
         EntityManager em = CompetitionApplication.getEntityManager();
+        return getAll(em);
+    }
+
+    private static List<Category> getAll(EntityManager em) {
         CriteriaQuery<Category> cq = em.getCriteriaBuilder().createQuery(Category.class);
         cq.from(Category.class);
         return em.createQuery(cq).getResultList();
