@@ -95,7 +95,7 @@ public class LifterContainer extends CriteriaContainer<Lifter> implements Contai
             if (excludeNotWeighed != null && excludeNotWeighed) {
                 addContainerFilter(new Compare.Greater(Lifter_.bodyWeight.getName(), 0));
             } if (currentSession != null) {
-                addContainerFilter(new Compare.Equal(Lifter_.competitionSession.getName(), currentSession.getName()));
+                addContainerFilter(new Compare.Equal(Lifter_.competitionSession.getName(), currentSession));
             }
 
         }

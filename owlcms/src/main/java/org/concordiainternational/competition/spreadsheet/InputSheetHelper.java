@@ -261,7 +261,6 @@ public class InputSheetHelper implements InputSheet {
 //            if (dateString != null && !dateString.trim().isEmpty()) {
 //            	try {
 //				} catch (NumberFormatException e) {
-//					// TODO: handle exception
 //				}
 //				Date date = DateTime.parse(dateString).toDate();       
 //                competition.setCompetitionDate(date);

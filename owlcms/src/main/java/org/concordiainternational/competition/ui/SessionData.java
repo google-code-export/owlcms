@@ -1231,7 +1231,6 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 		setCurrentSession(this.getCurrentSession());
 		if (isMaster) {
 			// get current platform back from database
-			// TODO: switch to JPA and use entity refresh
 			Platform curPlatform = this.getPlatform();
 			if (curPlatform != null) {
 				String platformName = curPlatform.getName();

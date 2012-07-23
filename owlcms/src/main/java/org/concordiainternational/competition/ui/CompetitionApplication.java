@@ -20,6 +20,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Platform;
@@ -56,6 +57,7 @@ import com.vaadin.terminal.URIHandler;
 import com.vaadin.terminal.UserError;
 import com.vaadin.terminal.VariableOwner;
 import com.vaadin.terminal.gwt.server.ChangeVariablesErrorEvent;
+import com.vaadin.terminal.gwt.server.HttpServletRequestListener;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractComponentContainer;
@@ -67,7 +69,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
 
-public class CompetitionApplication extends Application implements UserActions, Serializable  {
+public class CompetitionApplication extends Application implements UserActions, Serializable, HttpServletRequestListener  {
     private static final long serialVersionUID = -1774806616519381075L;
 
     /**
@@ -89,13 +91,13 @@ public class CompetitionApplication extends Application implements UserActions, 
 
     public CompetitionApplication() {
 		super();
-        current.set(this);
+		setCurrent(this);
         logger.debug("new application {} {}",this, this.getLocale());
 	}
     
     public CompetitionApplication(String suffix) {
 		super();
-        current.set(this);
+        setCurrent(this);
         setAppSuffix(suffix);
         logger.debug("new application {} {}",this);
 	}
@@ -336,28 +338,27 @@ public class CompetitionApplication extends Application implements UserActions, 
         return currentGroup;
     }
 
-    /**
-     * Used to get current Hibernate session. Also ensures an open Hibernate
-     * transaction.
-     */
-	public EntityManager startTransaction() {
-        EntityManager currentSession = getEntityManager();
-        if (!currentSession.getTransaction().isActive()) {
-            currentSession.getTransaction().begin();
-        }
-        return currentSession;
-    }
-    
-    private void endTransaction() {
-        EntityManager sess = getEntityManager();
-        if (sess.getTransaction().isActive()) {
-            sess.getTransaction().commit();
-            if (sess.isOpen()) sess.flush();
-        }
-        if (sess.isOpen()) {
-            sess.close();
-        }
-    }
+//    /**
+//     * Used to get current Hibernate session. Also ensures an open Hibernate
+//     * transaction.
+//     */
+//	public EntityManager startTransaction() {
+//        EntityManager currentSession = getEntityManager();
+//        if (!currentSession.getTransaction().isActive()) {
+//            currentSession.getTransaction().begin();
+//        }
+//        return currentSession;
+//    }
+//    
+//    private void endTransaction() {
+//        EntityManager sess = getEntityManager();
+//        if (sess.getTransaction().isActive()) {
+//            sess.getTransaction().commit();
+//        }
+//        if (sess.isOpen()) {
+//            sess.close();
+//        }
+//    }
 
     
     /**
@@ -468,12 +469,6 @@ public class CompetitionApplication extends Application implements UserActions, 
         // set system message language if any are shown while "init" is running.
         LocalizedSystemMessages msg = (LocalizedSystemMessages) getSystemMessages();
         msg.setThreadLocale(this.getLocale());
-
-        // the following defines what will happen before and after each http
-        // request.
-        if (httpRequestListener == null) {
-        	httpRequestListener = attachHttpRequestListener();
-        }
 	}
 
     /**
@@ -636,42 +631,7 @@ public class CompetitionApplication extends Application implements UserActions, 
         }
     }
 
-    /**
-     * Vaadin "transaction" equals "http request". This method fires for all
-     * servlets in the session.
-     */
-    protected TransactionListener attachHttpRequestListener() {
-        TransactionListener listener = new TransactionListener() {
-            private static final long serialVersionUID = -2365336986843262181L;
 
-            @Override
-			public void transactionEnd(Application application, Object transactionData) {
-                // Transaction listener gets fired for all (Http) sessions
-                // of Vaadin applications, checking to be this one.
-                if (application == CompetitionApplication.this) {
-                    endTransaction();
-                }
-                current.remove();
-            }
-
-            @Override
-			public void transactionStart(Application application, Object transactionData) {
-                ((LocalizedSystemMessages) getSystemMessages()).setThreadLocale(getLocale());
-                current.set(CompetitionApplication.this); // make the application available via ThreadLocal
-                HttpServletRequest request = (HttpServletRequest) transactionData;
-                final String requestURI = request.getRequestURI();
-				checkURI(requestURI);
-                if (requestURI.contains("juryDisplay")) {
-                	request.getSession(true).setMaxInactiveInterval(-1);
-                } else {
-                	request.getSession(true).setMaxInactiveInterval(3600);
-                }
-                getCurrentCompetitionSession(); // sets up the MDC
-            }
-        };
-		getContext().addTransactionListener(listener);
-		return listener;
-    }
 
     /**
      * Create the main layout.
@@ -876,13 +836,13 @@ public class CompetitionApplication extends Application implements UserActions, 
     public static void removeThreadLocals() {
         entityManager.remove();
         entityManagerFactory.remove();
-        current.remove();
+        // note that current is removed in onRequestEnd
     }
 
     public static void setThreadLocals(EntityManagerFactory emf, EntityManager em) {
         setEntityManager(em);
         setEntityManagerFactory(emf);
-        // note that current is set in initializer.
+        // note that current is set in onRequestStart
     }
 
     /**
@@ -895,6 +855,34 @@ public class CompetitionApplication extends Application implements UserActions, 
     public static EntityManager getNewGlobalEntityManager() {
         //FIXME: create a list for cleanup in the webapp context.
         return getEntityManagerFactory().createEntityManager();
+    }
+
+    /* Processing done for each httpRequest.
+     * Note that the transactional aspect of managing entity managers is done explicitly in the servlet,
+     * in order to ensure that it is done withing a finally.
+     * 
+     * @see com.vaadin.terminal.gwt.server.HttpServletRequestListener#onRequestStart(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+
+    @Override
+    public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
+        ((LocalizedSystemMessages) getSystemMessages()).setThreadLocale(getLocale());
+        current.set(CompetitionApplication.this); // make the application available via ThreadLocal
+
+        final String requestURI = request.getRequestURI();
+        checkURI(requestURI);
+        if (requestURI.contains("juryDisplay")) {
+            request.getSession(true).setMaxInactiveInterval(-1);
+        } else {
+            request.getSession(true).setMaxInactiveInterval(3600);
+        }
+        getCurrentCompetitionSession(); // sets up the MDC logging.    
+    }
+
+    // TODO: check that onRequestEnd is always called and move removeThreadLocals here
+    @Override
+    public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {
+        current.remove();
     }
 
 
