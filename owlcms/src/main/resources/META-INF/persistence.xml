@@ -14,9 +14,12 @@
 			<property name="hibernate.hbm2ddl.auto" value="update" />
 			<property name="hibernate.connection.url" value="jdbc:derby:target/database/owlcms;create=true" />
 			<property name="hibernate.connection.driver_class" value="org.apache.derby.jdbc.EmbeddedDriver" />
-			<property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect" />
 			<property name="hibernate.connection.username" value="user" />
 			<property name="hibernate.connection.password" value="password" />
+			<property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
+			<property name="hibernate.cache.use_second_level_cache" value="true" />
+			<property name="hibernate.cache.use_query_cache" value="true" />
 		</properties>
 	</persistence-unit>
 	
@@ -27,7 +30,7 @@
 		<properties>
 			<property name="hibernate.connection.url" value="jdbc:derby:target/database/owlcms;shutdown=true" />
 			<property name="hibernate.connection.driver_class" value="org.apache.derby.jdbc.EmbeddedDriver" />
-			<property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect" />
 			<property name="hibernate.connection.username" value="user" />
 			<property name="hibernate.connection.password" value="password" />
 		</properties>
@@ -43,9 +46,12 @@
 			<property name="hibernate.hbm2ddl.auto" value="update" />
 			<property name="hibernate.connection.url" value="jdbc:derby:memory:testDb;create=true" />
 			<property name="hibernate.connection.driver_class" value="org.apache.derby.jdbc.EmbeddedDriver" />
-			<property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect" />
 			<property name="hibernate.connection.username" value="user" />
 			<property name="hibernate.connection.password" value="password" />
+			<property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
+			<property name="hibernate.cache.use_second_level_cache" value="true" />
+			<property name="hibernate.cache.use_query_cache" value="true" />			
 		</properties>
 	</persistence-unit>
 	
@@ -56,7 +62,7 @@
 		<properties>
 			<property name="hibernate.connection.url" value="jdbc:derby:memory:testDb;shutdown=true" />
 			<property name="hibernate.connection.driver_class" value="org.apache.derby.jdbc.EmbeddedDriver" />
-			<property name="hibernate.dialect" value="org.hibernate.dialect.DerbyDialect" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect" />
 			<property name="hibernate.connection.username" value="user" />
 			<property name="hibernate.connection.password" value="password" />
 		</properties>
