@@ -129,7 +129,8 @@ public abstract class JXLSWorkbookStreamSource implements StreamResource.StreamS
 	}
 
 	public InputStream getTemplate() throws IOException {
-		String templateName = "/competitionBook/CompetitionBook_Total_"+CompetitionApplication.getCurrentSupportedLocale().getLanguage()+".xls";
+	    //FIXME: get from database.
+		String templateName = "/templates/competitionBook/CompetitionBook_Total_"+CompetitionApplication.getCurrentSupportedLocale().getLanguage()+".xls";
 		final InputStream resourceAsStream = app.getResourceAsStream(templateName);
 		if (resourceAsStream == null) {
 			throw new IOException("Resource not found: " + templateName);} //$NON-NLS-1$
