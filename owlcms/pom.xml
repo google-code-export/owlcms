@@ -61,10 +61,8 @@
 				</configuration>
 			</plugin>
 
-			<!-- 
-			     The following plugin tells maven that there are additional source
-			     directories in addition to the standard layout.
-			  -->
+			<!-- The following plugin tells maven that there are additional source 
+				directories in addition to the standard layout. -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
@@ -83,8 +81,8 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>	
-			
+			</plugin>
+
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.2</version>
@@ -419,36 +417,25 @@
 			<version>4.1.4.Final</version>
 			<scope>runtime</scope>
 		</dependency>
-		
-		<!-- the dependency on the hibernate-core module (see above) 
 		<dependency>
-			<groupId>javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>3.6.0.GA</version>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-ehcache</artifactId>
+			<version>4.1.4.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache-core</artifactId>
-			<version>2.5.0</version>
+			<version>2.5.3</version>
 		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-annotations</artifactId>
-			<version>3.4.0.GA</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate</artifactId>
-			<version>3.3.2.GA</version>
-			<type>pom</type>
-			<exclusions>
-				<exclusion>
-					<artifactId>commons-logging</artifactId>
-					<groupId>commons-logging</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		-->
+
+		<!-- the dependency on the hibernate-core module (see above) <dependency> 
+			<groupId>javassist</groupId> <artifactId>javassist</artifactId> <version>3.6.0.GA</version> 
+			</dependency> <dependency> <groupId>net.sf.ehcache</groupId> <artifactId>ehcache-core</artifactId> 
+			<version>2.5.0</version> </dependency> <dependency> <groupId>org.hibernate</groupId> 
+			<artifactId>hibernate-annotations</artifactId> <version>3.4.0.GA</version> 
+			</dependency> <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate</artifactId> 
+			<version>3.3.2.GA</version> <type>pom</type> <exclusions> <exclusion> <artifactId>commons-logging</artifactId> 
+			<groupId>commons-logging</groupId> </exclusion> </exclusions> </dependency> -->
 
 
 		<!-- added to local repository -->
@@ -498,16 +485,16 @@
 			<artifactId>jxls-core</artifactId>
 			<version>1.0</version>
 		</dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>3.8</version>
-        </dependency>		
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.8</version>
+		</dependency>
 	</dependencies>
 
 	<distributionManagement>
