@@ -148,7 +148,6 @@ public class Competition implements Serializable {
         } else {
             return CompetitionApplication.getCurrent().getContext().getBaseDirectory()
                     + "/WEB-INF/classes/templates/competitionBook/CompetitionBook_Total_"+CompetitionApplication.getCurrentSupportedLocale().getLanguage()+".xls";
-                //+ "/WEB-INF/classes/templates/team/TeamResultSheetTemplate.xls";
         }
     }
 
@@ -172,6 +171,10 @@ public class Competition implements Serializable {
 
     static public List<Competition> getAll() {
         EntityManager em = CompetitionApplication.getEntityManager();
+        return getAll(em);
+    }
+
+    public static List<Competition> getAll(EntityManager em) {
         CriteriaQuery<Competition> cq = em.getCriteriaBuilder().createQuery(Competition.class);
         cq.from(Competition.class);
         return em.createQuery(cq).getResultList();
