@@ -21,6 +21,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<vaadin.version>6.8.1</vaadin.version>
+		<gwt.version>2.3.0</gwt.version>
+		<gwt.plugin.version>2.2.0</gwt.plugin.version>
 	</properties>
 
 	<description>Web Application for managing an Olympic Weightlifting Competition.</description>
@@ -178,7 +181,7 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>gwt-maven-plugin</artifactId>
-						<version>2.3.0</version>
+						<version>${gwt.plugin.version}</version>
 						<configuration>
 							<webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
 							<extraJvmArgs>-Xmx512M -Xss1024k</extraJvmArgs>
@@ -198,20 +201,20 @@
 						<dependencies>
 							<dependency>
 								<groupId>com.google.gwt</groupId>
-								<artifactId>gwt-user</artifactId>
-								<version>2.1.0</version>
+								<artifactId>gwt-dev</artifactId>
+								<version>${gwt.version}</version>
 							</dependency>
 							<dependency>
 								<groupId>com.google.gwt</groupId>
-								<artifactId>gwt-dev</artifactId>
-								<version>2.1.0</version>
+								<artifactId>gwt-user</artifactId>
+								<version>${gwt.version}</version>
 							</dependency>
 						</dependencies>
 					</plugin>
 					<plugin>
 						<groupId>com.vaadin</groupId>
 						<artifactId>vaadin-maven-plugin</artifactId>
-						<version>1.0.1</version>
+						<version>1.0.2</version>
 						<executions>
 							<execution>
 								<configuration>
@@ -281,7 +284,26 @@
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin</artifactId>
-			<version>6.8.1</version>
+			<version>${vaadin.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>${gwt.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+			<classifier>sources</classifier>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
@@ -333,13 +355,6 @@
 			<version>0.9.8</version>
 		</dependency>
 
-		<!-- This is also used by gwt-maven-plugin to deduce GWT version number. -->
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<version>2.1.0</version>
-			<scope>provided</scope>
-		</dependency>
 
 		<!-- misc. dependencies -->
 		<dependency>
@@ -427,15 +442,6 @@
 			<artifactId>ehcache-core</artifactId>
 			<version>2.5.3</version>
 		</dependency>
-
-		<!-- the dependency on the hibernate-core module (see above) <dependency> 
-			<groupId>javassist</groupId> <artifactId>javassist</artifactId> <version>3.6.0.GA</version> 
-			</dependency> <dependency> <groupId>net.sf.ehcache</groupId> <artifactId>ehcache-core</artifactId> 
-			<version>2.5.0</version> </dependency> <dependency> <groupId>org.hibernate</groupId> 
-			<artifactId>hibernate-annotations</artifactId> <version>3.4.0.GA</version> 
-			</dependency> <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate</artifactId> 
-			<version>3.3.2.GA</version> <type>pom</type> <exclusions> <exclusion> <artifactId>commons-logging</artifactId> 
-			<groupId>commons-logging</groupId> </exclusion> </exclusions> </dependency> -->
 
 
 		<!-- added to local repository -->
