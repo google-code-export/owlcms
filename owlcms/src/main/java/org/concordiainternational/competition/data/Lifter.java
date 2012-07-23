@@ -126,7 +126,7 @@ public class Lifter implements MethodEventSource, Notifier {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Integer id;
 
     private Long version;
 
@@ -718,7 +718,7 @@ public class Lifter implements MethodEventSource, Notifier {
     /**
      * @return the id
      */
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 

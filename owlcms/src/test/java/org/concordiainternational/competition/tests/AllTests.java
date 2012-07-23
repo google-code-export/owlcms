@@ -17,13 +17,21 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import org.concordiainternational.competition.data.Lifter;
-import org.concordiainternational.competition.nec.NECDisplay;
 import org.concordiainternational.competition.spreadsheet.InputSheetHelper;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { CategoryLookupTest.class, GroupLookupTest.class, LifterEditorTest.class, LifterSorterTest.class, LifterTest.class, SpreadsheetTest.class, TwoMinutesRuleTest.class, NECDisplay.class })
+@Suite.SuiteClasses( { 
+    CategoryLookupTest.class, 
+    GroupLookupTest.class,
+    LifterEditorTest.class,
+    LifterSorterTest.class,
+    LifterTest.class, 
+    SpreadsheetTest.class, 
+    TwoMinutesRuleTest.class,
+    // NECDisplay.class
+    })
 public class AllTests {
 
     final static String lineSeparator = System.getProperty("line.separator"); //$NON-NLS-1$

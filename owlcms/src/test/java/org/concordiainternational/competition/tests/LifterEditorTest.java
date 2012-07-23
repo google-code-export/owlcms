@@ -8,6 +8,7 @@
 package org.concordiainternational.competition.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
@@ -34,7 +35,7 @@ public class LifterEditorTest extends SharedTestSetup {
     private static final Integer REFERENCE_INTEGER = 20;
 
     LifterContainer lifterContainer = null;
-    BeanItemContainer<Lifter> lifters = null;
+    BeanItemContainer<Lifter> lifterBeanContainer = null;
     final String lineSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
 
     @Override
@@ -45,7 +46,7 @@ public class LifterEditorTest extends SharedTestSetup {
         // for this test, the initial data does not include body weights, so we use false
         // on the constructor to disable exclusion of incomplete data.
         lifterContainer = new LifterContainer(false);
-        lifters = new BeanItemContainer<Lifter>(Lifter.class,lifterContainer.getAll());
+        lifterBeanContainer = new BeanItemContainer<Lifter>(Lifter.class,lifterContainer.getAll());
     }
  
     
@@ -53,7 +54,7 @@ public class LifterEditorTest extends SharedTestSetup {
     @Test
     public void testInitialLoad() {
         int persistentSize = lifterContainer.size();
-        int beanSize = lifters.size();
+        int beanSize = lifterBeanContainer.size();
         assertTrue(persistentSize > 0);
         assertEquals(persistentSize, beanSize);
     }
@@ -62,7 +63,7 @@ public class LifterEditorTest extends SharedTestSetup {
     public void testProperties() {
         @SuppressWarnings("unchecked")
         Collection<String> hbnProperties = (Collection<String>) lifterContainer.getContainerPropertyIds();
-        Collection<String> lifterProperties = lifters.getContainerPropertyIds();
+        Collection<String> lifterProperties = lifterBeanContainer.getContainerPropertyIds();
         lifterProperties.removeAll(hbnProperties);
         assertTrue("transient properties are visible in bean", lifterProperties.size() > 0); //$NON-NLS-1$
     }
@@ -72,8 +73,8 @@ public class LifterEditorTest extends SharedTestSetup {
     public void testTransientGet() { // this test worked only because of a bug
                                      // in getTotal (c&j bomb-out was not being
                                      // considered)
-        Object firstItemId = lifters.firstItemId();
-        BeanItem<Lifter> lifterItem = lifters.getItem(firstItemId);
+        Object firstItemId = lifterBeanContainer.firstItemId();
+        BeanItem<Lifter> lifterItem = lifterBeanContainer.getItem(firstItemId);
         Lifter lifter = (Lifter) lifterItem.getBean();
         Property s1 = lifterItem.getItemProperty("snatch1ActualLift"); //$NON-NLS-1$
         s1.setValue(REFERENCE_STRING);
@@ -86,15 +87,15 @@ public class LifterEditorTest extends SharedTestSetup {
     @Ignore
     // this test worked only because getTotal was broken
     public void testTableSort() {
-        lifters.sort(new String[] { "lastName" }, new boolean[] { true }); //$NON-NLS-1$
-        BeanItem<Lifter> lifterItem = lifters.getItem(lifters.firstItemId());
+        lifterBeanContainer.sort(new String[] { "lastName" }, new boolean[] { true }); //$NON-NLS-1$
+        BeanItem<Lifter> lifterItem = lifterBeanContainer.getItem(lifterBeanContainer.firstItemId());
         Property s1 = lifterItem.getItemProperty("snatch1ActualLift"); //$NON-NLS-1$
         s1.setValue(REFERENCE_STRING);
 
         // sort on total, this makes the lifter that was first to become last
-        lifters.sort(new String[] { "total" }, new boolean[] { true }); //$NON-NLS-1$
+        lifterBeanContainer.sort(new String[] { "total" }, new boolean[] { true }); //$NON-NLS-1$
 
-        lifterItem = lifters.getItem(lifters.lastItemId());
+        lifterItem = lifterBeanContainer.getItem(lifterBeanContainer.lastItemId());
         s1 = lifterItem.getItemProperty("snatch1ActualLift"); //$NON-NLS-1$
         assertEquals(s1.getValue(), REFERENCE_STRING);
     }
@@ -102,10 +103,13 @@ public class LifterEditorTest extends SharedTestSetup {
 
 	@Test
     public void checkSameness() {
-        Item lifterItem = lifters.getItem(lifters.lastItemId());
+        Lifter lastItemId = lifterBeanContainer.lastItemId();
+        Item lifterItem = lifterBeanContainer.getItem(lastItemId);
         Lifter lifter = ((Lifter) ((BeanItem<?>) lifterItem).getBean());
+        int id = lifter.getId()-1; // counting from 0
         @SuppressWarnings("unchecked")
-        final NestedBeanItem<Lifter> hbnLifterItem = (NestedBeanItem<Lifter>) lifterContainer.getItem(lifter.getId());
+        final NestedBeanItem<Lifter> hbnLifterItem = (NestedBeanItem<Lifter>) lifterContainer.getItem(id);
+        assertNotNull("Could not find lifter in container",hbnLifterItem);
         Lifter hbnLifter = ((Lifter) hbnLifterItem.getBean());
         assertEquals(hbnLifter, lifter);
     }
