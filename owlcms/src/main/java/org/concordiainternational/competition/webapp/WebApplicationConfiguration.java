@@ -18,8 +18,6 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Random;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -34,6 +32,8 @@ import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.nec.NECDisplay;
 import org.concordiainternational.competition.utils.LoggerUtils;
 import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.DerbyDialect;
@@ -52,7 +52,7 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 public class WebApplicationConfiguration implements HbnSessionManager, ServletContextListener {
 	private static Logger logger = LoggerFactory.getLogger(WebApplicationConfiguration.class);
 
-	private static EntityManagerFactory sessionFactory = null;
+	private static SessionFactory sessionFactory = null;
 	private static final boolean TEST_MODE = false;
 
 	public static final boolean NECShowsLifterImmediately = true;
@@ -71,7 +71,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 	 * 
 	 * @return a Hibernate session factory
 	 */
-	public static EntityManagerFactory getSessionFactory() {
+	public static SessionFactory getSessionFactory() {
 		// this call sets the default values if the parameterized constructor
 		// has not
 		// been called first (which is normally the case). If the full
@@ -90,7 +90,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 	 * @param dbPath
 	 * @return
 	 */
-	public static EntityManagerFactory getSessionFactory(boolean testMode, String dbPath) {
+	public static SessionFactory getSessionFactory(boolean testMode, String dbPath) {
 		if (sessionFactory == null) {
 			try {
 				cnf = new AnnotationConfiguration();
@@ -122,11 +122,11 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 				// listeners
 				cnf.setListener("merge", new OverrideMergeEventListener()); //$NON-NLS-1$
 
-				sessionFactory = (EntityManagerFactory) cnf.buildSessionFactory();
+				sessionFactory = cnf.buildSessionFactory();
 				// create the standard categories, etc.
 				// if argument is > 0, create sample data as well.
-				EntityManager sess = sessionFactory.createEntityManager();
-				sess.joinTransaction();
+				Session sess = sessionFactory.getCurrentSession();
+				sess.beginTransaction();
 				Category.insertStandardCategories(sess, Locale.getDefault());
 				insertInitialData(5, sess, testMode);
 				sess.flush();
@@ -227,7 +227,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 	 * @param sess
 	 * @param testMode
 	 */
-	public static void insertInitialData(int liftersToLoad, EntityManager sess, boolean testMode) {
+	public static void insertInitialData(int liftersToLoad, org.hibernate.Session sess, boolean testMode) {
 		if (sess.createCriteria(CompetitionSession.class).list().size() == 0) {
 			// empty database
 			Competition competition = new Competition();
@@ -253,7 +253,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 				setupEmptyCompetition(competition, sess);	
 			}
 			
-			sess.persist(competition);
+			sess.save(competition);
 		} else {
 			// database contains data, leave it alone.
 		}
@@ -267,7 +267,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 	 * 
 	 * @param sess
 	 */
-	protected static void setupEmptyCompetition(Competition competition, EntityManager sess) {
+	protected static void setupEmptyCompetition(Competition competition, org.hibernate.Session sess) {
 		Platform platform1 = new Platform("Platform"); //$NON-NLS-1$
 		setDefaultMixerName(platform1);
 		platform1.setHasDisplay(false);
@@ -299,13 +299,13 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 		} catch (IOException e) {
 		}
 
-		sess.persist(platform1);
+		sess.save(platform1);
 		CompetitionSession groupA = new CompetitionSession("A", null, null); //$NON-NLS-1$
-		sess.persist(groupA);
+		sess.save(groupA);
 		CompetitionSession groupB = new CompetitionSession("B", null, null); //$NON-NLS-1$#
-		sess.persist(groupB);
+		sess.save(groupB);
 		CompetitionSession groupC = new CompetitionSession("C", null, null); //$NON-NLS-1$
-		sess.persist(groupC);
+		sess.save(groupC);
 	}
 
 	/**
@@ -316,21 +316,21 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 	 * @param c
 	 */
 	protected static void setupTestData(Competition competition, int liftersToLoad,
-			EntityManager sess, Calendar w, Calendar c) {
+			org.hibernate.Session sess, Calendar w, Calendar c) {
 		Platform platform1 = new Platform("Gym 1"); //$NON-NLS-1$
-		sess.persist(platform1);
+		sess.save(platform1);
 		Platform platform2 = new Platform("Gym 2"); //$NON-NLS-1$
-		sess.persist(platform1);
-		sess.persist(platform2);
+		sess.save(platform1);
+		sess.save(platform2);
 		CompetitionSession groupA = new CompetitionSession("A", w.getTime(), c.getTime()); //$NON-NLS-1$
 		groupA.setPlatform(platform1);
 		CompetitionSession groupB = new CompetitionSession("B", w.getTime(), c.getTime()); //$NON-NLS-1$
 		groupB.setPlatform(platform2);
 		CompetitionSession groupC = new CompetitionSession("C", w.getTime(), c.getTime()); //$NON-NLS-1$
 		groupC.setPlatform(platform1);
-		sess.persist(groupA);
-		sess.persist(groupB);
-		sess.persist(groupC);
+		sess.save(groupA);
+		sess.save(groupB);
+		sess.save(groupC);
 		insertSampleLifters(liftersToLoad, sess, groupA, groupB, groupC);
 	}
 
@@ -347,7 +347,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 		}
 	}
 
-	private static void insertSampleLifters(int liftersToLoad, EntityManager sess, CompetitionSession groupA, CompetitionSession groupB,
+	private static void insertSampleLifters(int liftersToLoad, org.hibernate.Session sess, CompetitionSession groupA, CompetitionSession groupB,
 			CompetitionSession groupC) {
 		final String[] fnames = { "Peter", "Albert", "Joshua", "Mike", "Oliver", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
 				"Paul", "Alex", "Richard", "Dan", "Umberto", "Henrik", "Rene", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
@@ -363,7 +363,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 			p.setCompetitionSession(groupA);
 			p.setFirstName(fnames[r.nextInt(fnames.length)]);
 			p.setLastName(lnames[r.nextInt(lnames.length)]);
-			sess.persist(p);
+			sess.save(p);
 			// System.err.println("group A - "+InputSheetHelper.toString(p));
 		}
 		for (int i = 0; i < liftersToLoad; i++) {
@@ -371,7 +371,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 			p.setCompetitionSession(groupB);
 			p.setFirstName(fnames[r.nextInt(fnames.length)]);
 			p.setLastName(lnames[r.nextInt(lnames.length)]);
-			sess.persist(p);
+			sess.save(p);
 			// System.err.println("group B - "+InputSheetHelper.toString(p));
 		}
 		sess.flush();
@@ -386,8 +386,8 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 	 * com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager#getHbnSession()
 	 */
 	@Override
-	public EntityManager getHbnSession() {
-		return getSessionFactory().createEntityManager();
+	public Session getHbnSession() {
+		return getSessionFactory().getCurrentSession();
 	}
 
 	@Override
@@ -438,9 +438,9 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 		String dbPath = sCtx.getInitParameter("dbPath"); //$NON-NLS-1$
 		String appName = sCtx.getServletContextName();
 		if (dbPath != null) {
-			WebApplicationConfiguration.getSessionFactory(TEST_MODE, dbPath).createEntityManager();
+			WebApplicationConfiguration.getSessionFactory(TEST_MODE, dbPath).getCurrentSession();
 		} else {
-			WebApplicationConfiguration.getSessionFactory(TEST_MODE, "db/" + appName).createEntityManager(); //$NON-NLS-1$
+			WebApplicationConfiguration.getSessionFactory(TEST_MODE, "db/" + appName).getCurrentSession(); //$NON-NLS-1$
 		}
 		if (necDisplay != null) {
 			necDisplay.close();

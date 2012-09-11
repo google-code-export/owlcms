@@ -16,9 +16,9 @@ import java.util.TimeZone;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.addon.customfield.FieldWrapper;
 
 import com.vaadin.ui.Field;
-import com.vaadin.ui.FieldWrapper;
 import com.vaadin.ui.VerticalLayout;
 
 /**

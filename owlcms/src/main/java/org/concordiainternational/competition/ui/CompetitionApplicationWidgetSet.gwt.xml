@@ -36,4 +36,8 @@
     <inherits name="com.google.gwt.user.MobileSafari" />
 
     <inherits name="com.lombardi.mobilesafari.MobileSafariEvents" />
+
+    <inherits name="com.google.gwt.user.MobileSafari" />
+
+    <inherits name="com.lombardi.mobilesafari.MobileSafariEvents" />
 </module>
