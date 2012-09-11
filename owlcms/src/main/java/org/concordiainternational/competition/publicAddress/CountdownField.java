@@ -14,13 +14,13 @@ import org.concordiainternational.competition.ui.components.ISO8601DateField;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.addon.customfield.CustomField;
 
 import com.vaadin.data.Property;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CustomField;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;

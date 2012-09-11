@@ -11,9 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-
 import org.concordiainternational.competition.data.Category;
 import org.concordiainternational.competition.data.CategoryContainer;
 import org.concordiainternational.competition.data.CompetitionSession;
@@ -24,13 +21,13 @@ import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.utils.ItemAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.addons.beantuplecontainer.BeanTupleItem;
-import org.vaadin.addons.criteriacontainer.CriteriaContainer;
-import org.vaadin.addons.criteriacontainer.CriteriaQueryDefinition;
 
 import com.vaadin.Application;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
+import com.vaadin.data.hbnutil.HbnContainer;
+import com.vaadin.data.hbnutil.HbnContainer.EntityItem;
+import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 import com.vaadin.data.util.PropertyFormatter;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.CheckBox;
@@ -53,18 +50,14 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 	private static final Logger logger = LoggerFactory.getLogger(CommonColumnGenerator.class);
 
 	private CategoryContainer activeCategories;
-	private CriteriaContainer<Platform> platforms;
-	private CriteriaContainer<CompetitionSession> competitionSessions;
+	private HbnContainer<Platform> platforms;
+	private HbnContainer<CompetitionSession> competitionSessions;
 	private CompetitionApplication app;
 
 	public CommonColumnGenerator(Application app) {
-		activeCategories = new CategoryContainer((EntityManager) app, true);
-		
-		CriteriaQueryDefinition<Platform> qd = new CriteriaQueryDefinition<Platform>((EntityManager) app,true,100,Platform.class); 
-		platforms = new CriteriaContainer<Platform>(qd);
-		
-		CriteriaQueryDefinition<CompetitionSession> qd2 = new CriteriaQueryDefinition<CompetitionSession>((EntityManager) app,true,100,CompetitionSession.class); 
-		competitionSessions = new CriteriaContainer<CompetitionSession>(qd2);
+		activeCategories = new CategoryContainer((HbnSessionManager) app, true);
+		platforms = new HbnContainer<Platform>(Platform.class, (HbnSessionManager) app);
+		competitionSessions = new HbnContainer<CompetitionSession>(CompetitionSession.class, (HbnSessionManager) app);
 		this.app = (CompetitionApplication) app;
 	}
 
@@ -147,7 +140,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 	 */
 	private Component generateCategoryCell(Table table, Object itemId, final Item item, final String propertyIdString) {
 		Component c = null;
-		if (item instanceof Entity) {
+		if (item instanceof EntityItem) {
 			c = dynamicCategoryLabel(table, item, itemId, propertyIdString);
 		} else {
 			c = categoryLabel(table, item, itemId, propertyIdString);
@@ -190,9 +183,10 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 	private Component generatePlatformCell(Table table, Object itemId, final Property uiProp, final Property prop) {
 		final Object value = uiProp.getValue();
 		if (!table.isEditable()) {
-			if (table.getContainerDataSource() instanceof CriteriaContainer<?>) {
+			if (table.getContainerDataSource() instanceof HbnContainer<?>) {
 				if (value == null) return new Label("-"); //$NON-NLS-1$
-				Platform platformBean = (platforms.getEntity(value));
+				HbnContainer<Platform>.EntityItem<Platform> platform = (platforms.getItem(value));
+				Platform platformBean = (Platform) platform.getPojo();
 				return new Label(platformBean.getName());
 			} else {
 				throw new UnsupportedOperationException(Messages.getString("CommonColumnGenerator.0", app.getLocale())); //$NON-NLS-1$
@@ -215,10 +209,11 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 	private Component generateGroupCell(Table table, Object itemId, Property uiProp, Property prop) {
 		final Object value = uiProp.getValue();
 		if (!table.isEditable()) {
-			if (table.getContainerDataSource() instanceof CriteriaContainer<?>) {
+			if (table.getContainerDataSource() instanceof HbnContainer<?>) {
 				if (value == null) return new Label("-"); //$NON-NLS-1$
-				CompetitionSession competitionSession = (competitionSessions.getEntity(value));
-				return new Label(competitionSession.getName());
+				HbnContainer<CompetitionSession>.EntityItem<CompetitionSession> competitionSession = (competitionSessions.getItem(value));
+				CompetitionSession groupBean = (CompetitionSession) competitionSession.getPojo();
+				return new Label(groupBean.getName());
 			} else {
 				throw new UnsupportedOperationException(Messages.getString("CommonColumnGenerator.0", app.getLocale())); //$NON-NLS-1$
 			}
@@ -342,7 +337,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 			if (value instanceof Category) {
 				curCategory = (Category) value;
 			} else {
-				curCategory = activeCategories.getEntity(value);
+				curCategory = (Category) ItemAdapter.getObject(activeCategories.getItem(value));
 			}
 		}
 		return (curCategory != null ? curCategory.getName() : Messages
@@ -377,7 +372,7 @@ public class CommonColumnGenerator implements Table.ColumnGenerator {
 	private Component generateCategoriesCell(Table table, Object itemId, final Property uiProp, final Property prop) {
 		final Object value = uiProp.getValue();
 		if (!table.isEditable()) {
-			if (table.getContainerDataSource() instanceof CriteriaContainer) {
+			if (table.getContainerDataSource() instanceof HbnContainer) {
 				return new Label(categorySetToString((Set<Long>) value));
 			} else {
 				throw new UnsupportedOperationException(Messages.getString("CommonColumnGenerator.1", app.getLocale())); //$NON-NLS-1$

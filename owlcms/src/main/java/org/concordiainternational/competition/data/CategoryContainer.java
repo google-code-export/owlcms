@@ -7,14 +7,13 @@
  */
 package org.concordiainternational.competition.data;
 
-import javax.persistence.EntityManager;
-
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
-import org.vaadin.addons.criteriacontainer.CriteriaContainer;
+
+import com.vaadin.data.hbnutil.HbnContainer;
 
 @SuppressWarnings("serial")
-public class CategoryContainer extends CriteriaContainerWrapper<Category> {
+public class CategoryContainer extends HbnContainer<Category> {
 
 	private boolean activeOnly = false;
 
@@ -23,7 +22,7 @@ public class CategoryContainer extends CriteriaContainerWrapper<Category> {
      * 
      * @param application
      */
-    public CategoryContainer(EntityManager sessMgr) {
+    public CategoryContainer(HbnSessionManager sessMgr) {
         super(Category.class, sessMgr);
     }
     
@@ -33,7 +32,7 @@ public class CategoryContainer extends CriteriaContainerWrapper<Category> {
      * @param application
      * @param excludeNotWeighed
      */
-    public CategoryContainer(EntityManager sessMgr, boolean activeOnly) {
+    public CategoryContainer(HbnSessionManager sessMgr, boolean activeOnly) {
     	this(sessMgr);
         this.activeOnly  = activeOnly;
     }
@@ -46,6 +45,7 @@ public class CategoryContainer extends CriteriaContainerWrapper<Category> {
      * com.vaadin.data.hbnutil.HbnContainer#addSearchCriteria(org.hibernate.
      * Criteria)
      */
+    @Override
     public Criteria addSearchCriteria(Criteria criteria) {
     	if (activeOnly) {
     		criteria.add(Restrictions.eq("active", Boolean.TRUE));
