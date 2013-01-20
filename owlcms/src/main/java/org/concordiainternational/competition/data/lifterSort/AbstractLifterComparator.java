@@ -75,6 +75,15 @@ public class AbstractLifterComparator {
         return lifter1Value.compareTo(lifter2Value);
     }
 
+    int compareStartNumber(Lifter lifter1, Lifter lifter2) {
+        Integer lifter1Value = lifter1.getStartNumber();
+        Integer lifter2Value = lifter2.getStartNumber();
+        if (lifter1Value == null && lifter2Value == null) return 0;
+        if (lifter1Value == null) return -1;
+        if (lifter2Value == null) return 1;
+        return lifter1Value.compareTo(lifter2Value);
+    }    
+    
     int compareAgeGroup(Lifter lifter1, Lifter lifter2) {
         Integer lifter1Value = lifter1.getAgeGroup();
         Integer lifter2Value = lifter2.getAgeGroup();

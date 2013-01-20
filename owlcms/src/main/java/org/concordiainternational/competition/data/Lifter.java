@@ -131,7 +131,7 @@ public class Lifter implements MethodEventSource, Notifier {
     private Long version;
 
     Integer lotNumber = null;
-    Integer startNumber = null; // for masters.
+    Integer startNumber = null;
     String firstName = ""; //$NON-NLS-1$
     String lastName = ""; //$NON-NLS-1$
     String club = ""; //$NON-NLS-1$
@@ -1451,6 +1451,14 @@ public class Lifter implements MethodEventSource, Notifier {
      */
     public void setLotNumber(Integer lotNumber) {
         this.lotNumber = lotNumber;
+    }
+
+    public Integer getStartNumber() {
+        return startNumber;
+    }
+
+    public void setStartNumber(Integer startNumber) {
+        this.startNumber = startNumber;
     }
 
     public void setMembership(String membership) {
