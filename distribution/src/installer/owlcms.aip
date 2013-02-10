@@ -70,7 +70,8 @@
     <ROW Directory="images_Dir" Directory_Parent="competition_Dir" DefaultDir="images"/>
     <ROW Directory="jsp_Dir" Directory_Parent="owlcms_Dir" DefaultDir="jsp"/>
     <ROW Directory="layouts_Dir" Directory_Parent="competition_Dir" DefaultDir="layouts"/>
-    <ROW Directory="lib_Dir" Directory_Parent="WEBINF_Dir" DefaultDir="lib"/>
+    <ROW Directory="lib_1_Dir" Directory_Parent="WEBINF_Dir" DefaultDir="lib"/>
+    <ROW Directory="lib_Dir" Directory_Parent="owlcm_Dir" DefaultDir="lib"/>
     <ROW Directory="lifterSort_Dir" Directory_Parent="data_1_Dir" DefaultDir="lifter~1|lifterSort"/>
     <ROW Directory="list_Dir" Directory_Parent="ui_Dir" DefaultDir="list"/>
     <ROW Directory="m_Dir" Directory_Parent="themes_Dir" DefaultDir="m"/>
@@ -99,62 +100,63 @@
     <ROW Directory="wolfie_Dir" Directory_Parent="github_Dir" DefaultDir="wolfie"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
-    <ROW Component="AF00FDB76564A09DF8ABB776B1D8F.cache.html" ComponentId="{D29F3D36-3C8F-4B54-AF27-394F1E25096D}" Directory_="org.concordiainternational.competition.ui.CompetitionApplicationWidg_Dir" Attributes="0" KeyPath="AF00FDB76564A09DF8ABB776B1D8F.cache.html" Type="0"/>
-    <ROW Component="AbstractLifterComparator.class" ComponentId="{EDFDCB51-75F2-4353-B0EB-F8EC9B2F7C98}" Directory_="lifterSort_Dir" Attributes="0" KeyPath="AbstractLifterComparator.class" Type="0"/>
-    <ROW Component="AnnouncerView1.class" ComponentId="{1CA5DC36-376E-4A1D-938E-BDBC0BD226EF}" Directory_="ui_Dir" Attributes="0" KeyPath="AnnouncerView1.class" Type="0"/>
-    <ROW Component="ApplicationView.class" ComponentId="{269F0DFC-35EC-4264-A443-E3046726B984}" Directory_="components_Dir" Attributes="0" KeyPath="ApplicationView.class" Type="0"/>
-    <ROW Component="Blackboard1.class" ComponentId="{E6E48F1E-A00F-4D9F-AEAC-C673EBB384C3}" Directory_="blackboard_Dir" Attributes="0" KeyPath="Blackboard1.class" Type="0"/>
-    <ROW Component="Category.class" ComponentId="{05266910-72FE-4AAE-9E05-345CDC84F077}" Directory_="data_1_Dir" Attributes="0" KeyPath="Category.class" Type="0"/>
-    <ROW Component="Coefficients.class" ComponentId="{4940DF7C-6F13-4C3D-B173-19B5D339C7F7}" Directory_="utils_Dir" Attributes="0" KeyPath="Coefficients.class" Type="0"/>
-    <ROW Component="CommonColumnGenerator1.class" ComponentId="{EC7C43E9-FE7A-4457-B315-02FDFEBA5E6E}" Directory_="generators_Dir" Attributes="0" KeyPath="CommonColumnGenerator1.class" Type="0"/>
-    <ROW Component="CompetitionBook.class" ComponentId="{CAD5A190-6C43-46C8-92F8-28ADF415A1EF}" Directory_="spreadsheet_Dir" Attributes="0" KeyPath="CompetitionBook.class" Type="0"/>
-    <ROW Component="CompetitionBook_JduQ_fr.xls" ComponentId="{A8B8F66C-AF77-42C0-9849-04DC62922D75}" Directory_="competitionBook_Dir" Attributes="0" KeyPath="CompetitionBook_JduQ_fr.xls" Type="0"/>
-    <ROW Component="CountdownField1.class" ComponentId="{1D703AC3-5FA8-434C-BCD9-9AF31FF89750}" Directory_="publicAddress_Dir" Attributes="0" KeyPath="CountdownField1.class" Type="0"/>
-    <ROW Component="CountdownTask.class" ComponentId="{638F426C-FCA0-4481-956F-533AD884A53B}" Directory_="timer_Dir" Attributes="0" KeyPath="CountdownTask.class" Type="0"/>
-    <ROW Component="Decision.class" ComponentId="{475F2A42-3AA2-4543-83FD-8AD0F3CA5B17}" Directory_="decision_Dir" Attributes="0" KeyPath="Decision.class" Type="0"/>
-    <ROW Component="DuplicateListenerMethodException.class" ComponentId="{C73900B6-F751-4FCC-9CEF-443092B53385}" Directory_="exception_Dir" Attributes="0" KeyPath="DuplicateListenerMethodException.class" Type="0"/>
-    <ROW Component="GenericBeanList.class" ComponentId="{613B6A0C-A4D4-44DF-B98E-FF44EC78B9FA}" Directory_="list_Dir" Attributes="0" KeyPath="GenericBeanList.class" Type="0"/>
-    <ROW Component="HbnContainer1.class" ComponentId="{5738E21A-A433-4FAC-A8DE-7FD1440510CC}" Directory_="hbnutil_Dir" Attributes="0" KeyPath="HbnContainer1.class" Type="0"/>
+    <ROW Component="AF00FDB76564A09DF8ABB776B1D8F.cache.html" ComponentId="{FA93A5B8-BF00-4EA1-AA97-ABC73D51D13F}" Directory_="org.concordiainternational.competition.ui.CompetitionApplicationWidg_Dir" Attributes="0" KeyPath="AF00FDB76564A09DF8ABB776B1D8F.cache.html" Type="0"/>
+    <ROW Component="AbstractLifterComparator.class" ComponentId="{52E21B63-99A8-43CD-A85D-F6963801B1A3}" Directory_="lifterSort_Dir" Attributes="0" KeyPath="AbstractLifterComparator.class" Type="0"/>
+    <ROW Component="AnnouncerView1.class" ComponentId="{B9A57D77-6234-4069-93C9-10B925130896}" Directory_="ui_Dir" Attributes="0" KeyPath="AnnouncerView1.class" Type="0"/>
+    <ROW Component="ApplicationView.class" ComponentId="{60AEA46E-0E88-4DD7-A428-4C0876A0707A}" Directory_="components_Dir" Attributes="0" KeyPath="ApplicationView.class" Type="0"/>
+    <ROW Component="Blackboard1.class" ComponentId="{7D7BC1A4-A0D2-4847-B45E-40C54D6E29BD}" Directory_="blackboard_Dir" Attributes="0" KeyPath="Blackboard1.class" Type="0"/>
+    <ROW Component="Category.class" ComponentId="{D85AD48A-33A4-40D2-97EF-1FC0B1838417}" Directory_="data_1_Dir" Attributes="0" KeyPath="Category.class" Type="0"/>
+    <ROW Component="Coefficients.class" ComponentId="{D56DE0D7-83FA-4A6D-BFB6-4FDA5596A943}" Directory_="utils_Dir" Attributes="0" KeyPath="Coefficients.class" Type="0"/>
+    <ROW Component="CommonColumnGenerator1.class" ComponentId="{C2AEC658-3511-46E7-B86B-4BA7B35FE839}" Directory_="generators_Dir" Attributes="0" KeyPath="CommonColumnGenerator1.class" Type="0"/>
+    <ROW Component="CompetitionBook.class" ComponentId="{A505FA6B-DB24-44A9-8D9F-4AE77C119B47}" Directory_="spreadsheet_Dir" Attributes="0" KeyPath="CompetitionBook.class" Type="0"/>
+    <ROW Component="CompetitionBook_JduQ_fr.xls" ComponentId="{9201ABE2-06D3-405C-B0F9-65B27F753369}" Directory_="competitionBook_Dir" Attributes="0" KeyPath="CompetitionBook_JduQ_fr.xls" Type="0"/>
+    <ROW Component="CountdownField1.class" ComponentId="{09C258D3-36A3-4047-B803-3C21BD697EF9}" Directory_="publicAddress_Dir" Attributes="0" KeyPath="CountdownField1.class" Type="0"/>
+    <ROW Component="CountdownTask.class" ComponentId="{6EAAF514-646A-418F-AD29-5672B552F7F8}" Directory_="timer_Dir" Attributes="0" KeyPath="CountdownTask.class" Type="0"/>
+    <ROW Component="Decision.class" ComponentId="{4EB49301-8FF7-4691-A5CB-F0B1711EE937}" Directory_="decision_Dir" Attributes="0" KeyPath="Decision.class" Type="0"/>
+    <ROW Component="DuplicateListenerMethodException.class" ComponentId="{752280CF-3684-4BC8-9C51-A4617964F378}" Directory_="exception_Dir" Attributes="0" KeyPath="DuplicateListenerMethodException.class" Type="0"/>
+    <ROW Component="GenericBeanList.class" ComponentId="{A36284E6-4DF4-454C-B13B-15AE986FEA75}" Directory_="list_Dir" Attributes="0" KeyPath="GenericBeanList.class" Type="0"/>
+    <ROW Component="HbnContainer1.class" ComponentId="{AD07B8A6-55C2-49C9-8987-FEF0613D6496}" Directory_="hbnutil_Dir" Attributes="0" KeyPath="HbnContainer1.class" Type="0"/>
     <ROW Component="HoverIP.exe" ComponentId="{38554195-B6E5-4923-8434-254F1F4DB949}" Directory_="APPDIR" Attributes="0" KeyPath="HoverIP.exe"/>
-    <ROW Component="IRefereeConsole.class" ComponentId="{B6605766-5B30-4C55-8742-8513EF93ED08}" Directory_="mobile_Dir" Attributes="0" KeyPath="IRefereeConsole.class" Type="0"/>
-    <ROW Component="IWF.xls" ComponentId="{AB811BF2-E657-47B9-9AA0-3CC0D0AA28AA}" Directory_="teamResults_Dir" Attributes="0" KeyPath="IWF.xls" Type="0"/>
+    <ROW Component="IRefereeConsole.class" ComponentId="{8202FDEF-D3DE-4420-983A-5061252BC8AF}" Directory_="mobile_Dir" Attributes="0" KeyPath="IRefereeConsole.class" Type="0"/>
+    <ROW Component="IWF.xls" ComponentId="{93CB93A0-E389-43C8-B126-037B62BAC153}" Directory_="teamResults_Dir" Attributes="0" KeyPath="IWF.xls" Type="0"/>
     <ROW Component="JoyToKey.exe" ComponentId="{797FC73C-56F4-40A3-AA36-0E5F04CB67F8}" Directory_="APPDIR" Attributes="0" KeyPath="JoyToKey.exe"/>
     <ROW Component="JoyToKey.ini" ComponentId="{9BDE64F3-CE2D-4D85-89FB-129584739B53}" Directory_="APPDIR" Attributes="0" KeyPath="JoyToKey.ini" Type="0"/>
-    <ROW Component="JurySheetTemplate.xls" ComponentId="{04FDF325-53FC-4FC5-8BB0-4EC2757B47DD}" Directory_="old_Dir" Attributes="0" KeyPath="JurySheetTemplate.xls" Type="0"/>
-    <ROW Component="JurySheetTemplate_en.xls" ComponentId="{60A1A2C9-7984-4A78-8655-6453B2021075}" Directory_="templates_Dir" Attributes="0" KeyPath="JurySheetTemplate_en.xls" Type="0"/>
-    <ROW Component="ListenerMethod.class" ComponentId="{7164C6A1-8497-4D10-800E-B2BAF490CBB7}" Directory_="annotation_Dir" Attributes="0" KeyPath="ListenerMethod.class" Type="0"/>
-    <ROW Component="LocalizedApplication1.class" ComponentId="{5796B512-D08B-4446-A9AC-6F06F2EDA680}" Directory_="i18n_1_Dir" Attributes="0" KeyPath="LocalizedApplication1.class" Type="0"/>
-    <ROW Component="NECDisplayStringWriter.class" ComponentId="{4BCAB754-7AAE-4817-A247-D3CE8E4CB057}" Directory_="nec_Dir" Attributes="0" KeyPath="NECDisplayStringWriter.class" Type="0"/>
-    <ROW Component="OverrideMergeEventListener.class" ComponentId="{6D377117-BA5C-47B4-BD88-82FADE52FB17}" Directory_="def_Dir" Attributes="0" KeyPath="OverrideMergeEventListener.class" Type="0"/>
+    <ROW Component="JurySheetTemplate.xls" ComponentId="{BE09A34D-DFA5-4D04-B76E-AA9C467483F0}" Directory_="old_Dir" Attributes="0" KeyPath="JurySheetTemplate.xls" Type="0"/>
+    <ROW Component="JurySheetTemplate_en.xls" ComponentId="{A67DE76B-5CDD-4722-9958-EC085933EFE1}" Directory_="templates_Dir" Attributes="0" KeyPath="JurySheetTemplate_en.xls" Type="0"/>
+    <ROW Component="ListenerMethod.class" ComponentId="{C09B70CB-9432-459A-B2B8-2C471B23CB23}" Directory_="annotation_Dir" Attributes="0" KeyPath="ListenerMethod.class" Type="0"/>
+    <ROW Component="LocalizedApplication1.class" ComponentId="{D5015ABC-300F-416D-B26D-A692BB86F9D9}" Directory_="i18n_1_Dir" Attributes="0" KeyPath="LocalizedApplication1.class" Type="0"/>
+    <ROW Component="NECDisplayStringWriter.class" ComponentId="{C0D739F0-BD40-45EE-89D8-4BFFFBED6FCF}" Directory_="nec_Dir" Attributes="0" KeyPath="NECDisplayStringWriter.class" Type="0"/>
+    <ROW Component="OverrideMergeEventListener.class" ComponentId="{D5B2AFDA-0925-43AD-904D-42110D0E5E5E}" Directory_="def_Dir" Attributes="0" KeyPath="OverrideMergeEventListener.class" Type="0"/>
     <ROW Component="ProductInformation" ComponentId="{E6931669-7906-434A-83BB-61142B25C1EB}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
-    <ROW Component="PushServlet.class" ComponentId="{105D2408-7332-4DD8-9A39-7C183B89D913}" Directory_="webapp_Dir" Attributes="0" KeyPath="PushServlet.class" Type="0"/>
+    <ROW Component="PushServlet.class" ComponentId="{C13B6118-19D8-48FE-8DB3-0DF15AC32721}" Directory_="webapp_Dir" Attributes="0" KeyPath="PushServlet.class" Type="0"/>
     <ROW Component="README.txt" ComponentId="{FC798C82-2659-4619-900E-3AC61B2CE013}" Directory_="owlcm_Dir" Attributes="0" KeyPath="README.txt" Type="0"/>
     <ROW Component="SHORTCUTDIR" ComponentId="{B3D596AC-6D55-4A31-BB27-84F2E51FC4EC}" Directory_="SHORTCUTDIR" Attributes="0"/>
-    <ROW Component="animator1.1.jar" ComponentId="{5B4408CC-AF7D-4B46-8BD2-744CBD6DAF80}" Directory_="lib_Dir" Attributes="0" KeyPath="animator1.1.jar" Type="0"/>
-    <ROW Component="appIcon.png" ComponentId="{206BDB7B-59D5-4516-A4B8-780A532A45CF}" Directory_="__Dir" Attributes="0" KeyPath="appIcon.png" Type="0"/>
-    <ROW Component="arrowdown.png" ComponentId="{DB46393B-CE2F-4EDE-AB71-5D4C52D78E2D}" Directory_="__1_Dir" Attributes="0" KeyPath="arrowdown.png" Type="0"/>
-    <ROW Component="arrowdown.png_1" ComponentId="{60026072-2665-4775-9761-7B2BA52991D2}" Directory_="__2_Dir" Attributes="0" KeyPath="arrowdown.png_1" Type="0"/>
-    <ROW Component="beepBeep.mp3" ComponentId="{C9B2198B-CDA5-4B12-ADA8-F590F468875E}" Directory_="sounds_Dir" Attributes="0" KeyPath="beepBeep.mp3" Type="0"/>
-    <ROW Component="blank.gif" ComponentId="{34B0AD5E-A8A4-46EF-8D7B-8772F96A3826}" Directory_="ie6pngfix_Dir" Attributes="0" KeyPath="blank.gif" Type="0"/>
-    <ROW Component="checkmark.png" ComponentId="{FFB701B0-C398-4C9A-A568-7326AA4693E5}" Directory_="images_1_Dir" Attributes="0" KeyPath="checkmark.png" Type="0"/>
-    <ROW Component="closechrome.gif" ComponentId="{70BF8063-11AF-4C18-97C7-85E840E32FAD}" Directory_="notifique_Dir" Attributes="0" KeyPath="closechrome.gif" Type="0"/>
-    <ROW Component="context.xml" ComponentId="{A25782C9-AD08-4380-AE42-53667101F911}" Directory_="METAINF_Dir" Attributes="0" KeyPath="context.xml" Type="0"/>
+    <ROW Component="animator1.1.jar" ComponentId="{032CDCAD-6B05-4939-B5AA-BDD424F98F38}" Directory_="lib_1_Dir" Attributes="0" KeyPath="animator1.1.jar" Type="0"/>
+    <ROW Component="appIcon.png" ComponentId="{46A45872-D87B-4DD0-B216-3B7B773F06E5}" Directory_="__Dir" Attributes="0" KeyPath="appIcon.png" Type="0"/>
+    <ROW Component="arrowdown.png" ComponentId="{424EFD9C-0490-489F-9426-060F04992641}" Directory_="__1_Dir" Attributes="0" KeyPath="arrowdown.png" Type="0"/>
+    <ROW Component="arrowdown.png_1" ComponentId="{44496452-58BC-437C-8460-0BD3AC7AC2B1}" Directory_="__2_Dir" Attributes="0" KeyPath="arrowdown.png_1" Type="0"/>
+    <ROW Component="beepBeep.mp3" ComponentId="{2B91ABA9-89B5-440B-A2FB-13575AAF6B70}" Directory_="sounds_Dir" Attributes="0" KeyPath="beepBeep.mp3" Type="0"/>
+    <ROW Component="blank.gif" ComponentId="{AC6AB6EF-3A55-421F-BC02-12C3D565CAB2}" Directory_="ie6pngfix_Dir" Attributes="0" KeyPath="blank.gif" Type="0"/>
+    <ROW Component="checkmark.png" ComponentId="{A9D9867F-098B-4708-A1B2-4189E910FC68}" Directory_="images_1_Dir" Attributes="0" KeyPath="checkmark.png" Type="0"/>
+    <ROW Component="closechrome.gif" ComponentId="{AFB16693-02A0-4A62-A7F6-6F4280D9CA2E}" Directory_="notifique_Dir" Attributes="0" KeyPath="closechrome.gif" Type="0"/>
+    <ROW Component="context.xml" ComponentId="{FAF22F4F-742C-4E92-9F94-595D6B31808E}" Directory_="METAINF_Dir" Attributes="0" KeyPath="context.xml" Type="0"/>
     <ROW Component="db" ComponentId="{9EAEE83F-7974-4326-A665-76617C0D12C1}" Directory_="db_Dir" Attributes="0"/>
-    <ROW Component="dlp.css" ComponentId="{0C3361F1-79BD-4D13-90A2-341167E0ABA2}" Directory_="jsp_Dir" Attributes="0" KeyPath="dlp.css" Type="0"/>
-    <ROW Component="down.png" ComponentId="{DCED389A-18EB-41B4-9BA9-3F1112F61552}" Directory_="images_Dir" Attributes="0" KeyPath="down.png" Type="0"/>
-    <ROW Component="favicon.ico" ComponentId="{244522A6-3997-474A-B7E4-C1391F0757D4}" Directory_="competition_Dir" Attributes="0" KeyPath="favicon.ico" Type="0"/>
-    <ROW Component="favicon.ico_1" ComponentId="{9BD99DE3-47C5-438E-8968-BA6882301D13}" Directory_="m_Dir" Attributes="0" KeyPath="favicon.ico_1" Type="0"/>
-    <ROW Component="logback.xml" ComponentId="{D3EE477C-8C27-4BEC-A496-1D78F54FF62C}" Directory_="classes_Dir" Attributes="0" KeyPath="logback.xml" Type="0"/>
-    <ROW Component="messages.properties" ComponentId="{D0016D95-2C4C-4058-A4FF-BB6A998A15A6}" Directory_="i18n_Dir" Attributes="0" KeyPath="messages.properties" Type="0"/>
-    <ROW Component="overlays.js" ComponentId="{B8D50F92-FC30-428B-BFC8-762C506C20B9}" Directory_="overlays_Dir" Attributes="0" KeyPath="overlays.js" Type="0"/>
+    <ROW Component="dlp.css" ComponentId="{6D3450CD-DFD8-4832-B99D-358078E36871}" Directory_="jsp_Dir" Attributes="0" KeyPath="dlp.css" Type="0"/>
+    <ROW Component="down.png" ComponentId="{EED624DB-2996-4CD1-858C-3F89B39CA534}" Directory_="images_Dir" Attributes="0" KeyPath="down.png" Type="0"/>
+    <ROW Component="ecj3.7.jar" ComponentId="{5613EEE2-9D72-4492-9BCE-5E64DC7EC9D0}" Directory_="lib_Dir" Attributes="0" KeyPath="ecj3.7.jar" Type="0"/>
+    <ROW Component="favicon.ico" ComponentId="{C795CBA9-712C-468E-977C-78E986974A91}" Directory_="competition_Dir" Attributes="0" KeyPath="favicon.ico" Type="0"/>
+    <ROW Component="favicon.ico_1" ComponentId="{4006607D-04A1-4A6E-A4A6-A0A2A615746F}" Directory_="m_Dir" Attributes="0" KeyPath="favicon.ico_1" Type="0"/>
+    <ROW Component="logback.xml" ComponentId="{3310E230-C6EF-44E5-ACB8-082F4DC65214}" Directory_="classes_Dir" Attributes="0" KeyPath="logback.xml" Type="0"/>
+    <ROW Component="messages.properties" ComponentId="{3731F192-7D28-4F7A-A97C-CF52BA08E294}" Directory_="i18n_Dir" Attributes="0" KeyPath="messages.properties" Type="0"/>
+    <ROW Component="overlays.js" ComponentId="{400E221D-229C-4FC4-811F-EC0F12AED1D4}" Directory_="overlays_Dir" Attributes="0" KeyPath="overlays.js" Type="0"/>
     <ROW Component="owlcms.exe_1" ComponentId="{4B432F56-9D0A-44E8-91E5-6B11C2EB6287}" Directory_="owlcm_Dir" Attributes="0" KeyPath="owlcms.exe_1"/>
-    <ROW Component="projectorTop.html" ComponentId="{BEA0D951-8FD4-46AB-BCBF-304A6E505A02}" Directory_="layouts_Dir" Attributes="0" KeyPath="projectorTop.html" Type="0"/>
+    <ROW Component="projectorTop.html" ComponentId="{24A59384-3C69-4A77-A917-4F153E9458EF}" Directory_="layouts_Dir" Attributes="0" KeyPath="projectorTop.html" Type="0"/>
     <ROW Component="readme.txt_1" ComponentId="{97914CF1-DC45-4C3C-ACB8-01619CA3B25E}" Directory_="doc_Dir" Attributes="0" KeyPath="readme.txt_1" Type="0"/>
-    <ROW Component="styles.css" ComponentId="{4D3A1A3A-C71C-440C-B7E8-E24FD27F42B0}" Directory_="touchdiv_Dir" Attributes="0" KeyPath="styles.css_4" Type="0"/>
-    <ROW Component="web.xml" ComponentId="{45750010-D4EF-4B78-8506-7FCF5C74DF8E}" Directory_="WEBINF_Dir" Attributes="0" KeyPath="web.xml" Type="0"/>
+    <ROW Component="styles.css" ComponentId="{2E6FFE93-C245-46D2-8D1D-6BA3E389B5AC}" Directory_="touchdiv_Dir" Attributes="0" KeyPath="styles.css_4" Type="0"/>
+    <ROW Component="web.xml" ComponentId="{C7E3B58D-2BF9-4E3E-BE55-F89118E9D0B3}" Directory_="WEBINF_Dir" Attributes="0" KeyPath="web.xml" Type="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="AF00FDB76564A09DF8ABB776B1D8F.cache.html AbstractLifterComparator.class AnnouncerView1.class ApplicationView.class Blackboard1.class Category.class Coefficients.class CommonColumnGenerator1.class CompetitionBook.class CompetitionBook_JduQ_fr.xls CountdownField1.class CountdownTask.class Decision.class DuplicateListenerMethodException.class GenericBeanList.class HbnContainer1.class HoverIP.exe IRefereeConsole.class IWF.xls JoyToKey.exe JoyToKey.ini JurySheetTemplate.xls JurySheetTemplate_en.xls ListenerMethod.class LocalizedApplication1.class NECDisplayStringWriter.class OverrideMergeEventListener.class ProductInformation PushServlet.class README.txt SHORTCUTDIR animator1.1.jar appIcon.png arrowdown.png arrowdown.png_1 beepBeep.mp3 blank.gif checkmark.png closechrome.gif context.xml db dlp.css down.png favicon.ico favicon.ico_1 logback.xml messages.properties overlays.js owlcms.exe_1 projectorTop.html readme.txt_1 styles.css web.xml"/>
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="AF00FDB76564A09DF8ABB776B1D8F.cache.html AbstractLifterComparator.class AnnouncerView1.class ApplicationView.class Blackboard1.class Category.class Coefficients.class CommonColumnGenerator1.class CompetitionBook.class CompetitionBook_JduQ_fr.xls CountdownField1.class CountdownTask.class Decision.class DuplicateListenerMethodException.class GenericBeanList.class HbnContainer1.class HoverIP.exe IRefereeConsole.class IWF.xls JoyToKey.exe JoyToKey.ini JurySheetTemplate.xls JurySheetTemplate_en.xls ListenerMethod.class LocalizedApplication1.class NECDisplayStringWriter.class OverrideMergeEventListener.class ProductInformation PushServlet.class README.txt SHORTCUTDIR animator1.1.jar appIcon.png arrowdown.png arrowdown.png_1 beepBeep.mp3 blank.gif checkmark.png closechrome.gif context.xml db dlp.css down.png ecj3.7.jar favicon.ico favicon.ico_1 logback.xml messages.properties overlays.js owlcms.exe_1 projectorTop.html readme.txt_1 styles.css web.xml"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
@@ -688,6 +690,7 @@
     <ROW File="down.png_1" Component_="checkmark.png" FileName="down.png" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\VAADIN\themes\m\images\down.png" SelfReg="false" NextFile="styles.css_1"/>
     <ROW File="down.wav" Component_="beepBeep.mp3" FileName="down.wav" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\classes\sounds\down.wav" SelfReg="false" NextFile="down2.wav"/>
     <ROW File="down2.wav" Component_="beepBeep.mp3" FileName="down2.wav" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\classes\sounds\down2.wav" SelfReg="false" NextFile="finalWarning.mp3"/>
+    <ROW File="ecj3.7.jar" Component_="ecj3.7.jar" FileName="ecj-37~1.jar|ecj-3.7.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\lib\ecj-3.7.jar" SelfReg="false" NextFile="launch1.0.0.jar"/>
     <ROW File="ehcachecore2.5.0.jar" Component_="animator1.1.jar" FileName="ehcach~1.jar|ehcache-core-2.5.0.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\lib\ehcache-core-2.5.0.jar" SelfReg="false" NextFile="ejb3persistence1.0.2.GA.jar"/>
     <ROW File="ejb3persistence1.0.2.GA.jar" Component_="animator1.1.jar" FileName="ejb3-p~1.jar|ejb3-persistence-1.0.2.GA.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\lib\ejb3-persistence-1.0.2.GA.jar" SelfReg="false" NextFile="h21.1.116.jar"/>
     <ROW File="email.png" Component_="arrowdown.png" FileName="email.png" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\VAADIN\themes\competition\icons\32\email.png" SelfReg="false" NextFile="folderadd.png"/>
@@ -731,6 +734,7 @@
     <ROW File="jta1.0.1B.jar" Component_="animator1.1.jar" FileName="jta-10~1.jar|jta-1.0.1B.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\lib\jta-1.0.1B.jar" SelfReg="false" NextFile="junit4.8.1.jar"/>
     <ROW File="junit4.8.1.jar" Component_="animator1.1.jar" FileName="junit-~1.jar|junit-4.8.1.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\lib\junit-4.8.1.jar" SelfReg="false" NextFile="jxlscore1.0.jar"/>
     <ROW File="jxlscore1.0.jar" Component_="animator1.1.jar" FileName="jxls-c~1.jar|jxls-core-1.0.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\lib\jxls-core-1.0.jar" SelfReg="false" NextFile="logbackclassic1.0.0.jar"/>
+    <ROW File="launch1.0.0.jar" Component_="ecj3.7.jar" FileName="launch~1.jar|launch-1.0.0.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\lib\launch-1.0.0.jar" SelfReg="false" NextFile="mavenmetadataappassembler.xml"/>
     <ROW File="lcd.css" Component_="dlp.css" FileName="lcd.css" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\jsp\lcd.css" SelfReg="false" NextFile="liftingOrderen.jsp"/>
     <ROW File="liftingOrder.jsp" Component_="dlp.css" FileName="liftin~2.jsp|liftingOrder.jsp" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\jsp\liftingOrder.jsp" SelfReg="false" NextFile="pale.css"/>
     <ROW File="liftingOrderen.jsp" Component_="dlp.css" FileName="liftin~1.jsp|liftingOrder-en.jsp" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\jsp\liftingOrder-en.jsp" SelfReg="false" NextFile="liftingOrder.jsp"/>
@@ -741,6 +745,7 @@
     <ROW File="logbackcore1.0.0.jar" Component_="animator1.1.jar" FileName="logbac~2.jar|logback-core-1.0.0.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\lib\logback-core-1.0.0.jar" SelfReg="false" NextFile="notifique1.0.5.jar"/>
     <ROW File="logo.gif" Component_="down.png" FileName="logo.gif" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\VAADIN\themes\competition\images\logo.gif" SelfReg="false" NextFile="logo.png"/>
     <ROW File="logo.png" Component_="down.png" FileName="logo.png" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\VAADIN\themes\competition\images\logo.png" SelfReg="false" NextFile="tableheaderbg.png"/>
+    <ROW File="mavenmetadataappassembler.xml" Component_="ecj3.7.jar" FileName="maven-~1.xml|maven-metadata-appassembler.xml" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\lib\maven-metadata-appassembler.xml" SelfReg="false" NextFile="tomcatapi7.0.22.jar"/>
     <ROW File="messages.properties" Component_="messages.properties" FileName="messag~1.pro|messages.properties" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\classes\i18n\messages.properties" SelfReg="false" NextFile="messages_en.properties"/>
     <ROW File="messages_en.properties" Component_="messages.properties" FileName="messag~2.pro|messages_en.properties" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\classes\i18n\messages_en.properties" SelfReg="false" NextFile="messages_fr.properties"/>
     <ROW File="messages_fr.properties" Component_="messages.properties" FileName="messag~3.pro|messages_fr.properties" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\classes\i18n\messages_fr.properties" SelfReg="false" NextFile="logback.xml"/>
@@ -768,7 +773,7 @@
     <ROW File="rebel.xml" Component_="logback.xml" FileName="rebel.xml" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\classes\rebel.xml" SelfReg="false" NextFile="sinclair.properties"/>
     <ROW File="refactorNotes.txt" Component_="HbnContainer1.class" FileName="refact~1.txt|refactorNotes.txt" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\classes\com\vaadin\data\hbnutil\refactorNotes.txt" SelfReg="false" NextFile="messages.properties"/>
     <ROW File="refs.cfg" Component_="JoyToKey.ini" FileName="refs.cfg" Attributes="0" SourcePath="resources\refs.cfg" SelfReg="false" NextFile="AnnouncerQuickStart.pdf"/>
-    <ROW File="releasenotes.txt" Component_="readme.txt_1" FileName="releas~1.txt|release notes.txt" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\doc\release notes.txt" SelfReg="false" NextFile="dlp.css"/>
+    <ROW File="releasenotes.txt" Component_="readme.txt_1" FileName="releas~1.txt|release notes.txt" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\doc\release notes.txt" SelfReg="false" NextFile="ecj3.7.jar"/>
     <ROW File="reload.png" Component_="arrowdown.png" FileName="reload.png" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\VAADIN\themes\competition\icons\32\reload.png" SelfReg="false" NextFile="settings.png"/>
     <ROW File="reload.png_1" Component_="arrowdown.png_1" FileName="reload.png" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\VAADIN\themes\m\32\reload.png" SelfReg="false" NextFile="settings.png_1"/>
     <ROW File="result.css" Component_="dlp.css" FileName="result.css" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\jsp\result.css" SelfReg="false" NextFile="resultBoarden.jsp"/>
@@ -795,6 +800,17 @@
     <ROW File="timeOver.mp3" Component_="beepBeep.mp3" FileName="timeOver.mp3" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\classes\sounds\timeOver.mp3" SelfReg="false" NextFile="timeOver.wav"/>
     <ROW File="timeOver.wav" Component_="beepBeep.mp3" FileName="timeOver.wav" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\classes\sounds\timeOver.wav" SelfReg="false" NextFile="timeOver2.wav"/>
     <ROW File="timeOver2.wav" Component_="beepBeep.mp3" FileName="timeOv~1.wav|timeOver2.wav" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\classes\sounds\timeOver2.wav" SelfReg="false" NextFile="CompetitionBook_JduQ_fr.xls"/>
+    <ROW File="tomcatapi7.0.22.jar" Component_="ecj3.7.jar" FileName="tomcat~1.jar|tomcat-api-7.0.22.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\lib\tomcat-api-7.0.22.jar" SelfReg="false" NextFile="tomcatelapi7.0.22.jar"/>
+    <ROW File="tomcatelapi7.0.22.jar" Component_="ecj3.7.jar" FileName="tomcat~2.jar|tomcat-el-api-7.0.22.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\lib\tomcat-el-api-7.0.22.jar" SelfReg="false" NextFile="tomcatembedcore7.0.22.jar"/>
+    <ROW File="tomcatembedcore7.0.22.jar" Component_="ecj3.7.jar" FileName="tomcat~3.jar|tomcat-embed-core-7.0.22.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\lib\tomcat-embed-core-7.0.22.jar" SelfReg="false" NextFile="tomcatembedjasper7.0.22.jar"/>
+    <ROW File="tomcatembedjasper7.0.22.jar" Component_="ecj3.7.jar" FileName="tomcat~4.jar|tomcat-embed-jasper-7.0.22.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\lib\tomcat-embed-jasper-7.0.22.jar" SelfReg="false" NextFile="tomcatembedloggingjuli7.0.22.jar"/>
+    <ROW File="tomcatembedloggingjuli7.0.22.jar" Component_="ecj3.7.jar" FileName="tomcat~5.jar|tomcat-embed-logging-juli-7.0.22.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\lib\tomcat-embed-logging-juli-7.0.22.jar" SelfReg="false" NextFile="tomcatjasper7.0.22.jar"/>
+    <ROW File="tomcatjasper7.0.22.jar" Component_="ecj3.7.jar" FileName="tomcat~6.jar|tomcat-jasper-7.0.22.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\lib\tomcat-jasper-7.0.22.jar" SelfReg="false" NextFile="tomcatjasperel7.0.22.jar"/>
+    <ROW File="tomcatjasperel7.0.22.jar" Component_="ecj3.7.jar" FileName="tomcat~7.jar|tomcat-jasper-el-7.0.22.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\lib\tomcat-jasper-el-7.0.22.jar" SelfReg="false" NextFile="tomcatjspapi7.0.22.jar"/>
+    <ROW File="tomcatjspapi7.0.22.jar" Component_="ecj3.7.jar" FileName="tomcat~8.jar|tomcat-jsp-api-7.0.22.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\lib\tomcat-jsp-api-7.0.22.jar" SelfReg="false" NextFile="tomcatjuli7.0.22.jar"/>
+    <ROW File="tomcatjuli7.0.22.jar" Component_="ecj3.7.jar" FileName="tomcat~9.jar|tomcat-juli-7.0.22.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\lib\tomcat-juli-7.0.22.jar" SelfReg="false" NextFile="tomcatservletapi7.0.22.jar"/>
+    <ROW File="tomcatservletapi7.0.22.jar" Component_="ecj3.7.jar" FileName="tomca~10.jar|tomcat-servlet-api-7.0.22.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\lib\tomcat-servlet-api-7.0.22.jar" SelfReg="false" NextFile="tomcatutil7.0.22.jar"/>
+    <ROW File="tomcatutil7.0.22.jar" Component_="ecj3.7.jar" FileName="tomca~11.jar|tomcat-util-7.0.22.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\lib\tomcat-util-7.0.22.jar" SelfReg="false" NextFile="dlp.css"/>
     <ROW File="touchdiv1.0.1.jar" Component_="animator1.1.jar" FileName="touchd~1.jar|touchdiv-1.0.1.jar" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\WEB-INF\lib\touchdiv-1.0.1.jar" SelfReg="false" NextFile="vaadin6.5.7.jar"/>
     <ROW File="trash.png" Component_="arrowdown.png" FileName="trash.png" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\VAADIN\themes\competition\icons\32\trash.png" SelfReg="false" NextFile="user.png"/>
     <ROW File="trash.png_1" Component_="arrowdown.png_1" FileName="trash.png" Attributes="0" SourcePath="..\..\target\owlcms-2.9.1-windows\owlcms\VAADIN\themes\m\32\trash.png" SelfReg="false" NextFile="user.png_1"/>
