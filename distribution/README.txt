@@ -28,11 +28,21 @@ d. cd to owlcmsParent
 		else run
 		mvn install
 		
-e. cd distribution 
+e. If this is the first attempt to package on a new machine
+      
+		if under Eclipse,
+		- right-click on launch project and select "run as/maven install"
+		
+		else run
+		cd launch
+		mvn install
+
+		
+f. cd distribution 
 		mvn clean assembly:single 
     	(if under Eclipse, run  "prepare uploads.launch" using right-click on the .launch file)
     	
-f. commit, push.
+g. commit, push.
 
 
 
