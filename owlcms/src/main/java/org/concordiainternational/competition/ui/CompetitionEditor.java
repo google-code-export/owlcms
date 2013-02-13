@@ -62,7 +62,9 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
     Logger logger = LoggerFactory.getLogger(CompetitionEditor.class);
 
     private TextField displayFN;
+    private TextField displayPS;
     private Select editFN;
+    private Select editPS;
 
     private String viewName;
 
@@ -111,7 +113,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
      */
     private FormLayout createFormLayout(final FormLayout formLayout, final Locale locale,
             HbnContainer<Competition> cmp, final HbnContainer<Competition>.EntityItem<Competition> competitionItem)
-            {
+    {
 
         addTextField(formLayout, locale, competitionItem, "competitionName", ""); //$NON-NLS-1$ //$NON-NLS-2$
         addDateField(formLayout, locale, competitionItem, "competitionDate", new Date()); //$NON-NLS-1$
@@ -124,14 +126,19 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         addTextField(formLayout, locale, competitionItem, "federationAddress", ""); //$NON-NLS-1$ //$NON-NLS-2$
         addTextField(formLayout, locale, competitionItem, "federationWebSite", ""); //$NON-NLS-1$ //$NON-NLS-2$
         addTextField(formLayout, locale, competitionItem, "federationEMail", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        displayPS = addFileDisplay(formLayout, locale, competitionItem, "protocolFileName", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        editPS = addFileSelector(formLayout, locale, competitionItem, "protocolFileName", "", "/WEB-INF/classes/templates/protocolSheet", displayPS); //$NON-NLS-1$ //$NON-NLS-2$)
         displayFN = addFileDisplay(formLayout, locale, competitionItem, "resultTemplateFileName", ""); //$NON-NLS-1$ //$NON-NLS-2$
-        editFN = addFileSelector(formLayout, locale, competitionItem, "resultTemplateFileName", ""); //$NON-NLS-1$ //$NON-NLS-2$)
+        editFN = addFileSelector(formLayout, locale, competitionItem, "resultTemplateFileName", "", "/WEB-INF/classes/templates/competitionBook", displayFN); //$NON-NLS-1$ //$NON-NLS-2$)
 
         editable = false;
         setReadOnly(formLayout, true);
         editFN.setVisible(false);
+        editPS.setVisible(false);
         editFN.setImmediate(true);
+        editPS.setImmediate(true);
         displayFN.setWidth("120ex");
+        displayPS.setWidth("120ex");
 
         return formLayout;
     }
@@ -143,19 +150,19 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
      * @param competitionItem
      * @param fieldName
      * @param initialValue
+     * @param displayField 
      * @return
      * @throws FileNotFoundException 
      */
     private Select addFileSelector(FormLayout formLayout, Locale locale,
-            HbnContainer<Competition>.EntityItem<Competition> competitionItem, String fieldName, String initialValue)  {
+            HbnContainer<Competition>.EntityItem<Competition> competitionItem, String fieldName, String initialValue, String relativeLocation, final TextField displayField)  {
 
         final ApplicationContext context = app.getContext();
         WebApplicationContext wContext = (WebApplicationContext) context;
 
         final Property itemProperty = competitionItem.getItemProperty(fieldName);;
         FilesystemContainer fsContainer;
-        String relativeLocation = "/WEB-INF/classes/templates/teamResults";
-        relativeLocation = "/WEB-INF/classes/templates/competitionBook";
+
 		String realPath = wContext.getHttpSession().getServletContext().getRealPath(relativeLocation);
 
 		File file = new File(realPath);
@@ -174,6 +181,8 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
             public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
                 Property property = event.getProperty();
                 itemProperty.setValue(property);
+                File aFile = (File)(property.getValue());
+                displayField.setValue(aFile.getName());
             }
         });
         fileSelector.setImmediate(true);
@@ -304,6 +313,8 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
                     saveItem(competitionItem);
                     editFN.setVisible(false);
                     displayFN.setVisible(true);
+                    editPS.setVisible(false);
+                    displayPS.setVisible(true);
                     editable = false;
                 } else {
                     // not editable, button currently says "Edit"
@@ -311,6 +322,8 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
                     CompetitionEditor.this.setReadOnly(formLayout, false);
                     editFN.setVisible(true);
                     displayFN.setVisible(false);
+                    editPS.setVisible(true);
+                    displayPS.setVisible(false);
                     editable = true;
                 }
             }

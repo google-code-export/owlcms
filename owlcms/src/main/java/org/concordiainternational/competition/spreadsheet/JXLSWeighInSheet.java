@@ -59,7 +59,7 @@ public class JXLSWeighInSheet extends JXLSWorkbookStreamSource {
 	@Override
 	protected void getSortedLifters()  {
 		this.lifters = LifterSorter.displayOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAllPojos());
-	    LifterSorter.assignMedals(lifters);
+	    LifterSorter.assignStartNumbers(lifters);
 	}
 	
 	/* (non-Javadoc)

@@ -306,6 +306,20 @@ public class LifterSorter implements Serializable {
         return false;
     }
 
+    
+    /**
+     * Assign start numbers to lifters
+     * @param lifters
+     */
+    public static void assignStartNumbers(List<Lifter> sortedList) {
+        int rank = 1;
+        for (Lifter curLifter : sortedList) {
+            curLifter.setStartNumber(rank);
+            rank++;
+        }
+    }
+    
+    
     /**
      * Assign medals, sequentially.
      * 
@@ -646,6 +660,8 @@ public class LifterSorter implements Serializable {
         if (o1 != null) return o1.equals(o2);
         return false; // o1 is null but not o2
     }
+
+
 
 //    public Collection<Team> fullResults(List<Lifter> lifters) {
 //        resultsOrder(lifters, Ranking.SNATCH);

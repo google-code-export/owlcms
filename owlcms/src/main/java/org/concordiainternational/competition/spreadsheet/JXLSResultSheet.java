@@ -7,6 +7,8 @@
  */
 package org.concordiainternational.competition.spreadsheet;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -48,12 +50,15 @@ public class JXLSResultSheet extends JXLSWorkbookStreamSource {
 		getReportingBeans().put("session",app.getCurrentCompetitionSession());
 	}
 
-	@Override
-	public InputStream getTemplate() throws IOException {
-    	String templateName = "/ResultSheetTemplate_"+CompetitionApplication.getCurrentSupportedLocale().getLanguage()+".xls";
-        final InputStream resourceAsStream = app.getResourceAsStream(templateName);
-        if (resourceAsStream == null) {
-            throw new IOException("resource not found: " + templateName);} //$NON-NLS-1$
+    @Override
+    public InputStream getTemplate() throws IOException {
+        String resultTemplateFileName = SheetUtils.getCompetition().getProtocolFileName();
+        File templateFile = new File(resultTemplateFileName);
+        if (!templateFile.exists()) {
+            // can't happen unless system is misconfigured.
+            throw new IOException("resource not found: " + resultTemplateFileName); //$NON-NLS-1$
+        }
+        FileInputStream resourceAsStream = new FileInputStream(templateFile);
         return resourceAsStream;
     }
 
