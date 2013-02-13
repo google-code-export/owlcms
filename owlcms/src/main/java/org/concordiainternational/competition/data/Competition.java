@@ -34,10 +34,11 @@ public class Competition implements Serializable {
 
     String competitionName;
     String competitionSite;
-    Date competitionDate;
+    Date competitionDate = new Date();
     String competitionCity;
     String competitionOrganizer;
     String resultTemplateFileName;
+    String protocolFileName;
 
     Integer invitedIfBornBefore;
     Boolean masters;
@@ -226,6 +227,14 @@ public class Competition implements Serializable {
 			return false;
 		return true;
 	}
+
+    public String getProtocolFileName() {
+        return protocolFileName;
+    }
+
+    public void setProtocolFileName(String protocolFileName) {
+        this.protocolFileName = protocolFileName;
+    }
     
     
 }
