@@ -102,7 +102,6 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         List<Lifter> sortedMen = null;
         List<Lifter> sortedWomen = null;
 
-
         sortedLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.SNATCH);
         lifterSorter.assignCategoryRanks(sortedLifters, Ranking.SNATCH);
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());
@@ -110,6 +109,12 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         splitByGender(sortedLifters, sortedMen, sortedWomen);
         reportingBeans.put("mSn",sortedMen);
         reportingBeans.put("wSn",sortedWomen);
+        
+        //only needed once
+        reportingBeans.put("nbMen",sortedMen.size());
+        reportingBeans.put("nbWomen", sortedMen.size());
+        reportingBeans.put("nbLifters", sortedLifters.size());
+        reportingBeans.put("nbClubs", clubs.size());
 
         sortedLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.CLEANJERK);
         lifterSorter.assignCategoryRanks(sortedLifters, Ranking.CLEANJERK);
@@ -152,6 +157,7 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         splitByGender(sortedLifters, sortedMen, sortedWomen);
         reportingBeans.put("mCombined",sortedMen);
         reportingBeans.put("wCombined",sortedWomen);
+        reportingBeans.put("mwCombined",sortedLifters);
 
         LifterSorter.teamRankingOrder(sortedLifters, Ranking.TOTAL);
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());
