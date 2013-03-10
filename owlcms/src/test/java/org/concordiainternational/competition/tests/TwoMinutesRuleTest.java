@@ -86,6 +86,7 @@ public class TwoMinutesRuleTest {
     public void initialCheck() {
         final String resName = "/initialCheck.txt"; //$NON-NLS-1$
         LifterSorter.assignLotNumbers(lifters);
+        LifterSorter.assignStartNumbers(lifters);
 
         Collections.shuffle(lifters);
 
