@@ -149,7 +149,7 @@ public class WeighInSheet extends OutputSheet implements InputSheet, LifterReade
             lifter.setCleanJerk3ActualLift(lifterReaderHelper.getString(sheet, row, 17));
             lifter.setCompetitionSession(lifterReaderHelper.getCompetitionSession(sheet, row, 22));
             try {
-                lifter.setQualifyingTotal(lifterReaderHelper.getInt(sheet, row, 24));
+                lifter.setQualifyingTotal(lifterReaderHelper.getInt(sheet, row, 23));
             } catch (CellNotFoundException e) {
             }
             logger.debug(InputSheetHelper.toString(lifter, false));

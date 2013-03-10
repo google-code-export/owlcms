@@ -230,9 +230,15 @@ public class InputSheetHelper implements InputSheet {
             lifter.setCleanJerk3ActualLift(getString(sheet, row, 17));
             lifter.setCompetitionSession(getCompetitionSession(sheet, row, 22));
             try {
-                lifter.setQualifyingTotal(getInt(sheet, row, 24));
+                lifter.setQualifyingTotal(getInt(sheet, row, 23));
             } catch (CellNotFoundException e) {
             }
+            try {
+                logger.warn("setQualifyingTotal");
+                lifter.setQualifyingTotal(getInt(sheet, row, 23));
+            } catch (CellNotFoundException e) {
+                logger.warn("setQualifyingTotal exception");
+            }           
             logger.debug(toString(lifter, false));
             return lifter;
         } catch (CellNotFoundException c) {
@@ -254,9 +260,10 @@ public class InputSheetHelper implements InputSheet {
             competition.setCompetitionName(workSheet.getCell("I1").getStringVal()); //$NON-NLS-1$
             competition.setCompetitionSite(workSheet.getCell("I2").getStringVal()); //$NON-NLS-1$
             
-            final CellHandle dateCell = workSheet.getCell("I3");
+            final CellHandle dateCell = workSheet.getCell("X1");
             Date nDate = DateConverter.getDateFromCell(dateCell) ;
             competition.setCompetitionDate(nDate);
+            
             
 //			String dateString = dateCell.getStringVal(); //$NON-NLS-1$
 //            if (dateString != null && !dateString.trim().isEmpty()) {
@@ -270,9 +277,9 @@ public class InputSheetHelper implements InputSheet {
 //            	competition.setCompetitionDate(new Date());
 //            }
 
-            competition.setCompetitionCity(workSheet.getCell("T2").getStringVal()); //$NON-NLS-1$
-            competition.setCompetitionOrganizer(workSheet.getCell("T3").getStringVal()); //$NON-NLS-1$
-            competition.setInvitedIfBornBefore(workSheet.getCell("T4").getIntVal()); //$NON-NLS-1$
+            competition.setCompetitionCity(workSheet.getCell("X2").getStringVal()); //$NON-NLS-1$
+            competition.setCompetitionOrganizer(workSheet.getCell("I3").getStringVal()); //$NON-NLS-1$
+            competition.setInvitedIfBornBefore(workSheet.getCell("I4").getIntVal()); //$NON-NLS-1$
         }
     }
 
