@@ -221,7 +221,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
     protected String[] getColHeaders() {
         Locale locale = app.getLocale();
         if (COL_HEADERS != null) return COL_HEADERS;
-        COL_HEADERS = new String[] { Messages.getString("Lifter.lotNumber", locale), //$NON-NLS-1$
+        COL_HEADERS = new String[] { Messages.getString("Lifter.startNumber", locale), //$NON-NLS-1$
                 Messages.getString("Lifter.lastName", locale), //$NON-NLS-1$
                 Messages.getString("Lifter.firstName", locale), //$NON-NLS-1$
                 //Messages.getString("Lifter.gender", locale), //$NON-NLS-1$
@@ -247,7 +247,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
     @Override
     protected String[] getColOrder() {
         if (NATURAL_COL_ORDER != null) return NATURAL_COL_ORDER;
-        NATURAL_COL_ORDER = new String[] { "lotNumber", //$NON-NLS-1$
+        NATURAL_COL_ORDER = new String[] { "startNumber", //$NON-NLS-1$
                 "lastName", //$NON-NLS-1$
                 "firstName", //$NON-NLS-1$
                 //"gender", //$NON-NLS-1$
@@ -309,7 +309,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
         table.setColumnWidth("category",30);
         table.setColumnWidth("bodyWeight",45);
         table.setColumnWidth("nextAttemptRequestedWeight",30);
-        table.setColumnWidth("lotNumber",30);
+        table.setColumnWidth("startNumber",30);
         
         if (table.size() > 0) {
             table.setEditable(false);
