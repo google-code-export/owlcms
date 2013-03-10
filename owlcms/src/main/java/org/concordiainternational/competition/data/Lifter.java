@@ -1992,7 +1992,10 @@ public class Lifter implements MethodEventSource, Notifier {
                     zeroIfInvalid(cleanJerk1Declaration), zeroIfInvalid(cleanJerk1Change1),
                     zeroIfInvalid(cleanJerk1Change2));
             snatchRequest = getNextAttemptRequestedWeight();
-        } else {
+        } else if (currentAttempt <= 4) {
+            cleanJerkRequest = last(zeroIfInvalid(getCleanJerk1AutomaticProgression()),
+                    zeroIfInvalid(cleanJerk1Declaration), zeroIfInvalid(cleanJerk1Change1),
+                    zeroIfInvalid(cleanJerk1Change2));
             // get first snatch that was actually lifted
             snatchRequest = zeroIfInvalid(getSnatch1ActualLift());
             if (snatchRequest < 0) {
@@ -2005,6 +2008,9 @@ public class Lifter implements MethodEventSource, Notifier {
                 return; // did not succeed.
             }
             cleanJerkRequest = getNextAttemptRequestedWeight();
+        } else {
+            // once 1st c&j is over, rule no longer needs checking
+            return;
         }
         
         curStartingTotal  = snatchRequest + cleanJerkRequest;
@@ -2036,7 +2042,7 @@ public class Lifter implements MethodEventSource, Notifier {
         int snatchRequest = 0;
         int cleanJerkRequest = 0;
         
-        if (getAttemptsDone() == 0) {
+        if (currentAttempt == 1) {
             // weigh-in
             if (isSnatch) {
                 cleanJerkRequest = last(zeroIfInvalid(getCleanJerk1AutomaticProgression()),
@@ -2057,7 +2063,7 @@ public class Lifter implements MethodEventSource, Notifier {
                     zeroIfInvalid(cleanJerk1Declaration), zeroIfInvalid(cleanJerk1Change1),
                     zeroIfInvalid(cleanJerk1Change2));
             snatchRequest = newVal;
-        } else {
+        } else if (currentAttempt <= 4) { // 1st c&j
             assert isSnatch == false;
             // get first snatch that was actually lifted
             snatchRequest = zeroIfInvalid(getSnatch1ActualLift());
@@ -2071,15 +2077,20 @@ public class Lifter implements MethodEventSource, Notifier {
                 return; // did not succeed.
             }
             cleanJerkRequest = newVal;
+        } else {
+            // once lifter has declared sufficient weight on first c&j, no way bar is going down
+            return;
         }
         
         curStartingTotal  = snatchRequest + cleanJerkRequest;
         int delta = qualTotal - curStartingTotal;
         String message = null;
         Locale locale = CompetitionApplication.getCurrentLocale();
-        if (getGender().equals("M") && (delta > 20)) {
+        
+        // signal violation except if lifter is withdrawing (request = 0)
+        if (getGender().equals("M") && (delta > 20) && snatchRequest > 0 && cleanJerkRequest > 0) {
             message = RuleViolation.rule15_20Violated(snatchRequest,cleanJerkRequest, delta-20, qualTotal).getLocalizedMessage(locale);
-        } else if (getGender().equals("F") && (delta > 15)) {
+        } else if (getGender().equals("F") && (delta > 15) && snatchRequest > 0 && cleanJerkRequest > 0) {
             message = RuleViolation.rule15_20Violated(snatchRequest, cleanJerkRequest, delta-15, qualTotal).getLocalizedMessage(locale);
         } 
         if (message != null) {
