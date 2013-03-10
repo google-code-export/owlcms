@@ -50,6 +50,7 @@ public class LifterSorterTest {
         // on the constructor to disable exclusion of incomplete data.
         hbnLifters = new LifterContainer(new CompetitionApplication(), false);
         lifters = (hbnLifters.getAllPojos());
+        AllTests.longDump(lifters);
     }
 
     @After
@@ -61,6 +62,7 @@ public class LifterSorterTest {
     public void initialCheck() {
         final String resName = "/initialCheck.txt"; //$NON-NLS-1$
         LifterSorter.assignLotNumbers(lifters);
+        LifterSorter.assignStartNumbers(lifters);
 
         Collections.shuffle(lifters);
 
@@ -72,6 +74,7 @@ public class LifterSorterTest {
     @Test
     public void liftSequence1() {
         LifterSorter.assignLotNumbers(lifters);
+        LifterSorter.assignStartNumbers(lifters);
 
         final Lifter schneiderF = lifters.get(0);
         final Lifter simpsonR = lifters.get(1);
@@ -207,6 +210,7 @@ public class LifterSorterTest {
     @Test
     public void liftSequence2() {
         LifterSorter.assignLotNumbers(lifters);
+        LifterSorter.assignStartNumbers(lifters);
 
         final Lifter schneiderF = lifters.get(0);
         final Lifter simpsonR = lifters.get(1);
