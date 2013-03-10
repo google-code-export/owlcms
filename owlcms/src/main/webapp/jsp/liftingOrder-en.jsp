@@ -1,3 +1,4 @@
+<%@page import="java.util.Locale"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8" isELIgnored="false" import="org.concordiainternational.competition.ui.generators.*,org.concordiainternational.competition.ui.*,org.concordiainternational.competition.data.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -13,6 +14,7 @@
  --><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <%
+	CompetitionApplication.getCurrent().setLocale(new Locale("en","US"));
 	String platform = request.getParameter("platformName");
 	if (platform == null) {
 		out.println("Platform parameter expected. URL must include ?platformName=X");
