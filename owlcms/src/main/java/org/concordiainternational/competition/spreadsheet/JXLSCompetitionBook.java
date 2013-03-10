@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
 
     private static final long serialVersionUID = 1L;
-    final private static int TEAMSHEET_FIRST_ROW = 5;
+    //final private static int TEAMSHEET_FIRST_ROW = 5;
 
     @SuppressWarnings("unused")
     private Logger logger = LoggerFactory.getLogger(JXLSCompetitionBook.class);
@@ -202,7 +202,8 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         setTeamSheetPrintArea(workbook, "WXT", nbClubs);
 
         setTeamSheetPrintArea(workbook, "MCT", nbClubs);
-        setTeamSheetPrintArea(workbook, "WCT", nbClubs);
+        setTeamSheetPrintArea(workbook, "WCT", nbClubs);   
+        setTeamSheetPrintArea(workbook, "MWCT", nbClubs);
 
         translateSheets(workbook);
         workbook.setForceFormulaRecalculation(true);
@@ -210,11 +211,10 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
     }
 
     private void setTeamSheetPrintArea(Workbook workbook, String sheetName, int nbClubs) {
-        int sheetIndex = workbook.getSheetIndex(sheetName);
-        if (sheetIndex >= 0) {
-            workbook.setPrintArea(sheetIndex, 0, 4, TEAMSHEET_FIRST_ROW, TEAMSHEET_FIRST_ROW+nbClubs);
-        }
-
+//        int sheetIndex = workbook.getSheetIndex(sheetName);
+//        if (sheetIndex >= 0) {
+//            workbook.setPrintArea(sheetIndex, 0, 4, TEAMSHEET_FIRST_ROW, TEAMSHEET_FIRST_ROW+nbClubs);
+//        }
     }
 
     private void translateSheets(Workbook workbook) {
