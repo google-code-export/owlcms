@@ -36,10 +36,10 @@ public class LiftOrderComparator extends AbstractLifterComparator implements Com
         compare = compareAttemptsDone(lifter1, lifter2);
         if (compare != 0) return compare;
 
-        compare = comparePreviousLiftOrderExceptAtEnd(lifter1, lifter2);
+        compare = compareProgression(lifter1, lifter2);
         if (compare != 0) return compare;
 
-        compare = compareLotNumber(lifter1, lifter2);
+        compare = compareStartNumber(lifter1, lifter2);
         if (compare != 0) return compare;
 
         return compare;
