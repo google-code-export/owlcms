@@ -28,7 +28,7 @@ d. cd to owlcmsParent
 		else run
 		mvn install
 		
-e. If this is the first attempt to package on a new machine
+e. cd to launch
       
 		if under Eclipse,
 		- right-click on launch project and select "run as/maven install"
