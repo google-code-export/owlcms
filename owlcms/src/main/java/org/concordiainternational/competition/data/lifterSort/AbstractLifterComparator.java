@@ -414,6 +414,69 @@ public class AbstractLifterComparator {
         return 0;
     }
 
+    
+
+    /**
+     * Determine who lifted first if both lifters are at same attempt and requesting same weight.
+     * Smaller previous attempt means lifted first.
+     * 
+     * @param lifter1
+     * @param lifter2
+     * @return
+     */
+    int compareProgression(Lifter lifter1, Lifter lifter2) {
+        int compare = 0;
+
+        int requested1 = lifter1.getNextAttemptRequestedWeight();
+        int requested2 = lifter2.getNextAttemptRequestedWeight();
+        assert requested1 == requested2;
+        
+        int startingFrom1 = lifter1.getAttemptsDone();
+        int startingFrom2 = lifter2.getAttemptsDone();
+        assert startingFrom1 == startingFrom2;
+             
+        int currentTry = startingFrom1+1;
+        if (currentTry > 3) {
+            // clean and jerk
+            if (currentTry == 6) {
+                // smaller 2nd attempt lifted first
+                Integer attemptedCJ2_1 = Math.abs(Lifter.zeroIfInvalid(lifter1.getCleanJerk2ActualLift()));
+                Integer attemptedCJ2_2 = Math.abs(Lifter.zeroIfInvalid(lifter2.getCleanJerk2ActualLift()));
+                compare = (attemptedCJ2_1.compareTo(attemptedCJ2_2));
+                if (compare != 0) return compare;
+                // if 2nd attempts are same, go on and compare first attempts
+            }
+            if (currentTry >= 5) {
+                // smaller 1st attempt lifted first
+                Integer attemptedCJ1_1 = Math.abs(Lifter.zeroIfInvalid(lifter1.getCleanJerk1ActualLift()));
+                Integer attemptedCJ1_2 = Math.abs(Lifter.zeroIfInvalid(lifter2.getCleanJerk1ActualLift()));
+                compare = attemptedCJ1_1.compareTo(attemptedCJ1_2);
+                if (compare != 0) return compare;
+                // if 1st attempts are same, can't determine who lifted first based on weights
+            }
+            return 0;
+        } else {
+            // snatch
+            if (currentTry == 3) {
+                // smaller 2nd attempt lifted first
+                Integer attemptedSn2_1 = Math.abs(Lifter.zeroIfInvalid(lifter1.getSnatch2ActualLift()));
+                Integer attemptedSn2_2 = Math.abs(Lifter.zeroIfInvalid(lifter2.getSnatch2ActualLift()));
+                compare = (attemptedSn2_1.compareTo(attemptedSn2_2));
+                if (compare != 0) return compare;
+                // if 2nd attempts are same, go on and compare first attempts
+            }
+            if (currentTry >= 2) {
+                // smaller 1st attempt lifted first
+                Integer attemptedSn1_1 = Math.abs(Lifter.zeroIfInvalid(lifter1.getSnatch1ActualLift()));
+                Integer attemptedSn1_2 = Math.abs(Lifter.zeroIfInvalid(lifter2.getSnatch1ActualLift()));
+                compare = attemptedSn1_1.compareTo(attemptedSn1_2);
+                if (compare != 0) return compare;
+                // if 1st attempts are same, can't determine who lifted first based on weights
+            }
+            return 0;
+        }
+    }
+    
     /**
      * @param lifter1
      * @param lifter2
