@@ -42,4 +42,8 @@ public class RuleViolation {
                 ("RuleViolation.liftValueBelowProgression"), curLift, actualLift, automaticProgression); //$NON-NLS-1$
     }
 
+    public static RuleViolationException rule15_20Violated(Object... objs) {
+        return new RuleViolationException("RuleViolation.rule15_20Violated",objs); //$NON-NLS-1$
+    }
+
 }

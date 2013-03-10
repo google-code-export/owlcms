@@ -42,6 +42,8 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.event.EventRouter;
 import com.vaadin.event.MethodEventSource;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.Notification;
 
 /**
  * This class stores all the information related to a particular participant.
@@ -1216,7 +1218,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange1(1, getCleanJerk1AutomaticProgression(), cleanJerk1Declaration, cleanJerk1Change1,
-            cleanJerk1Change2, cleanJerk1ActualLift);
+            cleanJerk1Change2, cleanJerk1ActualLift, false);
         this.cleanJerk1Change1 = cleanJerk1Change1;
         logger.info("{} cleanJerk1Change1={}", this, cleanJerk1Change1);
         fireEvent(new UpdateEvent(this, "cleanJerk1Change1")); //$NON-NLS-1$
@@ -1230,7 +1232,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange2(1, getCleanJerk1AutomaticProgression(), cleanJerk1Declaration, cleanJerk1Change1,
-            cleanJerk1Change2, cleanJerk1ActualLift);
+            cleanJerk1Change2, cleanJerk1ActualLift, false);
         this.cleanJerk1Change2 = cleanJerk1Change2;
         logger.info("{} cleanJerk1Change2={}", this, cleanJerk1Change2);
         fireEvent(new UpdateEvent(this, "cleanJerk1Change2")); //$NON-NLS-1$
@@ -1244,7 +1246,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateDeclaration(1, getCleanJerk1AutomaticProgression(), cleanJerk1Declaration, cleanJerk1Change1,
-            cleanJerk1Change2, cleanJerk1ActualLift);
+            cleanJerk1Change2, cleanJerk1ActualLift, false);
         this.cleanJerk1Declaration = cleanJerk1Declaration;
         logger.info("{} cleanJerk1Declaration={}", this, cleanJerk1Declaration);
         fireEvent(new UpdateEvent(this, "cleanJerk1Declaration")); //$NON-NLS-1$
@@ -1274,7 +1276,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange1(2, getCleanJerk2AutomaticProgression(), cleanJerk2Declaration, cleanJerk2Change1,
-            cleanJerk2Change2, cleanJerk2ActualLift);
+            cleanJerk2Change2, cleanJerk2ActualLift, false);
         this.cleanJerk2Change1 = cleanJerk2Change1;
         logger.info("{} cleanJerk2Change1={}", this, cleanJerk2Change1);
         fireEvent(new UpdateEvent(this, "cleanJerk2Change1")); //$NON-NLS-1$
@@ -1288,7 +1290,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange2(2, getCleanJerk2AutomaticProgression(), cleanJerk2Declaration, cleanJerk2Change1,
-            cleanJerk2Change2, cleanJerk2ActualLift);
+            cleanJerk2Change2, cleanJerk2ActualLift, false);
         this.cleanJerk2Change2 = cleanJerk2Change2;
         logger.info("{} cleanJerk2Change2={}", this, cleanJerk2Change2);
         fireEvent(new UpdateEvent(this, "cleanJerk2Change2")); //$NON-NLS-1$
@@ -1302,7 +1304,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateDeclaration(2, getCleanJerk2AutomaticProgression(), cleanJerk2Declaration, cleanJerk2Change1,
-            cleanJerk2Change2, cleanJerk2ActualLift);
+            cleanJerk2Change2, cleanJerk2ActualLift, false);
         this.cleanJerk2Declaration = cleanJerk2Declaration;
         logger.info("{} cleanJerk2Declaration={}", this, cleanJerk2Declaration);
         fireEvent(new UpdateEvent(this, "cleanJerk2Declaration")); //$NON-NLS-1$
@@ -1332,7 +1334,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange1(3, getCleanJerk3AutomaticProgression(), cleanJerk3Declaration, cleanJerk3Change1,
-            cleanJerk3Change2, cleanJerk3ActualLift);
+            cleanJerk3Change2, cleanJerk3ActualLift, false);
         this.cleanJerk3Change1 = cleanJerk3Change1;
         logger.info("{} cleanJerk3Change1={}", this, cleanJerk3Change1);
         fireEvent(new UpdateEvent(this, "cleanJerk3Change1")); //$NON-NLS-1$
@@ -1346,7 +1348,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange2(3, getCleanJerk3AutomaticProgression(), cleanJerk3Declaration, cleanJerk3Change1,
-            cleanJerk3Change2, cleanJerk3ActualLift);
+            cleanJerk3Change2, cleanJerk3ActualLift, false);
         this.cleanJerk3Change2 = cleanJerk3Change2;
         logger.info("{} cleanJerk3Change2={}", this, cleanJerk3Change2);
         fireEvent(new UpdateEvent(this, "cleanJerk3Change2")); //$NON-NLS-1$
@@ -1360,7 +1362,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateDeclaration(3, getCleanJerk3AutomaticProgression(), cleanJerk3Declaration, cleanJerk3Change1,
-            cleanJerk3Change2, cleanJerk3ActualLift);
+            cleanJerk3Change2, cleanJerk3ActualLift, false);
         this.cleanJerk3Declaration = cleanJerk3Declaration;
         logger.info("{} cleanJerk3Declaration={}", this, cleanJerk3Declaration);
         fireEvent(new UpdateEvent(this, "cleanJerk3Declaration")); //$NON-NLS-1$
@@ -1513,7 +1515,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange1(1, getSnatch1AutomaticProgression(), snatch1Declaration, snatch1Change1, snatch1Change2,
-            snatch1ActualLift);
+            snatch1ActualLift, true);
         this.snatch1Change1 = snatch1Change1;
         logger.info("{} snatch1Change1={}", this, snatch1Change1);
         fireEvent(new UpdateEvent(this, "snatch1Change1")); //$NON-NLS-1$
@@ -1527,7 +1529,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange2(1, getSnatch1AutomaticProgression(), snatch1Declaration, snatch1Change1, snatch1Change2,
-            snatch1ActualLift);
+            snatch1ActualLift, true);
         this.snatch1Change2 = snatch1Change2;
         logger.info("{} snatch1Change2={}", this, snatch1Change2);
         fireEvent(new UpdateEvent(this, "snatch1Change2")); //$NON-NLS-1$
@@ -1541,7 +1543,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateDeclaration(1, getSnatch1AutomaticProgression(), snatch1Declaration, snatch1Change1, snatch1Change2,
-            snatch1ActualLift);
+            snatch1ActualLift, true);
         this.snatch1Declaration = snatch1Declaration;
         logger.info("{} snatch1Declaration={}", this, snatch1Declaration);
         fireEvent(new UpdateEvent(this, "snatch1Declaration")); //$NON-NLS-1$
@@ -1571,7 +1573,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange1(2, getSnatch2AutomaticProgression(), snatch2Declaration, snatch2Change1, snatch2Change2,
-            snatch2ActualLift);
+            snatch2ActualLift, true);
         this.snatch2Change1 = snatch2Change1;
         logger.info("{} snatch2Change1={}", this, snatch2Change1);
         fireEvent(new UpdateEvent(this, "snatch2Change1")); //$NON-NLS-1$
@@ -1589,7 +1591,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange2(2, getSnatch2AutomaticProgression(), snatch2Declaration, snatch2Change1, snatch2Change2,
-            snatch2ActualLift);
+            snatch2ActualLift, true);
         this.snatch2Change2 = snatch2Change2;
         logger.info("{} snatch2Change2={}", this, snatch2Change2);
         fireEvent(new UpdateEvent(this, "snatch2Change2")); //$NON-NLS-1$
@@ -1603,7 +1605,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateDeclaration(2, getSnatch2AutomaticProgression(), snatch2Declaration, snatch2Change1, snatch2Change2,
-            snatch2ActualLift);
+            snatch2ActualLift, true);
         this.snatch2Declaration = snatch2Declaration;
         logger.info("{} snatch2Declaration={}", this, snatch2Declaration);
         fireEvent(new UpdateEvent(this, "snatch2Declaration")); //$NON-NLS-1$
@@ -1633,7 +1635,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange1(3, getSnatch3AutomaticProgression(), snatch3Declaration, snatch3Change1, snatch3Change2,
-            snatch3ActualLift);
+            snatch3ActualLift, true);
         this.snatch3Change1 = snatch3Change1;
         logger.info("{} snatch3Change1={}", this, snatch3Change1);
         fireEvent(new UpdateEvent(this, "snatch3Change1")); //$NON-NLS-1$
@@ -1654,7 +1656,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange2(3, getSnatch3AutomaticProgression(), snatch3Declaration, snatch3Change1, snatch3Change2,
-            snatch3ActualLift);
+            snatch3ActualLift, true);
         this.snatch3Change2 = snatch3Change2;
         logger.info("{} snatch3Change2={}", this, snatch3Change2);
         fireEvent(new UpdateEvent(this, "snatch3Change2")); //$NON-NLS-1$
@@ -1668,7 +1670,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateDeclaration(3, getSnatch3AutomaticProgression(), snatch3Declaration, snatch3Change1, snatch3Change2,
-            snatch3ActualLift);
+            snatch3ActualLift, true);
         this.snatch3Declaration = snatch3Declaration;
         logger.info("{} snatch3Declaration={}", this, snatch3Declaration);
         fireEvent(new UpdateEvent(this, "snatch3Declaration")); //$NON-NLS-1$
@@ -1938,13 +1940,12 @@ public class Lifter implements MethodEventSource, Notifier {
      * @param actualLift
      */
     private void validateChange1(int curLift, String automaticProgression, String declaration, String change1,
-            String change2, String actualLift) {
-        if (change1 == null || change1.trim().length() == 0) return; // allow
-        // reset of
-        // field.
+            String change2, String actualLift, boolean isSnatch) {
+        if (change1 == null || change1.trim().length() == 0) return; // allow reset of field.
         int newVal = zeroIfInvalid(change1);
         int prevVal = zeroIfInvalid(automaticProgression);
         if (newVal < prevVal) throw RuleViolation.declaredChangesNotOk(curLift, newVal, prevVal);
+        check15_20kiloRule(newVal, isSnatch);
     }
 
     /**
@@ -1952,13 +1953,12 @@ public class Lifter implements MethodEventSource, Notifier {
      * @param actualLift
      */
     private void validateChange2(int curLift, String automaticProgression, String declaration, String change1,
-            String change2, String actualLift) {
-        if (change2 == null || change2.trim().length() == 0) return; // allow
-        // reset of
-        // field.
+            String change2, String actualLift, boolean isSnatch) {
+        if (change2 == null || change2.trim().length() == 0) return; // allow reset of field.
         int newVal = zeroIfInvalid(change2);
         int prevVal = zeroIfInvalid(automaticProgression);
         if (newVal < prevVal) throw RuleViolation.declaredChangesNotOk(curLift, newVal, prevVal);
+        check15_20kiloRule(newVal, isSnatch);
     }
 
     /**
@@ -1966,17 +1966,128 @@ public class Lifter implements MethodEventSource, Notifier {
      * @param actualLift
      */
     private void validateDeclaration(int curLift, String automaticProgression, String declaration, String change1,
-            String change2, String actualLift) {
-        if (declaration == null || declaration.trim().length() == 0) return; // allow
-        // reset
-        // of
-        // field.
+            String change2, String actualLift, boolean isSnatch) {
+        if (declaration == null || declaration.trim().length() == 0) return; // allow reset of field.
         int newVal = zeroIfInvalid(declaration);
         int iAutomaticProgression = zeroIfInvalid(automaticProgression);
         // allow null declaration for reloading old results.
         if (iAutomaticProgression > 0 && newVal < iAutomaticProgression) throw RuleViolation.declarationValueTooSmall(curLift, newVal, iAutomaticProgression);
+        check15_20kiloRule(newVal, isSnatch);
     }
 
+    
+    public void check15_20kiloRule() throws RuleViolationException {
+        int qualTotal = getQualifyingTotal();
+        if (qualTotal == 0) {
+            return;
+        }
+
+        int currentAttempt = getAttemptsDone() + 1;
+        int curStartingTotal = 0;
+        int snatchRequest = 0;
+        int cleanJerkRequest = 0;
+        
+        if (currentAttempt <= 3) {
+            cleanJerkRequest = last(zeroIfInvalid(getCleanJerk1AutomaticProgression()),
+                    zeroIfInvalid(cleanJerk1Declaration), zeroIfInvalid(cleanJerk1Change1),
+                    zeroIfInvalid(cleanJerk1Change2));
+            snatchRequest = getNextAttemptRequestedWeight();
+        } else {
+            // get first snatch that was actually lifted
+            snatchRequest = zeroIfInvalid(getSnatch1ActualLift());
+            if (snatchRequest < 0) {
+                snatchRequest = zeroIfInvalid(getSnatch2ActualLift());
+            }
+            if (snatchRequest < 0) {
+                snatchRequest = zeroIfInvalid(getSnatch3ActualLift());
+            }
+            if (snatchRequest == 0) {
+                return; // did not succeed.
+            }
+            cleanJerkRequest = getNextAttemptRequestedWeight();
+        }
+        
+        curStartingTotal  = snatchRequest + cleanJerkRequest;
+        int delta = qualTotal - curStartingTotal;
+        String message = null;
+        Locale locale = CompetitionApplication.getCurrentLocale();
+        if (getGender().equals("M") && (delta > 20)) {
+            message = RuleViolation.rule15_20Violated(snatchRequest,cleanJerkRequest, delta-20, qualTotal).getLocalizedMessage(locale);
+        } else if (getGender().equals("F") && (delta > 15)) {
+            message = RuleViolation.rule15_20Violated(snatchRequest, cleanJerkRequest, delta-15, qualTotal).getLocalizedMessage(locale);
+        } 
+        if (message != null) {
+            Window mainWindow = CompetitionApplication.getCurrent().getMainWindow();
+            Notification notif = new Notification(message,Notification.TYPE_ERROR_MESSAGE);
+            notif.setDelayMsec(0);
+            mainWindow.showNotification(notif);
+        }
+    }
+    
+    
+    public void check15_20kiloRule(int newVal, boolean isSnatch) throws RuleViolationException {
+        int qualTotal = getQualifyingTotal();
+        if (qualTotal == 0) {
+            return;
+        }
+
+        int currentAttempt = getAttemptsDone() + 1;
+        int curStartingTotal = 0;
+        int snatchRequest = 0;
+        int cleanJerkRequest = 0;
+        
+        if (getAttemptsDone() == 0) {
+            // weigh-in
+            if (isSnatch) {
+                cleanJerkRequest = last(zeroIfInvalid(getCleanJerk1AutomaticProgression()),
+                        zeroIfInvalid(cleanJerk1Declaration), zeroIfInvalid(cleanJerk1Change1),
+                        zeroIfInvalid(cleanJerk1Change2));
+                if (cleanJerkRequest == 0) return;
+                snatchRequest = newVal;
+            } else {
+                snatchRequest = last(zeroIfInvalid(getSnatch1AutomaticProgression()),
+                    zeroIfInvalid(snatch1Declaration), zeroIfInvalid(snatch1Change1),
+                    zeroIfInvalid(snatch1Change2));
+                if (snatchRequest == 0) return;
+                cleanJerkRequest = newVal;
+            }
+        } else if (currentAttempt <= 3) {
+            assert isSnatch == true;
+            cleanJerkRequest = last(zeroIfInvalid(getCleanJerk1AutomaticProgression()),
+                    zeroIfInvalid(cleanJerk1Declaration), zeroIfInvalid(cleanJerk1Change1),
+                    zeroIfInvalid(cleanJerk1Change2));
+            snatchRequest = newVal;
+        } else {
+            assert isSnatch == false;
+            // get first snatch that was actually lifted
+            snatchRequest = zeroIfInvalid(getSnatch1ActualLift());
+            if (snatchRequest < 0) {
+                snatchRequest = zeroIfInvalid(getSnatch2ActualLift());
+            }
+            if (snatchRequest < 0) {
+                snatchRequest = zeroIfInvalid(getSnatch3ActualLift());
+            }
+            if (snatchRequest == 0) {
+                return; // did not succeed.
+            }
+            cleanJerkRequest = newVal;
+        }
+        
+        curStartingTotal  = snatchRequest + cleanJerkRequest;
+        int delta = qualTotal - curStartingTotal;
+        String message = null;
+        Locale locale = CompetitionApplication.getCurrentLocale();
+        if (getGender().equals("M") && (delta > 20)) {
+            message = RuleViolation.rule15_20Violated(snatchRequest,cleanJerkRequest, delta-20, qualTotal).getLocalizedMessage(locale);
+        } else if (getGender().equals("F") && (delta > 15)) {
+            message = RuleViolation.rule15_20Violated(snatchRequest, cleanJerkRequest, delta-15, qualTotal).getLocalizedMessage(locale);
+        } 
+        if (message != null) {
+            Window mainWindow = CompetitionApplication.getCurrent().getMainWindow();
+            mainWindow.showNotification(message,Notification.TYPE_ERROR_MESSAGE);
+        }
+    }
+    
     /**
      * Broadcast a Lifter.event to all registered listeners
      * 
