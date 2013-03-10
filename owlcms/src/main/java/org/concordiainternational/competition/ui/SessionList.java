@@ -70,7 +70,7 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
                 "weighInTime", //$NON-NLS-1$
                 "competitionTime", //$NON-NLS-1$
                 "platform", //$NON-NLS-1$
-                "categories", //$NON-NLS-1$
+                //"categories", //$NON-NLS-1$
                 "actions", //$NON-NLS-1$
         };
         return NATURAL_COL_ORDER;
@@ -88,7 +88,7 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
                 Messages.getString("Group.weighInTime", locale), //$NON-NLS-1$
                 Messages.getString("Group.competitionTime", locale), //$NON-NLS-1$
                 Messages.getString("Group.platform", locale), //$NON-NLS-1$
-                Messages.getString("Group.categories", locale), //$NON-NLS-1$
+                //Messages.getString("Group.categories", locale), //$NON-NLS-1$
                 Messages.getString("Common.actions", locale), //$NON-NLS-1$
         };
         return COL_HEADERS;
@@ -100,8 +100,8 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
     @Override
     protected void addGeneratedColumns() {
         super.addGeneratedColumns();
-        table.removeGeneratedColumn("categories"); //$NON-NLS-1$
-        table.addGeneratedColumn("categories", new CommonColumnGenerator(app)); //$NON-NLS-1$
+//        table.removeGeneratedColumn("categories"); //$NON-NLS-1$
+//        table.addGeneratedColumn("categories", new CommonColumnGenerator(app)); //$NON-NLS-1$
 //        table.removeGeneratedColumn("weighInTime"); //$NON-NLS-1$
 //        table.addGeneratedColumn("weighInTime", new CommonColumnGenerator(app)); //$NON-NLS-1$
 //        table.removeGeneratedColumn("competitionTime"); //$NON-NLS-1$
@@ -111,7 +111,7 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
         
         setExpandRatios();
         //table.setColumnExpandRatio("name", 0.3F);
-        table.setColumnExpandRatio("actions", 1.2F);
+        //table.setColumnExpandRatio("actions", 1.0F);
         
     }
 

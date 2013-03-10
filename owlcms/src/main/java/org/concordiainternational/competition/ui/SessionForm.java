@@ -86,7 +86,7 @@ public class SessionForm extends Form  {
             orderedProperties.add("weighInTime");
             orderedProperties.add("competitionTime");
             orderedProperties.add("platform");
-            orderedProperties.add("categories");
+            //orderedProperties.add("categories");
             orderedProperties.add("announcer");
             orderedProperties.add("marshall");
             orderedProperties.add("timeKeeper");
