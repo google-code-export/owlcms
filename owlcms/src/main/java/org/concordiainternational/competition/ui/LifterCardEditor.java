@@ -383,6 +383,7 @@ public class LifterCardEditor extends Panel implements
             logger.debug(("before setButtonVisibility")); //$NON-NLS-1$
             ignoreChanges = false;
         }
+        lifter1.check15_20kiloRule();
     }
 
     private void setFocus(Lifter lifter, Item item) {
