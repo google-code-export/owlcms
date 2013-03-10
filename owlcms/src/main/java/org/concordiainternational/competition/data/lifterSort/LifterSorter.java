@@ -382,6 +382,7 @@ public class LifterSorter implements Serializable {
             Category curCategory = null;
             if (WinningOrderComparator.useRegistrationCategory || rankingType == Ranking.CUSTOM) {
                 curCategory = curLifter.getRegistrationCategory();
+                if (curCategory == null && rankingType == Ranking.CUSTOM) curCategory = curLifter.getCategory();
             } else {
                 curCategory = curLifter.getCategory();
             }
