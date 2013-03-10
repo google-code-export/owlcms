@@ -13,6 +13,7 @@
  --><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <%
+	CompetitionApplication.getCurrent().setLocale(new java.util.Locale("fr"));
 	String platform = request.getParameter("platformName");
 	if (platform == null) {
 		out.println("Platform parameter expected. URL must include ?platformName=X");
@@ -65,7 +66,7 @@
 <div class="title">
 <c:choose>
 	<c:when test='${useGroupName}'>
-		<span class="title">Tableau des essais, groupe ${groupName} &ndash; Group ${groupName} Attempt Board</span>
+		<span class="title">Ordre de passage, groupe ${groupName} &ndash; Group ${groupName} Lifting Order</span>
 		<span class="liftsDone">${liftsDone}</span>
 	</c:when>
 	<c:otherwise>
