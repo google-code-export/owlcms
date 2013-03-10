@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,7 @@ public class TryFormatter {
      * @throws RuntimeException
      */
     public static String htmlFormatTry(List<Lifter> lifters, Lifter lifter) {
-        Locale locale = Locale.CANADA_FRENCH;
+        Locale locale = CompetitionApplication.getCurrentLocale();
 
         String suffix = ""; //$NON-NLS-1$
         final Lifter firstLifter = lifters.get(0);
