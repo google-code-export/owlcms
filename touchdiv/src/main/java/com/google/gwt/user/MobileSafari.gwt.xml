@@ -49,4 +49,8 @@
             <when-property-is name="mobile.user.agent" value="mobilesafari"/>
         </all>
     </replace-with>
+
+    <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
+
+    <inherits name="org.vaadin.touchdiv.widgetset.TouchDivWidgetSet" />
 </module>

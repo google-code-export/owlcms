@@ -24,4 +24,8 @@
     <inherits name="com.google.gwt.event.EventBase"/>
     <source path="client"/>
     <source path="event"/>
+
+    <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
+
+    <inherits name="org.vaadin.touchdiv.widgetset.TouchDivWidgetSet" />
 </module>
