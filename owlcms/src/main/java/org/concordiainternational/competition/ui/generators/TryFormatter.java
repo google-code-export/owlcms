@@ -35,7 +35,10 @@ public class TryFormatter {
      */
     public static String htmlFormatTry(List<Lifter> lifters, Lifter lifter) {
         Locale locale = CompetitionApplication.getCurrentLocale();
+        return htmlFormatTry(lifters, lifter, locale);
+    }
 
+    public static String htmlFormatTry(List<Lifter> lifters, Lifter lifter, Locale locale) {
         String suffix = ""; //$NON-NLS-1$
         final Lifter firstLifter = lifters.get(0);
         if (firstLifter.getAttemptsDone() < 3 && lifter.getAttemptsDone() >= 3) {

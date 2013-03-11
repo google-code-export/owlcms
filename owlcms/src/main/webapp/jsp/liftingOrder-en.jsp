@@ -14,7 +14,7 @@
  --><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <%
-	CompetitionApplication.getCurrent().setLocale(new Locale("en","US"));
+	java.util.Locale PAGE_LOCALE = java.util.Locale.ENGLISH;
 	String platform = request.getParameter("platformName");
 	if (platform == null) {
 		out.println("Platform parameter expected. URL must include ?platformName=X");
@@ -44,7 +44,7 @@
 		pageContext.setAttribute("groupName", groupName);
 		pageContext.setAttribute("useGroupName", true);
 		pageContext.setAttribute("liftsDone", 
-				TryFormatter.htmlFormatLiftsDone(groupData.getLiftsDone(),java.util.Locale.ENGLISH)
+				TryFormatter.htmlFormatLiftsDone(groupData.getLiftsDone(),PAGE_LOCALE)
 				);
 	}
 %>
@@ -110,10 +110,10 @@
 				</c:choose>
 				<c:choose>
 					<c:when test="${lifter.currentLifter}">
-						<td class='weight current'><%= TryFormatter.htmlFormatTry(lifters,lifter) %></td>
+						<td class='weight current'><%= TryFormatter.htmlFormatTry(lifters,lifter,PAGE_LOCALE) %></td>
 					</c:when>
 					<c:otherwise>
-						<td class='weight'><%= TryFormatter.htmlFormatTry(lifters,lifter) %></td>
+						<td class='weight'><%= TryFormatter.htmlFormatTry(lifters,lifter,PAGE_LOCALE) %></td>
 					</c:otherwise>
 				</c:choose>
 				<td class="weight"><nobr>${lifter.club}</nobr></td>

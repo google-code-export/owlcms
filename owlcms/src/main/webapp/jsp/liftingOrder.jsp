@@ -13,7 +13,7 @@
  --><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <%
-	CompetitionApplication.getCurrent().setLocale(new java.util.Locale("fr"));
+	java.util.Locale PAGE_LOCALE = java.util.Locale.FRENCH;
 	String platform = request.getParameter("platformName");
 	if (platform == null) {
 		out.println("Platform parameter expected. URL must include ?platformName=X");
@@ -111,10 +111,10 @@
 				</c:choose>
 				<c:choose>
 					<c:when test="${lifter.currentLifter}">
-						<td class='weight current'><%= TryFormatter.htmlFormatTry(lifters,lifter) %></td>
+						<td class='weight current'><%= TryFormatter.htmlFormatTry(lifters,lifter,PAGE_LOCALE) %></td>
 					</c:when>
 					<c:otherwise>
-						<td class='weight'><%= TryFormatter.htmlFormatTry(lifters,lifter) %></td>
+						<td class='weight'><%= TryFormatter.htmlFormatTry(lifters,lifter,PAGE_LOCALE) %></td>
 					</c:otherwise>
 				</c:choose>
 				<td class="weight"><nobr>${lifter.club}</nobr></td>
