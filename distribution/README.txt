@@ -55,12 +55,12 @@ Because we use the Free edition, these steps are manual.
   - In the "files" section, go to "Application Data/owlcms"
   - remove the doc, lib and owlcms directory.  You will get warnings about files that cannot be deleted,
     ignore the warning (the files will not be removed, that's what we want)
-  - drag the three directories from distribution/target/owlcms-x.y.z-windows  to Application Data/owlcms
+  - drag the owlcms.exe file and the three directories from distribution/target/owlcms-x.y.z-windows  to Application Data/owlcms
   - accept the warnings about overwrite
   - update the product details page for the product version
   - save owlcms.aip, , select "major upgrade"
   - build the installer once.  In spite of completing with "total build time", it will not show "build finished successfully".
-    wait a few seconds after the end and cancel.
+    wait a few seconds after the end and close the window.
   - go to the distribution project and refresh (F5)
   - test the installer (it is created in src/installer/owlcms-SetupFiles)
 
