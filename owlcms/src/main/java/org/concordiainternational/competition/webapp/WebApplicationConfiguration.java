@@ -290,7 +290,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 		
 		// competition template
 		File templateFile;
-		URL templateUrl = platform1.getClass().getResource("/templates/teamResults/TeamResultSheetTemplate_Standard.xls");
+		URL templateUrl = platform1.getClass().getResource("/templates/competitionBook/CompetitionBook_Total_"+getDefaultLanguage()+".xls");
 		try {
 			templateFile = new File(templateUrl.toURI());
 			competition.setResultTemplateFileName(templateFile.getCanonicalPath());
@@ -300,15 +300,33 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 		}
 
 		sess.save(platform1);
-		CompetitionSession groupA = new CompetitionSession("A", null, null); //$NON-NLS-1$
-		sess.save(groupA);
-		CompetitionSession groupB = new CompetitionSession("B", null, null); //$NON-NLS-1$#
-		sess.save(groupB);
-		CompetitionSession groupC = new CompetitionSession("C", null, null); //$NON-NLS-1$
-		sess.save(groupC);
+		
+		CompetitionSession group;
+		group = new CompetitionSession("M1", null, null); //$NON-NLS-1$
+		sess.save(group);
+		group = new CompetitionSession("M2", null, null); //$NON-NLS-1$#
+		sess.save(group);
+		group = new CompetitionSession("M3", null, null); //$NON-NLS-1$
+		sess.save(group);
+		group = new CompetitionSession("M4", null, null); //$NON-NLS-1$
+		sess.save(group);
+		group = new CompetitionSession("F1", null, null); //$NON-NLS-1$
+		sess.save(group);
+		group = new CompetitionSession("F2", null, null); //$NON-NLS-1$
+		sess.save(group);
+		group = new CompetitionSession("F3", null, null); //$NON-NLS-1$
+		sess.save(group);
+
 	}
 
-	/**
+	private static String getDefaultLanguage() {
+	    // default language as defined in properties file (not the JVM).
+	    // this will typically be en.
+        return Messages.getString(
+                "Locale.defaultLanguage", Locale.getDefault());
+    }
+
+    /**
 	 * @param competition 
 	 * @param liftersToLoad
 	 * @param sess

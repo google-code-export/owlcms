@@ -193,6 +193,7 @@ public class LifterSorter implements Serializable {
         int lotNumber = 1;
         for (Lifter curLifter : shuffledList) {
             curLifter.setLotNumber(lotNumber++);
+            curLifter.setStartNumber(0);
         }
     }
 
