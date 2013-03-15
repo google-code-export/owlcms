@@ -20,8 +20,6 @@ import org.concordiainternational.competition.publicAddress.PublicAddressForm;
 import org.concordiainternational.competition.spreadsheet.JXLSCompetitionBook;
 import org.concordiainternational.competition.spreadsheet.JXLSResultSheet;
 import org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource;
-import org.concordiainternational.competition.spreadsheet.MastersGroupResults;
-import org.concordiainternational.competition.spreadsheet.OutputSheetStreamSource;
 import org.concordiainternational.competition.ui.components.SessionSelect;
 import org.concordiainternational.competition.ui.generators.CommonColumnGenerator;
 import org.concordiainternational.competition.ui.generators.LiftCellStyleGenerator;
@@ -215,16 +213,7 @@ EditableList {
                  * @throws RuntimeException
                  */
                 private void mastersCompetition(final Locale locale1) throws RuntimeException {
-                    final OutputSheetStreamSource<MastersGroupResults> streamSource = new OutputSheetStreamSource<MastersGroupResults>(
-                            MastersGroupResults.class, (CompetitionApplication) app, true);
-                    if (streamSource.size() == 0) {
-                        setComponentError(new SystemError(Messages.getString("ResultList.NoResults", locale1))); //$NON-NLS-1$
-                        throw new RuntimeException(Messages.getString("ResultList.NoResults", locale1)); //$NON-NLS-1$
-                    }
-
-                    String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss") //$NON-NLS-1$
-                    .format(new Date());
-                    ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("ResultList.ResultsPrefix", locale) + now); //$NON-NLS-1$
+                    regularCompetition(locale1);
                 }
             };
             resultSpreadsheetButton.addListener(listener);
