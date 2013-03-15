@@ -7,7 +7,6 @@
  */
 package org.concordiainternational.competition.tests;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class SpreadsheetTest {
         InputStream is = AllTests.class.getResourceAsStream("/testData/roundTripInputSheet.xls"); //$NON-NLS-1$
         InputSheet results = new WeighInSheet(AllTests.getSessionManager());
         lifters = results.getAllLifters(is, hbnSessionManager);
-        loadResults = AllTests.longDump(lifters, false);
+        AllTests.longDump(lifters, false);
     }
 
 
