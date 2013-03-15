@@ -148,7 +148,6 @@ public class Competition implements Serializable {
         } else {
             return CompetitionApplication.getCurrent().getContext().getBaseDirectory()
                     + "/WEB-INF/classes/templates/competitionBook/CompetitionBook_Total_"+CompetitionApplication.getCurrentSupportedLocale().getLanguage()+".xls";
-                //+ "/WEB-INF/classes/templates/team/TeamResultSheetTemplate.xls";
         }
     }
 
