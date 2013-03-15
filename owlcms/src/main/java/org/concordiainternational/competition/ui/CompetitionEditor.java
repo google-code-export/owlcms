@@ -208,7 +208,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
 			File file1 = new File(realPath).getParentFile().getParentFile();
 			logger.debug("findTemplatesWhenRunningInPlace 2 {}",file1.getAbsolutePath());
 			if (realPath != null && file1.isDirectory()) {
-				file1 = new File(file1,"resources/templates/teamResults");
+				file1 = new File(file1,"resources/templates/competitionBook");
 				logger.debug("findTemplatesWhenRunningInPlace 3 {}",file1.getAbsolutePath());
 				fsContainer = new FilesystemContainer(file1, "xls", false);
 			} else {
