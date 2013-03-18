@@ -67,6 +67,11 @@ public class Platform implements Serializable {
      */
     Boolean showDecisionLights = false;
 
+    /**
+     * true if the time should be displayed
+     */
+    Boolean showTimer = false;
+    
     // collar
     Integer nbC_2_5 = 0;
 
@@ -387,5 +392,13 @@ public class Platform implements Serializable {
 			return null;
 		}
 	}
+
+    public Boolean getShowTimer() {
+        return showTimer == null ? false : showTimer;
+    }
+
+    public void setShowTimer(Boolean showTime) {
+        this.showTimer = showTime;
+    }
     
 }

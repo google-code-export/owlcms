@@ -68,6 +68,7 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
         		"name", //$NON-NLS-1$
                 "hasDisplay", //$NON-NLS-1$
                 "showDecisionLights", //$NON-NLS-1$
+                "showTimer", //$NON-NLS-1$
                 "mixerName", //$NON-NLS-1$
                 "actions" //$NON-NLS-1$
         };
@@ -86,6 +87,7 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
         		Messages.getString("CategoryEditor.name", locale), //$NON-NLS-1$
                 Messages.getString("Platform.NECDisplay", locale), //$NON-NLS-1$
                 Messages.getString("Platform.showDecisionLights", locale), //$NON-NLS-1$
+                Messages.getString("Platform.showTimer", locale), //$NON-NLS-1$
                 Messages.getString("Platform.speakers", locale), //$NON-NLS-1$
                 Messages.getString("Common.actions", locale), //$NON-NLS-1$
         };
