@@ -45,7 +45,7 @@ import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
 /**
- * Show an WebPage underneath a banner.
+ * Show information about the current attempt.
  * @author jflamy
  *
  */
