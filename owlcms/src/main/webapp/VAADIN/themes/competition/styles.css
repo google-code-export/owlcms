@@ -293,12 +293,12 @@ border-style: none;
 }
 
 .newAttemptBoard .largeCountdown {
-	font-size: 300px;
-	line-height: 300px;
+	font-size: 250px;
+	line-height: 250px;
 	font-weight: bold;
 	vertical-align: middle;
 	color: yellow;
-	zoom: 110%;
+	zoom: 100%;
 }
 
 .newAttemptBoard .v-label-text {
@@ -307,11 +307,20 @@ border-style: none;
 	font-weight: bold;
 }
 
-.newAttemptBoard .v-label-weightLabel {
+.newAttemptBoard .v-label-start {
 	font-size: 100px;
+	line-height: 115px;
+	font-weight: bold;
+	border-width: thick;
+	border-style: solid;
+	color: #7FFFFF;
+}
+
+.newAttemptBoard .v-label-weightLabel {
+	font-size: 150px;
 	line-height: 100px;
 	font-weight: bold;
-	zoom: 140%;
+	zoom: 120%;
 	color: #7FFFFF;
 }
 
@@ -388,7 +397,7 @@ border-style: none;
 
 .bar {
 	height: 1.5ex;
-	width: 4em;
+	width: 2.5em;
 	background-color: gray;
 }
 

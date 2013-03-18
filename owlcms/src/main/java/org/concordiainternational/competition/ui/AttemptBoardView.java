@@ -62,6 +62,13 @@ DecisionEventListener
 
     public final static Logger logger = LoggerFactory.getLogger(AttemptBoardView.class);
     private static final long serialVersionUID = 1437157542240297372L;
+    private static final int TEAM_COLUMN = 3;
+    private static final int NAME_COLUMN = 0;
+    private static final int TIME_COLUMN = 0;
+    private static final int PLATES_COLUMN = 2;
+    private static final int WEIGHT_COLUMN = 3;
+    private static final int PLATES_ROW = 3;
+    private static final int DECISION_ROW = PLATES_ROW-1;
 
     public String urlString;
     private String platformName;
@@ -72,6 +79,7 @@ DecisionEventListener
     private Label nameLabel = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
     private Label firstNameLabel = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
     private Label clubLabel = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
+    private Label startLabel = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
     private Label attemptLabel = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
     private Label timeDisplayLabel = new Label();
     private Label weightLabel = new Label();
@@ -191,7 +199,7 @@ DecisionEventListener
     private void create(UserActions app1) {
         this.setSizeFull();
 
-        grid = new GridLayout(4,4);
+        grid = new GridLayout(4,5);
         grid.setSizeFull();
         grid.setMargin(true);
         grid.addStyleName("newAttemptBoard");
@@ -202,35 +210,41 @@ DecisionEventListener
         grid.setColumnExpandRatio(3, 0.0F);
         grid.setRowExpandRatio(0, 0.0F);
         grid.setRowExpandRatio(1, 0.0F);
-        grid.setRowExpandRatio(2, 65.0F);
-        grid.setRowExpandRatio(3, 35.0F);
-
+        grid.setRowExpandRatio(2, 50.0F);
+        grid.setRowExpandRatio(3, 20.0F);
+        grid.setRowExpandRatio(4, 20.0F);
+        
         // we do not add the time display, plate display
         // and decision display -- they react to timekeeping
-        grid.addComponent(nameLabel, 0, 0, 3, 0);
+        grid.addComponent(nameLabel, NAME_COLUMN, 0, NAME_COLUMN+2, 0);
         nameLabel.setSizeUndefined();
         nameLabel.addStyleName("text");
         grid.setComponentAlignment(nameLabel, Alignment.MIDDLE_LEFT);
 
-        grid.addComponent(firstNameLabel, 0, 1, 2, 1);
+        grid.addComponent(firstNameLabel, NAME_COLUMN, 1, NAME_COLUMN+2, 1);
         firstNameLabel.setSizeUndefined();
         firstNameLabel.addStyleName("text");
         grid.setComponentAlignment(firstNameLabel, Alignment.MIDDLE_LEFT);
 
-        grid.addComponent(clubLabel, 3, 1, 3, 1);
+        grid.addComponent(startLabel, TEAM_COLUMN, 0, TEAM_COLUMN, 0);
+        startLabel.setSizeUndefined();
+        startLabel.addStyleName("start");
+        grid.setComponentAlignment(startLabel, Alignment.MIDDLE_RIGHT);
+        
+        grid.addComponent(clubLabel, TEAM_COLUMN, 1, TEAM_COLUMN, 1);
         clubLabel.setSizeUndefined();
         clubLabel.addStyleName("text");
-        grid.setComponentAlignment(clubLabel, Alignment.MIDDLE_CENTER);
+        grid.setComponentAlignment(clubLabel, Alignment.MIDDLE_RIGHT);
 
-        grid.addComponent(weightLabel, 3, 2, 3, 2);
+        grid.addComponent(weightLabel, WEIGHT_COLUMN, 4, WEIGHT_COLUMN, 4);
         weightLabel.setSizeUndefined();
         weightLabel.addStyleName("weightLabel");
-        grid.setComponentAlignment(weightLabel, Alignment.MIDDLE_CENTER);
+        grid.setComponentAlignment(weightLabel, Alignment.MIDDLE_RIGHT);
 
-        grid.addComponent(attemptLabel, 3, 3, 3, 3);
+        grid.addComponent(attemptLabel, WEIGHT_COLUMN, 3, WEIGHT_COLUMN, 3);
         attemptLabel.setSizeUndefined();
         attemptLabel.addStyleName("text");
-        grid.setComponentAlignment(attemptLabel, Alignment.MIDDLE_CENTER);
+        grid.setComponentAlignment(attemptLabel, Alignment.MIDDLE_RIGHT);
 
         timeDisplayLabel.setSizeUndefined();
         timeDisplayLabel.addStyleName("largeCountdown");
@@ -282,6 +296,7 @@ DecisionEventListener
         clubLabel.setValue("");
         attemptLabel.setValue("");
         weightLabel.setValue("");
+        startLabel.setValue("");
         plates.setVisible(false);
     }
 
@@ -334,10 +349,18 @@ DecisionEventListener
             final String lastName = lifter.getLastName();
             final String firstName = lifter.getFirstName();
             final String club = lifter.getClub();
+            final Integer startNumber = lifter.getStartNumber();
 
             nameLabel.setValue(lastName.toUpperCase());
             firstNameLabel.setValue(firstName);
             clubLabel.setValue(club);
+            startLabel.setValue(
+                    startNumber == null ?
+                            "" 
+                            : startNumber > 0 ? 
+                                    MessageFormat.format(
+                                            Messages.getString("AttemptBoard.startNumberFormat", locale),startNumber.toString())
+                                    : "");
 
             //nameLabel.setValue(lastName.toUpperCase() + " " + firstName + " &nbsp;&nbsp; " + club); //$NON-NLS-1$ //$NON-NLS-2$
             //grid.addComponent(nameLabel, 0, 0, 3, 0);
@@ -347,6 +370,7 @@ DecisionEventListener
                     Messages.getString("AttemptBoard.Done", locale), masterData.getCurrentSession().getName())); //$NON-NLS-1$
             firstNameLabel.setValue("");
             clubLabel.setValue("");
+            startLabel.setValue("");
             //grid.addComponent(nameLabel, 0, 0, 3, 0);
         }
 
@@ -360,17 +384,17 @@ DecisionEventListener
         grid.removeComponent(plates);
 
         if (decisionLightsVisible) {
-            grid.addComponent(decisionLights,0,2,2,3);
+            grid.addComponent(decisionLights,TIME_COLUMN,DECISION_ROW,TIME_COLUMN+2,DECISION_ROW+2);
             decisionLights.setSizeFull();
             decisionLights.setMargin(true);
             grid.setComponentAlignment(decisionLights, Alignment.TOP_LEFT);
         } else {
-            grid.addComponent(timeDisplayLabel, 0, 2, 1, 3);
-            grid.addComponent(plates, 2, 2, 2, 3);
+            grid.addComponent(timeDisplayLabel, TIME_COLUMN, PLATES_ROW, TIME_COLUMN+1, PLATES_ROW+1);
+            grid.addComponent(plates, PLATES_COLUMN, PLATES_ROW, PLATES_COLUMN, PLATES_ROW+1);
             plates.computeImageArea(masterData, masterData.getPlatform());
 
-            grid.setComponentAlignment(timeDisplayLabel, Alignment.MIDDLE_CENTER);
-            grid.setComponentAlignment(plates, Alignment.MIDDLE_CENTER);
+            grid.setComponentAlignment(timeDisplayLabel, Alignment.MIDDLE_LEFT);
+            grid.setComponentAlignment(plates, Alignment.MIDDLE_RIGHT);
             timeDisplayLabel.setVisible(true);
             plates.setVisible(true);
         }
@@ -392,7 +416,9 @@ DecisionEventListener
             String tryInfo = MessageFormat.format(Messages.getString("ResultFrame.tryNumber", locale), //$NON-NLS-1$
                     currentTry, lift);
 
-            attemptLabel.setValue(tryInfo.replace(" ","<br>"));
+            attemptLabel.setValue(tryInfo
+                    //.replace(" ","<br>")
+                    );
         } else {
             attemptLabel.setValue("");
         }
@@ -445,7 +471,11 @@ DecisionEventListener
 
     private void showTimeRemaining(int timeRemaining) {
         synchronized (app) {
-            timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
+            if (CompetitionApplication.getCurrent().getPlatform().getShowTimer()) {
+                timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
+            } else {
+                timeDisplayLabel.setValue("");
+            }            
         }
         app.push();
     }
