@@ -48,7 +48,8 @@ public class PushServlet extends ApplicationServlet {
             // Vaadin request
             try {
                 super.service(request, response);
-            } catch (java.io.IOException e) {
+            } catch (Throwable t) {
+                if (! (t instanceof IOException)) throw t;
                 // ignore - occurs on downloads, for some reason.
             }
         }
