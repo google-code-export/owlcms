@@ -188,7 +188,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
 
             @Override
             public void buttonClick(ClickEvent event) {
-                if (!currentSessionSelected()) return;
+                //if (!currentSessionSelected()) return;
                 clearStartButton.setComponentError(null);
                 clearStartNumbers();
             }
@@ -394,7 +394,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
 
     protected List<Lifter> currentSessionLifters() {
         if (currentSessionSelected()) {
-            return allLifters(true);
+            return currentSessionliftersIfSelectedAllIfNot();
         } else {
             return null;
         }
@@ -412,13 +412,17 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
         }
     }
     protected void clearStartNumbers() {
-        final List<Lifter> list = currentSessionLifters();
+        final List<Lifter> list = currentSessionliftersIfSelectedAllIfNot();
         if (list == null) return;
         
         for (Lifter curLifter : list) {
             curLifter.setStartNumber(0);
         }
         this.refresh();
+    }
+
+    public List<Lifter> currentSessionliftersIfSelectedAllIfNot() {
+        return allLifters(true);
     }
 
     /**
