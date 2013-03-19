@@ -108,27 +108,49 @@ public class LifterSorter implements Serializable {
         return sorted;
     }
 
+//    /**
+//     * Sort lifters according to official rules (in place) for the technical
+//     * meeting <tableToolbar> <li>by registration category</li> <li>by lot
+//     * number</li> </tableToolbar>
+//     */
+//    static public void weighInOrder(List<Lifter> toBeSorted) {
+//        Collections.sort(toBeSorted, new WeighInOrderComparator());
+//    }
+//
+//    /**
+//     * Sort lifters according to official rules, creating a new list.
+//     * 
+//     * @see #liftingOrder(List)
+//     * @return lifters, ordered according to their standard order for the
+//     *         technical meeting
+//     */
+//    static public List<Lifter> weighInOrderCopy(List<Lifter> toBeSorted) {
+//        List<Lifter> sorted = new ArrayList<Lifter>(toBeSorted);
+//        weighInOrder(sorted);
+//        return sorted;
+//    }
+    
     /**
-     * Sort lifters according to official rules (in place) for the technical
-     * meeting <tableToolbar> <li>by registration category</li> <li>by lot
+     * Sort lifters according to official rules (in place) for the start number
+     * <tableToolbar> <li>by registration category</li> <li>by lot
      * number</li> </tableToolbar>
      */
-    static public void weighInOrder(List<Lifter> toBeSorted) {
-        Collections.sort(toBeSorted, new WeighInOrderComparator());
+    static public void startNumberOrder(List<Lifter> toBeSorted) {
+        Collections.sort(toBeSorted, new StartNumberOrderComparator());
     }
 
     /**
      * Sort lifters according to official rules, creating a new list.
      * 
      * @see #liftingOrder(List)
-     * @return lifters, ordered according to their standard order for the
-     *         technical meeting
+     * @return lifters, ordered according to their start number
      */
-    static public List<Lifter> weighInOrderCopy(List<Lifter> toBeSorted) {
+    static public List<Lifter> startNumberOrderCopy(List<Lifter> toBeSorted) {
         List<Lifter> sorted = new ArrayList<Lifter>(toBeSorted);
-        weighInOrder(sorted);
+        startNumberOrder(sorted);
         return sorted;
     }
+
 
     /**
      * Sort lifters according to winning order, creating a new list.
