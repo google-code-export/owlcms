@@ -13,36 +13,30 @@ b. cd to owlcmsParent
 		mvn clean
 		(if under Eclipse, right-click on owlcmsParent project and select "run as/maven clean")
 		
-c. If the widgetset needs building (first build, or Vaadin version has changed.)
-
-   cd to owlcms
-		mvn clean compile vaadin:update-widgetset gwt:compile -P compile-widgetset   
-		(if under Eclipse, run  widgetset.launch  using right-click on the .launch file)
+		IF FIRST BUILD
 		
-d. cd to owlcmsParent
+				c. If the widgetset needs building (first build, or Vaadin version has changed.)
+				
+				   cd to owlcms
+						mvn clean compile vaadin:update-widgetset gwt:compile -P compile-widgetset   
+						(if under Eclipse, run  widgetset.launch  using right-click on the .launch file)
+				
+				d. cd back to owlcmsParent
+				
+		END IF FIRST BUILD
 		
 		if under Eclipse,
-		- menu Project/Clean/Clean all projects + rebuild automatically
-		- right-click on owlcmsParent project and select "run as/maven install"
-		
+			1- menu Project/Clean/Clean all projects + rebuild automatically
+			2- right-click on owlcmsParent project and select "run as/maven install"
 		else run
-		mvn install
+			mvn install
 		
-e. cd to launch
-      
-		if under Eclipse,
-		- right-click on launch project and select "run as/maven install"
 		
-		else run
-		cd launch
-		mvn install
-
-		
-f. cd distribution 
+e. cd distribution 
 		mvn clean assembly:single 
     	(if under Eclipse, run  "prepare uploads.launch" using right-click on the .launch file)
     	
-g. commit, push.
+f. commit, push.
 
 
 
