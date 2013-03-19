@@ -272,6 +272,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 		setDefaultMixerName(platform1);
 		platform1.setHasDisplay(false);
 		platform1.setShowDecisionLights(true);
+		platform1.setShowTimer(true);
 		// collar
 		platform1.setNbC_2_5(1);
 		// small plates
