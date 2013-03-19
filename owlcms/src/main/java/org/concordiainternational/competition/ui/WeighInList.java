@@ -371,7 +371,12 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
             @Override
             public void buttonClick(ClickEvent event) {
                 CategoryLookup.getSharedInstance().reload();
+                
+                WeighInList.this.removeComponent(table);
                 populateAndConfigureTable();
+                WeighInList.this.addComponent(table);
+                positionTable();
+                setButtonVisibility();
             }
         };
         refreshButton.addListener(refreshClickListener);
