@@ -44,6 +44,7 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
+import com.vaadin.ui.Window.Notification;
 
 public class WeighInList extends LifterHbnList implements ApplicationView, Bookmarkable {
 
@@ -115,17 +116,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
             tableToolbar1.addComponent(addRowButton);
 
             // draw lot numbers
-            final Button drawLotsButton = new Button(Messages.getString("WeighInList.drawLots", locale)); //$NON-NLS-1$
-            final Button.ClickListener drawLotsListener = new Button.ClickListener() { //$NON-NLS-1$
-                private static final long serialVersionUID = -8473648982746209221L;
-
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    drawLotsButton.setComponentError(null);
-                    drawLots();
-                }
-            };
-            drawLotsButton.addListener(drawLotsListener);
+            final Button drawLotsButton = drawLotsButton(locale);
             tableToolbar1.addComponent(drawLotsButton);
 
             // produce start list for technical meeting, includes all lifters.
@@ -139,23 +130,20 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
             tableToolbar1.addComponent(lifterCardsButton);
 
             // clear all lifters.
-            final Button clearAllButton = new Button(Messages.getString("WeighInList.deleteLifters", locale)); //$NON-NLS-1$
-            final Button.ClickListener clearAllListener = new Button.ClickListener() { //$NON-NLS-1$
-                private static final long serialVersionUID = -8473648982746209221L;
-
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    clearAllButton.setComponentError(null);
-                    clearAllLifters();
-                }
-            };
-            clearAllButton.addListener(clearAllListener);
+            final Button clearAllButton = clearAllButton(locale);
             tableToolbar1.addComponent(clearAllButton);
 
 
         } else {
             // weigh-in screen
 
+            // clear all start numbers.
+            final Button clearStartButton = clearStartButton(locale);
+            tableToolbar1.addComponent(clearStartButton);
+
+            // assign start numbers.
+            final Button assignStartNumbersButton = assignStartNumberButton(locale);
+            tableToolbar1.addComponent(assignStartNumbersButton);
 
             // produce list of lifters that were actually weighed-in.
             // true = exclude unweighed lifters
@@ -167,75 +155,122 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
             final Button juryListButton = juryListButton(locale, true);
             tableToolbar1.addComponent(juryListButton);
 
-            final Button editButton = new Button(Messages.getString("ResultList.edit", locale)); //$NON-NLS-1$
-            final Button.ClickListener editClickListener = new Button.ClickListener() { //$NON-NLS-1$
-                private static final long serialVersionUID = 7744958942977063130L;
-
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    editCompetitionSession(sessionSelect.getSelectedId(),sessionSelect.getSelectedItem());
-                }
-            };
-            editButton.addListener(editClickListener);
-            tableToolbar1.addComponent(editButton);
-
-            // clear all start numbers.
-            final Button clearStartButton = new Button(Messages.getString("WeighInList.clearStartNumbers", locale)); //$NON-NLS-1$
-            final Button.ClickListener clearStartListener = new Button.ClickListener() { //$NON-NLS-1$
-                private static final long serialVersionUID = -8473648982746209221L;
-
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    clearStartButton.setComponentError(null);
-                    clearStartNumbers();
-                }
-            };
-            clearStartButton.addListener(clearStartListener);
-            tableToolbar1.addComponent(clearStartButton);
-
-            // assign start numbers.
-            final Button assignStartNumbersButton = new Button(Messages.getString("WeighInList.assignStartNumbers", locale)); //$NON-NLS-1$
-            final Button.ClickListener assignStartNumbersListener = new Button.ClickListener() { //$NON-NLS-1$
-                private static final long serialVersionUID = -8473648982746209221L;
-
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    assignStartNumbersButton.setComponentError(null);
-                    assignStartNumbersLifters();
-                }
-            };
-            assignStartNumbersButton.addListener(assignStartNumbersListener);
-            tableToolbar1.addComponent(assignStartNumbersButton);
+            final Button editSessionButton = editSessionButton(locale);
+            tableToolbar1.addComponent(editSessionButton);
         }
 
 
-        final Button refreshButton = new Button(Messages.getString("ResultList.Refresh", locale)); //$NON-NLS-1$
-        final Button.ClickListener refreshClickListener = new Button.ClickListener() { //$NON-NLS-1$
-            private static final long serialVersionUID = 7744958942977063130L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                CategoryLookup.getSharedInstance().reload();
-                populateAndConfigureTable();
-            }
-        };
-        refreshButton.addListener(refreshClickListener);
+        final Button refreshButton = refreshButton(locale);
         tableToolbar1.addComponent(refreshButton);
 
     }
 
-    protected void assignStartNumbersLifters() {
-        final List<Lifter> list = allLifters(false);
-        LifterSorter.assignStartNumbers(list);
-        this.refresh();
+    private Button editSessionButton(final Locale locale) {
+        
+        final Button editButton = new Button(Messages.getString("ResultList.edit", locale)); //$NON-NLS-1$
+        final Button.ClickListener editClickListener = new Button.ClickListener() { //$NON-NLS-1$
+            private static final long serialVersionUID = 7744958942977063130L;
+    
+            @Override
+            public void buttonClick(ClickEvent event) {
+                if (!currentSessionSelected()) return;
+                editCompetitionSession(sessionSelect.getSelectedId(),sessionSelect.getSelectedItem());
+            }
+        };
+        editButton.addListener(editClickListener);
+        return editButton;
     }
 
-    protected void clearStartNumbers() {
-        final List<Lifter> list = allLifters(true);
-        for (Lifter curLifter : list) {
-            curLifter.setStartNumber(0);
-        }
-        this.refresh();
+    private Button clearStartButton(final Locale locale) {
+        final Button clearStartButton = new Button(Messages.getString("WeighInList.clearStartNumbers", locale)); //$NON-NLS-1$
+        final Button.ClickListener clearStartListener = new Button.ClickListener() { //$NON-NLS-1$
+            private static final long serialVersionUID = -8473648982746209221L;
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                if (!currentSessionSelected()) return;
+                clearStartButton.setComponentError(null);
+                clearStartNumbers();
+            }
+        };
+        clearStartButton.addListener(clearStartListener);
+        return clearStartButton;
+    }
+
+    private Button assignStartNumberButton(final Locale locale) {
+        final Button assignStartNumbersButton = new Button(Messages.getString("WeighInList.assignStartNumbers", locale)); //$NON-NLS-1$
+        final Button.ClickListener assignStartNumbersListener = new Button.ClickListener() { //$NON-NLS-1$
+            private static final long serialVersionUID = -8473648982746209221L;
+    
+            @Override
+            public void buttonClick(ClickEvent event) {
+                if (!currentSessionSelected()) return;
+                assignStartNumbersButton.setComponentError(null);
+                assignStartNumbersLifters();
+            }
+        };
+        assignStartNumbersButton.addListener(assignStartNumbersListener);
+        return assignStartNumbersButton;
+    }
+
+    /**
+     * @param locale
+     * @return
+     */
+    private Button weighInListButton(final Locale locale, final boolean excludeNotWeighed) {
+        final Button weighInListButton = new Button(Messages.getString("WeighInList.StartingWeightSheet", locale)); //$NON-NLS-1$
+        final Button.ClickListener listener = new Button.ClickListener() { //$NON-NLS-1$
+            private static final long serialVersionUID = -8473648982746209221L;
+    
+            @Override
+            public void buttonClick(ClickEvent event) {
+                if (!currentSessionSelected()) return;
+                weighInListButton.setComponentError(null);
+                final JXLSWorkbookStreamSource streamSource = new JXLSWeighInSheet(excludeNotWeighed);                
+                //                final OutputSheetStreamSource<WeighInSheet> streamSource = new OutputSheetStreamSource<WeighInSheet>(
+                //                        WeighInSheet.class, (CompetitionApplication) app, excludeNotWeighed);
+                if (streamSource.size() == 0) {
+                    weighInListButton.setComponentError(new SystemError(Messages.getString(
+                            "WeighInList.NoLifters", locale))); //$NON-NLS-1$
+                    throw new RuntimeException(Messages.getString("WeighInList.NoLifters", locale)); //$NON-NLS-1$
+                }
+    
+                String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date()); //$NON-NLS-1$
+                ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("WeighInList.WeighInPrefix", locale) + now); //$NON-NLS-1$
+            }
+        };
+        weighInListButton.addListener(listener);
+        return weighInListButton;
+    }
+
+    private Button drawLotsButton(final Locale locale) {
+        final Button drawLotsButton = new Button(Messages.getString("WeighInList.drawLots", locale)); //$NON-NLS-1$
+        final Button.ClickListener drawLotsListener = new Button.ClickListener() { //$NON-NLS-1$
+            private static final long serialVersionUID = -8473648982746209221L;
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                drawLotsButton.setComponentError(null);
+                drawLots();
+            }
+        };
+        drawLotsButton.addListener(drawLotsListener);
+        return drawLotsButton;
+    }
+
+    private Button clearAllButton(final Locale locale) {
+        final Button clearAllButton = new Button(Messages.getString("WeighInList.deleteLifters", locale)); //$NON-NLS-1$
+        final Button.ClickListener clearAllListener = new Button.ClickListener() { //$NON-NLS-1$
+            private static final long serialVersionUID = -8473648982746209221L;
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                clearAllButton.setComponentError(null);
+                clearAllLifters();
+            }
+        };
+        clearAllButton.addListener(clearAllListener);
+        return clearAllButton;
     }
 
     /**
@@ -246,7 +281,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
         final Button lifterCardsButton = new Button(Messages.getString("WeighInList.LifterCardsButton", locale)); //$NON-NLS-1$
         final Button.ClickListener listener = new Button.ClickListener() { //$NON-NLS-1$
             private static final long serialVersionUID = -8473648982746209221L;
-
+    
             @Override
             public void buttonClick(ClickEvent event) {
                 lifterCardsButton.setComponentError(null);
@@ -258,7 +293,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
                             "WeighInList.NoLifters", locale))); //$NON-NLS-1$
                     throw new RuntimeException(Messages.getString("WeighInList.NoLifters", locale)); //$NON-NLS-1$
                 }
-
+    
                 String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date()); //$NON-NLS-1$
                 ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("WeighInList.CardsPrefix", locale) + now); //$NON-NLS-1$
             }
@@ -267,34 +302,6 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
         return lifterCardsButton;
     }
 
-    /**
-     * @param locale
-     * @return
-     */
-    private Button weighInListButton(final Locale locale, final boolean excludeNotWeighed) {
-        final Button weighInListButton = new Button(Messages.getString("WeighInList.StartingWeightSheet", locale)); //$NON-NLS-1$
-        final Button.ClickListener listener = new Button.ClickListener() { //$NON-NLS-1$
-            private static final long serialVersionUID = -8473648982746209221L;
-
-            @Override
-            public void buttonClick(ClickEvent event) {
-                weighInListButton.setComponentError(null);
-                final JXLSWorkbookStreamSource streamSource = new JXLSWeighInSheet(excludeNotWeighed);                
-                //                final OutputSheetStreamSource<WeighInSheet> streamSource = new OutputSheetStreamSource<WeighInSheet>(
-                //                        WeighInSheet.class, (CompetitionApplication) app, excludeNotWeighed);
-                if (streamSource.size() == 0) {
-                    weighInListButton.setComponentError(new SystemError(Messages.getString(
-                            "WeighInList.NoLifters", locale))); //$NON-NLS-1$
-                    throw new RuntimeException(Messages.getString("WeighInList.NoLifters", locale)); //$NON-NLS-1$
-                }
-
-                String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date()); //$NON-NLS-1$
-                ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("WeighInList.WeighInPrefix", locale) + now); //$NON-NLS-1$
-            }
-        };
-        weighInListButton.addListener(listener);
-        return weighInListButton;
-    }
 
     /**
      * @param locale
@@ -304,9 +311,11 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
         final Button juryListButton = new Button(Messages.getString("JuryList.JurySheet", locale)); //$NON-NLS-1$
         final Button.ClickListener listener = new Button.ClickListener() { //$NON-NLS-1$
             private static final long serialVersionUID = -8473648982746209221L;
-
+    
             @Override
             public void buttonClick(ClickEvent event) {
+                if (!currentSessionSelected()) return;
+                
                 juryListButton.setComponentError(null);
                 final JXLSWorkbookStreamSource streamSource = new JXLSJurySheet(excludeNotWeighed);   
                 //                final OutputSheetStreamSource<JurySheet> streamSource = new OutputSheetStreamSource<JurySheet>(
@@ -316,7 +325,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
                             .getString("WeighInList.NoLifters", locale))); //$NON-NLS-1$
                     throw new RuntimeException(Messages.getString("WeighInList.NoLifters", locale)); //$NON-NLS-1$
                 }
-
+    
                 String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date()); //$NON-NLS-1$
                 ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("WeighInList.JuryPrefix", locale) + now); //$NON-NLS-1$
             }
@@ -333,7 +342,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
         final Button startListButton = new Button(Messages.getString("WeighInList.StartSheet", locale)); //$NON-NLS-1$
         final Button.ClickListener listener = new Button.ClickListener() { //$NON-NLS-1$
             private static final long serialVersionUID = -8473648982746209221L;
-
+    
             @Override
             public void buttonClick(ClickEvent event) {
                 startListButton.setComponentError(null);
@@ -345,13 +354,66 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
                             "WeighInList.NoLifters", locale))); //$NON-NLS-1$
                     throw new RuntimeException(Messages.getString("WeighInList.NoLifters", locale)); //$NON-NLS-1$
                 }
-
+    
                 String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date()); //$NON-NLS-1$
                 ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("WeighInList.StartListPrefix", locale) + now); //$NON-NLS-1$
             }
         };
         startListButton.addListener(listener);
         return startListButton;
+    }
+
+    private Button refreshButton(final Locale locale) {
+        final Button refreshButton = new Button(Messages.getString("ResultList.Refresh", locale)); //$NON-NLS-1$
+        final Button.ClickListener refreshClickListener = new Button.ClickListener() { //$NON-NLS-1$
+            private static final long serialVersionUID = 7744958942977063130L;
+    
+            @Override
+            public void buttonClick(ClickEvent event) {
+                CategoryLookup.getSharedInstance().reload();
+                populateAndConfigureTable();
+            }
+        };
+        refreshButton.addListener(refreshClickListener);
+        return refreshButton;
+    }
+
+    protected void assignStartNumbersLifters() {
+        final List<Lifter> list = currentSessionLifters();
+        if (list != null) {
+            LifterSorter.assignStartNumbers(list);
+        }
+
+        this.refresh();
+    }
+
+    protected List<Lifter> currentSessionLifters() {
+        if (currentSessionSelected()) {
+            return allLifters(true);
+        } else {
+            return null;
+        }
+    }
+
+    protected boolean currentSessionSelected() {
+        CompetitionSession currentCompetitionSession = CompetitionApplication.getCurrent().getCurrentCompetitionSession();
+        if (currentCompetitionSession != null) {
+            return true;
+        } else {
+            CompetitionApplication.getCurrent().getMainWindow().showNotification(
+                    Messages.getString("WeighInList.sessionRequired", CompetitionApplication.getCurrentLocale()),
+                    Notification.TYPE_ERROR_MESSAGE);
+            return false;
+        }
+    }
+    protected void clearStartNumbers() {
+        final List<Lifter> list = currentSessionLifters();
+        if (list == null) return;
+        
+        for (Lifter curLifter : list) {
+            curLifter.setStartNumber(0);
+        }
+        this.refresh();
     }
 
     /**
@@ -368,7 +430,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
      */
     protected void clearAllLifters() {
         final Session session = CompetitionApplication.getCurrent().getHbnSession();
-        final List<Lifter> list = allLifters(true);
+        final List<Lifter> list = currentSessionLifters();
         for (Lifter curLifter : list) {
             session.delete(curLifter);
         }
