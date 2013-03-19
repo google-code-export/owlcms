@@ -386,9 +386,9 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
     protected void assignStartNumbersLifters() {
         final List<Lifter> list = currentSessionLifters();
         if (list != null) {
-            LifterSorter.assignStartNumbers(list);
+            List<Lifter> lifters = LifterSorter.startNumberOrderCopy(list);
+            LifterSorter.assignStartNumbers(lifters);
         }
-
         this.refresh();
     }
 

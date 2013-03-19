@@ -12,27 +12,22 @@ import java.util.Comparator;
 import org.concordiainternational.competition.data.Lifter;
 
 /**
- * Obsolete: unused.
+ * This comparator is used for the technical meeting sheet. It is based on the
+ * registration category
  * 
  * @author jflamy
  * 
  */
-public class WeighInOrderComparator extends AbstractLifterComparator implements Comparator<Lifter> {
+public class StartNumberOrderComparator extends AbstractLifterComparator implements Comparator<Lifter> {
 
     @Override
     public int compare(Lifter lifter1, Lifter lifter2) {
         int compare = 0;
 
-        compare = compareGroupWeighInTime(lifter1, lifter2);
+        compare = compareRegistrationCategory(lifter1, lifter2);
         if (compare != 0) return compare;
 
         compare = compareLotNumber(lifter1, lifter2);
-        if (compare != 0) return compare;
-
-        compare = compareLastName(lifter1, lifter2);
-        if (compare != 0) return compare;
-
-        compare = compareFirstName(lifter1, lifter2);
         if (compare != 0) return compare;
 
         return compare;
