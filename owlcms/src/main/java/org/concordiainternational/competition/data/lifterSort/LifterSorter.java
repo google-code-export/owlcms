@@ -337,7 +337,12 @@ public class LifterSorter implements Serializable {
     public static void assignStartNumbers(List<Lifter> sortedList) {
         int rank = 1;
         for (Lifter curLifter : sortedList) {
-            curLifter.setStartNumber(rank);
+            Double bodyWeight = curLifter.getBodyWeight();
+            if (bodyWeight != null && bodyWeight > 0.0D) {
+                curLifter.setStartNumber(rank);
+            } else {
+                curLifter.setStartNumber(0);
+            }
             rank++;
         }
     }
