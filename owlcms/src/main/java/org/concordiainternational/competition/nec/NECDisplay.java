@@ -8,17 +8,15 @@
 package org.concordiainternational.competition.nec;
 
 import static org.junit.Assert.assertEquals;
-import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
+
+import jssc.SerialPort;
+import jssc.SerialPortException;
+import jssc.SerialPortList;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.Platform;
@@ -40,38 +38,37 @@ public class NECDisplay implements Serializable {
     private static final long serialVersionUID = 127161162371907083L;
     final static Logger logger = LoggerFactory.getLogger(NECDisplay.class);
     final static String charsetName = "US-ASCII"; //$NON-NLS-1$
-    transient private SerialPort serialPort; // do not serialize
+    transient private jssc.SerialPort serialPort; // do not serialize
     private String comPortName;
 
 
-	private boolean opened = false;
+    private boolean opened = false;
     private Lifter currentLifter;
     private Platform platform; // make sure only one platform at a time.
 
 
-    public NECDisplay() throws NoSuchPortException, PortInUseException, IOException, UnsupportedCommOperationException {
+    public NECDisplay() throws IOException {
     }
 
-    private void init(String comPortName1) throws NoSuchPortException, PortInUseException, IOException,
-            UnsupportedCommOperationException {
+    private void init(String comPortName1) throws IOException, SerialPortException {
         if (opened) return;
         if (comPortName1 != null) {
-        	this.serialPort = openPort(comPortName1);
+            this.serialPort = openPort(comPortName1);
         } else {
-        	this.serialPort = null;
+            this.serialPort = null;
         }
     }
 
-    
+
     /**
      * @param curLifter
      * @throws IOException
      */
     public void writeLifterInfo(final Lifter curLifter, boolean weightOnly, Platform curPlatform) {
-    	if (!curPlatform.equals(platform)) {
-    		logger.error("writing on wrong platform ({}): {}", curPlatform, curLifter);
-    		return;
-    	}
+        if (!curPlatform.equals(platform)) {
+            logger.error("writing on wrong platform ({}): {}", curPlatform, curLifter);
+            return;
+        }
         if (curLifter == null) return;
         if (!weightOnly) this.setCurrentLifter(curLifter);
 
@@ -81,8 +78,8 @@ public class NECDisplay implements Serializable {
                 String padding = "                     "; //$NON-NLS-1$
                 padding = padding.substring(0, padding.length() - 1 - weight.length());
                 writeStrings("", //$NON-NLS-1$
-                    "", //$NON-NLS-1$
-                    padding + weight);
+                        "", //$NON-NLS-1$
+                        padding + weight);
             } catch (Exception e) {
                 LoggerUtils.logException(logger, e);
                 throw new RuntimeException(e);
@@ -94,8 +91,8 @@ public class NECDisplay implements Serializable {
                 if (firstName.length() > 16) firstName = firstName.substring(0, 16);
                 final String weight = curLifter.getNextAttemptRequestedWeight() + "kg"; //$NON-NLS-1$
                 final String curTry = MessageFormat.format(
-                		Messages.getString("NECDisplay.Attempt", CompetitionApplication.getCurrentLocale()),
-                		((curLifter.getAttemptsDone() % 3) + 1)); //$NON-NLS-1$
+                        Messages.getString("NECDisplay.Attempt", CompetitionApplication.getCurrentLocale()),
+                        ((curLifter.getAttemptsDone() % 3) + 1)); //$NON-NLS-1$
                 final String curClub = curLifter.getClub().toUpperCase();
                 String padding = "                     "; //$NON-NLS-1$
 
@@ -201,6 +198,7 @@ public class NECDisplay implements Serializable {
 
     /**
      * Open the named serial port and configure it with the required parameters
+     * @throws SerialPortException 
      * 
      * @throws NoSuchPortException
      * @throws PortInUseException
@@ -209,33 +207,22 @@ public class NECDisplay implements Serializable {
      * @throws NoSuchPortException
      * 
      */
-    private SerialPort openPort(String comPortName1) throws PortInUseException, IOException,
-            UnsupportedCommOperationException, NoSuchPortException {
-    	if (comPortName1 == null) {
-    		serialPort = null;
-    		return serialPort;
-    	}
+    private SerialPort openPort(String comPortName1) throws SerialPortException {
 
-        CommPortIdentifier portId;
-        try {
-            portId = CommPortIdentifier.getPortIdentifier(comPortName1);
-        } catch (NoSuchPortException e) {
-            logger.warn("could not open {}, running on COM1",comPortName1); //$NON-NLS-1$
-            portId = CommPortIdentifier.getPortIdentifier("COM1"); //$NON-NLS-1$
-        }
-        serialPort = (SerialPort) portId.open(NECDisplay.class.getName(), 200); // 200ms
-                                                                                // timeout
-        serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+        serialPort = new SerialPort(comPortName1);
+        serialPort.openPort(); 
+        serialPort.setParams(SerialPort.BAUDRATE_9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
         serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_NONE);
-        serialPort.notifyOnOutputEmpty(false);
-
         opened = true;
         return serialPort;
     }
 
     public void close() {
         if (serialPort != null && opened) {
-            serialPort.close();
+            try {
+                serialPort.closePort();
+            } catch (SerialPortException e) {
+            }
             opened = false;
         }
     }
@@ -256,158 +243,168 @@ public class NECDisplay implements Serializable {
         @Override
         public void run() {
             synchronized (display) {
-                OutputStream out = null;
                 try {
-                	if (display.comPortName == null) return;
-                	init(display.comPortName);
-                	if (display.serialPort != null) {
-                		out = display.serialPort.getOutputStream();
-                		String string1 = strings[0] != null ? strings[0] : ""; //$NON-NLS-1$
-                		String string2 = strings[1] != null ? strings[1] : ""; //$NON-NLS-1$
-                		String string3 = strings[2] != null ? strings[2] : ""; //$NON-NLS-1$
-                		if (string1.length() > 20) string1 = string1.substring(0, 20);
-                		if (string2.length() > 20) string2 = string2.substring(0, 20);
-                		if (string3.length() > 20) string3 = string3.substring(0, 20);
-                		// write, flush and log just to make sure it all goes out.
-                		out.write(encode(string1, string2, string3));
-                		out.flush();
-                		logger.info("\n" + string1 + "\n" + string2 + "\n" + string3 + "\n.........|.........| written on " + serialPort.getName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                    if (display.comPortName == null) return;
+                    init(display.comPortName);
+                    if (display.serialPort != null) {
+                        String string1 = strings[0] != null ? strings[0] : ""; //$NON-NLS-1$
+                        String string2 = strings[1] != null ? strings[1] : ""; //$NON-NLS-1$
+                        String string3 = strings[2] != null ? strings[2] : ""; //$NON-NLS-1$
+                        if (string1.length() > 20) string1 = string1.substring(0, 20);
+                        if (string2.length() > 20) string2 = string2.substring(0, 20);
+                        if (string3.length() > 20) string3 = string3.substring(0, 20);
+                        // write, flush and log just to make sure it all goes out.
+                        display.serialPort.writeBytes(encode(string1, string2, string3));
+                        logger.info("\n" + string1 + "\n" + string2 + "\n" + string3 + "\n.........|.........| written on " + serialPort.getPortName()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                     }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {
-                    if (out != null) {
-                        try {
-                            out.close();
-                        } catch (IOException e) {
-                        }
-                        display.close();
-                    }
+                    //*** This used to be necessary to make sure the NEC updated.  This causes apparent flicker
+                    //*** on the output port and has been removed.
+                    //display.close();
                 }
-
             }
-        }
 
+        }
     };
 
-    /**
-     * Write to the NEC Done in a separate thread because with some hardware
-     * there is perceptible delay.
-     * 
-     * @param strings
-     * @throws IOException
-     * @throws NoSuchPortException
-     * @throws PortInUseException
-     * @throws UnsupportedCommOperationException
-     */
-    public void writeStrings(String... strings) throws IOException, NoSuchPortException, PortInUseException,
-            UnsupportedCommOperationException {
-        if (logger.isTraceEnabled()) LoggerUtils.logException(logger, new Exception("whocalls writeStrings")); //$NON-NLS-1$
-        new Thread(new StringWriter(this, strings)).start();
-    }
+/**
+ * Write to the NEC Done in a separate thread because with some hardware
+ * there is perceptible delay.
+ * 
+ * @param strings
+ * @throws IOException
+ * @throws NoSuchPortException
+ * @throws PortInUseException
+ * @throws UnsupportedCommOperationException
+ */
+public void writeStrings(String... strings) throws IOException {
+    if (logger.isTraceEnabled()) LoggerUtils.logException(logger, new Exception("whocalls writeStrings")); //$NON-NLS-1$
+    new Thread(new StringWriter(this, strings)).start();
+}
 
-    @Test
-    public void checkEncoding() throws UnsupportedEncodingException {
-        String c1 = level1Encode("          ", "          ", "          "); // 104 104 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        byte[] bytes = c1.getBytes(charsetName);
-        assertEquals(checksum(bytes), 104);
-        assertEquals(
+@Test
+public void checkEncoding() throws UnsupportedEncodingException {
+    String c1 = level1Encode("          ", "          ", "          "); // 104 104 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    byte[] bytes = c1.getBytes(charsetName);
+    assertEquals(checksum(bytes), 104);
+    assertEquals(
             "0231001b4d401b464a301b447e4530202020202020202020207e4b30202020202020202020207e4b30202020202020202020200d036804", //$NON-NLS-1$
             asHex(encode("          ", "          ", "          "))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        String c2 = level1Encode("          a", "          b", "          c");// 8 40 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        bytes = c2.getBytes(charsetName);
-        assertEquals(checksum(bytes), 40);
-        assertEquals(
+    String c2 = level1Encode("          a", "          b", "          c");// 8 40 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    bytes = c2.getBytes(charsetName);
+    assertEquals(checksum(bytes), 40);
+    assertEquals(
             "0234001b4d401b464a301b447e453020202020202020202020617e4b3020202020202020202020627e4b3020202020202020202020630d032804", //$NON-NLS-1$
             asHex(encode("          a", "          b", "          c"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        String c3 = level1Encode("01234567890123456789", "abcdefghijklmnopqrst", "!\"/$%?&*()_+=-[]<>Éé");// 35 35 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        assertEquals(checksum(c3.getBytes(charsetName)), 35);
-    }
+    String c3 = level1Encode("01234567890123456789", "abcdefghijklmnopqrst", "!\"/$%?&*()_+=-[]<>Éé");// 35 35 //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    assertEquals(checksum(c3.getBytes(charsetName)), 35);
+}
 
-    public Lifter getCurrentLifter() {
-        return currentLifter;
-    }
+public Lifter getCurrentLifter() {
+    return currentLifter;
+}
 
-    public void setCurrentLifter(Lifter currentLifter) {
-        this.currentLifter = currentLifter;
-    }
+public void setCurrentLifter(Lifter currentLifter) {
+    this.currentLifter = currentLifter;
+}
 
-    /**
-     * Remove accented characters This uses the Unicode definition of accent
-     * (works for all languages and all characters)
-     * 
-     * @param accentedString
-     * @return the input, with accented characters replaced by the corresponding
-     *         non-accented characters.
-     */
-    private String fixAccents(String accentedString) {
-        // convert characters with accents into letter-accent pairs
-        String separateAccents = java.text.Normalizer.normalize(accentedString, java.text.Normalizer.Form.NFD);
-        // hide the non-ascii characters (the accents)
-        return separateAccents.replaceAll("[^\\p{ASCII}]", ""); //$NON-NLS-1$ //$NON-NLS-2$
-    }
+/**
+ * Remove accented characters This uses the Unicode definition of accent
+ * (works for all languages and all characters)
+ * 
+ * @param accentedString
+ * @return the input, with accented characters replaced by the corresponding
+ *         non-accented characters.
+ */
+private String fixAccents(String accentedString) {
+    // convert characters with accents into letter-accent pairs
+    String separateAccents = java.text.Normalizer.normalize(accentedString, java.text.Normalizer.Form.NFD);
+    // hide the non-ascii characters (the accents)
+    return separateAccents.replaceAll("[^\\p{ASCII}]", ""); //$NON-NLS-1$ //$NON-NLS-2$
+}
 
-    @Test
-    public void testStrings(String comPortName1) throws IOException, NoSuchPortException, PortInUseException,
-            UnsupportedCommOperationException {
-    	this.comPortName = comPortName1;
-        writeStrings("", "", "          17 KG"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        try {
-            Thread.sleep(2000);
-            writeStrings("BRASSARD", //$NON-NLS-1$
+@Test
+public void testStrings() throws IOException {
+    this.comPortName="COM6";
+    writeStrings("", "", "          17 KG"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    try {
+        Thread.sleep(2000);
+        writeStrings("BRASSARD", //$NON-NLS-1$
                 // .........!.........!
                 "Augustin         FHQ", //$NON-NLS-1$
                 // .........!.........!
                 "ESSAI 1        100kg"); //$NON-NLS-1$
-        } catch (InterruptedException e) {
-        }
+    } catch (InterruptedException e) {
+    }
 
-        try {
-            Thread.sleep(2000);
-            writeStrings("LAMY", //$NON-NLS-1$
+    try {
+        Thread.sleep(2000);
+        writeStrings("LAMY", //$NON-NLS-1$
                 // .........!.........!
                 fixAccents("Jean-François    C-I"), //$NON-NLS-1$
                 // .........!.........!
                 "ESSAI 1         70kg"); //$NON-NLS-1$
-        } catch (InterruptedException e) {
-        }
+    } catch (InterruptedException e) {
+    }
 
-        try {
-            Thread.sleep(2000);
-            writeStrings(fixAccents("BEAUDOIN-DE L'ESPÉRANCE"), //$NON-NLS-1$
+    try {
+        Thread.sleep(2000);
+        writeStrings(fixAccents("BEAUDOIN-DE L'ESPÉRANCE"), //$NON-NLS-1$
                 // .........!.........!
                 "Jeanne-Baptiste  C-I", //$NON-NLS-1$
                 // .........!.........!
                 "ESSAI 1         70kg"); //$NON-NLS-1$
-        } catch (InterruptedException e) {
-            System.err.println("interrupted"); //$NON-NLS-1$
-        }
+    } catch (InterruptedException e) {
+        System.err.println("interrupted"); //$NON-NLS-1$
+    }
 
+    try {
+        Thread.sleep(2000);
+    } catch (InterruptedException e) {
+    }
+
+}
+
+public String getComPortName() {
+    return comPortName;
+}
+
+public void setComPortName(String comPortName) throws IOException, SerialPortException  {
+    this.comPortName = comPortName;
+    init(comPortName);
+}
+
+public Platform getPlatform() {
+    return platform;
+}
+
+public void setPlatform(Platform owner) {
+    logger.warn("setting NEC platform to {}",owner);
+    this.platform = owner;
+}
+
+
+
+public static void main(String[] args) {
+    //Method getPortNames() returns an array of strings. Elements of the array is already sorted.
+    String[] portNames = SerialPortList.getPortNames();
+    for(int i = 0; i < portNames.length; i++){
+        System.err.println(portNames[i]);
+        SerialPort sPort = new SerialPort(portNames[i]);
         try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
+            sPort.openPort();
+            sPort.setParams(9600,8,1,SerialPort.PARITY_NONE);
+            sPort.writeString("test");
+        } catch (SerialPortException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
     }
-    
-    public String getComPortName() {
-		return comPortName;
-	}
-
-	public void setComPortName(String comPortName) throws NoSuchPortException, PortInUseException, IOException, UnsupportedCommOperationException {
-		this.comPortName = comPortName;
-		init(comPortName);
-	}
-
-	public Platform getPlatform() {
-		return platform;
-	}
-
-	public void setPlatform(Platform owner) {
-		logger.warn("setting NEC platform to {}",owner);
-		this.platform = owner;
-	}
+}
 
 }
