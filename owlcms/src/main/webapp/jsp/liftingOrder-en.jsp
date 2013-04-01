@@ -78,12 +78,12 @@
 <table>
 	<thead>
 		<tr>
-			<th>Surname</th>
-			<th>Given Name</th>
+			<th>Name</th>
+
 			<th class='weight'>Requested Weight</th>
 			<th>Try</th>
 			<th class='narrow'>Team</th>
-			<th class="narrow" style='text-align: center'>Lot</th>
+			<th class="narrow" style='text-align: center'>Start</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -92,12 +92,10 @@
 			<tr>
 				<c:choose>
 					<c:when test="${lifter.currentLifter}">
-						<td class='name current'>${lifter.lastName}</td>
-						<td class='name current'>${lifter.firstName}</td>
+						<td class='name current'><nobr><%= lifter.getLastName().toUpperCase() %>, ${lifter.firstName}</nobr></td>
 					</c:when>
 					<c:otherwise>
-						<td class='name'>${lifter.lastName}</td>
-						<td class='name'>${lifter.firstName}</td>
+						<td class='name'><nobr><%= lifter.getLastName().toUpperCase() %>, ${lifter.firstName}</nobr></td>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
@@ -117,7 +115,7 @@
 					</c:otherwise>
 				</c:choose>
 				<td class="weight"><nobr>${lifter.club}</nobr></td>
-				<td class='narrow' style='text-align: right'>${lifter.lotNumber}</td>
+				<td class='narrow' style='text-align: right'>${lifter.startNumber}</td>
 			</tr>
 		</c:forEach>
 	</tbody>

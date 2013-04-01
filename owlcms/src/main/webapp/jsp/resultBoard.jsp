@@ -85,9 +85,8 @@
 <table>
 	<thead>
 		<tr>
-			<th class="narrow" style='text-align: center'>TAS<div class='english'>Lot</div></th>
-			<th>Nom<div class='english'>Surname</div></th>
-			<th>Prénom<div class='english'>Given Name</div></th>
+			<th class="narrow" style='text-align: center'>Départ<div class='english'>Start</div></th>
+			<th>Nom<div class='english'>Name</div></th>
 			<c:choose>
 				<c:when test="${isMasters}">
 					<th><nobr>Gr. Age.</nobr><div class='english'><nobr>Age Gr.</nobr></div></th>
@@ -95,7 +94,7 @@
 			</c:choose>
 			<th class="cat">Cat.</th>
 			<th class='weight'>P.C.<div class='english'>B.W.</div></th>
-			<th class='club'>Club<div class='english'>Team</div></th>
+			<th class='club'>Équipe<div class='english'>Team</div></th>
 			<th colspan="3">Arraché<div class='english'>Snatch</div></th>
 			<th colspan="3">Épaulé-jeté<div class='english'>Clean&amp;Jerk</div></th>
 			<th>Total</th>
@@ -105,15 +104,13 @@
 		<c:forEach var="lifter" items="${lifters}">
 			<jsp:useBean id="lifter" type="org.concordiainternational.competition.data.Lifter" />
 			<tr>
-				<td class='narrow' style='text-align: right'>${lifter.lotNumber}</td>
+				<td class='narrow' style='text-align: right'>${lifter.startNumber}&nbsp;</td>
 				<c:choose>
 					<c:when test="${lifter.currentLifter}">
-						<td class='name current'><nobr>${lifter.lastName}</nobr></td>
-						<td class='name current'><nobr>${lifter.firstName}</nobr></td>
+						<td class='name current'><nobr><%= lifter.getLastName().toUpperCase() %>, ${lifter.firstName}</nobr></td>
 					</c:when>
 					<c:otherwise>
-						<td class='name'><nobr>${lifter.lastName}</nobr></td>
-						<td class='name'><nobr>${lifter.firstName}</nobr></td>
+						<td class='name'><nobr><%= lifter.getLastName().toUpperCase() %>, ${lifter.firstName}</nobr></td>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
