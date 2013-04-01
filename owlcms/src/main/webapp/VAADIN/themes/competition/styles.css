@@ -293,23 +293,22 @@ border-style: none;
 }
 
 .newAttemptBoard .largeCountdown {
-	font-size: 250px;
-	line-height: 250px;
+	font-size: 15em;
+	line-height: 1em;
 	font-weight: bold;
 	vertical-align: middle;
 	color: yellow;
-	zoom: 100%;
 }
 
 .newAttemptBoard .v-label-text {
-	font-size: 100px;
-	line-height: 115px;
+	font-size: 6em;
+	line-height: 1.2em;
 	font-weight: bold;
 }
 
 .newAttemptBoard .v-label-start {
-	font-size: 100px;
-	line-height: 115px;
+	font-size: 5em;
+	line-height: 1em;
 	font-weight: bold;
 	border-width: thick;
 	border-style: solid;
@@ -317,15 +316,14 @@ border-style: none;
 }
 
 .newAttemptBoard .v-label-weightLabel {
-	font-size: 150px;
-	line-height: 100px;
+	font-size: 9em;
+	line-height: 1em;
 	font-weight: bold;
-	zoom: 120%;
 	color: #7FFFFF;
 }
 
 .newAttemptBoard .loadChart .v-label {
-	font-size: xx-large;
+	font-size: large;
 }
 
 .newAttemptBoard .loadChart div.plate {
