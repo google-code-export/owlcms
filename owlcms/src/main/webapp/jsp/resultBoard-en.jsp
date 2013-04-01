@@ -83,9 +83,8 @@
 <table>
 	<thead>
 		<tr>
-			<th class="narrow" style='text-align: center'>Lot</th>
-			<th>Surname</th>
-			<th>Given Name</th>
+			<th class="narrow" style='text-align: center'>Start</th>
+			<th>Name</th>
 			<c:choose>
 				<c:when test="${isMasters}">
 					<th><nobr>Age Gr.</nobr></th>
@@ -103,15 +102,13 @@
 		<c:forEach var="lifter" items="${lifters}">
 			<jsp:useBean id="lifter" type="org.concordiainternational.competition.data.Lifter" />
 			<tr>
-				<td class='narrow' style='text-align: right'>${lifter.lotNumber}</td>
+				<td class='narrow' style='text-align: right'>${lifter.startNumber}&nbsp;</td>
 				<c:choose>
 					<c:when test="${lifter.currentLifter}">
-						<td class='name current'><nobr>${lifter.lastName}</nobr></td>
-						<td class='name current'><nobr>${lifter.firstName}</nobr></td>
+						<td class='name current'><nobr><%= lifter.getLastName().toUpperCase() %>, ${lifter.firstName}</nobr></td>
 					</c:when>
 					<c:otherwise>
-						<td class='name'><nobr>${lifter.lastName}</nobr></td>
-						<td class='name'><nobr>${lifter.firstName}</nobr></td>
+						<td class='name'><nobr><%= lifter.getLastName().toUpperCase() %>, ${lifter.firstName}</nobr></td>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>

@@ -79,12 +79,11 @@
 <table>
 	<thead>
 		<tr>
-			<th>Nom<div class='english'>Surname</div></th>
-			<th>Prénom<div class='english'>Given Name</div></th>
+			<th>Nom<div class='english'>Name</div></th>
 			<th class='weight'>Poids demandé<div class='english'>Requested Weight</div></th>
 			<th>Essai<div class='english'>Try</div></th>
-			<th class='narrow'>Club<div class='english'>Team</div></th>
-			<th class="narrow" style='text-align: center'>TAS<div class='english'>Lot</div></th>
+			<th class='narrow'>Équipe<div class='english'>Team</div></th>
+			<th class="narrow" style='text-align: center'>Départ<div class='english'>Start</div></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -93,12 +92,10 @@
 			<tr>
 				<c:choose>
 					<c:when test="${lifter.currentLifter}">
-						<td class='name current'>${lifter.lastName}</td>
-						<td class='name current'>${lifter.firstName}</td>
+						<td class='name current'><nobr><%= lifter.getLastName().toUpperCase() %>, ${lifter.firstName}</nobr></td>
 					</c:when>
 					<c:otherwise>
-						<td class='name'>${lifter.lastName}</td>
-						<td class='name'>${lifter.firstName}</td>
+						<td class='name'><nobr><%= lifter.getLastName().toUpperCase() %>, ${lifter.firstName}</nobr></td>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
