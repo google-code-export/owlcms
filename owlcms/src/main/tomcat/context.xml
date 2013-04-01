@@ -25,6 +25,6 @@
     <Manager pathname=""/>
     
     <!-- these values will override context-param entries from the web.xml in the WARs -->
-	<Parameter name="comPort" value="COM1" override="false"/>
-	<Parameter name="dbPath" value="e:/dev/db/competition" override="false"/>
+	<Parameter name="comPort" value="COM6" override="false"/>
+	<Parameter name="dbPath" value="C:\Apps\eclipse-jee-kepler-M5-win32-x86_64\eclipse\db\competition" override="false"/>
 </Context>
