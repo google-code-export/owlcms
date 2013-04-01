@@ -52,7 +52,6 @@ public class CompetitionApplicationComponents {
     public static final String OJURY_CONSOLE = "oJuryConsole"; //$NON-NLS-1$
     public static final String MJURY_CONSOLE = "juryConsole"; //$NON-NLS-1$
     public static final String MPLATES_INFO = "platesInfo"; //$NON-NLS-1$
-    public static final String SIMPLE_RESULT_BOARD = "simpleResultBoard"; //$NON-NLS-1$
     public static final String RESULT_VIEW = "resultView"; //$NON-NLS-1$
     public static final String TIMEKEEPER_VIEW = "timekeeperView"; //$NON-NLS-1$
     public static final String UPLOAD_VIEW = "uploadView"; //$NON-NLS-1$
@@ -94,7 +93,6 @@ public class CompetitionApplicationComponents {
         urlFragmentToView.put(PLATFORM_LIST, new PlatformListComponent());
         urlFragmentToView.put(REGISTRATION_LIST, new RegistrationListComponent());
         urlFragmentToView.put(RESULT_BOARD, new ResultBoardComponent());
-        urlFragmentToView.put(SIMPLE_RESULT_BOARD, new SimpleResultBoardComponent());
         urlFragmentToView.put(RESULT_VIEW, new ResultViewComponent());
         urlFragmentToView.put(OREFEREE_CONSOLE, new RefereeConsoleComponent(false));
         urlFragmentToView.put(MREFEREE_CONSOLE, new RefereeConsoleComponent(true));
@@ -379,27 +377,6 @@ public class CompetitionApplicationComponents {
         }
     }
 
-    /**
-     * Lazy builder for main result board.
-     */
-    private class SimpleResultBoardComponent implements CompetitionApplicationComponent {
-        private ResultFrame resultBoard = null;
-
-        @Override
-		public ResultFrame get(boolean initFromFragment, String viewName) {
-            try {
-            	Locale locale = CompetitionApplication.getCurrentLocale();
-            	String localeSuffix = "";
-            	if ("en".equals(locale.getLanguage())) {
-            		localeSuffix = "-en";
-            	}
-                resultBoard = (new ResultFrame(initFromFragment, viewName,"jsp/simpleResultBoard"+localeSuffix+".jsp?platformName=")); //$NON-NLS-1$
-            } catch (MalformedURLException e) {
-                throw new SystemError(e);
-            }
-            return resultBoard;
-        }
-    }
 
     /**
      * Lazy builder for lift order board.

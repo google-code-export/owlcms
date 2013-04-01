@@ -248,26 +248,6 @@ public class Menu extends MenuBar implements Serializable {
     /**
      * @param competitionApplication
      * @param locale
-     * @return
-     */
-    @SuppressWarnings("unused")
-	private MenuItem createSimpleDisplayMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
-            final Locale locale) {
-        return projectors.addItem(Messages.getString("CompetitionApplication.SimpleDisplay", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/folder-add.png"),
-            new Command() {
-                private static final long serialVersionUID = -4179990860181438187L;
-
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.SIMPLE_RESULT_BOARD);
-                }
-            });
-    }
-
-    /**
-     * @param competitionApplication
-     * @param locale
      */
     private MenuItem createSummaryLiftOrderMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
             final Locale locale) {
