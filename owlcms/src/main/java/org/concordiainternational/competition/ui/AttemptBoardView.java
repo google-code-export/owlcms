@@ -354,24 +354,22 @@ DecisionEventListener
             nameLabel.setValue(lastName.toUpperCase());
             firstNameLabel.setValue(firstName);
             clubLabel.setValue(club);
-            startLabel.setValue(
-                    startNumber == null ?
-                            "" 
-                            : startNumber > 0 ? 
-                                    MessageFormat.format(
-                                            Messages.getString("AttemptBoard.startNumberFormat", locale),startNumber.toString())
-                                    : "");
-
-            //nameLabel.setValue(lastName.toUpperCase() + " " + firstName + " &nbsp;&nbsp; " + club); //$NON-NLS-1$ //$NON-NLS-2$
-            //grid.addComponent(nameLabel, 0, 0, 3, 0);
+            if (startNumber != null && startNumber > 0) {
+                startLabel.setStyleName("start");
+                startLabel.setValue(MessageFormat.format(
+                        Messages.getString("AttemptBoard.startNumberFormat", locale),startNumber.toString()));
+            } else {
+                startLabel.setStyleName("text");
+                startLabel.setValue("");
+            }
         } else {
 
             nameLabel.setValue(MessageFormat.format(
                     Messages.getString("AttemptBoard.Done", locale), masterData.getCurrentSession().getName())); //$NON-NLS-1$
             firstNameLabel.setValue("");
             clubLabel.setValue("");
+            startLabel.setStyleName("text");
             startLabel.setValue("");
-            //grid.addComponent(nameLabel, 0, 0, 3, 0);
         }
 
     }
