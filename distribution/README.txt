@@ -36,7 +36,7 @@ e. cd distribution
 		mvn clean assembly:single 
     	(if under Eclipse, run  "prepare uploads.launch" using right-click on the .launch file)
     	
-f. commit, push.
+f. commit all modified directories.
 
 
 
@@ -60,8 +60,8 @@ Because we use the Free edition, these steps are manual.
 
 
 3) Finalize and publish
-  - commit with "Release x.y.z" as comment
-  - tag with "x.y.z"
+  - commit all modified directories with "Release x.y.z" as comment
+  - tag both repositories with "x.y.z"
   - push
   - in project "distribution" run the maven goals:   antrun:run     (under eclipse "upload to code.google.com.launch")
     (this will send the files to the code.google.com/p/owlcms site)
