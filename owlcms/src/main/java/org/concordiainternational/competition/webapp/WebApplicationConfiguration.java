@@ -382,6 +382,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 			p.setCompetitionSession(groupA);
 			p.setFirstName(fnames[r.nextInt(fnames.length)]);
 			p.setLastName(lnames[r.nextInt(lnames.length)]);
+			p.setBodyWeight(69.0D);
 			sess.save(p);
 			// System.err.println("group A - "+InputSheetHelper.toString(p));
 		}
@@ -390,6 +391,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 			p.setCompetitionSession(groupB);
 			p.setFirstName(fnames[r.nextInt(fnames.length)]);
 			p.setLastName(lnames[r.nextInt(lnames.length)]);
+			p.setBodyWeight(69.0D);
 			sess.save(p);
 			// System.err.println("group B - "+InputSheetHelper.toString(p));
 		}
