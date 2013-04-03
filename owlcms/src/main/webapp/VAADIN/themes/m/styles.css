@@ -281,3 +281,32 @@
 	width: 0.75ex;
 	background-color: white;
 }
+
+
+.mtkPad {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+}
+
+
+.mtkPad .mtkStop {
+	background-color: red;
+	border-style: solid;
+	border-width: thin;
+	vertical-align: middle;
+}
+
+.mtkPad .mtkStart {
+	background-color: white;
+	border-style: solid;
+	border-width: thin;
+	vertical-align: middle;
+}
+
+.mtkPad .v-horizontallayout-margin-left   {padding-left:   5px;}
+.mtkPad .v-horizontallayout-margin-right  {padding-right:  5px;}
+.mtkPad .v-horizontallayout-margin-top    {padding-top:    5px; }
+.mtkPad .v-horizontallayout-margin-bottom {padding-bottom: 5px; }
+
+

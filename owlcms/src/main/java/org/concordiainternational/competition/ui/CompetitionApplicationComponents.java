@@ -21,6 +21,7 @@ import org.concordiainternational.competition.mobile.IRefereeConsole;
 import org.concordiainternational.competition.mobile.MJuryConsole;
 import org.concordiainternational.competition.mobile.MPlatesInfoView;
 import org.concordiainternational.competition.mobile.MRefereeConsole;
+import org.concordiainternational.competition.mobile.MTimekeeperConsole;
 import org.concordiainternational.competition.mobile.RefereeDecisions;
 import org.concordiainternational.competition.spreadsheet.SpreadsheetUploader;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
@@ -61,6 +62,7 @@ public class CompetitionApplicationComponents {
     public static final String COUNTDOWN_DISPLAY = "countdownDisplay"; //$NON-NLS-1$
     public static final String SPREADSHEET_UPLOADER = "spreadsheetUpload";
     public static final String HOME = ""; // empty fragment //$NON-NLS-1$
+    public static final String MTIMEKEEPER_CONSOLE = "timekeeperConsole"; 
 
 
     public Panel mainPanel;
@@ -96,6 +98,7 @@ public class CompetitionApplicationComponents {
         urlFragmentToView.put(RESULT_VIEW, new ResultViewComponent());
         urlFragmentToView.put(OREFEREE_CONSOLE, new RefereeConsoleComponent(false));
         urlFragmentToView.put(MREFEREE_CONSOLE, new RefereeConsoleComponent(true));
+        urlFragmentToView.put(MTIMEKEEPER_CONSOLE, new TimekeeperConsoleComponent());
         urlFragmentToView.put(OJURY_CONSOLE, new JuryConsoleComponent(false));
         urlFragmentToView.put(MJURY_CONSOLE, new JuryConsoleComponent(true));
         urlFragmentToView.put(MPLATES_INFO, new PlatesInfoComponent());
@@ -238,6 +241,19 @@ public class CompetitionApplicationComponents {
         }
     }
     
+    
+    /**
+     * Lazy builder for Timekeeper buttons
+     */
+    private class TimekeeperConsoleComponent implements CompetitionApplicationComponent {
+        private MTimekeeperConsole timekeeperConsole = null;
+
+        @Override
+        public ApplicationView get(boolean initFromFragment, String viewName) {
+            this.timekeeperConsole = (new MTimekeeperConsole(initFromFragment, viewName));
+            return (ApplicationView)timekeeperConsole;
+        }
+    }
 
     /**
      * Lazy builder for Jury Decision display
