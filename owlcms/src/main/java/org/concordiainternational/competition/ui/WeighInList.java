@@ -439,7 +439,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
      */
     protected void clearAllLifters() {
         final Session session = CompetitionApplication.getCurrent().getHbnSession();
-        final List<Lifter> list = currentSessionLifters();
+        final List<Lifter> list = currentSessionliftersIfSelectedAllIfNot();
         for (Lifter curLifter : list) {
             session.delete(curLifter);
         }
