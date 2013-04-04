@@ -340,10 +340,11 @@ public class LifterSorter implements Serializable {
             Double bodyWeight = curLifter.getBodyWeight();
             if (bodyWeight != null && bodyWeight > 0.0D) {
                 curLifter.setStartNumber(rank);
+                rank++;
             } else {
                 curLifter.setStartNumber(0);
             }
-            rank++;
+
         }
     }
     
