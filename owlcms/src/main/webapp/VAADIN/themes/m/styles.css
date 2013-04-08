@@ -287,6 +287,7 @@
 	position: absolute;
 	top: 0px;
 	bottom: 0px;
+	font-size: xx-large;
 }
 
 
@@ -294,19 +295,77 @@
 	background-color: red;
 	border-style: solid;
 	border-width: thin;
-	vertical-align: middle;
+	display: table;
 }
+
+#mtkStopLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
 
 .mtkPad .mtkStart {
 	background-color: white;
 	border-style: solid;
 	border-width: thin;
-	vertical-align: middle;
+	display: table;
 }
 
+#mtkStartLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+
+.mtkPad .mtkOne {
+	background-color: buttonface;
+	border-style: solid;
+	border-width: thin;
+	display: table;
+}
+
+#mtkOneLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+
+.mtkPad .mtkTwo {
+	background-color: buttonface;
+	border-style: solid;
+	border-width: thin;
+	display: table;
+}
+
+#mtkTwoLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+.mtkPad .mtkTimerDisplay {
+	/*
+	background-color: green;
+	border-style: solid;
+	border-width: thin;
+	*/
+	display: table;
+	font-size: 4em;
+}
+
+#mtkTimeLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+/*
 .mtkPad .v-horizontallayout-margin-left   {padding-left:   5px;}
 .mtkPad .v-horizontallayout-margin-right  {padding-right:  5px;}
 .mtkPad .v-horizontallayout-margin-top    {padding-top:    5px; }
 .mtkPad .v-horizontallayout-margin-bottom {padding-bottom: 5px; }
-
+*/
 
