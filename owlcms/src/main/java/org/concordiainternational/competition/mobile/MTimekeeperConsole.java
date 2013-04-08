@@ -111,6 +111,8 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
         this.addComponent(bottom);
         this.setExpandRatio(top, 20.0F);
         this.setExpandRatio(bottom, 80.0F);
+        
+        enableStopStart(groupData.getTimer().isRunning());
 
     }
 
@@ -120,8 +122,9 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
      * 
      */
     private void setupTop() {
-        timerDisplay = new Label();
-        timerDisplay.setValue(null);
+        timerDisplay = new Label("",Label.CONTENT_XHTML);
+        int timeRemaining = groupData.getTimeRemaining();
+        timerDisplay.setValue("<div id='mtkTimeLabel'>"+TimeFormatter.formatAsSeconds(timeRemaining)+"</div>");
         timerDisplay.setSizeFull();
         timerDisplay.setStyleName("mtkTimerDisplay");
         if (top == null) {
@@ -146,7 +149,7 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
         bottom.setMargin(true);
         bottom.setSpacing(true);
 
-        start = new TouchDiv("");
+        start = new TouchDiv("<div id='mtkStartLabel'>GO<img src='../VAADIN/themes/m/images/playTriangle.png'></img></div>",Label.CONTENT_XHTML);
         start.setHeight("90%");
         start.setWidth("90%");
         start.addStyleName("mtkStart");
@@ -154,7 +157,7 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
 
             @Override
             public void onTouch(TouchEvent event) {
-                startSelected();
+                //startSelected();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -163,7 +166,7 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
                 }).start();
             }});
 
-        stop = new TouchDiv("");
+        stop = new TouchDiv("<div id='mtkStopLabel'>STOP</div>",Label.CONTENT_XHTML);
         stop.addStyleName("mtkStop");
         stop.setHeight("90%");
         stop.setWidth("90%");
@@ -171,7 +174,7 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
 
             @Override
             public void onTouch(TouchEvent event) {
-                stopSelected();
+                //stopSelected();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -182,7 +185,7 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
 
 
         VerticalLayout minutes = new VerticalLayout();
-        one = new TouchDiv("1");
+        one = new TouchDiv("<div id='mtkOneLabel'>1</div>",Label.CONTENT_XHTML);
         one.addStyleName("mtkOne");
         one.setHeight("90%");
         one.setWidth("90%");
@@ -190,7 +193,7 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
 
             @Override
             public void onTouch(TouchEvent event) {
-                stopSelected();
+                //stopSelected();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -199,15 +202,16 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
                 }).start();
             }});
 
-        two = new TouchDiv("2");
+        two = new TouchDiv("<div id='mtkTwoLabel'>2</div>",Label.CONTENT_XHTML);
         two.addStyleName("mtkTwo");
         two.setHeight("90%");
         two.setWidth("90%");
+        //two.setSizeFull();
         two.addListener(new TouchListener(){
 
             @Override
             public void onTouch(TouchEvent event) {
-                stopSelected();
+                //stopSelected();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -216,6 +220,8 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
                 }).start();
             }});
 
+        minutes.setHeight("95%");
+        minutes.setWidth("95%");
         minutes.addComponent(one);
         minutes.setComponentAlignment(one,Alignment.MIDDLE_CENTER);
         minutes.addComponent(two);
@@ -233,37 +239,10 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
         bottom.setExpandRatio(start,50.0F);
         bottom.setExpandRatio(stop,50.0F);
         bottom.setExpandRatio(minutes,50.0F);
-
-    }
-
-    /**
-     * 
-     */
-    private void stopSelected() {
-        stop.removeStyleName("mtkStopUnselected");
-        start.removeStyleName("mtkStartSelected");
-
-        stop.addStyleName("mtkStopSelected");
-        start.addStyleName("mtkStopUnselected");
         
-        stop.setValue("");
-        start.setValue("GO");
+
     }
 
-    /**
-     * 
-     */
-    private void startSelected() {
-        stop.removeStyleName("mtkStopSelected");
-        start.removeStyleName("mtkStartUnselected");
-
-        stop.addStyleName("mtkStopUnselected");
-        start.addStyleName("mtkStartSelected");
-
-        stop.setValue("STOP");
-        start.setValue("");
-        disable();
-    }
 
     
     private void startDoIt() {
@@ -314,28 +293,19 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
     }
 
 
-    /**
-     * 
-     */
-    protected void disable() {
-        stop.setEnabled(false);
-        start.setEnabled(false);
-        timerDisplay.setStyleName("blocked");
-    }
-
 
 
     public void enableStopStart(boolean running) {
         if (!running) {
+            start.setEnabled(true);
             stop.setEnabled(false);
-            stop.removeStyleName("primary");
-            start.setEnabled(true);         
-            start.addStyleName("primary");
+            timerDisplay.setEnabled(false);
+            timerDisplay.addStyleName("blocked");
         } else {
             start.setEnabled(false);
-            start.removeStyleName("primary");
-            stop.setEnabled(true);          
-            stop.addStyleName("primary");
+            stop.setEnabled(true);
+            timerDisplay.removeStyleName("blocked");
+            timerDisplay.setEnabled(true);
         } 
     }
 
@@ -346,15 +316,6 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
     public void refresh() {
     }
 
-
-    /**
-     * 
-     */
-    protected void doResetBottom() {
-        timerDisplay.setEnabled(true);
-        timerDisplay.setValue("");
-        timerDisplay.setStyleName("timekeeperDisplay");
-    }
 
 
     /* (non-Javadoc)
@@ -529,7 +490,6 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
 
     @Override
     public void stop(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
-
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {
             enableStopStart(false);
@@ -549,7 +509,7 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
 
         synchronized (app) {
             timerDisplay.setEnabled(false); // show that timer has stopped.
-            timerDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
+            timerDisplay.setValue("<div id='mtkTimeLabel'>"+TimeFormatter.formatAsSeconds(timeRemaining)+"</div>");
             enableStopStart(false);
             setBlocked(false);
         }
