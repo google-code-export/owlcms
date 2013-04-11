@@ -650,6 +650,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         sortLists();
         publishLists();
         setTimeKeepingInUse(false); // will switch to true if Start/stop is used.
+        getTimer().forceTimeRemaining(getDisplayTime());
         // tell listeners to refresh.
         fireEvent(new UpdateEvent(this, true));
     }

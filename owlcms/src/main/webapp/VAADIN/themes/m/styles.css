@@ -287,9 +287,13 @@
 	position: absolute;
 	top: 0px;
 	bottom: 0px;
-	font-size: xx-large;
+	font-size: 4em;
+	color: black;
 }
 
+.mtkPad .blocked {
+	color: grey;
+}
 
 .mtkPad .mtkStop {
 	background-color: red;
@@ -306,7 +310,7 @@
 
 
 .mtkPad .mtkStart {
-	background-color: white;
+	background-color: green;
 	border-style: solid;
 	border-width: thin;
 	display: table;
@@ -353,7 +357,7 @@
 	border-width: thin;
 	*/
 	display: table;
-	font-size: 4em;
+	font-size: 3em;
 }
 
 #mtkTimeLabel {
