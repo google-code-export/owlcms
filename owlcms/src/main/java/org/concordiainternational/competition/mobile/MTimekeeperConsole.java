@@ -39,8 +39,12 @@ import com.vaadin.ui.Window.CloseListener;
  *
  */
 @SuppressWarnings("serial")
-public class MTimekeeperConsole extends VerticalLayout implements CountdownTimerListener, ApplicationView, CloseListener, URIHandler {
-
+public class MTimekeeperConsole extends VerticalLayout implements 
+ApplicationView,
+CountdownTimerListener,
+CloseListener,
+URIHandler {
+    
     private static final long serialVersionUID = 1L;
     static final Logger timingLogger = LoggerFactory
             .getLogger("org.concordiainternational.competition.timer.TimingLogger"); //$NON-NLS-1$
@@ -53,8 +57,6 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
     private CompetitionApplication app = CompetitionApplication.getCurrent();
 
     private Logger logger = LoggerFactory.getLogger(MTimekeeperConsole.class);
-
-    private Integer refereeIndex = null;
 
     private Label timerDisplay;
 
@@ -76,10 +78,10 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
-            this.viewName = viewName;
+            this.viewName = CompetitionApplicationComponents.MTIMEKEEPER_CONSOLE;
         }
 
-        if (app == null) this.app = CompetitionApplication.getCurrent();
+        this.app = CompetitionApplication.getCurrent();
 
         if (platformName == null) {
             // get the default platform name
@@ -87,13 +89,21 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
         } else if (app.getPlatform() == null) {
             app.setPlatformByName(platformName);
         }
+        
+        synchronized (app) {
+            boolean prevDisabled = app.getPusherDisabled();
+            try {
+                app.setPusherDisabled(true);
+                groupData = app.getMasterData(platformName);
 
-        if (groupData == null) groupData = app.getMasterData(platformName);
-
-        app.getMainWindow().addURIHandler(this);
-        registerAsListener();
-
-        init();
+                app.getMainWindow().addURIHandler(this);
+                registerAsListener();
+                CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
+                init();
+            } finally {
+                app.setPusherDisabled(prevDisabled);
+            }
+        }
     }
 
 
@@ -102,18 +112,20 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
      * 
      */
     protected void init() {
-        this.setSizeFull();
-        this.addStyleName("mtkPad");
-        setupTop();
-        setupBottom(); 
-
-        this.addComponent(top);
-        this.addComponent(bottom);
-        this.setExpandRatio(top, 20.0F);
-        this.setExpandRatio(bottom, 80.0F);
-        
-        enableStopStart(groupData.getTimer().isRunning());
-
+        synchronized (app) {
+            this.setSizeFull();
+            this.addStyleName("mtkPad");
+            setupTop();
+            setupBottom(); 
+    
+            this.addComponent(top);
+            this.addComponent(bottom);
+            this.setExpandRatio(top, 33.0F);
+            this.setExpandRatio(bottom, 66.0F);
+            
+            enableStopStart(groupData.getTimer().isRunning());
+        }
+        app.push();
     }
 
 
@@ -123,8 +135,10 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
      */
     private void setupTop() {
         timerDisplay = new Label("",Label.CONTENT_XHTML);
-        int timeRemaining = groupData.getTimeRemaining();
-        timerDisplay.setValue("<div id='mtkTimeLabel'>"+TimeFormatter.formatAsSeconds(timeRemaining)+"</div>");
+        
+        int timeRemaining = groupData.getDisplayTime();
+        updateTimeRemaining(timeRemaining);
+        
         timerDisplay.setSizeFull();
         timerDisplay.setStyleName("mtkTimerDisplay");
         if (top == null) {
@@ -239,8 +253,6 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
         bottom.setExpandRatio(start,50.0F);
         bottom.setExpandRatio(stop,50.0F);
         bottom.setExpandRatio(minutes,50.0F);
-        
-
     }
 
 
@@ -250,13 +262,12 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
         groupData.setTimeKeepingInUse(true);
         if (groupData.getTimer().isRunning()) {
             // do nothing
-            timingLogger.debug("start timer.isRunning()={}", true); //$NON-NLS-1$
+            timingLogger.debug("start already running timer.isRunning()={}", true); //$NON-NLS-1$
         } else {
             setBlocked(false); // !!!!
             enableStopStart(true);
-            timingLogger.debug("start timer.isRunning()={}", false); //$NON-NLS-1$
+            timingLogger.debug("start starting timer.isRunning()={}", false); //$NON-NLS-1$
             groupData.startUpdateModel();
-
         }
     }
 
@@ -264,12 +275,12 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
         logger.info("stop clicked");
         groupData.setTimeKeepingInUse(true);
         if (groupData.getTimer().isRunning()) {
-            timingLogger.debug("stop timer.isRunning()={}", true); //$NON-NLS-1$
+            timingLogger.debug("stop stopping timer.isRunning()={}", true); //$NON-NLS-1$
             setBlocked(true);
             groupData.stopUpdateModel();
             enableStopStart(false);
         } else {
-            timingLogger.debug("stop timer.isRunning()={}", false); //$NON-NLS-1$
+            timingLogger.debug("stop already stopped timer.isRunning()={}", false); //$NON-NLS-1$
             // do nothing.
         }
     }
@@ -293,21 +304,30 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
     }
 
 
-
-
     public void enableStopStart(boolean running) {
-        if (!running) {
-            start.setEnabled(true);
-            stop.setEnabled(false);
-            timerDisplay.setEnabled(false);
-            timerDisplay.addStyleName("blocked");
-        } else {
-            start.setEnabled(false);
-            stop.setEnabled(true);
-            timerDisplay.removeStyleName("blocked");
-            timerDisplay.setEnabled(true);
-        } 
+        synchronized (app) {
+            if (!running) {
+                start.setEnabled(true);
+                stop.setEnabled(false);
+                showTimerDisplay(false);
+                
+            } else {
+                start.setEnabled(false);
+                stop.setEnabled(true);
+                showTimerDisplay(true);
+            }
+        }
     }
+
+    private void showTimerDisplay(boolean show) {
+        if (show) {
+            timerDisplay.removeStyleName("blocked");
+        } else {
+            timerDisplay.addStyleName("blocked");
+        }  
+    }
+
+
 
     /* (non-Javadoc)
      * @see org.concordiainternational.competition.ui.IRefereeConsole#refresh()
@@ -334,7 +354,7 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
      */
     @Override
     public String getFragment() {
-        return viewName+"/"+(platformName == null ? "" : platformName)+"/"+((int)this.refereeIndex+1);
+        return viewName+"/"+(platformName == null ? "" : platformName);
     }
 
 
@@ -431,7 +451,7 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
 
     @Override
     public void noTimeLeft(int timeRemaining) {
-        // do nothing    
+        pushTime(0);  
     }
 
 
@@ -448,14 +468,24 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
             prevTimeRemaining = timeRemaining;
         }
 
+        pushTime(timeRemaining);
+    }
+
+
+
+    public void pushTime(int timeRemaining) {
         synchronized (app) {
             if (!isBlocked()) {
-                timerDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
-                timerDisplay.setEnabled(true);
+                //logger.trace("not blocked");
+                updateTimeRemaining(timeRemaining);
+                showTimerDisplay(true);
+            } else {
+                //logger.trace("blocked");
             }
             setBlocked(false);
         }
         app.push();
+        logger.debug("pushed time {}",timeRemaining);
     }
 
 
@@ -466,7 +496,7 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
         synchronized (app) {
             enableStopStart(false);
             if (timerDisplay != null) {
-                timerDisplay.setEnabled(false);
+                showTimerDisplay(false);
             }
         }
         showNotification(originatingApp, reason);
@@ -481,7 +511,7 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
         synchronized (app) {
             enableStopStart(true);
             if (timerDisplay != null) {
-                timerDisplay.setEnabled(true);
+                showTimerDisplay(true);
             }
         }
         app.push();
@@ -494,7 +524,7 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
         synchronized (app) {
             enableStopStart(false);
             if (timerDisplay != null) {
-                timerDisplay.setEnabled(false);
+                showTimerDisplay(false);
             }
         }
         showNotification(originatingApp, reason);
@@ -504,17 +534,24 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
 
     @Override
     public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+        
+        logger.debug("forceTimeRemaining {}", timeRemaining);
         if (timerDisplay == null) return;
         prevTimeRemaining = timeRemaining;
 
         synchronized (app) {
-            timerDisplay.setEnabled(false); // show that timer has stopped.
-            timerDisplay.setValue("<div id='mtkTimeLabel'>"+TimeFormatter.formatAsSeconds(timeRemaining)+"</div>");
+            updateTimeRemaining(timeRemaining);
             enableStopStart(false);
             setBlocked(false);
         }
         showNotification(originatingApp, reason);
         app.push();
+    }
+
+
+
+    public void updateTimeRemaining(int timeRemaining) {
+        timerDisplay.setValue("<div id='mtkTimeLabel'>"+TimeFormatter.formatAsSeconds(timeRemaining)+"</div>");
     }
 
 
@@ -527,7 +564,7 @@ public class MTimekeeperConsole extends VerticalLayout implements CountdownTimer
 
 
     boolean isBlocked() {
-        return blocked;
+        return this.blocked;
     }
 
 
