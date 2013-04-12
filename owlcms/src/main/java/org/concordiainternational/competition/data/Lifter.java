@@ -2033,7 +2033,7 @@ public class Lifter implements MethodEventSource, Notifier {
     
     public void check15_20kiloRule(int newVal, boolean isSnatch) throws RuleViolationException {
         int qualTotal = getQualifyingTotal();
-        if (qualTotal == 0) {
+        if (qualTotal == 0  || !Competition.isEnforce15_20rule()) {
             return;
         }
 

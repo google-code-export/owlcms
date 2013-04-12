@@ -42,6 +42,7 @@ public class Competition implements Serializable {
 
     Integer invitedIfBornBefore;
     Boolean masters;
+    private Boolean enforce15_20KgRule;
 
     String federation;
     String federationAddress;
@@ -178,22 +179,44 @@ public class Competition implements Serializable {
     }
 
     static Boolean isMasters = null;
+    private static Boolean isEnforce15_20rule = null;
 
-    @SuppressWarnings("unchecked")
     public static boolean isMasters() {
         if (isMasters != null) return isMasters;
+        Competition competition = getCompetition();
+        isMasters = competition.getMasters();
+        if (isMasters == null) {
+            return false;
+        } else {
+            return isMasters;
+        }
+    }
+
+    public static boolean isEnforce15_20rule() {
+        if (isEnforce15_20rule != null) return isEnforce15_20rule;
+        Competition competition = getCompetition();
+        isEnforce15_20rule = competition.getEnforce15_20KgRule();
+        if (isEnforce15_20rule == null) {
+            return false;
+        } else {
+            return isEnforce15_20rule;
+        }
+    }   
+    
+
+    public static Competition getCompetition() {
         final CompetitionApplication currentApp = CompetitionApplication.getCurrent();
         final Session hbnSession = currentApp.getHbnSession();
+        @SuppressWarnings("unchecked")
         List<Competition> competitions = hbnSession.createCriteria(Competition.class).list();
+        Competition competition = null;
         if (competitions.size() > 0) {
-            final Competition competition = competitions.get(0);
-            isMasters = competition.getMasters();
-            
+            competition = competitions.get(0);
         }
-        if (isMasters == null) return false; // junit database does not have
-        // this attribute set.
-        return isMasters;
+        return competition;
     }
+    
+    
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -233,6 +256,22 @@ public class Competition implements Serializable {
 
     public void setProtocolFileName(String protocolFileName) {
         this.protocolFileName = protocolFileName;
+    }
+
+    public static Boolean getEnforce15_20rule() {
+        return isEnforce15_20rule;
+    }
+
+    public static void setEnforce15_20rule(Boolean isEnforce15_20rule) {
+        Competition.isEnforce15_20rule = isEnforce15_20rule;
+    }
+
+    public Boolean getEnforce15_20KgRule() {
+        return enforce15_20KgRule;
+    }
+
+    public void setEnforce15_20KgRule(Boolean enforce15_20KgRule) {
+        this.enforce15_20KgRule = enforce15_20KgRule;
     }
     
     
