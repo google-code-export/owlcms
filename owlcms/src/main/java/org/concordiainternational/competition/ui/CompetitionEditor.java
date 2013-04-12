@@ -121,6 +121,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         addTextField(formLayout, locale, competitionItem, "competitionCity", ""); //$NON-NLS-1$ //$NON-NLS-2$
         addTextField(formLayout, locale, competitionItem, "competitionOrganizer", ""); //$NON-NLS-1$ //$NON-NLS-2$
         addTextField(formLayout, locale, competitionItem, "invitedIfBornBefore", 0); //$NON-NLS-1$
+        addTextField(formLayout, locale, competitionItem, "enforce15_20KgRule", false); //$NON-NLS-1$
         addTextField(formLayout, locale, competitionItem, "masters", false); //$NON-NLS-1$
         addTextField(formLayout, locale, competitionItem, "federation", ""); //$NON-NLS-1$ //$NON-NLS-2$
         addTextField(formLayout, locale, competitionItem, "federationAddress", ""); //$NON-NLS-1$ //$NON-NLS-2$
