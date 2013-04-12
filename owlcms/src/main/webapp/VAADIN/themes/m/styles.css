@@ -351,13 +351,14 @@
 }
 
 .mtkPad .mtkTimerDisplay {
-	/*
-	background-color: green;
-	border-style: solid;
-	border-width: thin;
-	*/
 	display: table;
 	font-size: 3em;
+}
+
+.mtkPad .mtkTimerDisplaySmall {
+	display: table;
+	font-size: 2em;
+	padding-top: 0.5em;
 }
 
 #mtkTimeLabel {

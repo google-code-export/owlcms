@@ -26,6 +26,7 @@ import org.vaadin.touchdiv.TouchDiv.TouchListener;
 
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.URIHandler;
+import com.vaadin.terminal.gwt.server.WebBrowser;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -140,7 +141,13 @@ URIHandler {
         updateTimeRemaining(timeRemaining);
         
         timerDisplay.setSizeFull();
-        timerDisplay.setStyleName("mtkTimerDisplay");
+        WebBrowser browser = (WebBrowser) app.getMainWindow().getTerminal();
+        if (browser.getScreenHeight() < 600) {
+            timerDisplay.setStyleName("mtkTimerDisplaySmall");
+        } else {
+            timerDisplay.setStyleName("mtkTimerDisplay");
+        }
+        
         if (top == null) {
             top = new HorizontalLayout();
         } else {
@@ -551,6 +558,7 @@ URIHandler {
 
 
     public void updateTimeRemaining(int timeRemaining) {
+
         timerDisplay.setValue("<div id='mtkTimeLabel'>"+TimeFormatter.formatAsSeconds(timeRemaining)+"</div>");
     }
 
