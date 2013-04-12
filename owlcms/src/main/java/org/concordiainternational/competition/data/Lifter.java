@@ -1978,7 +1978,8 @@ public class Lifter implements MethodEventSource, Notifier {
     
     public void check15_20kiloRule() throws RuleViolationException {
         int qualTotal = getQualifyingTotal();
-        if (qualTotal == 0) {
+        boolean enforce15_20rule = Competition.isEnforce15_20rule();
+        if (qualTotal == 0  || !enforce15_20rule) {
             return;
         }
 
@@ -2033,7 +2034,9 @@ public class Lifter implements MethodEventSource, Notifier {
     
     public void check15_20kiloRule(int newVal, boolean isSnatch) throws RuleViolationException {
         int qualTotal = getQualifyingTotal();
-        if (qualTotal == 0  || !Competition.isEnforce15_20rule()) {
+        
+        boolean enforce15_20rule = Competition.isEnforce15_20rule();
+        if (qualTotal == 0  || !enforce15_20rule) {
             return;
         }
 
