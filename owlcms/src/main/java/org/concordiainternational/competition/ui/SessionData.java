@@ -12,7 +12,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -364,7 +363,6 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      * 
      */
     public int timeAllowed(Lifter lifter) {
-        final Set<Lifter> calledLifters = getStartedLifters();
         logger.trace("timeAllowed start"); //$NON-NLS-1$
         // if clock was running for the current lifter, return the remaining
         // time.
@@ -384,35 +382,26 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         logger.trace("not current lifter"); //$NON-NLS-1$
         final Lifter previousLifter = getPreviousLifter();
         if (previousLifter == null) {
-            logger.trace("A twoMinutes (not): previousLifter null: calledLifters={} lifter={}", //$NON-NLS-1$
-                new Object[] { calledLifters, lifter });
+            logger.trace("A one minute (first lifter): previousLifter null: startedLifters={} lifter={}", //$NON-NLS-1$
+                new Object[] { getTimer().getOwner(), lifter });
             return 60000;
         } else if (lifter.getAttemptsDone() % 3 == 0) {
             // no 2 minutes if starting snatch or starting c-jerk
-            logger.trace("B twoMinutes (not): first attempt lifter={}", lifter); //$NON-NLS-1$
+            logger.trace("B one minute (first lifter): first attempt lifter={}", lifter); //$NON-NLS-1$
             return 60000;
-        } else if (calledLifters == null || calledLifters.isEmpty()) {
+        } else if (getTimer().getOwner() == null) {
             if (lifter.equals(previousLifter)) {
-                logger.trace("C twoMinutes : calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
-                    new Object[] { calledLifters, lifter, previousLifter });
-                // setTimerForTwoMinutes(lifter);
+                logger.trace("C two minutes (same, timer did not start): startedLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
+                    new Object[] { getTimer().getOwner(), lifter, previousLifter });
                 return 120000;
             } else {
-                logger.trace("D twoMinutes (not): calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
-                    new Object[] { calledLifters, lifter, previousLifter });
+                logger.trace("D one minute (not same): startedLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
+                    new Object[] { getTimer().getOwner(), lifter, previousLifter });
                 return 60000;
             }
-        //} else if (lifter.equals(previousLifter) && (calledLifters.size() == 1 && calledLifters.contains(lifter))) {
-        } else if (lifter.equals(previousLifter) && (!calledLifters.contains(lifter))) {
-            // we are the previous lifter, and but were not called.
-        	// we do not lose the two minute privilege
-            logger.trace("E twoMinutes: calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
-                new Object[] { calledLifters, lifter, previousLifter });
-            // setTimerForTwoMinutes(lifter);
-            return 120000;
         } else {
-            logger.trace("F twoMinutes (not) : calledLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
-                new Object[] { calledLifters, lifter, previousLifter });
+            logger.trace("E one minute (same, timer started for someone else) : startedLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
+                new Object[] { getTimer().getOwner(), lifter, previousLifter });
             return 60000;
         }
     }
@@ -429,8 +418,6 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         getTimer().setTimeRemaining(120000);
     }
 
-//    Set<LifterCall> startedLifterCalls = new HashSet<LifterCall>();
-    Set<Lifter> startedLifters = new HashSet<Lifter>();
     
     private boolean forcedByTimekeeper = false;
 
@@ -479,19 +466,11 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         if (startTimeAutomatically) {
             startTimer(lifter,this,getTimer());
         } else if (!getTimeKeepingInUse()) {
-            setLifterAsHavingStarted(lifter);
             logger.info("timekeeping NOT in use, setting lifter {} as owner", lifter);
             getTimer().setOwner(lifter);
         } 
     }
 
-    /**
-     * @param lifter
-     */
-    public void setLifterAsHavingStarted(Lifter lifter) {
-//        startedLifterCalls.add(new LifterCall(new Date(), lifter));
-        startedLifters.add(lifter);
-    }
 
     /**
      * @param b
@@ -537,22 +516,12 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
     public void liftDone(Lifter lifter, boolean success) {
         logger.debug("lift done: notifiers={}", notifiers); //$NON-NLS-1$
-//        startedLifterCalls.clear();
-        startedLifters.clear();
-
         final CountdownTimer timer2 = getTimer();
         timer2.setOwner(null);
         timer2.stop(); // in case timekeeper has failed to stop it.
         timer2.setTimeRemaining(0);
     }
 
-//    public Set<LifterCall> getStartedLifterCalls() {
-//        return startedLifterCalls;
-//    }
-    
-    public Set<Lifter> getStartedLifters() {
-        return startedLifters;
-    }
 
     CountdownTimer timer;
 
@@ -1149,9 +1118,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             } else {
                 logger.info("forced by timekeeper: {} remaining",getTimeRemaining());
             }
-            timing.setOwner(lifter); // enforce rule 6.5.15 -- lifter
-                              // only gets 2 minutes if clock did
-                              // not start for someone else
+            timing.setOwner(lifter); // enforce rule 6.6.8
             logger.debug("timekeeping in use, setting lifter {} as owner", lifter);
         }
     }
@@ -1163,7 +1130,6 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     public void startTimer(Lifter lifter, SessionData groupData,CountdownTimer timing) {
         manageTimerOwner(lifter,groupData, timing);
         timing.restart();
-        setLifterAsHavingStarted(lifter);
     }
     
     public Item getPublicAddressItem() {
@@ -1259,7 +1225,6 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         final boolean running = timer1.isRunning();
         timingLogger.debug("start timer.isRunning()={}", running); //$NON-NLS-1$
         timer1.restart();
-        setLifterAsHavingStarted(lifter);
         getRefereeDecisionController().setBlocked(false);
     }
 
