@@ -24,7 +24,7 @@ public class StartNumberOrderComparator extends AbstractLifterComparator impleme
     public int compare(Lifter lifter1, Lifter lifter2) {
         int compare = 0;
 
-        compare = compareRegistrationCategory(lifter1, lifter2);
+        compare = compareCategory(lifter1, lifter2);
         if (compare != 0) return compare;
 
         compare = compareLotNumber(lifter1, lifter2);
