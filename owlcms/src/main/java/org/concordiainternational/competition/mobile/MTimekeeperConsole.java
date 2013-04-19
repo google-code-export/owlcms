@@ -15,7 +15,9 @@ import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
 import org.concordiainternational.competition.ui.SessionData;
+import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
 import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
+import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
@@ -73,6 +75,7 @@ URIHandler {
     private boolean blocked = false;
 
     private int prevTimeRemaining;
+    private UpdateEventListener updateEventListener;
 
 
     public MTimekeeperConsole(boolean initFromFragment, String viewName) {
@@ -397,6 +400,27 @@ URIHandler {
         app.getMainWindow().addListener((CloseListener)this);
         CountdownTimer timer = groupData.getTimer();
         if (timer != null) timer.addListener(this);
+        
+        updateEventListener = new SessionData.UpdateEventListener() {
+
+            @Override
+            public void updateEvent(UpdateEvent updateEvent) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        synchronized (app) {
+                            int timeRemaining = groupData.getDisplayTime();
+                            updateTimeRemaining(timeRemaining);
+                            enableStopStart(false);
+                            setBlocked(false);
+                        }
+                        app.push();
+                    }
+                }).start();
+            }
+
+        };
+        groupData.addListener(updateEventListener); //$NON-NLS-1$ 
     }
 
 
@@ -415,6 +439,7 @@ URIHandler {
         // timer countdown events
         CountdownTimer timer = groupData.getTimer();    
         if (timer != null) timer.removeListener(this);
+        if (updateEventListener != null) groupData.removeListener(updateEventListener);
     }
 
 
@@ -558,7 +583,6 @@ URIHandler {
 
 
     public void updateTimeRemaining(int timeRemaining) {
-
         timerDisplay.setValue("<div id='mtkTimeLabel'>"+TimeFormatter.formatAsSeconds(timeRemaining)+"</div>");
     }
 
