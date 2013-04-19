@@ -13,6 +13,7 @@ import java.text.MessageFormat;
 import java.util.Locale;
 
 import org.concordiainternational.competition.data.Lifter;
+import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionEventListener;
@@ -99,6 +100,7 @@ DecisionEventListener
     private ShortcutActionListener stopAction;
     private ShortcutActionListener oneMinuteAction;
     private ShortcutActionListener twoMinutesAction;
+    private boolean showTimer = true;
 
     public AttemptBoardView(boolean initFromFragment, String viewName, boolean publicFacing) {
 
@@ -142,9 +144,20 @@ DecisionEventListener
 
             // URI handler must remain, so is not part of the register/unRegister paire
             app.getMainWindow().addURIHandler(this);
-            registerAsListener();
+            registerAsListener();      
         } finally {
             app.setPusherDisabled(prevDisabledPush);
+        }
+    }
+
+
+    public void refreshShowTimer() {
+        // force use of current value.
+        Platform curPlatform = masterData.getPlatform();
+        if (curPlatform != null) {
+            String platformName1 = curPlatform.getName();
+            Platform refreshedPlatform = Platform.getByName(platformName1);
+            showTimer = refreshedPlatform.getShowTimer();
         }
     }
 
@@ -469,7 +482,7 @@ DecisionEventListener
 
     private void showTimeRemaining(int timeRemaining) {
         synchronized (app) {
-            if (CompetitionApplication.getCurrent().getPlatform().getShowTimer()) {
+            if (showTimer ) {
                 timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
             } else {
                 timeDisplayLabel.setValue("");
@@ -725,6 +738,9 @@ DecisionEventListener
 
         // listen to keyboard
         addActions(app.getMainWindow());
+        
+        // update whether timer is shown
+        refreshShowTimer();
     }
     
     /**
