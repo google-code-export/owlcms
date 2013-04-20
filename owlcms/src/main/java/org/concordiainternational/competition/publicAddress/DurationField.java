@@ -29,16 +29,16 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 public class DurationField extends FieldWrapper<Integer>{
 
-	private Logger logger = LoggerFactory.getLogger(DurationField.class);
+    private Logger logger = LoggerFactory.getLogger(DurationField.class);
 
-	protected DurationField(Field wrappedField, Class<? extends Integer> propertyType) {
-		super(wrappedField, propertyType);
+    protected DurationField(Field wrappedField, Class<? extends Integer> propertyType) {
+        super(wrappedField, propertyType);
         VerticalLayout layout = new VerticalLayout();
         layout.setMargin(false);
         layout.addComponent(wrappedField);
         setCompositionRoot(layout);
-	}
-	
+    }
+
 
     /* Format the integer as a duration.
      * @see com.vaadin.ui.FieldWrapper#format(java.lang.Object)
@@ -46,8 +46,8 @@ public class DurationField extends FieldWrapper<Integer>{
     @Override
     protected Object format(Integer value) {
         // Format milliseconds as a text field
-    	logger.debug("formatting {}",value);
-    	return TimeFormatter.formatAsSeconds(value*1000);
+        logger.debug("formatting {}",value);
+        return TimeFormatter.formatAsSeconds(value*1000);
     }
 
     /* Parse the duration as a number of seconds.
@@ -55,44 +55,82 @@ public class DurationField extends FieldWrapper<Integer>{
      */
     @Override
     protected Integer parse(Object formattedValue) throws ConversionException {
-    	//LoggerUtils.logException(logger, new Exception("trace"));
-    	
-        // Take a String and turn it into an Integer
-    	Integer parsedValue;
-    	Date parsedDate;
+        //LoggerUtils.logException(logger, new Exception("trace"));
 
-    	SimpleDateFormat minSecs = new SimpleDateFormat("mm:ss");
-    	TimeZone gmt = TimeZone.getTimeZone("GMT");
-		minSecs.setTimeZone(gmt);
-    	minSecs.setLenient(false);
-		String stringValue = (String) formattedValue;
-		try {
-			if (stringValue.length() <= 5 ){
-				parsedDate = minSecs.parse(stringValue);
-				// date parsing 
-				long parsedTime = parsedDate.getTime();
-				new Date(0);
-				parsedValue = (int) (parsedTime)/1000;
-				logger.debug("formatted value1 date={} millis={}",parsedDate,parsedValue*1000);
-			} else {
-				SimpleDateFormat hrMinSecs = new SimpleDateFormat("HH:mm:ss");
-				hrMinSecs.setTimeZone(gmt);
-				hrMinSecs.setLenient(false);
-				parsedDate = hrMinSecs.parse(stringValue);
-				long parsedTime = parsedDate.getTime();
-				parsedValue = (int) (parsedTime)/1000;
-				logger.debug("formatted value2 date={} millis={}",parsedDate,parsedValue*1000);
-			}
-		} catch (ParseException e) {
-			throw new ConversionException(e);
-		}
-		return parsedValue;
+        // Take a String and turn it into an Integer
+        Integer parsedValue;
+        Date parsedDate;
+
+        SimpleDateFormat minSecs = new SimpleDateFormat("HH:mm:ss");
+        TimeZone gmt = TimeZone.getTimeZone("GMT");
+        minSecs.setTimeZone(gmt);
+        minSecs.setLenient(true);
+        String stringValue = (String) formattedValue;
+        String strippedStringValue = stringValue;
+        try {
+            logger.warn("stringValue0={}",stringValue);
+            if (stringValue == null) return 0;
+
+            if (stringValue.endsWith(":00")) {
+                int posSuffix = stringValue.indexOf(":00");
+
+                if (posSuffix != -1) {
+                    strippedStringValue  = strippedStringValue.substring(0,posSuffix);
+                }
+            }
+            
+             if (!strippedStringValue.contains(":")) {
+                try {
+                    int hours = 0;
+                    int minutes = Integer.parseInt(strippedStringValue);
+                    if (minutes >= 60) {
+                        hours = minutes /  60;
+                        minutes = minutes % 60;
+                    }
+                    stringValue = hours + ":" + minutes + ":00";
+                    logger.warn("stringValue1={}",stringValue);
+    
+                    SimpleDateFormat hrMinSecs = new SimpleDateFormat("HH:mm:ss");
+                    hrMinSecs.setTimeZone(gmt);
+                    hrMinSecs.setLenient(false);
+                    parsedDate = hrMinSecs.parse(stringValue);
+    
+                    // date parsing 
+                    long parsedTime = parsedDate.getTime();
+                    new Date(0);
+                    parsedValue = (int) (parsedTime)/1000;
+                    logger.warn("formatted value1 date={} millis={}",parsedDate,parsedValue*1000);
+                } catch (NumberFormatException e) {
+                    throw new ConversionException(e);
+                }
+            } else if (stringValue.length() <= 5 ){
+                logger.warn("stringValue2={}",stringValue);
+                parsedDate = minSecs.parse(stringValue);
+                // date parsing 
+                long parsedTime = parsedDate.getTime();
+                new Date(0);
+                parsedValue = (int) (parsedTime)/1000;
+                logger.debug("formatted value1 date={} millis={}",parsedDate,parsedValue*1000);
+            } else {
+                logger.warn("stringValue3={}",stringValue);
+                SimpleDateFormat hrMinSecs = new SimpleDateFormat("HH:mm:ss");
+                hrMinSecs.setTimeZone(gmt);
+                hrMinSecs.setLenient(false);
+                parsedDate = hrMinSecs.parse(stringValue);
+                long parsedTime = parsedDate.getTime();
+                parsedValue = (int) (parsedTime)/1000;
+                logger.debug("formatted value2 date={} millis={}",parsedDate,parsedValue*1000);
+            }
+        } catch (ParseException e) {
+            throw new ConversionException(e);
+        } 
+        return parsedValue;
     }
 
 
-	@Override
-	public String toString() {
-		return (String)format(getValue());
-	}
+    @Override
+    public String toString() {
+        return (String)format(getValue());
+    }
 
 }
