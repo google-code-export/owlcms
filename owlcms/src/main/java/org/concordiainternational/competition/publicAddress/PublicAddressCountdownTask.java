@@ -40,13 +40,13 @@ class PublicAddressCountdownTask extends TimerTask implements Serializable {
 
 	private SessionData masterData;
 
-	private PublicAddressTimerEvent timerEvent;
+	private IntermissionTimerEvent timerEvent;
 
     PublicAddressCountdownTask(Timer countdownTimer, int countdownFrom, int decrement, SessionData masterData) {
     	this.masterData = masterData;
     	this.startTime = countdownFrom;
         this.countdownTimer = countdownTimer;
-        this.timerEvent = new PublicAddressTimerEvent();
+        this.timerEvent = new IntermissionTimerEvent();
         
         // round up to decrement interval (1000ms)
         this.ticks = roundUpCountdown(countdownFrom, decrement);

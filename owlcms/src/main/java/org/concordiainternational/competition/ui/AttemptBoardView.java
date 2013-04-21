@@ -19,10 +19,8 @@ import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionEventListener;
 import org.concordiainternational.competition.decision.IDecisionController;
 import org.concordiainternational.competition.i18n.Messages;
-import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent;
-import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener;
-import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent;
-import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent.MessageTimerListener;
+import org.concordiainternational.competition.publicAddress.IntermissionTimerEvent;
+import org.concordiainternational.competition.publicAddress.IntermissionTimerEvent.IntermissionTimerListener;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
@@ -54,8 +52,7 @@ import com.vaadin.ui.Window.CloseListener;
 public class AttemptBoardView extends VerticalLayout implements 
 ApplicationView, 
 CountdownTimerListener,
-MessageDisplayListener,
-MessageTimerListener,
+IntermissionTimerListener,
 Window.CloseListener, 
 URIHandler,
 DecisionEventListener
@@ -185,8 +182,7 @@ DecisionEventListener
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            //							logger.debug("request to display {}",
-                            //									AttemptBoardView.this);
+                            // logger.debug("request to display {}",AttemptBoardView.this);
                             if (!waitingForDecisionLightsReset) {
                                 display(platformName1, masterData1);
                             }
@@ -274,7 +270,7 @@ DecisionEventListener
      * @throws RuntimeException
      */
     private void display(final String platformName1, final SessionData masterData1) throws RuntimeException {
-        if (paShown) {
+        if (intermissionTimerShown) {
             return;
         }
         synchronized (app) {
@@ -283,11 +279,13 @@ DecisionEventListener
                 boolean done = fillLifterInfo(currentLifter);
                 updateTime(masterData1);
                 showDecisionLights(false);
+                timeDisplayLabel.removeStyleName("intermission");
                 timeDisplayLabel.setSizeUndefined();
                 timeDisplayLabel.setVisible(!done);
+                startLabel.setVisible(!done);
             } else {
                 logger.debug("lifter null");
-                hideAll();
+                hideAttemptBoard();
             }
 
         }
@@ -300,7 +298,7 @@ DecisionEventListener
     /**
      * 
      */
-    protected void hideAll() {
+    protected void hideAttemptBoard() {
         nameLabel.setValue(getWaitingMessage()); //$NON-NLS-1$
         showDecisionLights(false);
         timeDisplayLabel.setSizeUndefined();
@@ -310,6 +308,7 @@ DecisionEventListener
         attemptLabel.setValue("");
         weightLabel.setValue("");
         startLabel.setValue("");
+        startLabel.setVisible(false);
         plates.setVisible(false);
     }
 
@@ -461,7 +460,7 @@ DecisionEventListener
         // computed by groupData
         int timeRemaining = groupData.getDisplayTime();
         final CountdownTimer timer = groupData.getTimer();
-        if (!paShown){
+        if (!intermissionTimerShown){
             showTimeRemaining(timeRemaining);
         }
         timer.addListener(this);
@@ -474,7 +473,7 @@ DecisionEventListener
 
     @Override
     public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
-        if (!paShown){
+        if (!intermissionTimerShown){
             showTimeRemaining(timeRemaining);
         }
     }
@@ -505,7 +504,7 @@ DecisionEventListener
     private String viewName;
     protected boolean shown;
     private String stylesheetName;
-    private boolean paShown;
+    private boolean intermissionTimerShown;
     private boolean publicFacing;
 
     @Override
@@ -580,61 +579,39 @@ DecisionEventListener
         }
     }
 
-    /* Listen to public address notifications.
-     * We only deal with creating and destroying the overlay that hides the normal display.
-     * @see org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener#messageUpdate(org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent)
-     */
-    @Override
-    public void messageUpdate(PublicAddressMessageEvent event) {
-        synchronized(app) {
-            if (event.setHide()) {
-                removeMessage();
-            } else {
-                hideAll();
-                displayMessage(event.getTitle(),event.getMessage(),event.getRemainingMilliseconds());
-            }
-        }
-        app.push();
-
-    }
 
     @Override
-    public void timerUpdate(PublicAddressTimerEvent event) {
-        if (!paShown) {
-            return;
+    public void intermissionTimerUpdate(IntermissionTimerEvent event) {
+        Integer remainingMilliseconds = event.getRemainingMilliseconds();
+        if (remainingMilliseconds != null && remainingMilliseconds > 0) {
+            displayIntermissionTimer(remainingMilliseconds);   
+        } else {
+            removeIntermissionTimer();
         }
-        synchronized(app) {
-            Integer remainingMilliseconds = event.getRemainingMilliseconds();
-            if (remainingMilliseconds != null) {
-                timeDisplayLabel.setVisible(true);
-                timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(remainingMilliseconds));
-            }
-        }
-        app.push();
+
     }
 
     /**
-     * Remove the currently displayed public message, if any.
+     * Hide the break timer
      */
-    private void removeMessage() {
-        paShown = false;
+    private void removeIntermissionTimer() {
+        intermissionTimerShown = false;
         refresh();
     }
 
     /**
-     * Display a new public address message
-     * Hide the current display with a popup.
-     * @param title
-     * @param message
+     * Display the break timer
      * @param remainingMilliseconds
      */
-    private void displayMessage(String title, String message, Integer remainingMilliseconds) {
-        // create content formatting
-        //		logger.debug("displayMessage {}",remainingMilliseconds);
+    private void displayIntermissionTimer(Integer remainingMilliseconds) {
         synchronized (app) {
-            paShown = true;
+            if (!intermissionTimerShown) {
+                hideAttemptBoard();
+            }
+            intermissionTimerShown = true;
             nameLabel.setValue(Messages.getString("AttemptBoard.Pause", CompetitionApplication.getCurrentLocale()));
             timeDisplayLabel.setVisible(true);
+            timeDisplayLabel.addStyleName("intermission");
             timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(remainingMilliseconds));
         }
         app.push();
@@ -722,9 +699,9 @@ DecisionEventListener
         logger.debug("listening to session data updates.");
         updateListener = registerAsListener(platformName, masterData);
 
-        // listen to public address events
-        logger.debug("listening to public address events.");
+        // listen to intermission timer events
         masterData.addBlackBoardListener(this);
+        logger.debug("listening to intermission timer events.");
 
         // listen to decisions
         IDecisionController decisionController = masterData.getRefereeDecisionController();
@@ -754,10 +731,10 @@ DecisionEventListener
             logger.debug("stopped listening to UpdateEvents");
         }
 
-        // stop listening to public address events
-        removeMessage();
+        // stop listening to intermission timer events
+        removeIntermissionTimer();
         masterData.removeBlackBoardListener(this);
-        logger.debug("stopped listening to PublicAddress TimerEvents");
+        logger.debug("stopped listening to intermission timer events");
 
         // stop listening to decisions
         IDecisionController decisionController = masterData.getRefereeDecisionController();

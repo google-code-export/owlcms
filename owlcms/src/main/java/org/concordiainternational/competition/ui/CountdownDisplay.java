@@ -15,6 +15,9 @@ import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionEventListener;
 import org.concordiainternational.competition.decision.IDecisionController;
+import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.publicAddress.IntermissionTimerEvent;
+import org.concordiainternational.competition.publicAddress.IntermissionTimerEvent.IntermissionTimerListener;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
@@ -39,7 +42,8 @@ import com.vaadin.ui.Window.CloseListener;
 public class CountdownDisplay extends VerticalLayout implements 
 ApplicationView,  
 CountdownTimerListener,
-DecisionEventListener, 
+DecisionEventListener,
+IntermissionTimerListener,
 CloseListener,
 URIHandler
 {
@@ -67,6 +71,10 @@ URIHandler
     private ShortcutActionListener stopAction;
     private ShortcutActionListener oneMinuteAction;
     private ShortcutActionListener twoMinutesAction;
+    
+    @SuppressWarnings("unused")
+    private boolean breakTimerShown = false;
+    private Label title;
 
     public CountdownDisplay(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
@@ -136,6 +144,12 @@ URIHandler
     private void create(UserActions app1, String platformName1) {
         this.setSizeFull();
         this.addStyleName("largeCountdownBackground");
+        
+        title = new Label("");
+        this.addComponent(title);
+        title.setVisible(false);
+        title.addStyleName("title");
+        
         timeDisplay = createTimeDisplay();
         this.addComponent(timeDisplay);
         this.setComponentAlignment(timeDisplay, Alignment.MIDDLE_CENTER);
@@ -150,7 +164,7 @@ URIHandler
     private Label createTimeDisplay() {
         Label timeDisplay1 = new Label();
         timeDisplay1.setSizeUndefined();
-        timeDisplay1.setHeight("600px");
+        //timeDisplay1.setHeight("600px");
         timeDisplay1.addStyleName("largeCountdown");
         return timeDisplay1;
     }
@@ -165,10 +179,13 @@ URIHandler
     private void display(final String platformName1, final SessionData masterData1) throws RuntimeException {
         synchronized (app) {
             final Lifter currentLifter = masterData1.getCurrentLifter();
+            logger.warn("currentLifter = {}",currentLifter);
             if (currentLifter != null) {
                 boolean done = fillLifterInfo(currentLifter);
+                logger.warn("done = {}",done);
                 updateTime(masterData1);
                 timeDisplay.setVisible(!done);
+                timeDisplay.removeStyleName("intermission");
             } else {
                 timeDisplay.setValue(""); //$NON-NLS-1$
             }
@@ -179,6 +196,7 @@ URIHandler
 
     @Override
     public void refresh() {
+        logger.warn("refresh");
         display(platformName, masterData);
     }
 
@@ -197,6 +215,7 @@ URIHandler
         // we set the value to the time remaining for the current lifter as
         // computed by groupData
         int timeRemaining = groupData.getDisplayTime();
+        logger.warn("updateTime {}",timeRemaining);
         pushTime(timeRemaining);
     }
 
@@ -393,8 +412,19 @@ URIHandler
     public void registerAsListener() {
         Window mainWindow = app.getMainWindow();
         mainWindow.addListener((CloseListener)this);
+        
+        // listen to changes in the competition data
+        logger.debug("listening to session data updates.");        
         registerAsGroupDataListener(platformName, masterData);
+        
+        // listen to intermission timer events
+        masterData.addBlackBoardListener(this);
+        logger.debug("listening to intermission timer events.");
+        
+        // listen to decisions        
         masterData.getRefereeDecisionController().addListener(this);
+        
+        // listen to main timer events
         final CountdownTimer timer = masterData.getTimer();
         timer.setCountdownDisplay(this);
         addActions(mainWindow);
@@ -408,6 +438,16 @@ URIHandler
     @Override
     public void unregisterAsListener() {
         Window mainWindow = app.getMainWindow();
+        if (popUp != null) {
+            mainWindow.removeWindow(popUp);
+            popUp = null;
+        }
+        
+        // stop listening to intermission timer events
+        removeIntermissionTimer();
+        masterData.removeBlackBoardListener(this);
+        logger.debug("stopped listening to intermission timer events");
+        
         mainWindow.removeListener((CloseListener)this);
         masterData.removeListener(updateEventListener);
         masterData.getRefereeDecisionController().removeListener(this);
@@ -541,4 +581,53 @@ URIHandler
         actionNotifier.removeAction(action3ok);
         actionNotifier.removeAction(action3fail);
     }
+    
+
+    @Override
+    public void intermissionTimerUpdate(IntermissionTimerEvent event) {
+        Integer remainingMilliseconds = event.getRemainingMilliseconds();
+        if (remainingMilliseconds != null && remainingMilliseconds > 0) {
+            displayIntermissionTimer(remainingMilliseconds);   
+        } else {
+            removeIntermissionTimer();
+        }
+
+    }
+
+    /**
+     * Hide the break timer
+     */
+    private void removeIntermissionTimer() {
+        logger.warn("removing intermission timer");
+        breakTimerShown = false;
+        title.setVisible(false);
+        //title.setHeight("0%");
+        //timeDisplay.setHeight("100%");
+        
+        // force update
+        lastTimeRemaining = 0;
+        refresh();
+    }
+
+    /**
+     * Display the break timer
+     * @param remainingMilliseconds
+     */
+    private void displayIntermissionTimer(Integer remainingMilliseconds) {
+        synchronized (app) {
+            breakTimerShown = true;
+            
+            title.setVisible(true);
+            title.addStyleName("title");
+            title.setValue(Messages.getString("AttemptBoard.Pause", CompetitionApplication.getCurrentLocale()));
+            //title.setHeight("15%");
+
+            timeDisplay.setVisible(true);
+            timeDisplay.addStyleName("intermission");
+            timeDisplay.setValue(TimeFormatter.formatAsSeconds(remainingMilliseconds));
+            //timeDisplay.setHeight("85%");
+        }
+        app.push();
+    }
+
 }

@@ -60,26 +60,25 @@ public class DurationField extends FieldWrapper<Integer>{
         // Take a String and turn it into an Integer
         Integer parsedValue;
         Date parsedDate;
-
-        SimpleDateFormat minSecs = new SimpleDateFormat("HH:mm:ss");
         TimeZone gmt = TimeZone.getTimeZone("GMT");
-        minSecs.setTimeZone(gmt);
-        minSecs.setLenient(true);
+
         String stringValue = (String) formattedValue;
-        String strippedStringValue = stringValue;
+        String strippedStringValue = null;
         try {
-            logger.warn("stringValue0={}",stringValue);
+            logger.debug("stringValue0={}",stringValue);
             if (stringValue == null) return 0;
 
+            if (!stringValue.contains(":")) {
+                strippedStringValue = stringValue;
+            }
             if (stringValue.endsWith(":00")) {
                 int posSuffix = stringValue.indexOf(":00");
-
                 if (posSuffix != -1) {
-                    strippedStringValue  = strippedStringValue.substring(0,posSuffix);
+                    strippedStringValue  = stringValue.substring(0,posSuffix);
                 }
             }
             
-             if (!strippedStringValue.contains(":")) {
+             if (strippedStringValue != null && !strippedStringValue.contains(":")) {
                 try {
                     int hours = 0;
                     int minutes = Integer.parseInt(strippedStringValue);
@@ -88,7 +87,7 @@ public class DurationField extends FieldWrapper<Integer>{
                         minutes = minutes % 60;
                     }
                     stringValue = hours + ":" + minutes + ":00";
-                    logger.warn("stringValue1={}",stringValue);
+                    logger.debug("stringValue1={}",stringValue);
     
                     SimpleDateFormat hrMinSecs = new SimpleDateFormat("HH:mm:ss");
                     hrMinSecs.setTimeZone(gmt);
@@ -99,12 +98,16 @@ public class DurationField extends FieldWrapper<Integer>{
                     long parsedTime = parsedDate.getTime();
                     new Date(0);
                     parsedValue = (int) (parsedTime)/1000;
-                    logger.warn("formatted value1 date={} millis={}",parsedDate,parsedValue*1000);
+                    logger.debug("formatted value1 date={} millis={}",parsedDate,parsedValue*1000);
                 } catch (NumberFormatException e) {
                     throw new ConversionException(e);
                 }
             } else if (stringValue.length() <= 5 ){
-                logger.warn("stringValue2={}",stringValue);
+                SimpleDateFormat minSecs = new SimpleDateFormat("mm:ss");
+
+                minSecs.setTimeZone(gmt);
+                minSecs.setLenient(true);
+                logger.debug("stringValue2={}",stringValue);
                 parsedDate = minSecs.parse(stringValue);
                 // date parsing 
                 long parsedTime = parsedDate.getTime();
@@ -112,7 +115,7 @@ public class DurationField extends FieldWrapper<Integer>{
                 parsedValue = (int) (parsedTime)/1000;
                 logger.debug("formatted value1 date={} millis={}",parsedDate,parsedValue*1000);
             } else {
-                logger.warn("stringValue3={}",stringValue);
+                logger.debug("stringValue3={}",stringValue);
                 SimpleDateFormat hrMinSecs = new SimpleDateFormat("HH:mm:ss");
                 hrMinSecs.setTimeZone(gmt);
                 hrMinSecs.setLenient(false);

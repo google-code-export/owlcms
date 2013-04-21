@@ -31,11 +31,11 @@ import org.concordiainternational.competition.decision.JuryDecisionController;
 import org.concordiainternational.competition.decision.RefereeDecisionController;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.nec.NECDisplay;
-import org.concordiainternational.competition.publicAddress.PublicAddressCountdownTimer;
+import org.concordiainternational.competition.publicAddress.IntermissionTimer;
 import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent;
 import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener;
-import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent;
-import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent.MessageTimerListener;
+import org.concordiainternational.competition.publicAddress.IntermissionTimerEvent;
+import org.concordiainternational.competition.publicAddress.IntermissionTimerEvent.IntermissionTimerListener;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.ui.PlatesInfoEvent.PlatesInfoListener;
 import org.concordiainternational.competition.ui.components.DecisionLightsWindow;
@@ -169,7 +169,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      */
     private void init() {
     	blackBoardEventRouter.register(MessageDisplayListener.class, PublicAddressMessageEvent.class);
-    	blackBoardEventRouter.register(MessageTimerListener.class, PublicAddressTimerEvent.class);
+    	blackBoardEventRouter.register(IntermissionTimerListener.class, IntermissionTimerEvent.class);
     	blackBoardEventRouter.register(PlatesInfoListener.class, PlatesInfoEvent.class);
     }
 
@@ -664,7 +664,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     private CompetitionApplication masterApplication;
     private boolean announcerEnabled = true;
 	public Item publicAddressItem;
-	private PublicAddressCountdownTimer publicAddressTimer = new PublicAddressCountdownTimer(this);
+	private IntermissionTimer publicAddressTimer = new IntermissionTimer(this);
 	private Platform platform;
 
 
@@ -1151,7 +1151,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
 
 	public void displayPublicAddress() {
-		PublicAddressCountdownTimer timer1 = (PublicAddressCountdownTimer) publicAddressItem.getItemProperty("remainingSeconds").getValue();
+		IntermissionTimer timer1 = (IntermissionTimer) publicAddressItem.getItemProperty("remainingSeconds").getValue();
 		int remainingMilliseconds = timer1.getRemainingMilliseconds();
 		
 		// tell the registered browsers to pop-up the message area
@@ -1163,7 +1163,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 		fireBlackBoardEvent(messageEvent);
 		
 		// tell the message areas to display the initial time
-		PublicAddressTimerEvent timerEvent = new PublicAddressTimerEvent();
+		IntermissionTimerEvent timerEvent = new IntermissionTimerEvent();
 		timerEvent.setRemainingMilliseconds(remainingMilliseconds);
 		fireBlackBoardEvent(timerEvent);
 
@@ -1185,7 +1185,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 	}
 
 
-	public PublicAddressCountdownTimer getPublicAddressTimer() {
+	public IntermissionTimer getIntermissionTimer() {
 		return publicAddressTimer;
 	}
 

@@ -8,7 +8,7 @@
 package org.concordiainternational.competition.publicAddress;
 
 import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener;
-import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent.MessageTimerListener;
+import org.concordiainternational.competition.publicAddress.IntermissionTimerEvent.IntermissionTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 
@@ -16,7 +16,7 @@ import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Label;
 
 @SuppressWarnings("serial")
-public class PublicAddressOverlay extends CustomLayout implements MessageTimerListener, MessageDisplayListener {
+public class PublicAddressOverlay extends CustomLayout implements IntermissionTimerListener, MessageDisplayListener {
 
 	private Label remainingTime;
 	private Label title;
@@ -46,7 +46,7 @@ public class PublicAddressOverlay extends CustomLayout implements MessageTimerLi
 	}
 	
 	@Override
-	public void timerUpdate(PublicAddressTimerEvent event) {
+	public void intermissionTimerUpdate(IntermissionTimerEvent event) {
 		synchronized(app) {
 			Integer remainingMilliseconds = event.getRemainingMilliseconds();
 			if (remainingMilliseconds != null) {

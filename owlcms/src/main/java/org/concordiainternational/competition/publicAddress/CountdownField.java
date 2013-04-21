@@ -8,7 +8,7 @@
 package org.concordiainternational.competition.publicAddress;
 
 import org.concordiainternational.competition.i18n.Messages;
-import org.concordiainternational.competition.publicAddress.PublicAddressTimerEvent.MessageTimerListener;
+import org.concordiainternational.competition.publicAddress.IntermissionTimerEvent.IntermissionTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.components.ISO8601DateField;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
@@ -29,15 +29,15 @@ import com.vaadin.ui.Layout;
 import com.vaadin.ui.TextField;
 
 @SuppressWarnings("serial")
-public class CountdownField extends CustomField implements MessageTimerListener {
+public class CountdownField extends CustomField implements IntermissionTimerListener {
 	
 	private static Logger logger = LoggerFactory.getLogger(CountdownField.class);
 
-	private PublicAddressCountdownTimer timer;
+	private IntermissionTimer timer;
 	private Label remainingSecondsDisplay;
 	private DateField endTime;
 	private DurationField requestedSeconds;
-	private BeanItem<PublicAddressCountdownTimer> timerItem;
+	private BeanItem<IntermissionTimer> timerItem;
 	private CompetitionApplication app;
 
 	public CountdownField() {
@@ -50,8 +50,8 @@ public class CountdownField extends CustomField implements MessageTimerListener 
 	 * @param item
 	 */
 	private Layout createLayout() {
-		GridLayout grid = new GridLayout(3,3);
-		addRunningTimerToLayout(grid, 0);
+		GridLayout grid = new GridLayout(4,3);
+		addIntermissionTimerToLayout(grid, 0);
 		addEndTimeToLayout(grid, 1);
 		addRequestedSecondsToLayout(grid, 2);
 		grid.setSpacing(true);
@@ -62,7 +62,7 @@ public class CountdownField extends CustomField implements MessageTimerListener 
 	 * @param grid
 	 * @param row which row of the grid
 	 */
-	private void addRunningTimerToLayout(GridLayout grid, int row) {
+	private void addIntermissionTimerToLayout(GridLayout grid, int row) {
 		grid.addComponent(new Label(Messages.getString("Field.CountdownField.runningTimer", app.getLocale())),0,row);
 		remainingSecondsDisplay = new Label();
 		grid.addComponent(remainingSecondsDisplay,1,row);
@@ -81,13 +81,13 @@ public class CountdownField extends CustomField implements MessageTimerListener 
 			}
 		});
 		timerButtons.addComponent(stop);
-/*		Button reset = new Button(Messages.getString("reset", app.getLocale()), new ClickListener() {	
-			@Override
-			public void buttonClick(ClickEvent event) {
-				timer.start(); // start from the requested number of seconds.
-			}
-		});
-		timerButtons.addComponent(reset);*/
+        Button clear = new Button(Messages.getString("Field.CountdownField.clear", app.getLocale()), new ClickListener() {    
+            @Override
+            public void buttonClick(ClickEvent event) {
+                requestedSeconds.setValue(0);
+            }
+        });
+        timerButtons.addComponent(clear);		
 		grid.addComponent(timerButtons,2,row);
 	}
 	
@@ -127,8 +127,9 @@ public class CountdownField extends CustomField implements MessageTimerListener 
 		grid.addComponent(label,0,row);
 		
 		// wrap a text field to handle the hh:mm:ss and mm:ss formats, returning milliseconds
-		requestedSeconds = new DurationField(new TextField(),Integer.class);
-		requestedSeconds.setImmediate(false);
+		final TextField rawField = new TextField();
+        requestedSeconds = new DurationField(rawField,Integer.class);
+		requestedSeconds.setImmediate(true);
 		requestedSeconds.setWriteThrough(true);
 		grid.addComponent(requestedSeconds,1,row);
 		
@@ -136,7 +137,7 @@ public class CountdownField extends CustomField implements MessageTimerListener 
 		Button set = new Button(Messages.getString("Field.CountdownField.set", app.getLocale()), new ClickListener() {	
 			@Override
 			public void buttonClick(ClickEvent event) {
-				logger.debug("requestedSeconds prior to commit {}",requestedSeconds.getValue());
+				logger.debug("requestedSeconds prior to commit {}, rawfield={}",requestedSeconds.getValue(),rawField.getValue());
 				requestedSeconds.commit(); // write to the underlying bean.
 			}
 		});
@@ -148,13 +149,13 @@ public class CountdownField extends CustomField implements MessageTimerListener 
     public void setInternalValue(Object newValue) throws ReadOnlyException,
             ConversionException {
         // use the official timer -- in our case no one should override.
-    	timer = (newValue instanceof PublicAddressCountdownTimer) ?
-    				(PublicAddressCountdownTimer) newValue
-    				: CompetitionApplication.getCurrent().getMasterData().getPublicAddressTimer();
+    	timer = (newValue instanceof IntermissionTimer) ?
+    				(IntermissionTimer) newValue
+    				: CompetitionApplication.getCurrent().getMasterData().getIntermissionTimer();
   
-    	timer = CompetitionApplication.getCurrent().getMasterData().getPublicAddressTimer();
+    	timer = CompetitionApplication.getCurrent().getMasterData().getIntermissionTimer();
         super.setInternalValue(timer);
-        timerItem = new BeanItem<PublicAddressCountdownTimer>(timer);
+        timerItem = new BeanItem<IntermissionTimer>(timer);
         
 		Property endTimeProperty = timerItem.getItemProperty("endTime");
 		endTime.setPropertyDataSource(endTimeProperty);
@@ -173,7 +174,7 @@ public class CountdownField extends CustomField implements MessageTimerListener 
 	
     @Override
 	public Class<?> getType() {
-		return PublicAddressCountdownTimer.class;
+		return IntermissionTimer.class;
 	}
 
 	@Override
@@ -182,7 +183,7 @@ public class CountdownField extends CustomField implements MessageTimerListener 
 	}
 
 	@Override
-	public void timerUpdate(PublicAddressTimerEvent event) {
+	public void intermissionTimerUpdate(IntermissionTimerEvent event) {
 		Integer remainingMilliseconds = event.getRemainingMilliseconds();
 		int seconds = TimeFormatter.getSeconds(remainingMilliseconds);
 		logger.debug("received update this={} event={}",this.toString(),seconds);
