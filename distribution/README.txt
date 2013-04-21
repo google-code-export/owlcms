@@ -35,9 +35,6 @@ b. cd to owlcmsParent
 e. cd distribution 
 		mvn clean assembly:single 
     	(if under Eclipse, run  "prepare uploads.launch" using right-click on the .launch file)
-    	
-f. commit all modified directories.
-
 
 
 2) Create the windows installer with Advanced Installer Freeware
