@@ -300,6 +300,10 @@ border-style: none;
 	color: yellow;
 }
 
+.newAttemptBoard .intermission {
+	color: lime;
+}
+
 .newAttemptBoard .v-label-text {
 	font-size: 6em;
 	line-height: 1.2em;
@@ -544,13 +548,6 @@ button.yesButton {
 	padding: 3px;
 }
 
-.largeCountdown {
-	font-size: 600px;
-	line-height: 600px;
-	font-weight: bold;
-	vertical-align: middle;
-}
-
 .decisionLightsWindow .v-window-outerheader {
 	display: none;
 }
@@ -589,9 +586,35 @@ button.yesButton {
 	background-color: black;
 }
 
+.largeCountdown {
+	line-height: 1em;
+	font-weight: bold;
+	vertical-align: middle;
+	color: yellow;
+}
+
+.v-panel-content .largeCountdownBackground .largeCountdown {
+	font-size: 60em;
+	background-color: black;
+	color: yellow;
+}
+
 .v-panel-content .largeCountdownBackground {
 	background-color: black;
+}
+
+.v-panel-content .largeCountdownBackground .intermission {
+	background-color: black;
+	color: lime;
+	font-size: 40em;
+}
+
+.v-panel-content .largeCountdownBackground .title {
+	background-color: black;
 	color: white;
+	font-weight: bold;
+	font-size: 10em;
+	line-height: 1em;
 }
 
 .refereePad .red {
@@ -650,9 +673,9 @@ table.publicAddressOverlay {
 }
 
 .publicAddressOverlay tr td.remainingTime .v-label {
-	font-size: xx-large;
+	font-size: 5em;
 	font-weight: bold;
-	color: yellow;
+	color: lime;
 }
 
 .publicAddressOverlay img {

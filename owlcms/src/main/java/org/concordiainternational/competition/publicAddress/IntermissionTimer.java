@@ -23,11 +23,11 @@ import org.slf4j.LoggerFactory;
  * @author jflamy
  * 
  */
-public class PublicAddressCountdownTimer implements Serializable {
+public class IntermissionTimer implements Serializable {
 
     private static final long serialVersionUID = 8921641103581546472L;
 
-    final static Logger logger = LoggerFactory.getLogger(PublicAddressCountdownTimer.class);
+    final static Logger logger = LoggerFactory.getLogger(IntermissionTimer.class);
     final private static int DECREMENT = 1000; // milliseconds
     private int requestedSeconds;
     private int remainingSeconds;
@@ -40,7 +40,7 @@ public class PublicAddressCountdownTimer implements Serializable {
 
 	private boolean paused = false;
 
-    public PublicAddressCountdownTimer(SessionData masterData) {
+    public IntermissionTimer(SessionData masterData) {
     	this.masterData = masterData;
         logger.debug("new"); //$NON-NLS-1$
     }
@@ -123,7 +123,7 @@ public class PublicAddressCountdownTimer implements Serializable {
 	 * 
 	 */
 	private void fireTimerEvent(int remainingSeconds1) {
-		PublicAddressTimerEvent timerEvent = new PublicAddressTimerEvent();
+		IntermissionTimerEvent timerEvent = new IntermissionTimerEvent();
         timerEvent.setRemainingMilliseconds(remainingSeconds1*1000);
         masterData.fireBlackBoardEvent(timerEvent);
 	}

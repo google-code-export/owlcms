@@ -48,7 +48,7 @@ public class PublicAddressForm extends Form implements Window.CloseListener {
 			PropertysetItem item = new PropertysetItem();
 			item.addItemProperty("title", new ObjectProperty<String>("", String.class));
 			item.addItemProperty("message", new ObjectProperty<String>("", String.class));
-			item.addItemProperty("remainingSeconds", new ObjectProperty<PublicAddressCountdownTimer>(null, PublicAddressCountdownTimer.class));
+			item.addItemProperty("remainingSeconds", new ObjectProperty<IntermissionTimer>(null, IntermissionTimer.class));
 			masterData.setPublicAddressItem(item);
 		}
 
@@ -162,10 +162,12 @@ public class PublicAddressForm extends Form implements Window.CloseListener {
     @Override
     public void setItemDataSource(Item itemDataSource) {
         if (itemDataSource != null) {
-            List<Object> orderedProperties = new ArrayList<Object>();
+            List<Object> orderedProperties = new ArrayList<Object>();   
+            orderedProperties.add("remainingSeconds"); //$NON-NLS-1$
+            
             orderedProperties.add("title"); //$NON-NLS-1$
             orderedProperties.add("message"); //$NON-NLS-1$
-            orderedProperties.add("remainingSeconds"); //$NON-NLS-1$
+
             super.setItemDataSource(itemDataSource, orderedProperties);
             getFooter().setVisible(true);
         } else {

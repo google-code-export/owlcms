@@ -16,11 +16,11 @@ import com.github.wolfie.blackboard.annotation.ListenerMethod;
  * @author jflamy
  *
  */
-public class PublicAddressTimerEvent implements Event {
+public class IntermissionTimerEvent implements Event {
 	
-	public interface MessageTimerListener extends Listener {
+	public interface IntermissionTimerListener extends Listener {
 		@ListenerMethod
-		public void timerUpdate(final PublicAddressTimerEvent event);
+		public void intermissionTimerUpdate(final IntermissionTimerEvent event);
 	}
 	
 	Integer remainingMilliseconds = null;
