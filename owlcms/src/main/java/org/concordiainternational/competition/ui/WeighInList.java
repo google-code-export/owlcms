@@ -132,6 +132,10 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
             // clear all lifters.
             final Button clearAllButton = clearAllButton(locale);
             tableToolbar1.addComponent(clearAllButton);
+            
+            // reset all lifters.
+            final Button resetAllButton = resetAllButton(locale);
+            tableToolbar1.addComponent(resetAllButton);
 
 
         } else {
@@ -272,6 +276,22 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
         clearAllButton.addListener(clearAllListener);
         return clearAllButton;
     }
+    
+    private Button resetAllButton(final Locale locale) {
+        final Button resetAllButton = new Button(Messages.getString("WeighInList.resetLifters", locale)); //$NON-NLS-1$
+        final Button.ClickListener resetAllListener = new Button.ClickListener() { //$NON-NLS-1$
+            private static final long serialVersionUID = -8473648982746209221L;
+
+            @Override
+            public void buttonClick(ClickEvent event) {
+                resetAllButton.setComponentError(null);
+                resetAllLifters();
+                fullReload();
+            }
+        };
+        resetAllButton.addListener(resetAllListener);
+        return resetAllButton;
+    }
 
     /**
      * @param locale
@@ -370,13 +390,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
     
             @Override
             public void buttonClick(ClickEvent event) {
-                CategoryLookup.getSharedInstance().reload();
-                
-                WeighInList.this.removeComponent(table);
-                populateAndConfigureTable();
-                WeighInList.this.addComponent(table);
-                positionTable();
-                setButtonVisibility();
+                fullReload();
             }
         };
         refreshButton.addListener(refreshClickListener);
@@ -445,6 +459,55 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
         }
         this.refresh();
     }
+    
+    
+    /**
+     * Delete lifters from current group (all lifters if no current group)
+     */
+    protected void resetAllLifters() {
+        final List<Lifter> list = currentSessionliftersIfSelectedAllIfNot();
+        for (Lifter curLifter : list) {
+            
+            //curLifter.setCleanJerk1Declaration("");
+            curLifter.setCleanJerk1AutomaticProgression("");
+            curLifter.setCleanJerk1Change1("");
+            curLifter.setCleanJerk1Change2("");
+            curLifter.setCleanJerk1ActualLift("");
+            
+            curLifter.setCleanJerk2Declaration("");
+            curLifter.setCleanJerk2AutomaticProgression("");
+            curLifter.setCleanJerk2Change1("");
+            curLifter.setCleanJerk2Change2("");
+            curLifter.setCleanJerk2ActualLift("");
+            
+            curLifter.setCleanJerk3Declaration("");
+            curLifter.setCleanJerk3AutomaticProgression("");
+            curLifter.setCleanJerk3Change1("");
+            curLifter.setCleanJerk3Change2("");
+            curLifter.setCleanJerk3ActualLift("");
+            
+            //curLifter.setSnatch1Declaration("");
+            curLifter.setSnatch1AutomaticProgression("");
+            curLifter.setSnatch1Change1("");
+            curLifter.setSnatch1Change2("");
+            curLifter.setSnatch1ActualLift("");
+            
+            curLifter.setSnatch2Declaration("");
+            curLifter.setSnatch2AutomaticProgression("");
+            curLifter.setSnatch2Change1("");
+            curLifter.setSnatch2Change2("");
+            curLifter.setSnatch2ActualLift("");
+            
+            curLifter.setSnatch3Declaration("");
+            curLifter.setSnatch3AutomaticProgression("");
+            curLifter.setSnatch3Change1("");
+            curLifter.setSnatch3Change2("");
+            curLifter.setSnatch3ActualLift("");
+            
+        }
+        this.refresh();
+    }
+
 
     @SuppressWarnings("unchecked")
     protected List<Lifter> allLifters(boolean restrictToCurrentGroup) {
@@ -675,6 +738,16 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
     public DownloadStream handleURI(URL context, String relativeUri) {
         registerAsListener();
         return null;
+    }
+
+    public void fullReload() {
+        CategoryLookup.getSharedInstance().reload();
+        
+        WeighInList.this.removeComponent(table);
+        populateAndConfigureTable();
+        WeighInList.this.addComponent(table);
+        positionTable();
+        setButtonVisibility();
     }
 
 
