@@ -17,6 +17,7 @@ import java.util.Locale;
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
+import org.concordiainternational.competition.publicAddress.LogoUploader;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -131,6 +132,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         editPS = addFileSelector(formLayout, locale, competitionItem, "protocolFileName", "", "/WEB-INF/classes/templates/protocolSheet", displayPS); //$NON-NLS-1$ //$NON-NLS-2$)
         displayFN = addFileDisplay(formLayout, locale, competitionItem, "resultTemplateFileName", ""); //$NON-NLS-1$ //$NON-NLS-2$
         editFN = addFileSelector(formLayout, locale, competitionItem, "resultTemplateFileName", "", "/WEB-INF/classes/templates/competitionBook", displayFN); //$NON-NLS-1$ //$NON-NLS-2$)
+        addLogoUploader(formLayout,locale);
 
         editable = false;
         setReadOnly(formLayout, true);
@@ -189,6 +191,12 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         fileSelector.setImmediate(true);
         formLayout.addComponent(fileSelector);
         return fileSelector;
+    }
+    
+
+
+    private void addLogoUploader(FormLayout formLayout, Locale locale) {
+            formLayout.addComponent(new LogoUploader(formLayout));
     }
 
 	/**
