@@ -141,7 +141,36 @@ public class CountdownField extends CustomField implements IntermissionTimerList
 				requestedSeconds.commit(); // write to the underlying bean.
 			}
 		});
+		
+        Button five = new Button("5", new ClickListener() {  
+            @Override
+            public void buttonClick(ClickEvent event) {
+                requestedSeconds.setValue(5*60);
+                logger.debug("requestedSeconds prior to commit {}, rawfield={}",requestedSeconds.getValue(),rawField.getValue());
+                requestedSeconds.commit(); // write to the underlying bean.
+            }
+        });
+        Button ten = new Button("10", new ClickListener() {  
+            @Override
+            public void buttonClick(ClickEvent event) {
+                requestedSeconds.setValue(10*60);
+                logger.debug("requestedSeconds prior to commit {}, rawfield={}",requestedSeconds.getValue(),rawField.getValue());
+                requestedSeconds.commit(); // write to the underlying bean.
+            }
+        });
+        Button fifteen = new Button("15", new ClickListener() {  
+            @Override
+            public void buttonClick(ClickEvent event) {
+                requestedSeconds.setValue(15*60);
+                logger.debug("requestedSeconds prior to commit {}, rawfield={}",requestedSeconds.getValue(),rawField.getValue());
+                requestedSeconds.commit(); // write to the underlying bean.
+            }
+        });
+                        		
 		buttons.addComponent(set);
+		buttons.addComponent(five);
+		buttons.addComponent(ten);
+		buttons.addComponent(fifteen);
 		grid.addComponent(buttons,2,row);
 	}
 	
