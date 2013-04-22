@@ -28,6 +28,7 @@ import com.vaadin.ui.Field;
 import com.vaadin.ui.Form;
 import com.vaadin.ui.FormFieldFactory;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window;
@@ -57,7 +58,7 @@ public class PublicAddressForm extends Form implements Window.CloseListener {
 		form.setReadOnly(false);
 
 		CompetitionApplication app = CompetitionApplication.getCurrent();
-		Window editingWindow = new Window(Messages.getString("FieldName.message", app.getLocale()));
+		Window editingWindow = new Window(Messages.getString("LiftList.publicAddress", app.getLocale()));
 		form.setWindow(editingWindow);
 		form.setParentList(list);
 		editingWindow.getContent().addComponent(form);
@@ -116,11 +117,17 @@ public class PublicAddressForm extends Form implements Window.CloseListener {
         		        
         HorizontalLayout footer = new HorizontalLayout();
         footer.setSpacing(true);
-        footer.addComponent(ok);
+        
+        Label spacer = new Label("");
+        footer.addComponent(spacer);
+//        footer.addComponent(ok);
         footer.addComponent(cancel);
         footer.addComponent(display);
         footer.addComponent(clear);
+
         footer.setVisible(true);
+        footer.setWidth("100%");
+        footer.setExpandRatio(spacer, 100);
         
         setFooter(footer);
 	}
@@ -141,14 +148,14 @@ public class PublicAddressForm extends Form implements Window.CloseListener {
 		}
 	});
 	
-	Button ok = new Button(Messages.getString("Common.OK", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	 //$NON-NLS-1$
-		@Override
-		public void buttonClick(ClickEvent event) {
-			commit();
-			display();
-			closeWindow();
-		}
-	});
+//	Button ok = new Button(Messages.getString("Common.OK", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	 //$NON-NLS-1$
+//		@Override
+//		public void buttonClick(ClickEvent event) {
+//			commit();
+//			display();
+//			closeWindow();
+//		}
+//	});
 	
 	Button cancel = new Button(Messages.getString("Common.cancel", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	 //$NON-NLS-1$
 		@Override
