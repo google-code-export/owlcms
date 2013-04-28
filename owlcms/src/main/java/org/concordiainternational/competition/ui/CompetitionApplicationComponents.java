@@ -102,7 +102,7 @@ public class CompetitionApplicationComponents {
         urlFragmentToView.put(OJURY_CONSOLE, new JuryConsoleComponent(false));
         urlFragmentToView.put(MJURY_CONSOLE, new JuryConsoleComponent(true));
         urlFragmentToView.put(MPLATES_INFO, new PlatesInfoComponent());
-        urlFragmentToView.put(TIMEKEEPER_VIEW, new TimekeeperViewComponent());
+        urlFragmentToView.put(TIMEKEEPER_VIEW, new TimekeeperConsoleComponent() /*new TimekeeperViewComponent()*/);
         urlFragmentToView.put(UPLOAD_VIEW, new SpreadsheetUploaderComponent());
         urlFragmentToView.put(WEIGH_IN_LIST, new WeighInListComponent());
     }
@@ -347,6 +347,7 @@ public class CompetitionApplicationComponents {
     /**
      * Lazy builder for time keeper view.
      */
+    @SuppressWarnings("unused")
     private class TimekeeperViewComponent implements CompetitionApplicationComponent {
         private AnnouncerView timekeeperView = null;
 

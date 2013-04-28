@@ -47,8 +47,8 @@ public class Menu extends MenuBar implements Serializable {
 
         MenuItem console = createConsoleMenu(menu, competitionApplication, locale);
         createAnnouncerMenuItem(console, locale);
-        createChangesMenuItem(console, locale);
         createTimeKeeperMenuItem(console, locale);
+        createChangesMenuItem(console, locale);
 
         MenuItem projectors = createProjectorsMenuItem(menu, competitionApplication, locale);
         createDisplayMenuItem(projectors, competitionApplication, locale, "dlp");
@@ -59,8 +59,6 @@ public class Menu extends MenuBar implements Serializable {
         createPublicAttemptBoardMenuItem(projectors, competitionApplication, locale);
         createLifterAttemptBoardMenuItem(projectors, competitionApplication, locale);
         projectors.addSeparator();
-        createCountdownDisplayMenuItem(projectors, competitionApplication, locale);
-        projectors.addSeparator();
         //createLiftOrderMenuItem(projectors, competitionApplication, locale);
         createSummaryLiftOrderMenuItem(projectors, competitionApplication, locale);
         
@@ -68,6 +66,8 @@ public class Menu extends MenuBar implements Serializable {
         createLoadComputerMenuItem(menu, competitionApplication, locale);
 
         MenuItem decisions = createDecisionMenuItem(menu, competitionApplication, locale);
+        createCountdownDisplayMenuItem(decisions, competitionApplication, locale);
+        decisions.addSeparator();
         createRefereeMenuItem(decisions, competitionApplication, locale, 0);
         createRefereeMenuItem(decisions, competitionApplication, locale, 1);
         createRefereeMenuItem(decisions, competitionApplication, locale, 2);
