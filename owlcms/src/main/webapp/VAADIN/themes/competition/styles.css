@@ -711,3 +711,87 @@ textarea.v-textarea-fixedFont {
 	border-radius: 7px;
 	color: black;
 }
+
+.mtkPad {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	font-size: 4em;
+	color: black;
+}
+
+.mtkPad .blocked {
+	color: grey;
+}
+
+.mtkPad .mtkStop {
+	background-color: red;
+	border-style: solid;
+	border-width: thin;
+	display: table;
+}
+
+#mtkStopLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+
+.mtkPad .mtkStart {
+	background-color: green;
+	border-style: solid;
+	border-width: thin;
+	display: table;
+}
+
+#mtkStartLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+
+.mtkPad .mtkOne {
+	background-color: buttonface;
+	border-style: solid;
+	border-width: thin;
+	display: table;
+}
+
+#mtkOneLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+
+.mtkPad .mtkTwo {
+	background-color: buttonface;
+	border-style: solid;
+	border-width: thin;
+	display: table;
+}
+
+#mtkTwoLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+.mtkPad .mtkTimerDisplay {
+	display: table;
+	font-size: 3em;
+}
+
+.mtkPad .mtkTimerDisplaySmall {
+	display: table;
+	font-size: 2em;
+	padding-top: 0.5em;
+}
+
+#mtkTimeLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}

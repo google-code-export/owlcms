@@ -10,14 +10,15 @@ package org.concordiainternational.competition.mobile;
 import java.net.URL;
 
 import org.concordiainternational.competition.data.RuleViolationException;
+import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
 import org.concordiainternational.competition.ui.SessionData;
+import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
 import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
-import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
@@ -76,7 +77,7 @@ URIHandler {
 
     private int prevTimeRemaining;
     private UpdateEventListener updateEventListener;
-
+    
 
     public MTimekeeperConsole(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
@@ -173,7 +174,8 @@ URIHandler {
         bottom.setMargin(true);
         bottom.setSpacing(true);
 
-        start = new TouchDiv("<div id='mtkStartLabel'>GO<img src='../VAADIN/themes/m/images/playTriangle.png'></img></div>",Label.CONTENT_XHTML);
+        //start = new TouchDiv("<div id='mtkStartLabel'>GO<img src='../VAADIN/themes/m/images/playTriangle.png'></img></div>",Label.CONTENT_XHTML);
+        start = new TouchDiv("<div id='mtkStartLabel'>"+Messages.getString("TimekeeperPad.GO", CompetitionApplication.getCurrentLocale())+"</div>",Label.CONTENT_XHTML);
         start.setHeight("90%");
         start.setWidth("90%");
         start.addStyleName("mtkStart");
@@ -190,7 +192,8 @@ URIHandler {
                 }).start();
             }});
 
-        stop = new TouchDiv("<div id='mtkStopLabel'>STOP</div>",Label.CONTENT_XHTML);
+        //stop = new TouchDiv("<div id='mtkStopLabel'>STOP</div>",Label.CONTENT_XHTML);
+        stop = new TouchDiv("<div id='mtkStopLabel'>"+Messages.getString("TimekeeperPad.STOP", CompetitionApplication.getCurrentLocale())+"</div>",Label.CONTENT_XHTML);
         stop.addStyleName("mtkStop");
         stop.setHeight("90%");
         stop.setWidth("90%");
@@ -264,9 +267,9 @@ URIHandler {
         bottom.setExpandRatio(stop,50.0F);
         bottom.setExpandRatio(minutes,50.0F);
     }
-
-
     
+        
+
     private void startDoIt() {
         logger.info("start clicked");
         groupData.setTimeKeepingInUse(true);

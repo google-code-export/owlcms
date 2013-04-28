@@ -9,22 +9,17 @@ a. Make sure that
 		
    all have correct version numbers.
   
-b. cd to owlcmsParent
+b. Clean everything:
+
+	if under Eclipse
+		right-click on owlcmsParent project and select "run as/maven clean"
+	else
+		cd to owlcmsParent
 		mvn clean
-		(if under Eclipse, right-click on owlcmsParent project and select "run as/maven clean")
+
+c. IF FIRST BUILD on a new checkout perform step "FIRST BUILD" at bottom of this file
 		
-		IF FIRST BUILD
-		
-				c. If the widgetset needs building (first build, or Vaadin version has changed.)
-				
-				   cd to owlcms
-						mvn clean compile vaadin:update-widgetset gwt:compile -P compile-widgetset   
-						(if under Eclipse, run  widgetset.launch  using right-click on the .launch file)
-				
-				d. cd back to owlcmsParent
-				
-		END IF FIRST BUILD
-		
+d. Recompile:
 		if under Eclipse,
 			1- menu Project/Clean/Clean all projects + rebuild automatically
 			2- right-click on owlcmsParent project and select "run as/maven install"
@@ -32,9 +27,13 @@ b. cd to owlcmsParent
 			mvn install
 		
 		
-e. cd distribution 
+e. Create distribution files:
+
+	if under Eclipse
+		inside distribution project, right-click on  "prepare uploads.launch" and run it.
+	else
+		cd to owlcmsParent
 		mvn clean assembly:single 
-    	(if under Eclipse, run  "prepare uploads.launch" using right-click on the .launch file)
 
 
 2) Create the windows installer with Advanced Installer Freeware
@@ -62,4 +61,20 @@ Because we use the Free edition, these steps are manual.
   - push
   - in project "distribution" run the maven goals:   antrun:run     (under eclipse "upload to code.google.com.launch")
     (this will send the files to the code.google.com/p/owlcms site)
+    
+==================================================================================    
+    
+FIRST BUILD additional steps:
+
+ 	Only needed	IF FIRST BUILD at step 1b.
+		
+				c. If the widgetset needs building (first build, or Vaadin version has changed.)
+				
+				   cd to owlcms
+						mvn clean compile vaadin:update-widgetset gwt:compile -P compile-widgetset   
+						(if under Eclipse, run  widgetset.launch  using right-click on the .launch file)
+				
+				d. cd back to owlcmsParent
+				
+		END IF FIRST BUILD
  
