@@ -139,11 +139,18 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         splitByGender(sortedLifters, sortedMen, sortedWomen);
         reportingBeans.put("mSinclair",sortedMen);
         reportingBeans.put("wSinclair",sortedWomen);
+        
+        sortedLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.CUSTOM);
+        lifterSorter.assignCategoryRanks(sortedLifters, Ranking.CUSTOM);
+        sortedMen = new ArrayList<Lifter>(sortedLifters.size());
+        sortedWomen = new ArrayList<Lifter>(sortedLifters.size());
+        splitByGender(sortedLifters, sortedMen, sortedWomen);
+        reportingBeans.put("mCus",sortedMen);
+        reportingBeans.put("wCus",sortedWomen);
 
         // team-oriented rankings. These put all the lifters from the same team together,
         // sorted from best to worst, so that the top "n" can be given points
         sortedLifters = LifterSorter.teamRankingOrderCopy(lifters, Ranking.CUSTOM);
-        lifterSorter.assignCategoryRanks(sortedLifters, Ranking.CUSTOM);
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());
         sortedWomen = new ArrayList<Lifter>(sortedLifters.size());
         splitByGender(sortedLifters, sortedMen, sortedWomen);
@@ -151,7 +158,6 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         reportingBeans.put("wCustom",sortedWomen);
 
         sortedLifters = LifterSorter.teamRankingOrderCopy(lifters, Ranking.COMBINED);
-        lifterSorter.assignCategoryRanks(sortedLifters, Ranking.COMBINED);
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());
         sortedWomen = new ArrayList<Lifter>(sortedLifters.size());
         splitByGender(sortedLifters, sortedMen, sortedWomen);
