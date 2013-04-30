@@ -411,17 +411,28 @@ public class LifterSorter implements Serializable {
             Category curCategory = null;
             if (WinningOrderComparator.useRegistrationCategory || rankingType == Ranking.CUSTOM) {
                 curCategory = curLifter.getRegistrationCategory();
-                if (curCategory == null && rankingType == Ranking.CUSTOM) curCategory = curLifter.getCategory();
+                if (curCategory == null && rankingType == Ranking.CUSTOM) {
+                    curCategory = curLifter.getCategory();
+                }
+                logger.trace("lifter {}, category {}, regcategory {}", new Object[]{curLifter,curLifter.getCategory(),curLifter.getRegistrationCategory()});
             } else {
                 curCategory = curLifter.getCategory();
             }
             if (Competition.isMasters()) {
                 curAgeGroup = curLifter.getAgeGroup();
+                if (!equals(curCategory, prevCategory) || !equals(curAgeGroup, prevAgeGroup)) {
+                    // category boundary has been crossed
+                    rank = 1;
+                }
+            } else {
+                // not masters, only consider category boundary
+                if (!equals(curCategory, prevCategory)) {
+                    // category boundary has been crossed
+                    logger.trace("category boundary crossed {}",curCategory);
+                    rank = 1;
+                }
             }
-            if (!equals(curCategory, prevCategory) || !equals(curAgeGroup, prevAgeGroup)) {
-                // category boundary has been crossed
-                rank = 1;
-            }
+
 
             if (curLifter.isInvited() || !curLifter.getTeamMember()) {
                 logger.trace("not counted {}  {}Rank={} total={} {}",
