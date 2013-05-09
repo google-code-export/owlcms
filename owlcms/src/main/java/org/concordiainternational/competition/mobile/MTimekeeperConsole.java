@@ -9,6 +9,7 @@ package org.concordiainternational.competition.mobile;
 
 import java.net.URL;
 
+import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.timer.CountdownTimer;
@@ -318,12 +319,12 @@ URIHandler {
 
 
     public void enableStopStart(boolean running) {
+        /* leave timekeeper in control at all times */
         synchronized (app) {
             if (!running) {
                 start.setEnabled(true);
                 stop.setEnabled(false);
-                showTimerDisplay(false);
-                
+                showTimerDisplay(false);             
             } else {
                 start.setEnabled(false);
                 stop.setEnabled(true);
@@ -407,14 +408,20 @@ URIHandler {
         updateEventListener = new SessionData.UpdateEventListener() {
 
             @Override
-            public void updateEvent(UpdateEvent updateEvent) {
+            public void updateEvent(final UpdateEvent updateEvent) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         synchronized (app) {
-                            int timeRemaining = groupData.getDisplayTime();
-                            updateTimeRemaining(timeRemaining);
-                            enableStopStart(false);
+                            // check current lifter                       
+                            Lifter eventLifter = updateEvent.getCurrentLifter();
+                            Lifter groupLifter = groupData.getCurrentLifter();
+                            CountdownTimer timer2 = groupData.getTimer();
+                            if (eventLifter != null && eventLifter.equals(groupLifter) && timer2 != null && !timer2.isRunning()) {
+                                int timeRemaining = groupData.getDisplayTime();
+                                updateTimeRemaining(timeRemaining);
+                                enableStopStart(false);
+                            }
                             setBlocked(false);
                         }
                         app.push();
@@ -543,6 +550,8 @@ URIHandler {
     @Override
     public void start(int timeRemaining) {
         setBlocked(false);
+        // in case announcer has not hit the announce button
+        groupData.getRefereeDecisionController().setBlocked(false);
         synchronized (app) {
             enableStopStart(true);
             if (timerDisplay != null) {
