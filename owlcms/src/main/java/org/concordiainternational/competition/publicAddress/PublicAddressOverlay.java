@@ -7,8 +7,8 @@
  */
 package org.concordiainternational.competition.publicAddress;
 
-import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener;
 import org.concordiainternational.competition.publicAddress.IntermissionTimerEvent.IntermissionTimerListener;
+import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 
