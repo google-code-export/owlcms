@@ -32,10 +32,10 @@ import org.concordiainternational.competition.decision.RefereeDecisionController
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.nec.NECDisplay;
 import org.concordiainternational.competition.publicAddress.IntermissionTimer;
-import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent;
-import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener;
 import org.concordiainternational.competition.publicAddress.IntermissionTimerEvent;
 import org.concordiainternational.competition.publicAddress.IntermissionTimerEvent.IntermissionTimerListener;
+import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent;
+import org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.ui.PlatesInfoEvent.PlatesInfoListener;
 import org.concordiainternational.competition.ui.components.DecisionLightsWindow;

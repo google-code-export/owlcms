@@ -563,7 +563,7 @@ public class TimerControls extends GridLayout {
 	        enableStopStart(true);
 		    timingLogger.debug("start timer.isRunning()={}", false); //$NON-NLS-1$
 		    groupData.startUpdateModel();
-
+		    groupData.getRefereeDecisionController().setBlocked(false);
 		}
 	}
 
