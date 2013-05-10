@@ -31,7 +31,7 @@ public interface IDecisionController {
 	public abstract void decisionMade(int refereeNo, boolean accepted);
 
 	/**
-	 * Register a new SessionData.Listener object with a SessionData in order to be
+	 * Register a new DecisionEventListener in order to be
 	 * informed of updates.
 	 * 
 	 * @param listener

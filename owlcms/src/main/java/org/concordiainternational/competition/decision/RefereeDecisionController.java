@@ -107,15 +107,16 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
                     (accepted ? "lift" : "no lift"));
         	return;
     	}
-// can't happen: the device itself is disabled when a red is given.
-//        if ((refereeDecisions[refereeNo].accepted != null) && !(refereeDecisions[refereeNo].accepted)) {
-//        	// cannot reverse from red to white.
-//        	logger.debug("decision ignored from referee {}: {} (prior decision was {})", 
-//        			new Object[] { refereeNo + 1,
-//                    (accepted ? "lift" : "no lift"), 
-//                    refereeDecisions[refereeNo].accepted});
-//        	return;
-//        }
+
+    	// prevent reversal from red to white.
+        if ((refereeDecisions[refereeNo].accepted != null) && !(refereeDecisions[refereeNo].accepted)) {
+        	// cannot reverse from red to white.
+        	logger.warn("decision ignored from referee {}: {} (prior decision was {})", 
+        			new Object[] { refereeNo + 1,
+                    (accepted ? "lift" : "no lift"), 
+                    refereeDecisions[refereeNo].accepted});
+        	return;
+        }
         
         final long currentTimeMillis = System.currentTimeMillis();
         long deltaTime = currentTimeMillis - allDecisionsMadeTime;
@@ -262,15 +263,16 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
         "updateEvent"); // ... will be called with this method. //$NON-NLS-1$;
 
     /**
-     * Broadcast a SessionData.event to all registered listeners
+     * Broadcast a DecisionEvent to all registered listeners
      * 
      * @param updateEvent
      *            contains the source (ourself) and the list of properties to be
      *            refreshed.
      */
     protected void fireEvent(DecisionEvent updateEvent) {
-        // logger.trace("SessionData: firing event from groupData"+System.identityHashCode(this)+" first="+updateEvent.getCurrentLifter()+" eventRouter="+System.identityHashCode(eventRouter));
-        // logger.trace("                        listeners"+eventRouter.dumpListeners(this));
+         logger.warn("firing event from RDC "+System.identityHashCode(this)
+                 +" event="+updateEvent.toString());
+         //logger.trace("                        listeners"+eventRouter.dumpListeners(this));
         if (eventRouter != null) {
             eventRouter.fireEvent(updateEvent);
         }

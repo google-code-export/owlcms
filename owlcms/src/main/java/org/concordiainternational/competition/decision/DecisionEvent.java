@@ -30,6 +30,7 @@ public class DecisionEvent extends EventObject {
 	private Lifter lifter;
 	private Integer attempt;
 	private Boolean accepted;
+    private Integer attemptedWeight;
 
     public DecisionEvent(IDecisionController source, Type down, long currentTimeMillis, Decision[] refereeDecisions) {
         super(source);
@@ -37,8 +38,10 @@ public class DecisionEvent extends EventObject {
         this.when = currentTimeMillis;
         this.decisions = refereeDecisions;
         this.lifter = source.getLifter();
+
         if (lifter != null) {
-        	this.setAttempt(lifter.getAttemptsDone());
+            this.setAttemptedWeight(lifter.getNextAttemptRequestedWeight());
+            this.setAttempt(lifter.getAttemptsDone());
         }
         this.setAccepted(computeAccepted());
     }
@@ -51,7 +54,7 @@ public class DecisionEvent extends EventObject {
         case RESET:
             return "reset";
         default:
-            return type + " " + decisions[0].accepted + " " + decisions[1].accepted + " " + decisions[2].accepted;
+            return lifter+" "+ attemptedWeight +" " + type + " " + decisions[0].accepted + " " + decisions[1].accepted + " " + decisions[2].accepted;
         }
     }
 
@@ -111,4 +114,14 @@ public class DecisionEvent extends EventObject {
 	public Boolean isAccepted() {
 		return accepted;
 	}
+
+    public Integer getAttemptedWeight() {
+        return attemptedWeight;
+    }
+
+    public void setAttemptedWeight(Integer attemptedWeight) {
+        this.attemptedWeight = attemptedWeight;
+    }
+    
+    
 }
