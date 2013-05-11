@@ -383,7 +383,7 @@ public Platform getPlatform() {
 }
 
 public void setPlatform(Platform owner) {
-    logger.warn("setting NEC platform to {}",owner);
+    logger.info("setting NEC platform to {}",owner);
     this.platform = owner;
 }
 

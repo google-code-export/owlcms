@@ -98,7 +98,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
      * @param mode
      */
     public AnnouncerView(boolean initFromFragment, String viewName, Mode mode) {
-        logger.warn("constructor");
+        logger.trace("constructor");
         
         if (initFromFragment) {
             setParametersFromFragment();
