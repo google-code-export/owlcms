@@ -234,6 +234,9 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 	private ApplicationView mainLayoutContent;
 
     public void displayRefereeConsole(int refereeIndex) {
+        // remove all listeners on current view.
+        getMainLayoutContent().unregisterAsListener();
+        
         final ORefereeConsole view = (ORefereeConsole) components
                 .getViewByName(CompetitionApplicationComponents.OREFEREE_CONSOLE, false);
         view.setIndex(refereeIndex);
@@ -242,6 +245,9 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
     
     public void displayOJuryConsole(int refereeIndex) {
+        // remove all listeners on current view.
+        getMainLayoutContent().unregisterAsListener();
+        
         final ORefereeConsole view = (ORefereeConsole) components
                 .getViewByName(CompetitionApplicationComponents.OJURY_CONSOLE, false);
         view.setIndex(refereeIndex);
@@ -250,6 +256,9 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
     
     public void displayMRefereeConsole(int refereeIndex) {
+        // remove all listeners on current view.
+        getMainLayoutContent().unregisterAsListener();
+        
         final MRefereeConsole view = (MRefereeConsole) components
                 .getViewByName(CompetitionApplicationComponents.MREFEREE_CONSOLE, false);
         view.setIndex(refereeIndex);
@@ -258,6 +267,9 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
     
     public void displayMJuryConsole(int refereeIndex) {
+        // remove all listeners on current view.
+        getMainLayoutContent().unregisterAsListener();
+        
         final MJuryConsole view = (MJuryConsole) components
                 .getViewByName(CompetitionApplicationComponents.MJURY_CONSOLE, false);
         view.setIndex(refereeIndex);
@@ -269,11 +281,10 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @param viewName
      */
     public void doDisplay(String viewName) {
-//    	logger.debug("doDisplay {}",viewName);
-
-        ApplicationView view = components.getViewByName(viewName, false);
         // remove all listeners on current view.
         getMainLayoutContent().unregisterAsListener();
+            
+        ApplicationView view = components.getViewByName(viewName, false);
         setMainLayoutContent(view);
         uriFragmentUtility.setFragment(view.getFragment(), false);
     }
@@ -282,7 +293,9 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @param viewName
      */
     public void displayProjector(String viewName, String stylesheet) {
-//    	logger.debug("doDisplay {}",viewName);
+        // remove all listeners on current view.
+        getMainLayoutContent().unregisterAsListener();
+        
         ResultFrame view = (ResultFrame) components.getViewByName(viewName, false);
         setMainLayoutContent(view);
         view.setStylesheet(stylesheet);
@@ -830,6 +843,9 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
 
     protected void displayView(String frag) {
+        // remove all listeners on current view.
+        getMainLayoutContent().unregisterAsListener();
+        
         logger.debug("request to display view {}", frag); //$NON-NLS-1$
         ApplicationView view = components.getViewByName(frag, true); // initialize from URI fragment
         setMainLayoutContent(view);

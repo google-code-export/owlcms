@@ -179,10 +179,10 @@ URIHandler
     private void display(final String platformName1, final SessionData masterData1) throws RuntimeException {
         synchronized (app) {
             final Lifter currentLifter = masterData1.getCurrentLifter();
-            logger.warn("currentLifter = {}",currentLifter);
+            logger.trace("currentLifter = {}",currentLifter);
             if (currentLifter != null) {
                 boolean done = fillLifterInfo(currentLifter);
-                logger.warn("done = {}",done);
+                logger.trace("done = {}",done);
                 updateTime(masterData1);
                 timeDisplay.setVisible(!done);
                 timeDisplay.removeStyleName("intermission");
@@ -196,7 +196,7 @@ URIHandler
 
     @Override
     public void refresh() {
-        logger.warn("refresh");
+        logger.trace("refresh");
         display(platformName, masterData);
     }
 
@@ -215,7 +215,7 @@ URIHandler
         // we set the value to the time remaining for the current lifter as
         // computed by groupData
         int timeRemaining = groupData.getDisplayTime();
-        logger.warn("updateTime {}",timeRemaining);
+        logger.trace("updateTime {}",timeRemaining);
         pushTime(timeRemaining);
     }
 
@@ -322,30 +322,30 @@ URIHandler
                 synchronized (app) {
                     switch (updateEvent.getType()) {
                     case DOWN:
-                        logger.info("received DOWN event");
+                        logger.trace("received DOWN event");
                         showLights(updateEvent);
                         break;
 
                     case SHOW:
                         // if window is not up, show it.
                         shown = true;
-                        logger.info("received SHOW event {}",shown);
+                        logger.trace("received SHOW event {}",shown);
                         showLights(updateEvent);
                         break;
 
                     case RESET:
                         // we are done
-                        logger.info("received RESET event (hiding decision lights)");
+                        logger.trace("received RESET event (hiding decision lights)");
                         hideLights(updateEvent);
                         shown = false;
                         break;
 
                     case WAITING:
-                        logger.info("ignoring WAITING event");
+                        logger.trace("ignoring WAITING event");
                         break;
 
                     case UPDATE:
-                        logger.debug("received UPDATE event {}",shown);
+                        logger.trace("received UPDATE event {}",shown);
                         // we need to show that referees have changed their mind.
                         if (shown) {
                             showLights(updateEvent);
@@ -353,7 +353,7 @@ URIHandler
                         break;
 
                     case BLOCK:
-                        logger.debug("received BLOCK event {}",shown);
+                        logger.trace("received BLOCK event {}",shown);
                         showLights(updateEvent);
                         break;
                     }
@@ -378,6 +378,7 @@ URIHandler
             popUp.addStyleName("decisionLightsWindow");
             popUp.setSizeFull();
             mainWindow.addWindow(popUp);
+            logger.warn("addWindow {}",popUp);
             popUp.setContent(decisionLights);
         }
         popUp.setVisible(true);
@@ -422,7 +423,9 @@ URIHandler
         logger.debug("listening to intermission timer events.");
         
         // listen to decisions        
-        masterData.getRefereeDecisionController().addListener(this);
+        DecisionEventListener decisionListener = (DecisionEventListener)this;
+        logger.warn("adding decision listener {}",decisionListener);
+        masterData.getRefereeDecisionController().addListener(decisionListener);
         
         // listen to main timer events
         final CountdownTimer timer = masterData.getTimer();
@@ -437,6 +440,7 @@ URIHandler
      */
     @Override
     public void unregisterAsListener() {
+        logger.warn("unregisterAsListener");
         Window mainWindow = app.getMainWindow();
         if (popUp != null) {
             mainWindow.removeWindow(popUp);
@@ -450,9 +454,15 @@ URIHandler
         
         mainWindow.removeListener((CloseListener)this);
         masterData.removeListener(updateEventListener);
-        masterData.getRefereeDecisionController().removeListener(this);
+        
+        DecisionEventListener decisionListener = (DecisionEventListener)this;
+        logger.warn("removing decision listener {}",decisionListener);
+        masterData.getRefereeDecisionController().removeListener(decisionListener);
         final CountdownTimer timer = masterData.getTimer();
-        timer.setCountdownDisplay(null);
+        if (timer.getCountdownDisplay() == this) {
+            timer.setCountdownDisplay(null);
+        }
+
         removeActions(mainWindow);
     }
 

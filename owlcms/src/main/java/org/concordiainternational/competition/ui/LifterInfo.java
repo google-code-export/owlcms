@@ -723,8 +723,8 @@ public class LifterInfo extends VerticalLayout implements
 					if (currentView instanceof AnnouncerView) {
 						if (stutteringEvent(newEvent,prevEvent)) {
 							prevEvent = newEvent;
-							logger.trace("A NO notification for {}",newEvent);
-							logger.trace("A prevEvent={}",prevEvent);
+							logger.warn("A prevented notification for {}",newEvent);
+							logger.warn("A prevEvent={}",prevEvent);
 							return;
 						}
 						prevEvent = newEvent;
@@ -741,10 +741,10 @@ public class LifterInfo extends VerticalLayout implements
 							final String name = (lifter2 != null ?lifter2.getLastName().toUpperCase()+" "+lifter2.getFirstName() : "_");
 							if (accepted) {
 								style = "owlcms-white";
-								message = MessageFormat.format(Messages.getString("Decision.lift", locale),name);
+								message = MessageFormat.format(Messages.getString("Decision.lift", locale),name,newEvent.getAttemptedWeight());
 							} else {
 								style = "owlcms-red";
-								message = MessageFormat.format(Messages.getString("Decision.noLift", locale),name);
+								message = MessageFormat.format(Messages.getString("Decision.noLift", locale),name,newEvent.getAttemptedWeight());
 							}
 							final Message addedMessage = notifications.add((Resource)null,message,true,style,true);
 							announcerView.scheduleMessageRemoval(addedMessage, 10000);
