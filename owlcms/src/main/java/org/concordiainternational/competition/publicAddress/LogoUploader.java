@@ -88,7 +88,7 @@ Upload.Receiver, ApplicationView {
 			ServletContext sCtx = app.getServletContext();
 			String absfilename = sCtx.getRealPath("VAADIN/themes/competition/images/logo.png"); //$NON-NLS-1$
 			file = new File(absfilename);
-			logger.warn("writing to {}", file.getAbsolutePath()); //$NON-NLS-1$
+			logger.debug("writing to {}", file.getAbsolutePath()); //$NON-NLS-1$
 			// Open the file for writing.
 			fos = new FileOutputStream(file);
 		} catch (final java.io.FileNotFoundException e) {

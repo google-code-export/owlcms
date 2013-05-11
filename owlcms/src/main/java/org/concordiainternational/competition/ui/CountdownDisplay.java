@@ -378,7 +378,7 @@ URIHandler
             popUp.addStyleName("decisionLightsWindow");
             popUp.setSizeFull();
             mainWindow.addWindow(popUp);
-            logger.warn("addWindow {}",popUp);
+            logger.debug("addWindow {}",popUp);
             popUp.setContent(decisionLights);
         }
         popUp.setVisible(true);
@@ -424,14 +424,14 @@ URIHandler
         
         // listen to decisions        
         DecisionEventListener decisionListener = (DecisionEventListener)this;
-        logger.warn("adding decision listener {}",decisionListener);
+        logger.debug("adding decision listener {}",decisionListener);
         masterData.getRefereeDecisionController().addListener(decisionListener);
         
         // listen to main timer events
         final CountdownTimer timer = masterData.getTimer();
         timer.setCountdownDisplay(this);
         addActions(mainWindow);
-        logger.warn("added action handler");
+        logger.debug("added action handler");
     }
 
 
@@ -440,7 +440,7 @@ URIHandler
      */
     @Override
     public void unregisterAsListener() {
-        logger.warn("unregisterAsListener");
+        logger.debug("unregisterAsListener");
         Window mainWindow = app.getMainWindow();
         if (popUp != null) {
             mainWindow.removeWindow(popUp);
@@ -456,7 +456,7 @@ URIHandler
         masterData.removeListener(updateEventListener);
         
         DecisionEventListener decisionListener = (DecisionEventListener)this;
-        logger.warn("removing decision listener {}",decisionListener);
+        logger.debug("removing decision listener {}",decisionListener);
         masterData.getRefereeDecisionController().removeListener(decisionListener);
         final CountdownTimer timer = masterData.getTimer();
         if (timer.getCountdownDisplay() == this) {

@@ -721,14 +721,14 @@ public class LifterInfo extends VerticalLayout implements
 				synchronized (app) {
 					final ApplicationView currentView = app.components.currentView;
 					if (currentView instanceof AnnouncerView) {
-						if (stutteringEvent(newEvent,prevEvent)) {
-							prevEvent = newEvent;
-							logger.warn("A prevented notification for {}",newEvent);
-							logger.warn("A prevEvent={}",prevEvent);
-							return;
-						}
-						prevEvent = newEvent;
-						logger.trace("B prevEvent={}",prevEvent);
+//						if (stutteringEvent(newEvent,prevEvent)) {
+//							prevEvent = newEvent;
+//							logger.trace("A prevented notification for {}",newEvent);
+//							logger.trace("A prevEvent={}",prevEvent);
+//							return;
+//						}
+//						prevEvent = newEvent;
+//						logger.trace("B prevEvent={}",prevEvent);
 						
 						final AnnouncerView announcerView = (AnnouncerView)currentView;
 						Notifique notifications = announcerView.getNotifications();
@@ -738,13 +738,15 @@ public class LifterInfo extends VerticalLayout implements
 						logger.trace("B YES notification for {} accepted={}",newEvent,accepted);
 						if (accepted != null) {
 							final Lifter lifter2 = newEvent.getLifter();
-							final String name = (lifter2 != null ?lifter2.getLastName().toUpperCase()+" "+lifter2.getFirstName() : "_");
-							if (accepted) {
+							final String name = (lifter2 != null ?lifter2.getLastName().toUpperCase()+" "+lifter2.getFirstName() : " «?» ");
+							Integer attemptedWeight = newEvent.getAttemptedWeight();
+							attemptedWeight = (attemptedWeight != null ? attemptedWeight : 0 );
+                            if (accepted) {
 								style = "owlcms-white";
-								message = MessageFormat.format(Messages.getString("Decision.lift", locale),name,newEvent.getAttemptedWeight());
+								message = MessageFormat.format(Messages.getString("Decision.lift", locale),name,attemptedWeight);
 							} else {
 								style = "owlcms-red";
-								message = MessageFormat.format(Messages.getString("Decision.noLift", locale),name,newEvent.getAttemptedWeight());
+								message = MessageFormat.format(Messages.getString("Decision.noLift", locale),name,attemptedWeight);
 							}
 							final Message addedMessage = notifications.add((Resource)null,message,true,style,true);
 							announcerView.scheduleMessageRemoval(addedMessage, 10000);
@@ -759,7 +761,8 @@ public class LifterInfo extends VerticalLayout implements
 			 * @param prevEvent1
 			 * @return true if the two events concern the same lifter and the same attempt and give the same decision
 			 */
-			private boolean stutteringEvent(DecisionEvent curEvent,
+			@SuppressWarnings("unused")
+            private boolean stutteringEvent(DecisionEvent curEvent,
 					DecisionEvent prevEvent1) {
 				logger.trace("curEvent={} prevEvent={}",curEvent,prevEvent1);
 				if (curEvent != null && prevEvent1 != null) {
