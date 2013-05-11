@@ -123,6 +123,7 @@ DecisionEventListener
 
             create(app);
             masterData = app.getMasterData(platformName);
+            refreshShowTimer();
 
 
             // we cannot call push() at this point

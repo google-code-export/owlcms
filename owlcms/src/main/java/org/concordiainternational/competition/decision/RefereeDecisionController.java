@@ -270,7 +270,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
      *            refreshed.
      */
     protected void fireEvent(DecisionEvent updateEvent) {
-         logger.warn("firing event from RDC "+System.identityHashCode(this)
+         logger.debug("firing event from RDC "+System.identityHashCode(this)
                  +" event="+updateEvent.toString());
          //logger.trace("                        listeners"+eventRouter.dumpListeners(this));
         if (eventRouter != null) {
@@ -312,8 +312,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
     private EventRouter getEventRouter() {
         if (eventRouter == null) {
             eventRouter = new EventRouter();
-            logger
-                    .trace("new event router for RefereeDecisionController " + System.identityHashCode(this) + " = " + System.identityHashCode(eventRouter)); //$NON-NLS-1$ //$NON-NLS-2$
+            logger.trace("new event router for RefereeDecisionController " + System.identityHashCode(this) + " = " + System.identityHashCode(eventRouter)); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return eventRouter;
     }
