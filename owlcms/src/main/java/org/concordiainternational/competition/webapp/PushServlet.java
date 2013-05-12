@@ -49,7 +49,7 @@ public class PushServlet extends ApplicationServlet {
             try {
                 super.service(request, response);
             } catch (Throwable t) {
-                if (! (t instanceof IOException)) throw t;
+                if (! (t.getCause() instanceof IOException)) throw t;
                 // ignore - occurs on downloads, for some reason.
             }
         }
