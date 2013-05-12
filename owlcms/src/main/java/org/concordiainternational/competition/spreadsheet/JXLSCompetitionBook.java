@@ -112,10 +112,21 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         
         //only needed once
         reportingBeans.put("nbMen",sortedMen.size());
-        reportingBeans.put("nbWomen", sortedMen.size());
+        reportingBeans.put("nbWomen", sortedWomen.size());
         reportingBeans.put("nbLifters", sortedLifters.size());
         reportingBeans.put("nbClubs", clubs.size());
-
+        if (sortedMen.size() > 0) {
+            reportingBeans.put("mClubs",clubs);
+        } else {
+            reportingBeans.put("mClubs", new ArrayList<String>() );
+        }
+        if (sortedWomen.size() > 0) {
+            reportingBeans.put("wClubs",clubs);
+        } else {
+            reportingBeans.put("wClubs", new ArrayList<String>() );
+        }
+        
+        
         sortedLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.CLEANJERK);
         lifterSorter.assignCategoryRanks(sortedLifters, Ranking.CLEANJERK);
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());

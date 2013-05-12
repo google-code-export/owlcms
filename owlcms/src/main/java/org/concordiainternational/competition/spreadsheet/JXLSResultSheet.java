@@ -75,11 +75,11 @@ public class JXLSResultSheet extends JXLSWorkbookStreamSource {
 	@Override
 	protected void postProcess(Workbook workbook) {
 		if (Competition.invitedIfBornBefore() <= 0) {
-			zapCellPair(workbook,3,18);
+			zapCellPair(workbook,3,17);
 		}
 		final CompetitionSession currentCompetitionSession = app.getCurrentCompetitionSession();
 		if (currentCompetitionSession == null) {
-			zapCellPair(workbook,3,10);
+			zapCellPair(workbook,3,9);
 		}
 	}
 

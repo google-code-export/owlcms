@@ -85,9 +85,17 @@ public abstract class JXLSWorkbookStreamSource implements StreamResource.StreamS
                     	XLSTransformer transformer = new XLSTransformer();
                     	configureTransformer(transformer);
                         HashMap<String, Object> reportingBeans2 = getReportingBeans();
-						Workbook workbook = transformer.transformXLS(getTemplate(),reportingBeans2);
-                        postProcess(workbook);
-                        workbook.write(out);
+						Workbook workbook = null;
+                        try {
+                            workbook = transformer.transformXLS(getTemplate(),reportingBeans2);
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        if (workbook != null) {
+                            postProcess(workbook);
+                            workbook.write(out);
+                        }
                     } catch (IOException e) {
                     	// ignore
                     } catch (Throwable e) {
@@ -122,10 +130,12 @@ public abstract class JXLSWorkbookStreamSource implements StreamResource.StreamS
 		Row row = workbook.getSheetAt(0).getRow(rownum);
 		final Cell cellLeft = row.getCell(cellnum);
 		cellLeft.setCellValue("");
-		row.getCell(19).setCellValue("");
+		Cell cellRight = row.getCell(cellnum+1);
+        cellRight.setCellValue("");
 		CellStyle blank = workbook.createCellStyle();
 		blank.setBorderBottom(CellStyle.BORDER_NONE);
-		row.getCell(cellnum+1).setCellStyle(blank);
+		cellLeft.setCellStyle(blank);
+		cellRight.setCellStyle(blank);
 	}
 
 	public InputStream getTemplate() throws IOException {
