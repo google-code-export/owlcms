@@ -263,19 +263,6 @@ public class InputSheetHelper implements InputSheet {
             final CellHandle dateCell = workSheet.getCell("X1");
             Date nDate = DateConverter.getDateFromCell(dateCell) ;
             competition.setCompetitionDate(nDate);
-            
-            
-//			String dateString = dateCell.getStringVal(); //$NON-NLS-1$
-//            if (dateString != null && !dateString.trim().isEmpty()) {
-//            	try {
-//				} catch (NumberFormatException e) {
-//					// TODO: handle exception
-//				}
-//				Date date = DateTime.parse(dateString).toDate();       
-//                competition.setCompetitionDate(date);
-//            } else {
-//            	competition.setCompetitionDate(new Date());
-//            }
 
             competition.setCompetitionCity(workSheet.getCell("X2").getStringVal()); //$NON-NLS-1$
             competition.setCompetitionOrganizer(workSheet.getCell("I3").getStringVal()); //$NON-NLS-1$

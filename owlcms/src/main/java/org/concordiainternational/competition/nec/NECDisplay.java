@@ -400,7 +400,6 @@ public static void main(String[] args) {
             sPort.setParams(9600,8,1,SerialPort.PARITY_NONE);
             sPort.writeString("test");
         } catch (SerialPortException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

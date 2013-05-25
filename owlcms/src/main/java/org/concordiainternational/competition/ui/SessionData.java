@@ -280,7 +280,9 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             // stop the timer if it was running, as if the "Change Weight"
             // button had been used
             final CountdownTimer timer2 = getTimer();
-            if (timer2 != null && timer2.isRunning()) {
+            if (timer2 != null 
+                    //&& timer2.isRunning()
+                    ) {
             	if (currentLifter == priorLifter) {
             		timer2.pause(TimeStoppedNotificationReason.CURRENT_LIFTER_CHANGE);
             	} else {

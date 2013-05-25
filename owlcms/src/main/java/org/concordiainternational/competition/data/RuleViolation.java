@@ -7,7 +7,11 @@
  */
 package org.concordiainternational.competition.data;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class RuleViolation {
+    final static Logger logger = LoggerFactory.getLogger(RuleViolation.class);
 
     // public static RuleViolationException change1ValueTooSmall(Object... objs)
     // {

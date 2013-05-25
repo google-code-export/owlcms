@@ -450,4 +450,5 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 	}
 
 
+
 }

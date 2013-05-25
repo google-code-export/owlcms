@@ -124,7 +124,7 @@ public class ResultFrame extends VerticalLayout implements
 			
 			// URI handler must remain, so is not part of the register/unRegister paire
 			app.getMainWindow().addURIHandler(this);
-			registerHandlers(viewName);
+			registerAsListener();
 		} finally {
 			app.setPusherDisabled(prevDisabledPush);
 		}
@@ -548,60 +548,7 @@ public class ResultFrame extends VerticalLayout implements
 	}
 
 
-
-	/**
-	 * Register listeners for the various model events.
-	 * @param viewName1
-	 */
-	private void registerHandlers(String viewName1) {
-		// listen to changes in the competition data
-		logger.debug("listening to session data updates.");
-        updateListener = registerAsListener(platformName, masterData);
-        
-        // listen to public address events
-        if (viewName1.contains("resultBoard")) {
-        	logger.debug("listening to public address events.");
-        	masterData.addBlackBoardListener(this);
-        }
-        
-        // listen to decisions
-        IDecisionController decisionController = masterData.getRefereeDecisionController();
-        if (decisionController != null) {
-    		decisionController.addListener(decisionLights);
-    		decisionController.addListener(this);
-        }
-
-        // listen to close events
-        app.getMainWindow().addListener((CloseListener)this);
-	}
 	
-	/**
-	 * Undo what registerListeners did.
-	 */
-	private void unRegisterListeners() {
-		// stop listening to changes in the competition data
-		if (updateListener != null) {
-			masterData.removeListener(updateListener);
-			logger.debug("stopped listening to UpdateEvents");
-		}
-        
-        // stop listening to public address events
-		removeMessage();
-        if (viewName.contains("resultBoard")) {
-        	masterData.removeBlackBoardListener(this);
-        	logger.debug("stopped listening to PublicAddress TimerEvents");
-        }
-        
-        // stop listening to decisions
-        IDecisionController decisionController = masterData.getRefereeDecisionController();
-        if (decisionController != null) {
-        	decisionController.removeListener(decisionLights);
-        	decisionController.removeListener(this);
-        }
-        
-        // stop listening to close events
-        app.getMainWindow().removeListener((CloseListener)this);
-	}
 	
 
 	/* Unregister listeners when window is closed.
@@ -609,13 +556,13 @@ public class ResultFrame extends VerticalLayout implements
 	 */
 	@Override
 	public void windowClose(CloseEvent e) {
-        unRegisterListeners();
+        unregisterAsListener();
 	}
 
 	@Override
 	public DownloadStream handleURI(URL context, String relativeUri) {
 		logger.trace("re-registering handlers for {} {}",this,relativeUri);
-		registerHandlers(viewName);
+		registerAsListener();
 		return null;
 	}
 
@@ -682,19 +629,53 @@ public class ResultFrame extends VerticalLayout implements
 
 	@Override
 	public void registerAsListener() {
-		// TODO Auto-generated method stub
-		
+	       // listen to changes in the competition data
+        logger.debug("listening to session data updates.");
+        updateListener = registerAsListener(platformName, masterData);
+        
+        // listen to public address events
+        if (viewName.contains("resultBoard")) {
+            logger.debug("listening to public address events.");
+            masterData.addBlackBoardListener(this);
+        }
+        
+        // listen to decisions
+        IDecisionController decisionController = masterData.getRefereeDecisionController();
+        if (decisionController != null) {
+            decisionController.addListener(decisionLights);
+            decisionController.addListener(this);
+        }
+
+        // listen to close events
+        app.getMainWindow().addListener((CloseListener)this);
 	}
 
 
 	@Override
 	public void unregisterAsListener() {
-		// TODO Auto-generated method stub
-		
+	       // stop listening to changes in the competition data
+        if (updateListener != null) {
+            masterData.removeListener(updateListener);
+            logger.debug("stopped listening to UpdateEvents");
+        }
+        
+        // stop listening to public address events
+        removeMessage();
+        if (viewName.contains("resultBoard")) {
+            masterData.removeBlackBoardListener(this);
+            logger.debug("stopped listening to PublicAddress TimerEvents");
+        }
+        
+        // stop listening to decisions
+        IDecisionController decisionController = masterData.getRefereeDecisionController();
+        if (decisionController != null) {
+            decisionController.removeListener(decisionLights);
+            decisionController.removeListener(this);
+        }
+        
+        // stop listening to close events
+        app.getMainWindow().removeListener((CloseListener)this);
 	}
 
-
-
-	
 
 }

@@ -750,5 +750,4 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
         setButtonVisibility();
     }
 
-
 }
