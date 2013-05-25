@@ -269,5 +269,6 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 		registerAsListener();
 		return null;
 	}
+
     
 }

@@ -123,6 +123,7 @@ public class LifterCardEditor extends Panel implements
             @Override
             public void buttonClick(ClickEvent event) {
                 logger.info("OK button pushed.");
+                lifter.check15_20kiloRule(false);
                 parentView.setStickyEditor(false);
                 setSticky(false);
             }
@@ -383,7 +384,7 @@ public class LifterCardEditor extends Panel implements
             logger.debug(("before setButtonVisibility")); //$NON-NLS-1$
             ignoreChanges = false;
         }
-        lifter1.check15_20kiloRule();
+//        lifter1.check15_20kiloRule();
     }
 
     private void setFocus(Lifter lifter, Item item) {
@@ -659,6 +660,7 @@ public class LifterCardEditor extends Panel implements
 	public String getFragment() {
 		return null;
 	}
+
 
 
 }

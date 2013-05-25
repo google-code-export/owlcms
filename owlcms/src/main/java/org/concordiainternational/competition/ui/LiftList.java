@@ -157,6 +157,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
                 parentView.setStickyEditor(true); // since the user selected
                                                   // explicitly, ignore changes
                                                   // by others.
+                lifter.check15_20kiloRule(false, (Notifyable) parentView);
             }
         }
     }

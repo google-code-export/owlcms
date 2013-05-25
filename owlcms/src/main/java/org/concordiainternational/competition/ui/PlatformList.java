@@ -225,4 +225,6 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
 		registerAsListener();
 		return null;
 	}
+
+
 }

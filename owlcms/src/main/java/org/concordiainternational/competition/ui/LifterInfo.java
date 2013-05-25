@@ -46,6 +46,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.Notification;
 
 /**
  * Display information regarding the current lifter
@@ -60,7 +61,8 @@ import com.vaadin.ui.Window.CloseEvent;
 public class LifterInfo extends VerticalLayout implements 
 	CountdownTimerListener,
 	DecisionEventListener,
-	ApplicationView
+	ApplicationView,
+	Notifyable
 	{
     static final Logger logger = LoggerFactory.getLogger(LifterInfo.class);
     static final Logger timingLogger = LoggerFactory
@@ -152,6 +154,9 @@ public class LifterInfo extends VerticalLayout implements
 						&& lifter1.getAttemptsDone() == prevAttempt
 						&& lifter1.getNextAttemptRequestedWeight() == prevWeight) {
 					return; // we are already showing correct information.
+				}
+				if (isTop()) {
+				    lifter1.check15_20kiloRule(false,(Notifyable)parentView);
 				}
 				prevLifter = lifter1;
 				prevAttempt = lifter1.getAttemptsDone();
@@ -910,6 +915,18 @@ public class LifterInfo extends VerticalLayout implements
 	public String getFragment() {
 		return null;
 	}
+
+    @Override
+    public void showNotificationForLifter(Lifter lifter1, Notification notification, boolean unlessCurrent) {
+        logger.warn("lifter {} unlessCurrent{}",lifter1,unlessCurrent);
+        if (!unlessCurrent) {
+            // always show notification
+            app.getMainWindow().showNotification(notification);
+        } else if (lifter1 != groupData.getCurrentLifter()) {
+            // not the current lifter, show the notification
+            app.getMainWindow().showNotification(notification);
+        }
+    }
 
 
 }

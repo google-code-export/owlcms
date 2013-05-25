@@ -37,6 +37,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
+import com.vaadin.ui.Window.Notification;
 
 /**
  * This class defines the screen layout for the announcer.
@@ -63,6 +65,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
 	ApplicationView,
 	SessionData.UpdateEventListener,
 	EditingView,
+	Notifyable,
 	Window.CloseListener,
 	URIHandler
 	{
@@ -206,7 +209,6 @@ public class AnnouncerView extends VerticalSplitPanel implements
      */
     public void loadFirstLifterInfo(SessionData groupData) {
         final Lifter firstLifter = liftList.getFirstLifter();
-        logger.debug("*** first lifter = {}", firstLifter); //$NON-NLS-1$
         final Item firstLifterItem = liftList.getFirstLifterItem();
         announcerInfo.loadLifter(firstLifter, groupData);
         updateLifterEditor(firstLifter, firstLifterItem);
@@ -360,16 +362,18 @@ public class AnnouncerView extends VerticalSplitPanel implements
 			public void run() {
 				synchronized (app) {
 					if (updateEvent.getForceRefresh()) {
-						logger.debug(
+						logger.warn(
 								"updateEvent() received in {} view -- forced refresh. ----------------------------------", mode); //$NON-NLS-1$
 						refresh();
 					} else {
-						logger.debug(
-								"updateEvent() received in {} view  first is now: {}", AnnouncerView.this, updateEvent.getCurrentLifter()); //$NON-NLS-1$
-
+						Lifter currentLifter = updateEvent.getCurrentLifter();
+                        logger.warn(
+								"updateEvent() received in {} view  first is now: {}", AnnouncerView.this.getMode(), currentLifter); //$NON-NLS-1$
+						
 						liftList.updateTable();
 						loadFirstLifterInfo(masterData,
 								WebApplicationConfiguration.DEFAULT_STICKINESS);
+						
 
 						// update the info on the left side of the bottom part. This
 						// depends on the liftList info
@@ -378,7 +382,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
 								&& lifterCardEditor.lifterCardIdentification != null
 								&& !stickyEditor) {
 							lifterCardEditor.lifterCardIdentification
-									.loadLifter(updateEvent.getCurrentLifter(),
+									.loadLifter(currentLifter,
 											liftList.getGroupData());
 						}
 
@@ -572,8 +576,11 @@ public class AnnouncerView extends VerticalSplitPanel implements
 	 */
 	@Override
 	public void registerAsListener() {
-		logger.trace("registering listeners");
+		logger.debug("registering listeners");
 		masterData.addListener(this);
+
+        // listen to close events
+        app.getMainWindow().addListener((CloseListener)this);
 	}
 	
 	/**
@@ -581,12 +588,14 @@ public class AnnouncerView extends VerticalSplitPanel implements
 	 */
 	@Override
 	public void unregisterAsListener() {
-		logger.trace("unregistering registering listeners");
+		logger.debug("unregistering listeners");
 		masterData.removeListener(this);
 		announcerInfo.unregisterAsListener();
         if (lifterCardEditor != null) {
             lifterCardEditor.unregisterAsListener();
         }
+        // stop listening to close events
+        app.getMainWindow().removeListener((CloseListener)this);
 	}
 
 
@@ -599,7 +608,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
 
 	@Override
 	public DownloadStream handleURI(URL context, String relativeUri) {
-		logger.trace("registering URI listeners");
+		logger.warn("registering URI listeners");
 		registerAsListener();
 		return null;
 	}
@@ -618,4 +627,22 @@ public class AnnouncerView extends VerticalSplitPanel implements
 	public LiftList getLiftList() {
 		return liftList;
 	}
+
+
+    @Override
+    public void showNotificationForLifter(Lifter lifter, Notification notification, boolean unlessCurrent) {
+        logger.warn("lifter {} unlessCurrent{}",lifter,unlessCurrent);
+        if (!unlessCurrent) {
+            // always show notification
+            app.getMainWindow().showNotification(notification);
+        } else if (lifter != masterData.getCurrentLifter()) {
+            // not the current lifter, show the notification
+            app.getMainWindow().showNotification(notification);
+        }
+    }
+
+
+    public Mode getMode() {
+        return mode;
+    }
 }

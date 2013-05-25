@@ -232,4 +232,5 @@ public class MPlatesInfoView extends VerticalLayout implements
 	}
 
 
+
 }

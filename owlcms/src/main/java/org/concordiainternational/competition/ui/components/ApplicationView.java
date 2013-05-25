@@ -36,4 +36,5 @@ public interface ApplicationView extends ComponentContainer, CloseListener, URIH
     public void registerAsListener();
     
     public void unregisterAsListener();
+
 }
