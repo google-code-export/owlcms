@@ -1967,7 +1967,7 @@ public class Lifter implements MethodEventSource, Notifier {
         int newVal = zeroIfInvalid(change1);
         int prevVal = zeroIfInvalid(automaticProgression);
         if (newVal < prevVal) throw RuleViolation.declaredChangesNotOk(curLift, newVal, prevVal);
-//        check15_20kiloRule(newVal, isSnatch);
+
     }
 
     /**
@@ -1980,7 +1980,7 @@ public class Lifter implements MethodEventSource, Notifier {
         int newVal = zeroIfInvalid(change2);
         int prevVal = zeroIfInvalid(automaticProgression);
         if (newVal < prevVal) throw RuleViolation.declaredChangesNotOk(curLift, newVal, prevVal);
-//        check15_20kiloRule(newVal, isSnatch);
+
     }
 
     /**
@@ -1994,7 +1994,7 @@ public class Lifter implements MethodEventSource, Notifier {
         int iAutomaticProgression = zeroIfInvalid(automaticProgression);
         // allow null declaration for reloading old results.
         if (iAutomaticProgression > 0 && newVal < iAutomaticProgression) throw RuleViolation.declarationValueTooSmall(curLift, newVal, iAutomaticProgression);
-//        check15_20kiloRule(newVal, isSnatch);
+
     }
 
     public void check15_20kiloRule(boolean unlessCurrent) {
@@ -2036,6 +2036,7 @@ public class Lifter implements MethodEventSource, Notifier {
         } 
         if (message != null) {
             //LoggerUtils.logException(logger, new Exception("check15_20kiloRule traceback "+ message));
+            logger.info(message);
             showMustClickNotification(parentView, message, unlessCurrent);
         }
     }

@@ -472,7 +472,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
         final String defaultLanguage = Messages.getString("Locale.defaultLanguage", Locale.getDefault()); //$NON-NLS-1$
         final String defaultCountry = Messages.getString("Locale.defaultCountry", Locale.getDefault()); //$NON-NLS-1$
 		Locale.setDefault(new Locale(defaultLanguage,defaultCountry));
-		logger.info("Default JVM Locale set to: {}", Locale.getDefault()); //$NON-NLS-1$
+		logger.debug("Default JVM Locale set to: {}", Locale.getDefault()); //$NON-NLS-1$
 		logger.debug("contextInitialized() done"); //$NON-NLS-1$
 	}
 
