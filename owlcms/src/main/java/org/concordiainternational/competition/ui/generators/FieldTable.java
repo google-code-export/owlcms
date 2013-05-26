@@ -77,10 +77,8 @@ public class FieldTable extends Table {
 //			return ALIGN_CENTER;
 //		} else {
 			if (((String)propertyId).endsWith("Name")){
-	//			logger.warn("{} {}",propertyId,"left");
 				return ALIGN_LEFT;
 			} else {
-	//			logger.warn("{} {}",propertyId,"right");
 				return ALIGN_RIGHT;
 			}
 //		}

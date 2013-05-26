@@ -608,7 +608,7 @@ URIHandler
      * Hide the break timer
      */
     private void removeIntermissionTimer() {
-        logger.warn("removing intermission timer");
+        logger.debug("removing intermission timer");
         breakTimerShown = false;
         title.setVisible(false);
         //title.setHeight("0%");

@@ -237,7 +237,7 @@ public class InputSheetHelper implements InputSheet {
                 logger.debug("setQualifyingTotal");
                 lifter.setQualifyingTotal(getInt(sheet, row, 23));
             } catch (CellNotFoundException e) {
-                logger.warn("setQualifyingTotal exception");
+                logger.error(e.getLocalizedMessage());
             }           
             logger.debug(toString(lifter, false));
             return lifter;

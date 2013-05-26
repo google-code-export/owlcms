@@ -110,10 +110,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     public static Locale getCurrentLocale() {
         final CompetitionApplication current2 = getCurrent();
         if (current2 == null) {
-            //logger.warn("*current locale={}",getDefaultLocale());
             return getDefaultLocale();
         }
-        //logger.warn("current locale={}",current2.getLocale());
         return current2.getLocale();
     }
 
