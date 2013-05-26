@@ -78,7 +78,7 @@ public class CompetitionSession implements Serializable, Comparable<Object> {
     @OneToMany(mappedBy = "competitionSession")//,fetch=FetchType.EAGER)
     Set<Lifter> lifters;
 
-    private SimpleDateFormat sFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private static final SimpleDateFormat sFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     public CompetitionSession() {
     }
