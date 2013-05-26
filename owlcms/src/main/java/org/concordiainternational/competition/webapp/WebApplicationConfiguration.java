@@ -27,6 +27,7 @@ import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.Platform;
+import org.concordiainternational.competition.data.lifterSort.WinningOrderComparator;
 import org.concordiainternational.competition.decision.Speakers;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.nec.NECDisplay;
@@ -469,6 +470,10 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 		}
 		final String comPortName = sCtx.getInitParameter("comPort"); //$NON-NLS-1$
 		getNecDisplay(comPortName);
+		
+		final String useCategorySinclair = sCtx.getInitParameter("useCategorySinclair");
+		WinningOrderComparator.useCategorySinclair = Boolean.parseBoolean(useCategorySinclair);
+		
         final String defaultLanguage = Messages.getString("Locale.defaultLanguage", Locale.getDefault()); //$NON-NLS-1$
         final String defaultCountry = Messages.getString("Locale.defaultCountry", Locale.getDefault()); //$NON-NLS-1$
 		Locale.setDefault(new Locale(defaultLanguage,defaultCountry));
