@@ -128,7 +128,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         // compare the current language with code retrieved from bundle. If the
         // code is different, then the language is not directly translated.
 		final String languageCode = Messages.getString("Locale.languageCode", currentLocale); //$NON-NLS-1$
-		logger.info("Locale.languageCode({})={}",currentLocale,languageCode);
+		logger.debug("Locale.languageCode({})={}",currentLocale,languageCode);
         if (currentLocale.getLanguage().equals(languageCode)) {
         	return currentLocale; 
         } else {

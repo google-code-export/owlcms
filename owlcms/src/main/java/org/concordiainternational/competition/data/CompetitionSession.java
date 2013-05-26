@@ -22,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.hibernate.Session;
@@ -29,6 +30,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.addons.criteriacore.LoggerUtils;
 
 import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
@@ -37,16 +39,21 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 public class CompetitionSession implements Serializable, Comparable<Object> {
 
     private static final long serialVersionUID = -7744027515867237334L;
-    @SuppressWarnings("unused")
+    //@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(CompetitionSession.class);
+
+    @SuppressWarnings("unchecked")
+    static public List<CompetitionSession> getAll() {
+        return CompetitionApplication.getCurrent().getHbnSession().createCriteria(CompetitionSession.class).list();
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
-
     String name;
     Date weighInTime;
     Date competitionTime;
+
     String announcer;
     String marshall;
     String timeKeeper;
@@ -55,25 +62,25 @@ public class CompetitionSession implements Serializable, Comparable<Object> {
     String referee2;
     String referee3;
     String jury;
+    
+    
+    @Transient
+    final transient String competitionShortDateTime = "";
+    @Transient
+    final transient String weighInShortDateTime = "";
 
     @ManyToOne(optional=true)
     Platform platform;
 
-    @ManyToMany(fetch=FetchType.EAGER)
+	@ManyToMany(fetch=FetchType.EAGER)
     Set<Category> categories;
-
-	// group is the property in Lifter that is the opposite of CompetitionSession.lifters
+    // group is the property in Lifter that is the opposite of CompetitionSession.lifters
     @OneToMany(mappedBy = "competitionSession")//,fetch=FetchType.EAGER)
     Set<Lifter> lifters;
-    private SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-dd HH:mm");
+
+    private SimpleDateFormat sFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     public CompetitionSession() {
-    }
-
-    public CompetitionSession(String groupName, Date weighin, Date competition) {
-        this.name = groupName;
-        this.setWeighInTime(weighin);
-        this.setCompetitionTime(competition);
     }
 
     public CompetitionSession(String groupName) {
@@ -83,185 +90,13 @@ public class CompetitionSession implements Serializable, Comparable<Object> {
         this.setCompetitionTime(now);
     }
 
-    /**
-     * @return the set of categories for the Group
-     */
-    public Set<Category> getCategories() {
-        return categories;
+    public CompetitionSession(String groupName, Date weighin, Date competition) {
+        this.name = groupName;
+        this.setWeighInTime(weighin);
+        this.setCompetitionTime(competition);
     }
 
-    /**
-     * @return the competition time
-     */
-    public Date getCompetitionTimeAsDate() {
-        return competitionTime;
-    }
-    
-    /**
-     * @return the competition time
-     */
-    public String getCompetitionTime() {
-        return format.format(competitionTime);
-    }
-
-    /**
-     * @return the id
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * @return the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @return the platformName on which group will be lifting
-     */
-    public Platform getPlatform() {
-        return platform;
-    }
-
-    /**
-     * @return the weigh-in time (two hours before competition, normally)
-     */
-    public Date getWeighInTimeAsDate() {
-        return weighInTime;
-    }
-    
-    /**
-     * @return the weigh-in time (two hours before competition, normally)
-     */
-    public String getWeighInTime() {
-        return format.format(weighInTime);
-    }
-    
-
-    public void setCategories(Set<Category> categories) {
-        this.categories = categories;
-    }
-
-    /**
-     * @param c
-     *            the competition time to set
-     */
-    public void setCompetitionTime(Date c) {
-        this.competitionTime = c;
-    }
-
-    /**
-     * @param name
-     *            the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * @param platformName
-     *            the platformName to set
-     */
-    public void setPlatform(Platform platform) {
-        this.platform = platform;
-    }
-
-    public String getAnnouncer() {
-		return announcer;
-	}
-
-	public void setAnnouncer(String announcer) {
-		this.announcer = announcer;
-	}
-
-    public String getMarshall() {
-		return marshall;
-	}
-
-	public void setMarshall(String announcer) {
-		this.marshall = announcer;
-	}
-	
-	public String getTimeKeeper() {
-		return timeKeeper;
-	}
-
-	public void setTimeKeeper(String timeKeeper) {
-		this.timeKeeper = timeKeeper;
-	}
-
-	public String getTechnicalController() {
-		return technicalController;
-	}
-
-	public void setTechnicalController(String technicalController) {
-		this.technicalController = technicalController;
-	}
-
-	public String getReferee1() {
-		return referee1;
-	}
-
-	public void setReferee1(String referee1) {
-		this.referee1 = referee1;
-	}
-
-	public String getReferee2() {
-		return referee2;
-	}
-
-	public void setReferee2(String referee2) {
-		this.referee2 = referee2;
-	}
-
-	public String getReferee3() {
-		return referee3;
-	}
-
-	public void setReferee3(String referee3) {
-		this.referee3 = referee3;
-	}
-
-	public String getJury() {
-		return jury;
-	}
-
-	public void setJury(String jury) {
-		this.jury = jury;
-	}
-	
-    /**
-     * @param w
-     *            the weigh-in time to set
-     */
-    public void setWeighInTime(Date w) {
-        this.weighInTime = w;
-    }
-
-    public Set<Lifter> getLifters() {
-        return lifters;
-    }
-
-    public void deleteLifters(HbnSessionManager hbnSessionManager) {
-        final Session session = hbnSessionManager.getHbnSession();
-        for (Lifter curLifter : getLifters()) {
-            session.delete(curLifter);
-        }
-        session.flush();
-    }
-
-    public void setLifters(Set<Lifter> lifters) {
-        this.lifters = lifters;
-    }
-
-    @SuppressWarnings("unchecked")
-    static public List<CompetitionSession> getAll() {
-        return CompetitionApplication.getCurrent().getHbnSession().createCriteria(CompetitionSession.class).list();
-    }
-
-	@Override
+    @Override
 	public int compareTo(Object arg0) {
 		CompetitionSession other = (CompetitionSession)arg0;
 		if (this.weighInTime == null && other.weighInTime == null) return 0;
@@ -273,19 +108,16 @@ public class CompetitionSession implements Serializable, Comparable<Object> {
 		if (other.name == null) return 1;
 		return this.name.compareTo(other.name);
 	}
+    
+    public void deleteLifters(HbnSessionManager hbnSessionManager) {
+        final Session session = hbnSessionManager.getHbnSession();
+        for (Lifter curLifter : getLifters()) {
+            session.delete(curLifter);
+        }
+        session.flush();
+    }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
-
-	/* (non-Javadoc)
+    /* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -304,5 +136,193 @@ public class CompetitionSession implements Serializable, Comparable<Object> {
 			return false;
 		return true;
 	}
+
+    public String getAnnouncer() {
+		return announcer;
+	}
+
+    /**
+     * @return the set of categories for the Group
+     */
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    /**
+     * @return the competition time
+     */
+    public String getCompetitionShortDateTime() {
+        String formatted = "";
+        try {
+            formatted = sFormat.format(competitionTime);
+        } catch (Exception e) {
+            LoggerUtils.logErrorException(logger, e);
+        }
+        return formatted;
+    }
+    
+    /**
+     * @return the competition time
+     */
+    public Date getCompetitionTime() {
+        return competitionTime;
+    }
+
+
+    /**
+     * @return the id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    public String getJury() {
+		return jury;
+	}
+
+    public Set<Lifter> getLifters() {
+        return lifters;
+    }
+
+    public String getMarshall() {
+		return marshall;
+	}
+
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @return the platformName on which group will be lifting
+     */
+    public Platform getPlatform() {
+        return platform;
+    }
+
+	public String getReferee1() {
+		return referee1;
+	}
+
+    public String getReferee2() {
+		return referee2;
+	}
+
+	public String getReferee3() {
+		return referee3;
+	}
+	
+	public String getTechnicalController() {
+		return technicalController;
+	}
+
+	public String getTimeKeeper() {
+		return timeKeeper;
+	}
+
+	/**
+     * @return the weigh-in time (two hours before competition, normally)
+     */
+    public String getWeighInShortDateTime() {
+        String formatted = "";
+        try {
+            formatted = sFormat.format(weighInTime);
+        } catch (Exception e) {
+            LoggerUtils.logErrorException(logger, e);
+        }
+        return formatted;        
+    }
+
+	/**
+     * @return the weigh-in time (two hours before competition, normally)
+     */
+    public Date getWeighInTime() {
+        return weighInTime;
+    }
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	public void setAnnouncer(String announcer) {
+		this.announcer = announcer;
+	}
+
+	public void setCategories(Set<Category> categories) {
+        this.categories = categories;
+    }
+
+
+	/**
+     * @param c
+     *            the competition time to set
+     */
+    public void setCompetitionTime(Date c) {
+        this.competitionTime = c;
+    }
+
+	public void setJury(String jury) {
+		this.jury = jury;
+	}
+
+	public void setLifters(Set<Lifter> lifters) {
+        this.lifters = lifters;
+    }
+
+	public void setMarshall(String announcer) {
+		this.marshall = announcer;
+	}
+	
+    /**
+     * @param name
+     *            the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    /**
+     * @param platformName
+     *            the platformName to set
+     */
+    public void setPlatform(Platform platform) {
+        this.platform = platform;
+    }
+    
+    public void setReferee1(String referee1) {
+		this.referee1 = referee1;
+	}
+
+    public void setReferee2(String referee2) {
+		this.referee2 = referee2;
+	}
+
+    public void setReferee3(String referee3) {
+		this.referee3 = referee3;
+	}
+
+    public void setTechnicalController(String technicalController) {
+		this.technicalController = technicalController;
+	}
+
+	public void setTimeKeeper(String timeKeeper) {
+		this.timeKeeper = timeKeeper;
+	}
+
+	/**
+     * @param w the weigh-in time to set
+     */
+    public void setWeighInTime(Date w) {
+        this.weighInTime = w;
+    }
 
 }
