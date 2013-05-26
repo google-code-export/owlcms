@@ -88,7 +88,7 @@
 							projectname="owlcms"
 							filename="target/owlcms-${targetVersion}-war/owlcms-${targetVersion}.war"
 							targetfilename="owlcms-${targetVersion}.war" summary="WAR archive for Web Servers (Tomcat, Jetty)"
-							labels="Type-Archive, OpSys-All" />
+							labels="Featured, Type-Archive, OpSys-All" />
 						<gcupload username="${gc.username}" password="${gc.password}"
 							projectname="owlcms" filename="target/owlcms-${targetVersion}-linux.tar.gz"
 							targetfilename="owlcms-${targetVersion}.tar.gz"
