@@ -2035,14 +2035,14 @@ public class Lifter implements MethodEventSource, Notifier {
             message = RuleViolation.rule15_20Violated(this.getLastName(),this.getFirstName(),this.getStartNumber(),snatchRequest, cleanJerkRequest, delta-15, qualTotal).getLocalizedMessage(locale);
         } 
         if (message != null) {
-            LoggerUtils.logException(logger, new Exception("check15_20kiloRule traceback "+ message));
+            //LoggerUtils.logException(logger, new Exception("check15_20kiloRule traceback "+ message));
             showMustClickNotification(parentView, message, unlessCurrent);
         }
     }
     
 
     public void showMustClickNotification(Notifyable parentView, String message, boolean unlessCurrent) {
-        logger.warn("parentView mode = {}",((AnnouncerView) parentView).getMode());
+        logger.trace("parentView mode = {}",((AnnouncerView) parentView).getMode());
         Notification notification = new Notification(message, Notification.TYPE_ERROR_MESSAGE);
         notification.setDelayMsec(-1);
         parentView.showNotificationForLifter(this,notification, unlessCurrent);

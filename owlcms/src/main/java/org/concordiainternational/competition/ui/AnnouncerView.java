@@ -362,13 +362,11 @@ public class AnnouncerView extends VerticalSplitPanel implements
 			public void run() {
 				synchronized (app) {
 					if (updateEvent.getForceRefresh()) {
-						logger.warn(
-								"updateEvent() received in {} view -- forced refresh. ----------------------------------", mode); //$NON-NLS-1$
+						logger.debug("updateEvent() received in {} view -- forced refresh. ----------------------------------", mode); //$NON-NLS-1$
 						refresh();
 					} else {
 						Lifter currentLifter = updateEvent.getCurrentLifter();
-                        logger.warn(
-								"updateEvent() received in {} view  first is now: {}", AnnouncerView.this.getMode(), currentLifter); //$NON-NLS-1$
+                        logger.debug("updateEvent() received in {} view  first is now: {}", AnnouncerView.this.getMode(), currentLifter); //$NON-NLS-1$
 						
 						liftList.updateTable();
 						loadFirstLifterInfo(masterData,
@@ -608,7 +606,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
 
 	@Override
 	public DownloadStream handleURI(URL context, String relativeUri) {
-		logger.warn("registering URI listeners");
+		logger.debug("registering URI listeners");
 		registerAsListener();
 		return null;
 	}
@@ -631,7 +629,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
 
     @Override
     public void showNotificationForLifter(Lifter lifter, Notification notification, boolean unlessCurrent) {
-        logger.warn("lifter {} unlessCurrent{}",lifter,unlessCurrent);
+        logger.debug("lifter {} unlessCurrent{}",lifter,unlessCurrent);
         if (!unlessCurrent) {
             // always show notification
             app.getMainWindow().showNotification(notification);

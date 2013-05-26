@@ -1021,7 +1021,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         if (currentLifter2 != null) {
             saveLifter(currentLifter2);
         } else {
-        	logger.warn("current lifter is null");
+        	logger.warn("No current lifter.");
         }
     }
 
