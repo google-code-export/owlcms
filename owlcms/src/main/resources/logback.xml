@@ -17,9 +17,8 @@
 	<logger name="org.hibernate" level="WARN" />
 	<logger name="org.hibernate.cache.EhCacheProvider" level="ERROR" />
 	<logger name="org.apache.commons.jexl2.Interpreter" level="ERROR" />
-
 	<logger name="org.concordiainternational.org" level="INFO" /> 
-    <logger name="org.concordiainternational.competition.nec" level="DEBUG" />
+
 
     <!--
         <logger name="com.vaadin.event" level="DEBUG" />
@@ -39,6 +38,7 @@
         <logger name="org.concordiainternational.competition.ui.CompetitionApplication" level="DEBUG" />
         <logger name="org.concordiainternational.competition.data.Lifter" level="TRACE" />
         <logger name="org.concordiainternational.competition.ui.components.BrowserPanel" level="DEBUG" />
+        <logger name="org.concordiainternational.competition.nec" level="DEBUG" />
     -->
 	
 	<root level="WARN">
