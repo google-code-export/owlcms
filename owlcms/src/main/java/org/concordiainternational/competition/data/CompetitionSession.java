@@ -8,6 +8,7 @@
 package org.concordiainternational.competition.data;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -64,6 +65,7 @@ public class CompetitionSession implements Serializable, Comparable<Object> {
 	// group is the property in Lifter that is the opposite of CompetitionSession.lifters
     @OneToMany(mappedBy = "competitionSession")//,fetch=FetchType.EAGER)
     Set<Lifter> lifters;
+    private SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-dd HH:mm");
 
     public CompetitionSession() {
     }
@@ -91,8 +93,15 @@ public class CompetitionSession implements Serializable, Comparable<Object> {
     /**
      * @return the competition time
      */
-    public Date getCompetitionTime() {
+    public Date getCompetitionTimeAsDate() {
         return competitionTime;
+    }
+    
+    /**
+     * @return the competition time
+     */
+    public String getCompetitionTime() {
+        return format.format(competitionTime);
     }
 
     /**
@@ -119,9 +128,17 @@ public class CompetitionSession implements Serializable, Comparable<Object> {
     /**
      * @return the weigh-in time (two hours before competition, normally)
      */
-    public Date getWeighInTime() {
+    public Date getWeighInTimeAsDate() {
         return weighInTime;
     }
+    
+    /**
+     * @return the weigh-in time (two hours before competition, normally)
+     */
+    public String getWeighInTime() {
+        return format.format(weighInTime);
+    }
+    
 
     public void setCategories(Set<Category> categories) {
         this.categories = categories;
