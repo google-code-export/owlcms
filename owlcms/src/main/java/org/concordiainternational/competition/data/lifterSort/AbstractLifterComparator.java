@@ -116,8 +116,8 @@ public class AbstractLifterComparator {
         if (lifter1Group == null) return -1;
         if (lifter2Group == null) return 1;
 
-        Date lifter1Date = lifter1Group.getWeighInTime();
-        Date lifter2Date = lifter2Group.getWeighInTime();
+        Date lifter1Date = lifter1Group.getWeighInTimeAsDate();
+        Date lifter2Date = lifter2Group.getWeighInTimeAsDate();
         if (lifter1Date == null && lifter2Date == null) return 0;
         if (lifter1Date == null) return -1;
         if (lifter2Date == null) return 1;
