@@ -918,7 +918,7 @@ public class LifterInfo extends VerticalLayout implements
 
     @Override
     public void showNotificationForLifter(Lifter lifter1, Notification notification, boolean unlessCurrent) {
-        logger.debug("lifter {} unlessCurrent{}",lifter1,unlessCurrent);
+        logger.warn("lifter {} unlessCurrent{}",lifter1,unlessCurrent);
         if (!unlessCurrent) {
             // always show notification
             app.getMainWindow().showNotification(notification);

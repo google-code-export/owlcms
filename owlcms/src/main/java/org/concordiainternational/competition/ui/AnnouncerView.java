@@ -143,7 +143,8 @@ public class AnnouncerView extends VerticalSplitPanel implements
         announcerInfo = new LifterInfo("topPart", masterData, mode, this); //$NON-NLS-1$
         announcerInfo.addStyleName("currentLifterSummary"); //$NON-NLS-1$
         //announcerInfo.setWidth(7.0F, Sizeable.UNITS_CM); //$NON-NLS-1$
-        announcerInfo.setMargin(true);
+        announcerInfo.setMargin(true,true,false,false);
+        announcerInfo.setSizeFull();
 
         // left side is the lifting order, as well as the menu to switch groups.
         // note: not used in timekeeper view, but until we refactor the code
@@ -153,9 +154,10 @@ public class AnnouncerView extends VerticalSplitPanel implements
         liftList.table.setPageLength(15);
         liftList.table.setSizeFull();
         liftList.setSizeFull();
+        liftList.setMargin(false,false,true,true);
 
         topPart = new HorizontalLayout();
-        
+        topPart.setMargin(false);
         setupNotifications();
 
         synchronized (app) {
@@ -168,13 +170,15 @@ public class AnnouncerView extends VerticalSplitPanel implements
 			}
 
 			announcerInfo.setSizeUndefined();
+			announcerInfo.setWidth("36ex");
 			topPart.addComponent(announcerInfo);
 			
 			if (mode != Mode.TIMEKEEPER) {			
 				topPart.setExpandRatio(announcerInfo, 3.5F);
 			}
-			topPart.setComponentAlignment(announcerInfo, Alignment.TOP_LEFT);
+			topPart.setComponentAlignment(announcerInfo, Alignment.TOP_RIGHT);
 
+			this.setMargin(false);
 			this.setFirstComponent(topPart);
 			loadFirstLifterInfo(masterData,
 					WebApplicationConfiguration.DEFAULT_STICKINESS);
