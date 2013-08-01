@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.apache.derby.impl.sql.compile.GetCurrentConnectionNode;
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.CompetitionSessionLookup;
@@ -530,13 +531,25 @@ public class AnnouncerView extends VerticalSplitPanel implements
 	public void displayNotification(Mode mode2, TimeStoppedNotificationReason reason) {
 		Locale locale = app.getLocale();
 		String message;
-		if (mode2 == null) {
-			message = Messages.getString("TimeStoppedNotificationReason."+reason.name(),locale);
+		String reasonDetails = Messages.getString("TimeStoppedNotificationReason."+reason.name(),locale);
+		Lifter curLifter = masterData.getCurrentLifter();
+		Integer curWeight = curLifter.getNextAttemptRequestedWeight();
+		
+        if (mode2 == null) {
+            message = MessageFormat.format(
+                    Messages.getString("TimeStoppedNotificationReason.NotificationFormatShort", locale),
+                    reasonDetails,
+                    curLifter.getLastName(),
+                    curLifter.getFirstName(),
+                    curWeight);
 		} else {
 			message = MessageFormat.format(
 					Messages.getString("TimeStoppedNotificationReason.NotificationFormat", locale),
 					Messages.getString("LiftList."+mode2.name(), locale),
-					Messages.getString("TimeStoppedNotificationReason."+reason.name(),locale));
+					reasonDetails,
+					curLifter.getLastName(),
+					curLifter.getFirstName(),
+					curWeight);
 		}
 		final Message addedMessage = notifications.add((Resource)null,message,true,Notifique.Styles.VAADIN_ORANGE,true);
 		switch (reason) {
