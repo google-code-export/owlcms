@@ -103,7 +103,7 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         List<Lifter> sortedWomen = null;
 
         sortedLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.SNATCH);
-        lifterSorter.assignCategoryRanks(sortedLifters, Ranking.SNATCH);
+        LifterSorter.assignCategoryRanks(sortedLifters, Ranking.SNATCH);
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());
         sortedWomen = new ArrayList<Lifter>(sortedLifters.size());
         splitByGender(sortedLifters, sortedMen, sortedWomen);
@@ -128,7 +128,7 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         
         
         sortedLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.CLEANJERK);
-        lifterSorter.assignCategoryRanks(sortedLifters, Ranking.CLEANJERK);
+        LifterSorter.assignCategoryRanks(sortedLifters, Ranking.CLEANJERK);
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());
         sortedWomen = new ArrayList<Lifter>(sortedLifters.size());
         splitByGender(sortedLifters, sortedMen, sortedWomen);
@@ -136,7 +136,7 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         reportingBeans.put("wCJ",sortedWomen);
 
         sortedLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.TOTAL);
-        lifterSorter.assignCategoryRanks(sortedLifters, Ranking.TOTAL);
+        LifterSorter.assignCategoryRanks(sortedLifters, Ranking.TOTAL);
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());
         sortedWomen = new ArrayList<Lifter>(sortedLifters.size());
         splitByGender(sortedLifters, sortedMen, sortedWomen);
@@ -152,7 +152,7 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         reportingBeans.put("wSinclair",sortedWomen);
         
         sortedLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.CUSTOM);
-        lifterSorter.assignCategoryRanks(sortedLifters, Ranking.CUSTOM);
+        LifterSorter.assignCategoryRanks(sortedLifters, Ranking.CUSTOM);
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());
         sortedWomen = new ArrayList<Lifter>(sortedLifters.size());
         splitByGender(sortedLifters, sortedMen, sortedWomen);

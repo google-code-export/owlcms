@@ -45,8 +45,7 @@ public class LifterSorterTest {
         final CompetitionApplication application = new CompetitionApplication();
         CompetitionApplication.setCurrent(application);
 
-        // for this test, the initial data does not include body weights, so we
-        // use false
+        // for this test, the initial data does not include body weights, so we use false
         // on the constructor to disable exclusion of incomplete data.
         hbnLifters = new LifterContainer(new CompetitionApplication(), false);
         lifters = (hbnLifters.getAllPojos());
@@ -114,19 +113,18 @@ public class LifterSorterTest {
 
         // failure so we can test "earlier lifter"
         failedLift(lifters);
-        assertTrue(
-            "earlier lifter has precedence", lifters.get(2).getLastLiftTime().before(lifters.get(3).getLastLiftTime())); //$NON-NLS-1$
+        assertTrue("earlier lifter has precedence", lifters.get(2).getLastLiftTime().before(lifters.get(3).getLastLiftTime())); //$NON-NLS-1$
         assertTrue("lift order not considered", (lifters.get(2).getLotNumber()) > (lifters.get(3).getLotNumber())); //$NON-NLS-1$
         assertEqualsToReferenceFile("/seq1_lift4.txt", AllTests.shortDump(lifters)); //$NON-NLS-1$
 
         // one more failure -- we now have 3 lifters at second try, 60kg.
         failedLift(lifters);
         assertTrue(
-            "time stamp precedence failed 0 vs 1 " + lifters.get(0).getLastLiftTime() + ">=" + lifters.get(1).getLastLiftTime(), //$NON-NLS-1$ //$NON-NLS-2$
-            lifters.get(0).getLastLiftTime().before(lifters.get(1).getLastLiftTime()));
+                "time stamp precedence failed 0 vs 1 " + lifters.get(0).getLastLiftTime() + ">=" + lifters.get(1).getLastLiftTime(), //$NON-NLS-1$ //$NON-NLS-2$
+                lifters.get(0).getLastLiftTime().before(lifters.get(1).getLastLiftTime()));
         assertTrue(
-            "time stamp precedence failed 1 vs 2 " + lifters.get(1).getLastLiftTime() + ">=" + lifters.get(2).getLastLiftTime(), //$NON-NLS-1$ //$NON-NLS-2$
-            lifters.get(1).getLastLiftTime().before(lifters.get(2).getLastLiftTime()));
+                "time stamp precedence failed 1 vs 2 " + lifters.get(1).getLastLiftTime() + ">=" + lifters.get(2).getLastLiftTime(), //$NON-NLS-1$ //$NON-NLS-2$
+                lifters.get(1).getLastLiftTime().before(lifters.get(2).getLastLiftTime()));
         assertEqualsToReferenceFile("/seq1_lift5.txt", AllTests.shortDump(lifters)); //$NON-NLS-1$
 
         // get second try done
@@ -192,7 +190,7 @@ public class LifterSorterTest {
         // in this test sequence, the winner has bigger lot number, but still
         // wins because of earlier lift.
         Collections.sort(lifters, new WinningOrderComparator(Ranking.TOTAL));
-        LifterSorter.assignMedals(lifters);
+        LifterSorter.assignCategoryRanks(lifters, Ranking.TOTAL);
         assertEqualsToReferenceFile("/seq1_medals_timeStamp.txt", AllTests.shortDump(lifters)); //$NON-NLS-1$
 
         // now we give the first two lifters different body weights (second is
@@ -203,7 +201,7 @@ public class LifterSorterTest {
         lifters.get(2).setBodyWeight(68.4);
         // and we sort again for medals.
         Collections.sort(lifters, new WinningOrderComparator(Ranking.TOTAL));
-        LifterSorter.assignMedals(lifters);
+        LifterSorter.assignCategoryRanks(lifters, Ranking.TOTAL);
         assertEqualsToReferenceFile("/seq1_medals_bodyWeight.txt", AllTests.shortDump(lifters)); //$NON-NLS-1$
     }
 
@@ -269,7 +267,7 @@ public class LifterSorterTest {
         doLift(lifter, lifters1, weight);
         if (lifter.getAttemptsDone() < 5)
             assertEquals(
-                "next requested weight should be equal after failed lift", nextAttemptRequestedWeight, lifter.getNextAttemptRequestedWeight()); //$NON-NLS-1$
+                    "next requested weight should be equal after failed lift", nextAttemptRequestedWeight, lifter.getNextAttemptRequestedWeight()); //$NON-NLS-1$
     }
 
     /**

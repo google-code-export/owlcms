@@ -13,7 +13,6 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.apache.derby.impl.sql.compile.GetCurrentConnectionNode;
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.CompetitionSessionLookup;

@@ -259,7 +259,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         displayOrder = LifterSorter.displayOrderCopy(lifters);
         setLiftTimeOrder(LifterSorter.LiftTimeOrderCopy(lifters));
         setResultOrder(LifterSorter.resultsOrderCopy(lifters, Ranking.TOTAL));
-        LifterSorter.assignMedals(getResultOrder());
+        LifterSorter.assignCategoryRanks(getResultOrder(), Ranking.TOTAL);
         this.liftsDone = LifterSorter.countLiftsDone(lifters);
 
         LifterSorter.liftingOrder(lifters);
@@ -269,10 +269,9 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         Integer currentRequest = (currentLifter != null ? currentLifter.getNextAttemptRequestedWeight() : null);
         Integer currentRequestNum = (currentLifter != null ? currentLifter.getAttemptsDone() : null);
 
-        logger
-                .debug("new/old {}/{}  {}/{}  {}/{}", //$NON-NLS-1$
-                    new Object[] { currentLifter, priorLifter, currentRequest, priorRequest, currentRequestNum,
-                            priorRequestNum });
+//        logger.debug("new/old {}/{}  {}/{}  {}/{}", //$NON-NLS-1$
+//                    new Object[] { currentLifter, priorLifter, currentRequest, priorRequest, currentRequestNum,
+//                            priorRequestNum });
 
         setNeedToAnnounce(currentLifter != priorLifter || priorRequest != currentRequest
             || priorRequestNum != currentRequestNum);
