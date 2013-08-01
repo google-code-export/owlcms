@@ -349,59 +349,59 @@ public class LifterSorter implements Serializable {
     }
     
     
-    /**
-     * Assign medals, sequentially.
-     * 
-     * @param sortedList
-     */
-    static public void assignMedals(List<Lifter> sortedList) {
-        Category prevCategory = null;
-        Integer prevAgeGroup = null;
-        Integer curAgeGroup = null;
-
-        int rank = 1;
-        for (Lifter curLifter : sortedList) {
-            Category curCategory = null;
-            if (WinningOrderComparator.useRegistrationCategory) {
-                curCategory = curLifter.getRegistrationCategory();
-            } else {
-                curCategory = curLifter.getCategory();
-            }
-            if (Competition.isMasters()) {
-                curAgeGroup = curLifter.getAgeGroup();
-            }
-
-            if (!equals(curCategory, prevCategory) || !equals(curAgeGroup, prevAgeGroup)) {
-                // category boundary has been crossed
-                rank = 1;
-            }
-
-            if (curLifter.isInvited()) {
-                logger.trace("lifter {}  totalRank={} total={}",
-                		new Object[] { curLifter, -1, curLifter.getTotal() }); //$NON-NLS-1$
-                curLifter.setRank(-1);
-            } else if (rank <= 3 && curLifter.getTotal() > 0) {
-                logger.trace("lifter {}  totalRank={} total={}",
-                		new Object[] { curLifter, rank, curLifter.getTotal() }); //$NON-NLS-1$
-                curLifter.setRank(rank);
-                rank++;
-            } else {
-                logger.trace("lifter {}  totalRank={} total={}",
-                		new Object[] { curLifter, 0, curLifter.getTotal() }); //$NON-NLS-1$
-                curLifter.setRank(0);
-                rank++;
-            }
-            prevCategory = curCategory;
-            prevAgeGroup = curAgeGroup;
-        }
-    }
+//    /**
+//     * Assign medals, sequentially.
+//     * 
+//     * @param sortedList
+//     */
+//    static public void assignMedals(List<Lifter> sortedList) {
+//        Category prevCategory = null;
+//        Integer prevAgeGroup = null;
+//        Integer curAgeGroup = null;
+//
+//        int rank = 1;
+//        for (Lifter curLifter : sortedList) {
+//            Category curCategory = null;
+//            if (WinningOrderComparator.useRegistrationCategory) {
+//                curCategory = curLifter.getRegistrationCategory();
+//            } else {
+//                curCategory = curLifter.getCategory();
+//            }
+//            if (Competition.isMasters()) {
+//                curAgeGroup = curLifter.getAgeGroup();
+//            }
+//
+//            if (!equals(curCategory, prevCategory) || !equals(curAgeGroup, prevAgeGroup)) {
+//                // category boundary has been crossed
+//                rank = 1;
+//            }
+//
+//            if (curLifter.isInvited()) {
+//                logger.trace("lifter {}  totalRank={} total={}",
+//                		new Object[] { curLifter, -1, curLifter.getTotal() }); //$NON-NLS-1$
+//                curLifter.setRank(-1);
+//            } else if (rank <= 3 && curLifter.getTotal() > 0) {
+//                logger.trace("lifter {}  totalRank={} total={}",
+//                		new Object[] { curLifter, rank, curLifter.getTotal() }); //$NON-NLS-1$
+//                curLifter.setRank(rank);
+//                rank++;
+//            } else {
+//                logger.trace("lifter {}  totalRank={} total={}",
+//                		new Object[] { curLifter, 0, curLifter.getTotal() }); //$NON-NLS-1$
+//                curLifter.setRank(0);
+//                rank++;
+//            }
+//            prevCategory = curCategory;
+//            prevAgeGroup = curAgeGroup;
+//        }
+//    }
 
     /**
      * Assign ranks, sequentially.
      * 
      * @param sortedList
      */
-    public void assignCategoryRanks(List<Lifter> sortedList, Ranking rankingType) {
+    public static void assignCategoryRanks(List<Lifter> sortedList, Ranking rankingType) {
         Category prevCategory = null;
         Integer prevAgeGroup = null;
         Integer curAgeGroup = null;
@@ -514,7 +514,7 @@ public class LifterSorter implements Serializable {
      * @param i
      * @param rankingType
      */
-    public void setRank(Lifter curLifter, int i, Ranking rankingType) {
+    public static void setRank(Lifter curLifter, int i, Ranking rankingType) {
         switch (rankingType) {
         case SNATCH:
             curLifter.setSnatchRank(i);
@@ -573,7 +573,7 @@ public class LifterSorter implements Serializable {
      * @param points
      * @param rankingType
      */
-    private void setPoints(Lifter curLifter, float points, Ranking rankingType) {
+    private static void setPoints(Lifter curLifter, float points, Ranking rankingType) {
         logger.trace(curLifter + " " + rankingType + " points=" + points);
         switch (rankingType) {
         case SNATCH:
@@ -598,7 +598,7 @@ public class LifterSorter implements Serializable {
      * @param rankingType
      * @return
      */
-    private float computePoints(Lifter curLifter, Ranking rankingType) {
+    private static float computePoints(Lifter curLifter, Ranking rankingType) {
         switch (rankingType) {
         case SNATCH:
             return pointsFormula(curLifter.getSnatchRank(), curLifter);
@@ -621,7 +621,7 @@ public class LifterSorter implements Serializable {
      * @param curLifter
      * @return
      */
-    private float pointsFormula(Integer rank, Lifter curLifter) {
+    private static float pointsFormula(Integer rank, Lifter curLifter) {
         if (rank == null || rank <= 0) return 0;
         if (rank == 1) return 28;
         if (rank == 2) return 25;
@@ -657,7 +657,7 @@ public class LifterSorter implements Serializable {
      * @param rankingType
      * @return
      */
-    public Integer getRank(Lifter curLifter, Ranking rankingType) {
+    public static Integer getRank(Lifter curLifter, Ranking rankingType) {
         switch (rankingType) {
         case SNATCH:
             return curLifter.getSnatchRank();

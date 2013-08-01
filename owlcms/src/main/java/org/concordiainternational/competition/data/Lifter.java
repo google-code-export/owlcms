@@ -248,7 +248,9 @@ public class Lifter implements MethodEventSource, Notifier {
     final transient Integer bestSnatch = 0;
     @Transient
     final transient Integer bestCleanJerk = 0;
-
+    @Transient
+    final transient Integer medalRank = 0;
+    
     @Transient
     final transient Integer total = 0;
     @Transient
@@ -814,6 +816,10 @@ public class Lifter implements MethodEventSource, Notifier {
      */
     public Integer getNextAttemptRequestedWeight() {
         int attempt = getAttemptsDone() + 1;
+        return getRequestedWeightForAttempt(attempt);
+    }
+
+    public Integer getRequestedWeightForAttempt(int attempt) {
         switch (attempt) {
         case 1:
             return (Integer) last(zeroIfInvalid(getSnatch1AutomaticProgression()), zeroIfInvalid(snatch1Declaration),
@@ -1764,6 +1770,11 @@ public class Lifter implements MethodEventSource, Notifier {
         this.customPoints = customPoints;
     }
 
+	public Integer getMedalRank() {
+	    int i = getRank();
+	    return (i < 3 ? i : 0);
+	}
+	
     public void successfulLift() {
         logger.debug("good lift for {}, listeners={}", this); //, getEventRouter().dumpListeners(this)); //$NON-NLS-1$
         final String weight = Integer.toString(getNextAttemptRequestedWeight());

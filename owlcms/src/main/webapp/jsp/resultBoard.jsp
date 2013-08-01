@@ -98,6 +98,7 @@
 			<th colspan="3">Arraché<div class='english'>Snatch</div></th>
 			<th colspan="3">Épaulé-jeté<div class='english'>Clean&amp;Jerk</div></th>
 			<th>Total</th>
+			<th class="cat" style='text-align: center'>Rang<div class='english'>Rank</div></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -236,6 +237,14 @@
 					</c:when>
 					<c:otherwise>
 						<td class='weight'>&ndash;</td>
+					</c:otherwise>
+				</c:choose>
+				<c:choose>
+					<c:when test="${lifter.rank > 0}">
+						<td class='cat'>${lifter.rank}</td>
+					</c:when>
+					<c:otherwise>
+						<td class='cat'>&ndash;</td>
 					</c:otherwise>
 				</c:choose>
 			</tr>
