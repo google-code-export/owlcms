@@ -21,14 +21,11 @@ import org.concordiainternational.competition.webapp.WebApplicationConfiguration
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.event.Action;
-import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Window;
 
 public class TimerControls extends GridLayout {
 
@@ -63,11 +60,11 @@ public class TimerControls extends GridLayout {
 	private LifterInfo lifterInfo;
 	private boolean timerVisible = false;
 
-	private boolean timerShortcutsEnabled = false;
-	private ShortcutActionListener startAction;
-	private ShortcutActionListener stopAction;
-	private ShortcutActionListener oneMinuteAction;
-	private ShortcutActionListener twoMinutesAction;
+//	private boolean timerShortcutsEnabled = false;
+//	private ShortcutActionListener startAction;
+//	private ShortcutActionListener stopAction;
+//	private ShortcutActionListener oneMinuteAction;
+//	private ShortcutActionListener twoMinutesAction;
 
 	public TimerControls(final Lifter lifter, final SessionData groupData, boolean top, AnnouncerView.Mode mode,
 			LifterInfo lifterInfo, boolean timerVisible, CompetitionApplication app) {
@@ -165,7 +162,7 @@ public class TimerControls extends GridLayout {
 			enableStopStart(groupData.getTimer().isRunning());
 
             registerListeners(lifter,groupData);
-			setTimerShortcutsEnabled(true);
+//			setTimerShortcutsEnabled(true);
 		}
 	}
 
@@ -486,19 +483,19 @@ public class TimerControls extends GridLayout {
 		enableStopStart(running);
 		oneMinute.setVisible(true);
 		twoMinutes.setVisible(true);
-		setTimerShortcutsEnabled(true);
+//		setTimerShortcutsEnabled(true);
 	}
 
-	public void setTimerShortcutsEnabled(boolean b) {
-		this.timerShortcutsEnabled = b;
-	}
+//	public void setTimerShortcutsEnabled(boolean b) {
+//		this.timerShortcutsEnabled = b;
+//	}
 
 	public void hideTimerControls() {
 		start.setVisible(false);
 		stop.setVisible(false);
 		oneMinute.setVisible(false);
 		twoMinutes.setVisible(false);
-		setTimerShortcutsEnabled(false);
+//		setTimerShortcutsEnabled(false);
 	}
 
 	public void showLiftControls() {
@@ -599,77 +596,77 @@ public class TimerControls extends GridLayout {
 		enableStopStart(false);
 	}
 
-	@SuppressWarnings("serial")
-	private abstract class ShortcutActionListener extends ShortcutAction implements Action.Listener {
+//	@SuppressWarnings("serial")
+//	private abstract class ShortcutActionListener extends ShortcutAction implements Action.Listener {
+//
+//		public ShortcutActionListener(String caption, int kc, int[] m) {
+//			super(caption, kc, m);
+//		}
+//
+//		public ShortcutActionListener(String caption, int kc) {
+//			super(caption, kc, null);
+//		}
+//
+//	}
 
-		public ShortcutActionListener(String caption, int kc, int[] m) {
-			super(caption, kc, m);
-		}
-
-		public ShortcutActionListener(String caption, int kc) {
-			super(caption, kc, null);
-		}
-
-	}
-
-	@SuppressWarnings("serial")
-	private void initActions(Action.Notifier actionNotifier, final Lifter lifter, final SessionData groupData) {
-
-		startAction = new ShortcutActionListener("start", ShortcutAction.KeyCode.G){
-
-			@Override
-			public void handleAction(Object sender, Object target) {
-				if (!timerShortcutsEnabled) return;
-				TimerControls.this.startDoIt(lifter,groupData);
-			}
-
-		};
-		stopAction = new ShortcutActionListener("stop",ShortcutAction.KeyCode.P){
-
-			@Override
-			public void handleAction(Object sender, Object target) {
-				if (!timerShortcutsEnabled) return;
-				TimerControls.this.stopDoIt(lifter,groupData);
-			}
-
-		};
-		oneMinuteAction = new ShortcutActionListener("1 minute",ShortcutAction.KeyCode.O){
-
-			@Override
-			public void handleAction(Object sender, Object target) {
-				if (!timerShortcutsEnabled) return;
-				TimerControls.this.oneMinuteDoIt(lifter,groupData);
-			}
-
-		};
-		twoMinutesAction = new ShortcutActionListener("2 minutes",ShortcutAction.KeyCode.T){
-
-			@Override
-			public void handleAction(Object sender, Object target) {
-				if (!timerShortcutsEnabled) return;
-				TimerControls.this.twoMinutesDoIt(lifter,groupData);	
-			}
-
-		};
-
-		actionNotifier.addAction(startAction);
-		actionNotifier.addAction(stopAction);
-		actionNotifier.addAction(oneMinuteAction);
-		actionNotifier.addAction(twoMinutesAction);
-
-	}
+//	@SuppressWarnings("serial")
+//	private void initActions(Action.Notifier actionNotifier, final Lifter lifter, final SessionData groupData) {
+//
+//		startAction = new ShortcutActionListener("start", ShortcutAction.KeyCode.G){
+//
+//			@Override
+//			public void handleAction(Object sender, Object target) {
+//				if (!timerShortcutsEnabled) return;
+//				TimerControls.this.startDoIt(lifter,groupData);
+//			}
+//
+//		};
+//		stopAction = new ShortcutActionListener("stop",ShortcutAction.KeyCode.P){
+//
+//			@Override
+//			public void handleAction(Object sender, Object target) {
+//				if (!timerShortcutsEnabled) return;
+//				TimerControls.this.stopDoIt(lifter,groupData);
+//			}
+//
+//		};
+//		oneMinuteAction = new ShortcutActionListener("1 minute",ShortcutAction.KeyCode.O){
+//
+//			@Override
+//			public void handleAction(Object sender, Object target) {
+//				if (!timerShortcutsEnabled) return;
+//				TimerControls.this.oneMinuteDoIt(lifter,groupData);
+//			}
+//
+//		};
+//		twoMinutesAction = new ShortcutActionListener("2 minutes",ShortcutAction.KeyCode.T){
+//
+//			@Override
+//			public void handleAction(Object sender, Object target) {
+//				if (!timerShortcutsEnabled) return;
+//				TimerControls.this.twoMinutesDoIt(lifter,groupData);	
+//			}
+//
+//		};
+//
+//		actionNotifier.addAction(startAction);
+//		actionNotifier.addAction(stopAction);
+//		actionNotifier.addAction(oneMinuteAction);
+//		actionNotifier.addAction(twoMinutesAction);
+//
+//	}
 
 	public void unregisterListeners() {
-		Window mainWindow = CompetitionApplication.getCurrent().getMainWindow();
-		mainWindow.removeAction(startAction);
-		mainWindow.removeAction(stopAction);
-		mainWindow.removeAction(oneMinuteAction);
-		mainWindow.removeAction(twoMinutesAction);
+//		Window mainWindow = CompetitionApplication.getCurrent().getMainWindow();
+////		mainWindow.removeAction(startAction);
+////		mainWindow.removeAction(stopAction);
+////		mainWindow.removeAction(oneMinuteAction);
+////		mainWindow.removeAction(twoMinutesAction);
 	}
 
 	public void registerListeners(Lifter lifter, SessionData groupData) {
-		Window mainWindow = CompetitionApplication.getCurrent().getMainWindow();
-		initActions(mainWindow, lifter, groupData);
+//		Window mainWindow = CompetitionApplication.getCurrent().getMainWindow();
+////		initActions(mainWindow, lifter, groupData);
 	}
 
 
