@@ -191,7 +191,7 @@
 						<%= WeightFormatter.htmlFormatWeight(lifter.getCleanJerk1ActualLift()) %>
 					</c:when>
 					<c:otherwise>
-						<td class='weight'></td>
+						<td class='requestedWeight'><%= lifter.getRequestedWeightForAttempt(4) %></td>
 					</c:otherwise>
 				</c:choose>
 				<c:choose>
