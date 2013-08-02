@@ -427,17 +427,19 @@ public class LifterInfo extends VerticalLayout implements
 
     @Override
     public void finalWarning(int remaining) {
-        SessionData masterData = app.getMasterData(app.getPlatformName());
-        logger.trace("final warning, {}", isMasterConsole(masterData));
+
         if (timerDisplay == null) return;
         prevTimeRemaining = remaining;
+ 
+        SessionData masterData = app.getMasterData(app.getPlatformName());
+        if (!isMasterConsole(masterData)) return;
 
         synchronized (app) {
             if (!isBlocked()) {
                 timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
 //                final ClassResource resource = new ClassResource("/sounds/finalWarning.mp3", app); //$NON-NLS-1$
 //                playSound(resource);
-                playSound("/sounds/finalWarning2.wav");
+                playSound("/sounds/finalWarning2.wav", masterData);
             }
             setBlocked(false);
         }
@@ -446,15 +448,28 @@ public class LifterInfo extends VerticalLayout implements
 
     @Override
     public void initialWarning(int remaining) {
+
         if (timerDisplay == null) return;
         prevTimeRemaining = remaining;
+        
+        SessionData masterData = app.getMasterData(app.getPlatformName());
+        if (!isMasterConsole(masterData)) return;
+        
+        // no need to beep if current lifter has declared
+        Integer currentAttemptDeclaration = lifter.getCurrentAttemptDeclaration();
+        if (currentAttemptDeclaration != null && currentAttemptDeclaration > 0) {
+            logger.info("lifter {} has declared {}, no initial warning needed.", lifter, currentAttemptDeclaration);
+            return;
+        } else {
+            logger.info("lifter {} has NOT declared, initial warning.", lifter, currentAttemptDeclaration);
+        }
 
         synchronized (app) {
             if (!isBlocked()) {
                 timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
 //                final ClassResource resource = new ClassResource("/sounds/initialWarning.mp3", app); //$NON-NLS-1$
 //                playSound(resource);
-                playSound("/sounds/initialWarning2.wav");
+                playSound("/sounds/initialWarning2.wav", masterData);
             }
             setBlocked(false);
         }
@@ -477,10 +492,10 @@ public class LifterInfo extends VerticalLayout implements
 //
 //    }
     
-    private void playSound(String soundName) {
-        SessionData masterData = app.getMasterData(app.getPlatformName());
-        if (isMasterConsole(masterData)) {
-            new Sound(masterData.getPlatform().getMixer(),soundName).emit();
+
+    private void playSound(String soundName, SessionData sessionData2) {
+        if (isMasterConsole(sessionData2)) {
+            new Sound(sessionData2.getPlatform().getMixer(),soundName).emit();
             logger.debug("! {} is master, playing sound", app); //$NON-NLS-1$
         } else {
             // we are not the master application; do not play
@@ -500,13 +515,16 @@ public class LifterInfo extends VerticalLayout implements
     public void noTimeLeft(int remaining) {
         if (timerDisplay == null) return;
         prevTimeRemaining = remaining;
+        
+        SessionData masterData = app.getMasterData(app.getPlatformName());
+        if (!isMasterConsole(masterData)) return;
 
         synchronized (app) {
             if (!isBlocked()) {
                 timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
 //                final ClassResource resource = new ClassResource("/sounds/timeOver.mp3", app); //$NON-NLS-1$
 //                playSound(resource);
-                playSound("/sounds/timeOver2.wav");
+                playSound("/sounds/timeOver2.wav", masterData);
                 if (timerDisplay != null) {
                     timerDisplay.setEnabled(false);
                 }
