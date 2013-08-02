@@ -2225,5 +2225,36 @@ public class Lifter implements MethodEventSource, Notifier {
 		return true;
 	}
 
+    public boolean isCurrentDeclarationDone() {
+        Integer currentAttemptDeclaration = getCurrentAttemptDeclaration();
+        return (currentAttemptDeclaration != null && currentAttemptDeclaration > 0);
+    }
+    
+    /**
+     * @return the nextAttemptRequestedWeight
+     */
+    public Integer getCurrentAttemptDeclaration() {
+        int attempt = getAttemptsDone() + 1;
+        return getCurrentAttemptDeclaration(attempt);
+    }
+
+    public Integer getCurrentAttemptDeclaration(int attempt) {
+        switch (attempt) {
+        case 1:
+            return (Integer) (zeroIfInvalid(getSnatch1Declaration()));
+        case 2:
+            return (Integer) (zeroIfInvalid(getSnatch2Declaration()));
+        case 3:
+            return (Integer) (zeroIfInvalid(getSnatch3Declaration()));
+        case 4:
+            return (Integer) (zeroIfInvalid(getCleanJerk1Declaration()));
+        case 5:
+            return (Integer) (zeroIfInvalid(getCleanJerk2Declaration()));
+        case 6:
+            return (Integer) (zeroIfInvalid(getCleanJerk3Declaration()));
+        }
+        return 0;
+    }
+
 
 }
