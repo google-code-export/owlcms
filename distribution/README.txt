@@ -43,7 +43,7 @@ Because we use the Free edition, these steps are manual.
 - go to the distribution project and refresh (F5)
 - go to distribution/src/installer/owlcms-cache and delete the contents.
 - start src/installer/owlcms.aip
-  - In the "files" section, go to "Application Data/owlcms"
+  - In the "Files and Folders" section, go to "Application Data/owlcms" and expand the folder triangle.
   - remove the doc, lib and owlcms directory. If prompted with a warning, select the "Don't Search" button
   - drag the owlcms.exe file and the three directories from distribution/target/owlcms-x.y.z-windows  to Application Data/owlcms
   - accept the warnings about overwrite ("Yes to All")
