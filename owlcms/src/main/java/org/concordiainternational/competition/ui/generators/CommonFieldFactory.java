@@ -42,7 +42,8 @@ public class CommonFieldFactory extends DefaultFieldFactory {
 
     private static final long serialVersionUID = 8789528655171127108L;
     
-	private static Logger logger = LoggerFactory.getLogger(CommonFieldFactory.class);
+	@SuppressWarnings("unused")
+    private static Logger logger = LoggerFactory.getLogger(CommonFieldFactory.class);
 
     private Application app;
 
@@ -84,7 +85,7 @@ public class CommonFieldFactory extends DefaultFieldFactory {
 	 * @return
 	 */
 	private Field adjustField(Object propertyId, Component uiContext, Field f) {
-	    logger.warn("adjusting {} {}",propertyId,f.getClass().getSimpleName());
+	    //logger.debug("adjusting {} {}",propertyId,f.getClass().getSimpleName());
 		try {
 			String caption = Messages.getStringWithException("FieldName." + propertyId,
 					CompetitionApplication.getCurrentLocale());
@@ -179,7 +180,7 @@ public class CommonFieldFactory extends DefaultFieldFactory {
      * @return
      */
     public static Field createFieldByPropertyType(Class<?> type, Component uiContext) {
-    	//logger.warn("creating {}",type);
+    	//logger.trace("creating {}",type);
         // Null typed properties can not be edited
         if (type == null) {
             return null;
@@ -188,7 +189,7 @@ public class CommonFieldFactory extends DefaultFieldFactory {
         // Date field
         boolean b = !uiContext.isReadOnly();
         if (Date.class.isAssignableFrom(type) && b) {
-            logger.warn("creating for {} {}",type, b);
+            //logger.trace("creating for {} {}",type, b);
             final ISO8601DateField df = new ISO8601DateField();
             df.setResolution(DateField.RESOLUTION_DAY);
             return df;
