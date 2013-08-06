@@ -26,6 +26,7 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.FileResource;
 import com.vaadin.terminal.SystemError;
@@ -151,8 +152,8 @@ Upload.Receiver, ApplicationView {
 	private void processCSV(DownloadStream ds) {
 		try {
 			final Session hbnSession = app.getHbnSession();
-			InputCSVHelper iCSV = new InputCSVHelper(app);
-			List<Lifter> lifters = iCSV.getAllLifters(ds.getStream(), app);
+			CSVHelper iCSV = new CSVHelper(app);
+			List<Lifter> lifters = iCSV.getAllLifters(ds.getStream(), hbnSession);
 			for (Lifter curLifter : lifters) {
 				hbnSession.save(curLifter);
 			}
@@ -164,10 +165,11 @@ Upload.Receiver, ApplicationView {
 
 	private void processXLS(DownloadStream ds) {
 		try {
-			final WeighInSheet weighInSheet = new WeighInSheet(app);
 			final Session hbnSession = app.getHbnSession();
-			weighInSheet.readHeader(ds.getStream(), app);
-			List<Lifter> lifters = weighInSheet.getAllLifters(ds.getStream(), app);
+	        final WeighInSheet weighInSheet = new WeighInSheet();
+	        weighInSheet.init(new ExtenXLSReader((HbnSessionManager)app));
+			weighInSheet.readHeader(ds.getStream(), hbnSession);
+			List<Lifter> lifters = weighInSheet.getAllLifters(ds.getStream(), hbnSession);
 			for (Lifter curLifter : lifters) {
 				hbnSession.save(curLifter);
 			}

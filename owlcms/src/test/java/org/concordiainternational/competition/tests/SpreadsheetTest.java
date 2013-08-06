@@ -12,8 +12,11 @@ import java.util.List;
 
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.Lifter;
+import org.concordiainternational.competition.data.lifterSort.LifterSorter;
+import org.concordiainternational.competition.spreadsheet.ExtenXLSReader;
 import org.concordiainternational.competition.spreadsheet.InputSheet;
 import org.concordiainternational.competition.spreadsheet.WeighInSheet;
+import org.hibernate.Session;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,10 +56,18 @@ public class SpreadsheetTest {
      */
     @Test
     public void getAllLifters() throws Throwable {
+
+        HbnSessionManager sessionManager = AllTests.getSessionManager();
+        Session hbnSession = sessionManager.getHbnSession();
+ 
         InputStream is = AllTests.class.getResourceAsStream("/testData/roundTripInputSheet.xls"); //$NON-NLS-1$
-        InputSheet results = new WeighInSheet(AllTests.getSessionManager());
-        lifters = results.getAllLifters(is, hbnSessionManager);
-        AllTests.longDump(lifters, false);
+        InputSheet results = new WeighInSheet();
+        results.init(new ExtenXLSReader(sessionManager));
+
+        lifters = results.getAllLifters(is, hbnSession);
+//        lifters = LifterSorter.displayOrderCopy(Lifter.getAll(hbnSession,false));  
+        List<Lifter> sortedLifters = LifterSorter.displayOrderCopy(lifters);
+        System.out.println(AllTests.longDump(sortedLifters));
     }
 
 

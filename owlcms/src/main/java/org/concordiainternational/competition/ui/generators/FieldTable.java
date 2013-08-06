@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TableFieldFactory;
@@ -44,7 +45,12 @@ public class FieldTable extends Table {
                 if (isEditable()) {
                 	return f;
                 } else {
-                	return formatPropertyValue(rowId, colId, property);
+                    //if (f instanceof DateField ) {
+                        Object value = f.getValue();
+                        if (value != null) {
+                            return f.toString();   
+                        }
+                    //}
                 }
             }
         }

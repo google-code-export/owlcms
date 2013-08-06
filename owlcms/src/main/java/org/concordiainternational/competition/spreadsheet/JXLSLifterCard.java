@@ -9,7 +9,6 @@ package org.concordiainternational.competition.spreadsheet;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -19,15 +18,11 @@ import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.extentech.ExtenXLS.WorkBookHandle;
-
 
 /**
  * Encapsulate a spreadsheet as a StreamSource so that it can be used as a
  * source of data when the user clicks on a link. This class converts the output
- * stream produced by the
- * {@link OutputSheet#writeWorkBook(WorkBookHandle, OutputStream)} method to an
- * input stream that the Vaadin framework can consume.
+ * stream to an input stream that the Vaadin framework can consume.
  */
 @SuppressWarnings("serial")
 public class JXLSLifterCard extends JXLSWorkbookStreamSource {
