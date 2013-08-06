@@ -81,6 +81,8 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
         table.addGeneratedColumn("competitionSession", new CommonColumnGenerator(app)); //$NON-NLS-1$
         table.addGeneratedColumn("teamMember", new CommonColumnGenerator(app)); //$NON-NLS-1$
         table.addGeneratedColumn("qualifyingTotal", new CommonColumnGenerator(app)); //$NON-NLS-1$
+        table.setColumnCollapsingAllowed(true);
+        table.setColumnCollapsed("birthDate", true);
 
         setExpandRatios();
     }
