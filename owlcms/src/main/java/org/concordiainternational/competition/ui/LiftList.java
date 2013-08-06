@@ -283,7 +283,6 @@ public class LiftList extends GenericBeanList<Lifter> implements
      */
     @Override
     protected void loadData() {
-
         logger.debug("loadData for {}, size={}", mode, masterDataForCurrentPlatform.lifters.size()); //$NON-NLS-1$
         logger.debug("masterDataForCurrentPlatform={}", masterDataForCurrentPlatform); //$NON-NLS-1$
         List<Lifter> lifters = masterDataForCurrentPlatform.getAttemptOrder();

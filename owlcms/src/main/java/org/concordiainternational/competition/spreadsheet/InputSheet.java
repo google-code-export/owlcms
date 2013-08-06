@@ -12,17 +12,23 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.concordiainternational.competition.data.Lifter;
+import org.hibernate.Session;
 
 import com.extentech.formats.XLS.CellNotFoundException;
 import com.extentech.formats.XLS.WorkSheetNotFoundException;
-import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 public interface InputSheet {
 
-    public abstract List<Lifter> getAllLifters(InputStream is, HbnSessionManager session) throws CellNotFoundException,
+    public abstract List<Lifter> getAllLifters(InputStream is, Session session) throws CellNotFoundException,
             IOException, WorkSheetNotFoundException, InterruptedException, Throwable;
 
-    public abstract List<Lifter> getGroupLifters(InputStream is, String aGroup, HbnSessionManager session)
+    public abstract List<Lifter> getGroupLifters(InputStream is, String aGroup, Session session)
             throws CellNotFoundException, IOException, WorkSheetNotFoundException, InterruptedException, Throwable;
+
+    void init(ExtenXLSReader ish);
+
+    List<Lifter> getLifters(boolean excludeNotWeighed);
+
+    void readHeader(InputStream is, Session session) throws CellNotFoundException, WorkSheetNotFoundException, IOException;
 
 }

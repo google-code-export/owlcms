@@ -37,9 +37,14 @@ import org.concordiainternational.competition.utils.Coefficients;
 import org.concordiainternational.competition.utils.EventHelper;
 import org.concordiainternational.competition.utils.LoggerUtils;
 import org.concordiainternational.competition.utils.Notifier;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.OptimisticLockType;
+import org.hibernate.criterion.Restrictions;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +54,10 @@ import com.vaadin.ui.Window.Notification;
 
 /**
  * This class stores all the information related to a particular participant.
+ * <p>
+ * This class is an example of what not to do. This was designed prior reaching a proper
+ * understanding of Hibernate/JPA and of proper separation between Vaadin Containers and
+ * persistence frameworks.  Live and Learn.
  * <p>
  * All persistent properties are managed by Java Persistance annotations.
  * "Field" access mode is used, meaning that it is the values of the fields that
@@ -142,7 +151,13 @@ public class Lifter implements MethodEventSource, Notifier {
 
     String gender = ""; //$NON-NLS-1$
     Integer ageGroup = 0;
-    Integer birthDate = 1900;
+    
+    // the actual birth instant is a Joda date, but we use Java dates for JPA and for Vaadin
+    // we don't care for time zones, i.e. we assume everyone is
+    @Transient transient LocalDate birthDateAsLocalDate = null;
+    private Integer birthDate = null; // = birthDateTime.getYear();
+    private Date fullBirthDate = null;  //= birthDateTime.toDate();
+    
     Double bodyWeight = null;
 
     String membership = ""; //$NON-NLS-1$
@@ -298,9 +313,19 @@ public class Lifter implements MethodEventSource, Notifier {
         UpdateEventListener.class, // an object implementing this interface...
         "updateEvent"); // ... will be called with this method. //$NON-NLS-1$;
 
-    @SuppressWarnings("unchecked")
+    
     static public List<Lifter> getAll() {
-        return CompetitionApplication.getCurrent().getHbnSession().createCriteria(Lifter.class).list();
+        Session hbnSession = CompetitionApplication.getCurrent().getHbnSession();
+        return getAll(hbnSession, false);
+    }
+    
+    @SuppressWarnings("unchecked")
+    static public List<Lifter> getAll(Session hbnSession, boolean excludeNotWeighed) {
+        Criteria criteria = hbnSession.createCriteria(Lifter.class);
+        if (excludeNotWeighed) {
+            criteria.add(Restrictions.gt("bodyWeight", 0.01D)); //$NON-NLS-1$
+        }
+        return criteria.list();
     }
 
     public static boolean isEmpty(String value) {
@@ -472,8 +497,37 @@ public class Lifter implements MethodEventSource, Notifier {
             if (zeroIfInvalid(snatch1ActualLift) == referenceValue) return 1;
         }
         return 0; // no match - bomb-out.
+        
     }
 
+
+    /**
+     * Set all date fields consistently.
+     * @param newBirthDateAsDate
+     */
+    private void setAllBirthDates(Date newBirthDateAsDate) {
+        this.birthDateAsLocalDate = new LocalDate(newBirthDateAsDate);
+        this.fullBirthDate = birthDateAsLocalDate.toDate();
+        this.birthDate = birthDateAsLocalDate.getYear();
+    }
+    
+    @SuppressWarnings("unused")
+    private void setAllBirthDates(LocalDate newBirthDateAsLocalDate) {
+        this.birthDateAsLocalDate = newBirthDateAsLocalDate;
+        this.fullBirthDate = birthDateAsLocalDate.toDate();
+        this.birthDate = birthDateAsLocalDate.getYear();
+    }
+    
+    private void setAllBirthDates(Integer yearOfBirth) {
+        if (this.birthDateAsLocalDate != null) {
+            this.birthDateAsLocalDate = birthDateAsLocalDate.withYear(yearOfBirth);
+        } else {
+            this.birthDateAsLocalDate = new LocalDate(yearOfBirth, 1, 1); 
+        }
+        this.fullBirthDate = birthDateAsLocalDate.toDate();
+        this.birthDate = birthDateAsLocalDate.getYear();
+    }
+    
     /* *****************************************************************************************
      * Actual persisted properties.
      */
@@ -482,10 +536,74 @@ public class Lifter implements MethodEventSource, Notifier {
     /**
      * @return the birthDate
      */
+    @Deprecated
     public Integer getBirthDate() {
-        return birthDate;
+        if (fullBirthDate == null) {
+            return birthDate;
+        } else {
+            return this.getYearOfBirth();
+        }
     };
+    
+    /**
+     * @param birthDate
+     *            the birthDate to set
+     */
+    @Deprecated
+    public void setBirthDate(Integer birthYear) {
+        if (fullBirthDate == null) {
+            this.birthDate = birthYear;
+        } else {
+            setAllBirthDates(birthYear);
+        }
+    }
+    
+    /**
+     * @return the full birthDate
+     */
+    public Date getFullBirthDate() {
+        if (fullBirthDate != null) { 
+            return fullBirthDate;
+        } else {
+            return new DateTime(birthDate,1,1,0,0).toDate();
+        }
 
+    };
+    
+    /**
+     * @param fullBirthDate
+     *            the full birthDate to set
+     */
+    public void setFullBirthDate(Date fullBirthDate) {
+        setAllBirthDates(fullBirthDate);
+    }
+    
+    /**
+     * @return the birthDate
+     */
+    public Integer getYearOfBirth() {
+        if (fullBirthDate == null) {
+            return birthDate;
+        } else if (birthDateAsLocalDate != null) {
+            return birthDateAsLocalDate.getYear();
+        } else {
+            // can't happen
+            return birthDate;
+        }
+    };
+    
+    /**
+     * @param birthDate
+     *            the birthDate to set
+     */
+    public void setYearOfBirth(Integer birthYear) {
+        if (fullBirthDate == null) {
+            setBirthDate(birthYear);
+        } else {
+            setAllBirthDates(birthYear);
+        }
+    }
+    
 
     /**
      * @return the bodyWeight
@@ -500,8 +618,7 @@ public class Lifter implements MethodEventSource, Notifier {
     public Category getCategory() {
         final CategoryLookup categoryLookup1 = CategoryLookup.getSharedInstance();
         final Category lookup = categoryLookup1.lookup(this.gender, this.bodyWeight);
-        // System.err.println("getCategory: "+this.gender+","+this.bodyWeight+" = "+(lookup
-        // == null? null: lookup.getName()));
+        //System.err.println("getCategory: "+this.gender+","+this.bodyWeight+" = "+(lookup == null? null: lookup.getName()));
         return lookup;
     };
 
@@ -1180,13 +1297,7 @@ public class Lifter implements MethodEventSource, Notifier {
     public void setBestSnatch(Integer i) {
     }
 
-    /**
-     * @param birthDate
-     *            the birthDate to set
-     */
-    public void setBirthDate(Integer birthDate) {
-        this.birthDate = birthDate;
-    }
+
 
     /**
      * @param bodyWeight

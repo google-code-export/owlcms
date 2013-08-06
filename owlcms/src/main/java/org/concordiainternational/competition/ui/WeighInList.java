@@ -536,12 +536,14 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
     protected String[] getColOrder() {
         if (NATURAL_COL_ORDER != null) return NATURAL_COL_ORDER;
         if (registration) {
-            NATURAL_COL_ORDER = new String[] { "membership", //$NON-NLS-1$
+            NATURAL_COL_ORDER = new String[] { 
+                    "membership", //$NON-NLS-1$
                     "lotNumber", //$NON-NLS-1$
                     "lastName", //$NON-NLS-1$
                     "firstName", //$NON-NLS-1$
                     "gender", //$NON-NLS-1$
                     "birthDate", //$NON-NLS-1$
+                    "fullBirthDate", //$NON-NLS-1$
                     "club", //$NON-NLS-1$
                     "registrationCategory", //$NON-NLS-1$
                     "competitionSession", //$NON-NLS-1$
@@ -557,6 +559,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
                     "firstName", //$NON-NLS-1$
                     "gender", //$NON-NLS-1$
                     "birthDate", //$NON-NLS-1$
+                    "fullBirthDate", //$NON-NLS-1$
                     "club", //$NON-NLS-1$
                     "registrationCategory", //$NON-NLS-1$
                     "category", //$NON-NLS-1$
@@ -585,6 +588,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
                     Messages.getString("Lifter.firstName", locale), //$NON-NLS-1$
                     Messages.getString("Lifter.gender", locale), //$NON-NLS-1$
                     Messages.getString("Lifter.birthDate", locale), //$NON-NLS-1$
+                    Messages.getString("Lifter.fullBirthDate", locale), //$NON-NLS-1$
                     Messages.getString("Lifter.club", locale), //$NON-NLS-1$
                     Messages.getString("Lifter.registrationCategory", locale), //$NON-NLS-1$
                     Messages.getString("Lifter.group", locale), //$NON-NLS-1$
@@ -600,6 +604,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
                     Messages.getString("Lifter.firstName", locale), //$NON-NLS-1$
                     Messages.getString("Lifter.gender", locale), //$NON-NLS-1$
                     Messages.getString("Lifter.birthDate", locale), //$NON-NLS-1$
+                    Messages.getString("Lifter.fullBirthDate", locale), //$NON-NLS-1$
                     Messages.getString("Lifter.club", locale), //$NON-NLS-1$
                     Messages.getString("Lifter.registrationCategory", locale), //$NON-NLS-1$
                     Messages.getString("Lifter.category", locale), //$NON-NLS-1$
