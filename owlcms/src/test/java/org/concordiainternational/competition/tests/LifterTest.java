@@ -28,6 +28,7 @@ public class LifterTest {
         lifter.setBodyWeight(68.5);
         lifter.setSnatch1Declaration("60"); //$NON-NLS-1$
         lifter.setCleanJerk1Declaration("80"); //$NON-NLS-1$
+        lifter.setYearOfBirth(1900);
     }
 
     /**

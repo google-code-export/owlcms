@@ -391,11 +391,12 @@ public class Lifter implements MethodEventSource, Notifier {
      * @return the ageGroup
      */
     public Integer getAgeGroup() {
-        if (this.birthDate == null || this.gender == null || this.gender.trim().isEmpty()) {
+        Integer yob = this.getYearOfBirth();
+        if (yob == null || this.gender == null || this.gender.trim().isEmpty()) {
             return null;
         }
         int year1 = Calendar.getInstance().get(Calendar.YEAR);
-        final int age = year1 - this.birthDate;
+        final int age = year1 - yob;
         if (age < 30) {
             return null;
         }
@@ -519,13 +520,15 @@ public class Lifter implements MethodEventSource, Notifier {
     }
     
     private void setAllBirthDates(Integer yearOfBirth) {
-        if (this.birthDateAsLocalDate != null) {
-            this.birthDateAsLocalDate = birthDateAsLocalDate.withYear(yearOfBirth);
-        } else {
+        if (yearOfBirth != null) {
             this.birthDateAsLocalDate = new LocalDate(yearOfBirth, 1, 1); 
+            this.fullBirthDate = birthDateAsLocalDate.toDate();
+            this.birthDate = birthDateAsLocalDate.getYear();
+        } else {
+            this.birthDateAsLocalDate = null;
+            this.fullBirthDate = null;
+            this.birthDate = null;
         }
-        this.fullBirthDate = birthDateAsLocalDate.toDate();
-        this.birthDate = birthDateAsLocalDate.getYear();
     }
     
     /* *****************************************************************************************
@@ -539,7 +542,7 @@ public class Lifter implements MethodEventSource, Notifier {
     @Deprecated
     public Integer getBirthDate() {
         if (fullBirthDate == null) {
-            return birthDate;
+            return (birthDate != null ? birthDate : 1900);
         } else {
             return this.getYearOfBirth();
         }
@@ -583,12 +586,11 @@ public class Lifter implements MethodEventSource, Notifier {
      */
     public Integer getYearOfBirth() {
         if (fullBirthDate == null) {
-            return birthDate;
+            return birthDate ;
         } else if (birthDateAsLocalDate != null) {
             return birthDateAsLocalDate.getYear();
         } else {
-            // can't happen
-            return birthDate;
+            return null;
         }
     };
     
@@ -1205,7 +1207,10 @@ public class Lifter implements MethodEventSource, Notifier {
     public boolean isInvited() {
         final Locale locale = CompetitionApplication.getCurrentLocale();
         int threshold = Competition.invitedIfBornBefore();
-        return (getBirthDate() < threshold)
+        
+        Integer birthDate2 = getBirthDate();
+        
+        return (birthDate2 < threshold)
             || membership.equalsIgnoreCase(Messages.getString("Lifter.InvitedAbbreviated", locale)) //$NON-NLS-1$
         // || !getTeamMember()
         ;
@@ -2120,10 +2125,15 @@ public class Lifter implements MethodEventSource, Notifier {
     }
 
     public void check15_20kiloRule(boolean unlessCurrent) {
-        ApplicationView mainLayoutContent = CompetitionApplication.getCurrent().getMainLayoutContent();
-        if (mainLayoutContent instanceof Notifyable) {
-            check15_20kiloRule(unlessCurrent, (Notifyable)mainLayoutContent);
+        // make sure this does not crash during unit tests.
+        CompetitionApplication current = CompetitionApplication.getCurrent();
+        if (current != null) {
+            ApplicationView mainLayoutContent = current.getMainLayoutContent();
+            if (mainLayoutContent != null && mainLayoutContent instanceof Notifyable) {
+                check15_20kiloRule(unlessCurrent, (Notifyable)mainLayoutContent);
+            }            
         }
+
     }
     
     public void check15_20kiloRule(boolean unlessCurrent, Notifyable parentView) throws RuleViolationException {
