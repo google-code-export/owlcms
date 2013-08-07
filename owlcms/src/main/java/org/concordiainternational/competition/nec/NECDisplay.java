@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
+import java.util.Properties;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
@@ -329,7 +330,24 @@ private String fixAccents(String accentedString) {
 
 @Test
 public void testStrings() throws IOException {
-    this.comPortName="COM6";
+    // set up the port
+    String portName = null;
+    try {
+        Properties props = new Properties();
+        props.load(this.getClass().getResourceAsStream("/tests.properties"));
+        portName = (String) props.get("portName");
+        if (portName != null && portName.trim().isEmpty()) portName = null;
+    } catch (IOException ioe) {         
+    }
+    if (portName != null) {
+        this.comPortName="COM6";
+    } else {
+        org.junit.Assert.assertNull("portName",portName);
+        return;
+    }
+
+    
+    
     writeStrings("", "", "          17 KG"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     try {
         Thread.sleep(2000);

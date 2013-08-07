@@ -43,7 +43,7 @@ public class CommonFieldFactory extends DefaultFieldFactory {
     private static final long serialVersionUID = 8789528655171127108L;
     
 	@SuppressWarnings("unused")
-	private static Logger logger = LoggerFactory.getLogger(CommonFieldFactory.class);
+    private static Logger logger = LoggerFactory.getLogger(CommonFieldFactory.class);
 
     private Application app;
 
@@ -59,7 +59,7 @@ public class CommonFieldFactory extends DefaultFieldFactory {
     @Override
 	public Field createField(Item item, Object propertyId, Component uiContext) {
         Class<?> type = item.getItemProperty(propertyId).getType();
-        Field field = createFieldByPropertyType(type);
+        Field field = createFieldByPropertyType(type, uiContext);
         
         return adjustField(propertyId, uiContext, field);
 	}
@@ -72,7 +72,7 @@ public class CommonFieldFactory extends DefaultFieldFactory {
     public Field createField(Container container, Object itemId, Object propertyId, Component uiContext) { 	
         Property containerProperty = container.getContainerProperty(itemId, propertyId);
         Class<?> type = containerProperty.getType();
-        Field field = createFieldByPropertyType(type);
+        Field field = createFieldByPropertyType(type, uiContext);
         
         return adjustField(propertyId, uiContext, field);
     }
@@ -85,6 +85,7 @@ public class CommonFieldFactory extends DefaultFieldFactory {
 	 * @return
 	 */
 	private Field adjustField(Object propertyId, Component uiContext, Field f) {
+	    //logger.debug("adjusting {} {}",propertyId,f.getClass().getSimpleName());
 		try {
 			String caption = Messages.getStringWithException("FieldName." + propertyId,
 					CompetitionApplication.getCurrentLocale());
@@ -114,7 +115,7 @@ public class CommonFieldFactory extends DefaultFieldFactory {
 			return adjustedHourField;
         }
         
-        if (propertyIdString.contains("Date") && (f instanceof DateField)) { //$NON-NLS-1$
+        if ((propertyIdString.contains("Date") || propertyIdString.contains("date")) && (f instanceof DateField)) { //$NON-NLS-1$
             return adjustDateField((DateField) f);
         }
         
@@ -178,16 +179,18 @@ public class CommonFieldFactory extends DefaultFieldFactory {
      * @param type
      * @return
      */
-    public static Field createFieldByPropertyType(Class<?> type) {
-    	//logger.debug("creating {}",type);
+    public static Field createFieldByPropertyType(Class<?> type, Component uiContext) {
+    	//logger.trace("creating {}",type);
         // Null typed properties can not be edited
         if (type == null) {
             return null;
         }
 
         // Date field
-        if (Date.class.isAssignableFrom(type)) {
-            final DateField df = new ISO8601DateField();
+        boolean b = !uiContext.isReadOnly();
+        if (Date.class.isAssignableFrom(type) && b) {
+            //logger.trace("creating for {} {}",type, b);
+            final ISO8601DateField df = new ISO8601DateField();
             df.setResolution(DateField.RESOLUTION_DAY);
             return df;
         }

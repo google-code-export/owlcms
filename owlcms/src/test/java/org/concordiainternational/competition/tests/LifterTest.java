@@ -28,6 +28,7 @@ public class LifterTest {
         lifter.setBodyWeight(68.5);
         lifter.setSnatch1Declaration("60"); //$NON-NLS-1$
         lifter.setCleanJerk1Declaration("80"); //$NON-NLS-1$
+        lifter.setYearOfBirth(1900);
     }
 
     /**
@@ -133,20 +134,20 @@ public class LifterTest {
     public void ageGroup() {
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
         assertEquals(80, (long) lifter.getAgeGroup());
-        lifter.setBirthDate(thisYear - 40);
+        lifter.setYearOfBirth(thisYear - 40);
         assertEquals(40, (long) lifter.getAgeGroup());
-        lifter.setBirthDate(thisYear - 39);
+        lifter.setYearOfBirth(thisYear - 39);
         assertEquals(35, (long) lifter.getAgeGroup());
-        lifter.setBirthDate(thisYear - 41);
+        lifter.setYearOfBirth(thisYear - 41);
         assertEquals(40, (long) lifter.getAgeGroup());
-        lifter.setBirthDate(thisYear - 86);
+        lifter.setYearOfBirth(thisYear - 86);
         assertEquals(80, (long) lifter.getAgeGroup());
         lifter.setGender("F"); //$NON-NLS-1$
         assertEquals(65, (long) lifter.getAgeGroup());
-        lifter.setBirthDate(null);
+        lifter.setYearOfBirth(null);
         assertEquals(null, lifter.getAgeGroup());
         lifter.setGender(""); //$NON-NLS-1$
-        lifter.setBirthDate(1900);
+        lifter.setYearOfBirth(1900);
         assertEquals(null, lifter.getAgeGroup());
     }
 

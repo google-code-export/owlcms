@@ -52,14 +52,19 @@ public class JXLSResultSheet extends JXLSWorkbookStreamSource {
 
     @Override
     public InputStream getTemplate() throws IOException {
-        String resultTemplateFileName = SheetUtils.getCompetition().getProtocolFileName();
-        File templateFile = new File(resultTemplateFileName);
-        if (!templateFile.exists()) {
+        String protocolTemplateFileName = competition.getProtocolFileName();
+        //logger.info("protocol sheet: {}",protocolTemplateFileName);
+        if (protocolTemplateFileName != null) {
+            File templateFile = new File(protocolTemplateFileName);
+            if (templateFile.exists()) {
+                FileInputStream resourceAsStream = new FileInputStream(templateFile);
+                return resourceAsStream;
+            }
             // can't happen unless system is misconfigured.
-            throw new IOException("resource not found: " + resultTemplateFileName); //$NON-NLS-1$
+            throw new IOException("resource not found: " + protocolTemplateFileName); //$NON-NLS-1$
+        } else {
+            throw new RuntimeException("Protocol sheet template not defined.");
         }
-        FileInputStream resourceAsStream = new FileInputStream(templateFile);
-        return resourceAsStream;
     }
 
 	@Override
