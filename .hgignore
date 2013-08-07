@@ -31,3 +31,5 @@ syntax: regexp
 ^owlcms/src/main/webapp/registration$
 syntax: regexp
 ^distribution/src/installer/owlcms\.back\.aip$
+syntax: regexp
+^owlcms/src/main/resources/rebel\.xml$
