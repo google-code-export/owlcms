@@ -1,0 +1,797 @@
+@import url(../reindeer/styles.css);
+/*
+ * Copyright 2009-2012, Jean-Fran�ois Lamy
+ * 
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
+.view {
+	background: white;
+}
+
+.v-app {
+	font-family: Arial, sans-serif;
+}
+
+.v-table-caption-container {
+	font-family: Arial, sans-serif;
+}
+
+.v-button-caption {
+	font-family: Arial;
+}
+
+.v-table-table .v-table-cell-wrapper {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+table.v-table-table .v-table-row .v-table-cell-content,table.v-table-table .v-table-row-odd .v-table-cell-content,table.v-table-table .v-table-row .v-table-cell-content-sorted,table.v-table-table .v-table-row-odd .v-table-cell-content-sorted
+	{
+	vertical-align: middle;
+}
+
+.toolbar {
+	
+}
+
+.title .v-label {
+	font-weight: bold;
+	font-size: large;
+	font-family: Arial, sans-serif;
+	line-height: 1.25em;
+}
+
+/*
+
+ hide date popup buttons in lifterGrid (systematically, even when editing)
+.lifterGrid .v-datefield-popupcalendar .v-datefield-textfield {
+	border-style: none;
+	border-width: 0;
+}
+
+.lifterGrid td .v-datefield-popupcalendar .v-datefield-textfield {
+	border-style: none;
+	border-width: 0;
+}
+
+.lifterGrid .v-datefield-button {
+	display: none;
+}
+
+ hide date popup buttons in form layouts, when read-only 
+*/
+.v-formlayout .v-readonly .v-datefield-button {
+	display: none;
+}
+
+.v-formlayout .v-readonly .v-datefield-textfield {
+	border-style: none;
+	border-width: 0;
+}
+
+/* announcer's table -- highlights for lift/no-lift/total/current lifter */
+.v-table-cell-content-success,.v-selected .v-table-cell-content-success
+	{
+	background: none;
+	background-color: #A5FF7F; /* desaturated lime */
+	color: black;
+	font-style: normal;
+	text-shadow: none;
+}
+
+.v-table-cell-content-success,.v-selected .v-table-cell-content-success
+	{
+	background: none;
+	background-color: #A5FF7F; /* desaturated lime */
+	color: black;
+	font-style: normal;
+	text-shadow: none;
+}
+
+.v-table-cell-content-fail,.v-selected .v-table-cell-content-fail {
+	background: none;
+	background-color: #FF7B7C; /* desaturated red */
+	color: black;
+	font-style: normal;
+	text-shadow: none;
+}
+
+.v-table-cell-content-total,.v-selected .v-table-cell-content-total {
+	background: none;
+	background-color: #D67FFF;
+	color: black;
+	font-style: normal;
+	text-shadow: none;
+}
+
+.v-table-cell-content-current,.v-selected .v-table-cell-content-current
+	{
+	background: none;
+	background-color: #7FFFFF;
+	color: black;
+	font-style: normal;
+	text-shadow: none;
+}
+
+.v-label-wrong {
+	color: red;
+	font-weight: bolder;
+}
+
+.currentLifterSummary .v-label {
+	font-weight: bold;
+	font-size: x-large;
+	line-height: 1.2em
+}
+
+.currentLifterSummary .v-label .break {
+	height: 1ex
+}
+
+.currentLifterSmallSummary .v-label {
+	line-height: 1.2em
+}
+
+.currentLifterSmallSummary .v-label .break {
+	height: 1ex
+}
+
+.projectorTop {
+	font-weight: bold;
+	font-size: 24px;
+	vertical-align: baseline;
+	background-color: black;
+	color: white;
+	padding: 0.6ex;
+	width: 100%;
+}
+
+.projectorTop td {
+	text-align: left;
+	vertical-align: baseline;
+}
+
+.projectorTop td.name .v-label {
+	text-align: left;
+	line-height: 110%;
+	vertical-align: baseline;
+}
+
+.projectorTop td.weight {
+	color: aqua;
+	text-align: right;
+}
+
+.projectorTop td.attempt {
+	text-align: right;
+}
+
+.projectorTop td.timeDisplay {
+	color: yellow;
+	text-align: center;
+}
+
+.v-gridlayout input.v-textfield {
+	-webkit-border-image: none;
+	border: thin solid;
+	border-color: silver;
+	-webkit-border-radius: 4px;
+	border-style: solid;
+	margin-bottom: 2px;
+	padding-right: 2px;
+}
+
+.v-gridlayout input.v-readonly {
+	-webkit-border-image: none;
+	border: thin solid;
+	border-color: silver;
+	-webkit-border-radius: 4px;
+	border-style: solid;
+	margin-bottom: 2px;
+	background-color: rgb(240, 240, 240);
+	color: gray;
+	margin-right: 3px;
+	padding-right: 2px;
+}
+
+.v-gridlayout input.v-datefield-textfield.v-readonly {
+	-webkit-border-image: none;
+	-moz-border-image: none;
+	border: thin solid;
+	border-color: silver;
+	-webkit-border-radius: 4px;
+	border-style: none;
+	margin-bottom: 2px;
+	background-color: transparent;
+	color: gray;
+}
+
+.v-sa .v-gridlayout input.v-datefield-textfield.v-readonly {
+	-webkit-border-image: none;
+	-moz-border-image: none;
+	border: thin solid;
+	border-color: silver;
+	-webkit-border-radius: 4px;
+	border-style: none;
+	margin-bottom: 2px;
+	background-color: transparent;
+	color: grey;
+	width: 8.5ex !important; /* kludge, comes out too wide otherwise. */
+}
+
+.v-textfield-hfocus {
+	background-color: #FFFD87 !important; /* desaturated yellow */
+	outline: none;
+	background-image: none !important;
+}
+
+.v-textfield-current {
+	background-color: #7FFFFF !important; /* desaturated aqua */
+	outline: none;
+	background-image: none !important;
+}
+
+.v-readonly.v-textfield-current {
+	background-color: #7FFFFF !important; /* desaturated aqua */
+	outline: none;
+	background-image: none !important;
+}
+
+.v-textfield-success {
+	background-color: #A5FF7F !important; /* desaturated lime */
+	outline: none;
+	background-image: none !important;
+}
+
+.v-textfield-fail {
+	background-color: #FF7B7C !important; /* desaturated red */
+	outline: none;
+	background-image: none !important;
+}
+
+//
+buttons
+button.v-button-okLift {
+	color: blue;
+}
+
+button.v-button-failedLift span {
+	color: red;
+}
+
+.v-progressindicator-wrapper {
+	display: none;
+}
+
+.v-Notification-system {
+	background: #3b3c3e;
+	font-size: small;
+}
+
+.v-sa .v-menubar {
+	text-shadow: none;
+}
+
+.attemptBoardView .v-caption-loadChart .v-captiontext {
+	display: none;
+}
+
+
+.newAttemptBoard {
+	background-color: black;
+	color: white;
+}
+
+.newAttemptBoard .v-caption-loadChart .v-captiontext {
+	display: none;
+}
+
+.v-sa .v-panel-content, .v-ff3 .v-panel-content {
+border-style: none;
+}
+
+.newAttemptBoard .largeCountdown {
+	font-size: 15em;
+	line-height: 1em;
+	font-weight: bold;
+	vertical-align: middle;
+	color: yellow;
+}
+
+.newAttemptBoard .intermission {
+	color: lime;
+}
+
+.newAttemptBoard .v-label-text {
+	font-size: 6em;
+	line-height: 1.2em;
+	font-weight: bold;
+}
+
+.newAttemptBoard .v-label-start {
+	font-size: 5em;
+	line-height: 1em;
+	font-weight: bold;
+	border-width: thick;
+	border-style: solid;
+	color: #7FFFFF;
+}
+
+.newAttemptBoard .v-label-weightLabel {
+	font-size: 9em;
+	line-height: 1em;
+	font-weight: bold;
+	color: #7FFFFF;
+}
+
+.newAttemptBoard .loadChart .v-label {
+	font-size: large;
+}
+
+.newAttemptBoard .loadChart div.plate {
+	border-color: white !important;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-width: 2px;
+	margin-left: 5px;
+}
+
+
+.newAttemptBoard .loadChart .barOuter {
+	margin-left: 5px;
+}
+
+.newAttemptBoard .decisionLight {
+	border-color: white !important;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	border-width: 4px;
+	margin: 10px;
+	zoom: 85%;
+}
+
+
+
+.v-view {border:black}
+	
+
+
+
+.zoomLarge .zoomable {
+	zoom: 135%;
+	padding-left: -2em;
+}
+
+.zoomLarge .zoomable.timerDisplay {
+	zoom: 200%;
+	color: orange;
+}
+
+.v-ie .zoomLarge .v-disabled.zoomable.timerDisplay {
+	zoom: 200%;
+	color: #FFCC80;
+	filter: none;
+}
+
+.zoomLarge .v-disabled.zoomable.timerDisplay {
+	zoom: 200%;
+	color: orange;
+	opacity: 0.5;
+}
+
+.zoomMedium {
+	zoom: 120%;
+}
+
+.loadChart div.plate {
+	border-color: black;
+	border-width: 1px;
+	border-style: solid;
+	vertical-align: middle;
+	margin: 1px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.bar {
+	height: 1.5ex;
+	width: 2.5em;
+	background-color: gray;
+}
+
+.barInner {
+	height: 4.5ex;
+	width: 1em;
+	background-color: gray;
+}
+
+.barOuter {
+	height: 2.5ex;
+	width: 1.5em;
+	background-color: gray;
+}
+
+.L_25 {
+	height: 12em;
+	width: 2.25ex;
+	background-color: red;
+}
+
+.L_20 {
+	height: 12em;
+	width: 2ex;
+	background-color: blue;
+}
+
+.L_15 {
+	height: 12em;
+	width: 1.75ex;
+	background-color: yellow;
+}
+
+.L_10 {
+	height: 12em;
+	width: 1.5ex;
+	background-color: green;
+}
+
+.L_5 {
+	height: 12em;
+	width: 1.5ex;
+	background-color: white;
+}
+
+.L_2_5 {
+	height: 12em;
+	width: 1.0ex;
+	background-color: red;
+}
+
+.C_2_5 {
+	height: 5ex;
+	width: 3ex;
+	background-color: black;
+}
+
+.S_5 {
+	height: 7em;
+	width: 0.75ex;
+	background-color: white;
+}
+
+.S_2_5 {
+	height: 6em;
+	width: 0.75ex;
+	background-color: red;
+}
+
+.S_2 {
+	height: 5.5em;
+	width: 0.75ex;
+	background-color: blue;
+}
+
+.S_1_5 {
+	height: 5em;
+	width: 0.75ex;
+	background-color: yellow;
+}
+
+.S_1 {
+	height: 4.5em;
+	width: 0.75ex;
+	background-color: green;
+}
+
+.S_0_5 {
+	height: 4em;
+	width: 0.75ex;
+	background-color: white;
+}
+
+/* referee buttons */
+button.referee {
+	background: none;
+	border-style: solid;
+	border-width: thin;
+	border-color: black;
+	border-radius: 4px;
+	color: black;
+	font-style: normal;
+	text-shadow: none;
+}
+
+button.noButton {
+	background-color: #FF7B7C; /* desaturated red */
+}
+
+button.yesButton {
+	background-color: white; /* desaturated red */
+}
+
+.decisionLight {
+	border-style: solid;
+	border-width: thin;
+	height: 10ex;
+}
+
+.decisionLight.undecided {
+	background-color: silver;
+	background-image: none;
+	zoom: 90%;
+}
+
+.decisionLight.lift {
+	background-color: white;
+	background-image: none;
+	zoom: 90%;
+}
+
+.decisionLight.nolift {
+	background-color: red;
+	background-image: none;
+	zoom: 90%;
+}
+
+.decisionLight.down {
+	background-image: url("images/down.png");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: contain;
+}
+
+.juryLight {
+	padding: 3px;
+}
+
+.decisionLightsWindow .v-window-outerheader {
+	display: none;
+}
+
+.decisionLightsWindow .v-window-footer {
+	display: none;
+}
+
+.decisionLightsWindow .v-window-closebox {
+	display: none;
+}
+
+.decisionLightsWindow .v-window-contents {
+	background-color: black;
+	color: white;
+}
+
+.decisionLightsWindow .down {
+	background-color: black;
+	background-image: url("images/down.png");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: contain;
+}
+
+.decisionLightsWindow .down .undecided {
+	border-style: none;
+	display: none;
+}
+
+.v-horizontallayout-decisionLightsWindow {
+	background-color: black;
+}
+
+.v-horizontallayout-decisionLightsWindow .undecided {
+	background-color: black;
+}
+
+.largeCountdown {
+	line-height: 1em;
+	font-weight: bold;
+	vertical-align: middle;
+	color: yellow;
+}
+
+.v-panel-content .largeCountdownBackground .largeCountdown {
+	font-size: 50em;
+	background-color: black;
+	color: yellow;
+}
+
+.v-panel-content .largeCountdownBackground {
+	background-color: black;
+}
+
+.v-panel-content .largeCountdownBackground .intermission {
+	background-color: black;
+	color: lime;
+	font-size: 40em;
+}
+
+.v-panel-content .largeCountdownBackground .title {
+	background-color: black;
+	color: white;
+	font-weight: bold;
+	font-size: 10em;
+	line-height: 1em;
+}
+
+.refereePad .red {
+	background-color: red;
+	border-style: solid;
+	border-width: thin;
+	border-color: black;
+}
+
+.refereePad .white {
+	background-color: white;
+	border-style: solid;
+	border-width: thin;
+	border-color: black;
+}
+
+.refereePad .refereeReminder {
+	background-color: yellow;
+	border-style: solid;
+	border-width: thin;
+	border-color: black;
+	font-size: x-large;
+	font-weight: bold;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.refereePad .refereeOk {
+	background-color: white;
+	border-style: solid;
+	border-width: thin;
+	border-color: black;
+	font-size: larger;
+	font-weight: bold;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+table.publicAddressOverlay {
+	width: 100%;
+	height: 100%;
+}
+
+.publicAddressOverlay tr td .v-label {
+	font-size: xx-large;
+	font-weight: bold;
+}
+
+.publicAddressOverlay tr td.message .v-label {
+	font-size: 6ex;
+	line-height: 3ex;
+	font-weight: bold;
+	font-family: monospace;
+}
+
+.publicAddressOverlay tr td.remainingTime .v-label {
+	font-size: 5em;
+	font-weight: bold;
+	color: lime;
+}
+
+.publicAddressOverlay img {
+	height: 50%;
+}
+
+textarea.v-textarea-fixedFont {
+	font-family: monospace;
+}
+
+.platesPopup .popupContent .v-label {
+	font-size: small;
+}
+
+.v-customoverlay .popupContent .v-label {
+	font-size: x-large;
+}
+
+.queue .owlcms-red .v-csslayout-margin {
+	border: 4px solid #FFF;
+	color: black;
+	background-color: #FF7B7C;
+	-moz-border-radius: 7px;
+	border-radius: 7px;
+	color: black;
+}
+
+.queue .owlcms-white .v-csslayout-margin {
+	border: 4px solid #FFF;
+	color: black;
+	background-color: #A5FF7F;
+	-moz-border-radius: 7px;
+	border-radius: 7px;
+	color: black;
+}
+
+.mtkPad {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	font-size: 4em;
+	color: black;
+}
+
+.mtkPad .blocked {
+	color: grey;
+}
+
+.mtkPad .mtkStop {
+	background-color: red;
+	border-style: solid;
+	border-width: thin;
+	display: table;
+}
+
+#mtkStopLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+
+.mtkPad .mtkStart {
+	background-color: green;
+	border-style: solid;
+	border-width: thin;
+	display: table;
+}
+
+#mtkStartLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+
+.mtkPad .mtkOne {
+	background-color: buttonface;
+	border-style: solid;
+	border-width: thin;
+	display: table;
+}
+
+#mtkOneLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+
+.mtkPad .mtkTwo {
+	background-color: buttonface;
+	border-style: solid;
+	border-width: thin;
+	display: table;
+}
+
+#mtkTwoLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+.mtkPad .mtkTimerDisplay {
+	display: table;
+	font-size: 3em;
+}
+
+.mtkPad .mtkTimerDisplaySmall {
+	display: table;
+	font-size: 2em;
+	padding-top: 0.5em;
+}
+
+#mtkTimeLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
