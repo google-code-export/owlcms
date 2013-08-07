@@ -12,7 +12,7 @@ a. Make sure that
 b. Clean everything:
 
 	if under Eclipse
-		stop the tomcat server if running
+		stop the Tomcat server if running
 		right-click on owlcmsParent project and select "run as/maven clean"
 	else
 		cd to owlcmsParent
@@ -44,10 +44,16 @@ Because we use the Free edition, these steps are manual.
 - go to distribution/src/installer/owlcms-cache and delete the contents.
 - start src/installer/owlcms.aip
   - In the "Files and Folders" section, go to "Application Data/owlcms" and expand the folder triangle.
-  - remove the doc, lib and owlcms directory. If prompted with a warning, select the "Don't Search" button
-  - drag the owlcms.exe file and the three directories from distribution/target/owlcms-x.y.z-windows  to Application Data/owlcms
-  - accept the warnings about overwrite ("Yes to All")
-  - update the product details page for the product version
+  - remove the 
+  
+      doc
+      lib
+      owlcms 
+      
+      directories. If prompted with a warning, select the "Don't Search" button
+  - go to the distribution/target/owlcms-x.y.z-windows in Eclipse
+  - drag the content to "Application Data/owlcms" (owlcms.exe and doc,lib,owlcms), accept the warnings about overwrite ("Yes to All")
+  - update the product version number on the product details page
   - save owlcms.aip, , select "major upgrade"
   - build the installer once.  In spite of completing with "total build time", it will not show "build finished successfully".
     wait a few seconds after the end and close the window.
