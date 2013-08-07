@@ -138,6 +138,9 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
         return groupLifters;
     }
     
+
+    // use the old birthDate method for regression tests
+    @SuppressWarnings("deprecation")
     public static String toString(Lifter lifter, boolean includeTimeStamp) {
         final Category category = lifter.getCategory();
         final CompetitionSession competitionSession = lifter.getCompetitionSession();
@@ -151,7 +154,7 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
                 .append(" club=" + lifter.getClub()) //$NON-NLS-1$
                 .append(" gender=" + lifter.getGender()) //$NON-NLS-1$
                 .append(" bodyWeight=" + lifter.getBodyWeight()) //$NON-NLS-1$
-                .append(" birthDate=" + lifter.getFullBirthDate()) //$NON-NLS-1$
+                .append(" birthDate=" + lifter.getBirthDate()) //$NON-NLS-1$
                 .append(" registrationCategory=" + lifter.getRegistrationCategory()) //$NON-NLS-1$
                 .append(" category=" + (category != null ? category.getName() : null)) //$NON-NLS-1$
                 .append(" snatch1ActualLift=" + lifter.getSnatch1ActualLift()) //$NON-NLS-1$
