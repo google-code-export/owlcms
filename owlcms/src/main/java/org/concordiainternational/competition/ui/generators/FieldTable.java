@@ -15,81 +15,94 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Property;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.Field;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TableFieldFactory;
 
 /**
  * @author jflamy
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class FieldTable extends Table {
-	Logger logger = LoggerFactory.getLogger(FieldTable.class);
-	DecimalFormat threeDecimals = new DecimalFormat("0.000", new DecimalFormatSymbols(CompetitionApplication.getCurrentLocale()));
-	DecimalFormat twoDecimals = new DecimalFormat("0.00", new DecimalFormatSymbols(CompetitionApplication.getCurrentLocale()));
+    Logger logger = LoggerFactory.getLogger(FieldTable.class);
+    DecimalFormat threeDecimals = new DecimalFormat("0.000", new DecimalFormatSymbols(CompetitionApplication.getCurrentLocale()));
+    DecimalFormat twoDecimals = new DecimalFormat("0.00", new DecimalFormatSymbols(CompetitionApplication.getCurrentLocale()));
 
-	/* Always use a field, so that the read-only version is consistent with the editing formatting.
-	 * @see com.vaadin.ui.Table#getPropertyValue(java.lang.Object, java.lang.Object, com.vaadin.data.Property)
-	 */
-	@Override
-	protected Object getPropertyValue(Object rowId, Object colId,
-			Property property) {
+    /*
+     * Always use a field, so that the read-only version is consistent with the editing formatting.
+     * 
+     * @see com.vaadin.ui.Table#getPropertyValue(java.lang.Object, java.lang.Object, com.vaadin.data.Property)
+     */
+    @Override
+    protected Object getPropertyValue(Object rowId, Object colId,
+            Property property) {
         TableFieldFactory tableFieldFactory = getTableFieldFactory();
-		if ( tableFieldFactory != null) {
+        if (tableFieldFactory != null) {
             final Field f = tableFieldFactory.createField(getContainerDataSource(),
                     rowId, colId, this);
             if (f != null) {
                 f.setPropertyDataSource(property);
                 if (isEditable()) {
-                	return f;
+                    return f;
                 } else {
-                    //if (f instanceof DateField ) {
+                    if (f instanceof DateField) {
                         Object value = f.getValue();
                         if (value != null) {
-                            return f.toString();   
+                            return f.toString();
                         }
-                    //}
+                    }
                 }
             }
         }
-		
-        return formatPropertyValue(rowId, colId, property);
-	}
 
-	@Override
-	protected String formatPropertyValue(Object rowId, Object colId,
-			Property property) {
+        return formatPropertyValue(rowId, colId, property);
+    }
+
+    @Override
+    protected String formatPropertyValue(Object rowId, Object colId,
+            Property property) {
         // Format by property type
         if (property.getType() == Double.class) {
-        	Double value = (Double) property.getValue();
-        	if (value == null) value = 0.0;
-			if (((String)colId).endsWith("inclair")) {          
+            Double value = (Double) property.getValue();
+            if (value == null)
+                value = 0.0;
+            if (((String) colId).endsWith("inclair")) {
                 return threeDecimals.format(value);
-        	} else {
-        		return twoDecimals.format(value);
-        	}
+            } else {
+                return twoDecimals.format(value);
+            }
+        } else {
+            String string = colId.toString();
+            if (string.contains("ActualLift") || string.contains("Total")) { //$NON-NLS-1$
+                if (property != null) {
+                    final String value = (String) property.getValue();
+                    if (value != null) {
+                        return WeightFormatter.formatWeight(value);
+                    }
+                }
+            }
         }
-		return super.formatPropertyValue(rowId, colId, property);
-	}
+        return super.formatPropertyValue(rowId, colId, property);
+    }
 
-	/* (non-Javadoc)
-	 * @see com.vaadin.ui.Table#getColumnAlignment(java.lang.Object)
-	 */
-	@Override
-	public String getColumnAlignment(Object propertyId) {
-//		if (this.isEditable()) {
-//			return ALIGN_CENTER;
-//		} else {
-			if (((String)propertyId).endsWith("Name")){
-				return ALIGN_LEFT;
-			} else {
-				return ALIGN_RIGHT;
-			}
-//		}
-	}
-	
-	
-
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.vaadin.ui.Table#getColumnAlignment(java.lang.Object)
+     */
+    @Override
+    public String getColumnAlignment(Object propertyId) {
+        // if (this.isEditable()) {
+        // return ALIGN_CENTER;
+        // } else {
+        if (((String) propertyId).endsWith("Name")) {
+            return ALIGN_LEFT;
+        } else {
+            return ALIGN_RIGHT;
+        }
+        // }
+    }
 
 }
