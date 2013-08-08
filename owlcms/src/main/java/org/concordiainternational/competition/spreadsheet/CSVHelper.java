@@ -22,6 +22,7 @@ import org.concordiainternational.competition.data.CategoryLookupByName;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.CompetitionSessionLookup;
 import org.concordiainternational.competition.data.Lifter;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.supercsv.cellprocessor.CellProcessorAdaptor;
@@ -41,22 +42,21 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 /**
  * Read registration data in CSV format.
  * The file is expected to contain a header line, as illustrated:
- * <pre>lastName,firstName,gender,club,birthDate,registrationCategory,competitionSession,qualifyingTotal
+ * <pre>lastName,firstName,gender,club,yearOfBirth,registrationCategory,competitionSession,qualifyingTotal
 Lamy,Jean-François,M,C-I,1961,m69,H1,140</pre>
  *
- * Note that the birthDate field is actually a birth year.
  * registrationCategory and competitionSession must be valid entries in the database.
  *  
  * @author Jean-François Lamy
  *
  */
-public class InputCSVHelper implements InputSheet {
-	final private Logger logger = LoggerFactory.getLogger(InputCSVHelper.class);
+public class CSVHelper implements InputSheet {
+	final private Logger logger = LoggerFactory.getLogger(CSVHelper.class);
 	private CompetitionSessionLookup competitionSessionLookup;
 	private CategoryLookupByName categoryLookupByName;
 	private CellProcessor[] processors;
 
-	InputCSVHelper(HbnSessionManager hbnSessionManager) {
+	CSVHelper(HbnSessionManager hbnSessionManager) {
 		initProcessors(hbnSessionManager);
 	}
 
@@ -93,7 +93,7 @@ public class InputCSVHelper implements InputSheet {
 
 
 	@Override
-	public synchronized List<Lifter> getAllLifters(InputStream is, HbnSessionManager sessionMgr) throws IOException,
+	public synchronized List<Lifter> getAllLifters(InputStream is, Session session) throws IOException,
 	CellNotFoundException, WorkSheetNotFoundException {
 		LinkedList<Lifter> allLifters = new LinkedList<Lifter>() ;
 
@@ -156,7 +156,7 @@ public class InputCSVHelper implements InputSheet {
 	 * (non-Javadoc)
 	 */
 	@Override
-	public List<Lifter> getGroupLifters(InputStream is, String aGroup, HbnSessionManager session) throws IOException,
+	public List<Lifter> getGroupLifters(InputStream is, String aGroup, Session session) throws IOException,
 	CellNotFoundException, WorkSheetNotFoundException {
 		List<Lifter> groupLifters = new ArrayList<Lifter>();
 		for (Lifter curLifter : getAllLifters(is, session)) {
@@ -168,11 +168,28 @@ public class InputCSVHelper implements InputSheet {
 	}
 
 	public static String toString(Lifter lifter, boolean includeTimeStamp) {
-		return InputSheetHelper.toString(lifter,includeTimeStamp);
+		return ExtenXLSReader.toString(lifter,includeTimeStamp);
 	}
 
 	public static String toString(Lifter lifter) {
 		return toString(lifter, true);
 	}
+
+
+    @Override
+    public void init(ExtenXLSReader ish) {
+        // do nothing  
+    }
+
+    @Override
+    public List<Lifter> getLifters(boolean excludeNotWeighed) {
+        // do nothing
+        return null;
+    }
+
+    @Override
+    public void readHeader(InputStream is, Session session) throws CellNotFoundException, WorkSheetNotFoundException, IOException {
+        // do nothing
+    }
 
 }

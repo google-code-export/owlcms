@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public class JXLSWeighInSheet extends JXLSWorkbookStreamSource {
 	
-	private JXLSWeighInSheet(){
+	public JXLSWeighInSheet(){
 		super(true);
 	}
 	
