@@ -284,51 +284,124 @@ button.v-button-failedLift span {
 	color: white;
 }
 
+.bolded { 
+	font-weight: bold;
+}
+
 .newAttemptBoard .v-caption-loadChart .v-captiontext {
 	display: none;
 }
 
-.v-sa .v-panel-content, .v-ff3 .v-panel-content {
-border-style: none;
-}
 
-.newAttemptBoard .largeCountdown {
-	font-size: 15em;
-	line-height: 1em;
-	font-weight: bold;
-	vertical-align: middle;
-	color: yellow;
+body.v-generated-body.v-sa.v-ch.v-webkit{
+	background: black;
+}
+.v-app {
+	background: black;
+}
+.v-sa .v-panel-content, .v-ff3 .v-panel-content {
+	border-style: none;
+	border-color: black;
+	border: 0px solid black;
+}
+.v-sa .v-panel-content > div.blendWithBackground {
+	background: black;
+	border-color: black;
+	border: 0px solid black;
+}
+.v-panel-content > div.blendWithBackground {
+	background: black;
+	border-color: black;
+	border: 0px solid black;
+}
+div.blendWithBackground > div {
+	background: black;
+	border-color: black;
+}
+div.v-panel-deco {
+	border-color: black;
+}
+.v-sa .v-panel-deco {
+	border-color: black;
+	background: black;
+	border-top: 0px solid black;
 }
 
 .newAttemptBoard .intermission {
 	color: lime;
 }
 
-.newAttemptBoard .v-label-text {
-	font-size: 6em;
-	line-height: 1.2em;
+
+.newAttemptBoard .largeCountdown {
+	line-height: 1em;
 	font-weight: bold;
+	vertical-align: middle;
+	color: yellow;
 }
+.newAttemptBoard.s4_3 .largeCountdown {font-size: 16em;}
+.newAttemptBoard.s720p .largeCountdown {font-size: 18em;}
+.newAttemptBoard.s1080p .largeCountdown {font-size: 22em;}
+
+
+.newAttemptBoard .v-label-weightLabel {
+	line-height: 1em;
+	font-weight: bold;
+	color: #7FFFFF;
+}
+.newAttemptBoard.s4_3 .v-label-weightLabel {font-size: 10em;}
+.newAttemptBoard.s720p .v-label-weightLabel {font-size: 12em;}
+.newAttemptBoard.s1080p .v-label-weightLabel {font-size: 20em;}
+
+
+.newAttemptBoard .v-label-name {
+	color: white;
+	line-height: 1.1em;
+}
+.newAttemptBoard.s4_3 .v-label-name {font-size: 6.5em; line-height: 1.2em;}
+.newAttemptBoard.s720p .v-label-name {font-size: 6.5em;}
+.newAttemptBoard.s1080p .v-label-name {font-size: 8em;}
+
+
+.newAttemptBoard .v-label-text {
+	color: white;
+	line-height: 1.0em;
+}
+.newAttemptBoard.s4_3 .v-label-text {font-size: 7em; line-height: 1.2em;}
+.newAttemptBoard.s720p .v-label-text {font-size: 6.5em;}
+.newAttemptBoard.s1080p .v-label-text {font-size: 8em;}
+
 
 .newAttemptBoard .v-label-start {
-	font-size: 5em;
+	font-size: 7em;
 	line-height: 1em;
 	font-weight: bold;
 	border-width: thick;
 	border-style: solid;
 	color: #7FFFFF;
 }
+.newAttemptBoard.s4_3 .v-label-start {font-size: 7em;}
+.newAttemptBoard.s720p .v-label-start {font-size: 7em;}
+.newAttemptBoard.s1080p .v-label-start {font-size: 7em;}
 
-.newAttemptBoard .v-label-weightLabel {
-	font-size: 9em;
-	line-height: 1em;
-	font-weight: bold;
-	color: #7FFFFF;
+.newAttemptBoard.s4_3 .loadChart {
+	padding: 3em;
+}
+.newAttemptBoard.s4_3 .loadChart .v-label {
+	font-size: 120%;
+}
+.newAttemptBoard.s720p .loadChart {
+	padding: 3em;
+}
+.newAttemptBoard.s720p .loadChart .v-label {
+	font-size: 144%;
+}
+.newAttemptBoard.s1080p .loadChart {
+	padding: 2em;
+}
+.newAttemptBoard.s1080p .loadChart .v-label {
+	font-size: x-large;
 }
 
-.newAttemptBoard .loadChart .v-label {
-	font-size: large;
-}
 
 .newAttemptBoard .loadChart div.plate {
 	border-color: white !important;

@@ -27,6 +27,7 @@ import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.DecisionLightsWindow;
+import org.concordiainternational.competition.ui.components.Stylable;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,28 +46,30 @@ import com.vaadin.ui.Window.CloseListener;
 
 /**
  * Show information about the current attempt.
+ * 
  * @author jflamy
- *
+ * 
  */
 
-public class AttemptBoardView extends VerticalLayout implements 
-ApplicationView, 
-CountdownTimerListener,
-IntermissionTimerListener,
-Window.CloseListener, 
-URIHandler,
-DecisionEventListener
-{ 
+public class AttemptBoardView extends VerticalLayout implements
+        ApplicationView,
+        CountdownTimerListener,
+        IntermissionTimerListener,
+        Window.CloseListener,
+        URIHandler,
+        DecisionEventListener,
+        Stylable
+{
 
     public final static Logger logger = LoggerFactory.getLogger(AttemptBoardView.class);
     private static final long serialVersionUID = 1437157542240297372L;
-    private static final int TEAM_COLUMN = 3;
+    private static final int TEAM_COLUMN = 4;
     private static final int NAME_COLUMN = 0;
     private static final int TIME_COLUMN = 0;
     private static final int PLATES_COLUMN = 2;
     private static final int WEIGHT_COLUMN = 3;
     private static final int PLATES_ROW = 3;
-    private static final int DECISION_ROW = PLATES_ROW-1;
+    private static final int DECISION_ROW = PLATES_ROW - 1;
 
     public String urlString;
     private String platformName;
@@ -107,7 +110,7 @@ DecisionEventListener
             this.viewName = viewName;
             this.publicFacing = publicFacing;
         }
-
+        addStyleName("blendWithBackground");
         this.app = CompetitionApplication.getCurrent();
 
         boolean prevDisabledPush = app.getPusherDisabled();
@@ -120,11 +123,9 @@ DecisionEventListener
                 app.setPlatformByName(platformName);
             }
 
-
             create(app);
             masterData = app.getMasterData(platformName);
             refreshShowTimer();
-
 
             // we cannot call push() at this point
             synchronized (app) {
@@ -137,17 +138,16 @@ DecisionEventListener
                 } finally {
                     app.setPusherDisabled(prevDisabled);
                 }
-                logger.debug("browser panel: push disabled = {}",app.getPusherDisabled());
+                logger.debug("browser panel: push disabled = {}", app.getPusherDisabled());
             }
 
-            // URI handler must remain, so is not part of the register/unRegister paire
+            // URI handler must remain, so is not part of the register/unRegister pair
             app.getMainWindow().addURIHandler(this);
-            registerAsListener();      
+            registerAsListener();
         } finally {
             app.setPusherDisabled(prevDisabledPush);
         }
     }
-
 
     public void refreshShowTimer() {
         // force use of current value.
@@ -159,7 +159,6 @@ DecisionEventListener
         }
     }
 
-
     /**
      * 
      */
@@ -168,7 +167,6 @@ DecisionEventListener
         decisionLights.setSizeFull();
         decisionLights.setMargin(false);
     }
-
 
     private UpdateEventListener registerAsListener(final String platformName1, final SessionData masterData1) {
         // locate the current group data for the platformName
@@ -208,50 +206,66 @@ DecisionEventListener
      */
     private void create(UserActions app1) {
         this.setSizeFull();
+        this.setMargin(true);
 
-        grid = new GridLayout(4,5);
+        grid = new GridLayout(6, 5);
         grid.setSizeFull();
+
         grid.setMargin(true);
         grid.addStyleName("newAttemptBoard");
+        grid.addStyleName(getStylesheetName());
+        grid.setSpacing(false);
 
-        grid.setColumnExpandRatio(0, 50.0F);
-        grid.setColumnExpandRatio(1, 50.0F);
-        grid.setColumnExpandRatio(2, 0.0F);
-        grid.setColumnExpandRatio(3, 0.0F);
-        grid.setRowExpandRatio(0, 0.0F);
+        // grid.setColumnExpandRatio(0, 0.0F);
+        // grid.setColumnExpandRatio(1, 0.0F);
+        // grid.setColumnExpandRatio(2, 0.0F);
+        // grid.setColumnExpandRatio(3, 0.0F);
+        // grid.setColumnExpandRatio(4, 0.0F);
+        grid.setRowExpandRatio(0, 50.0F);
         grid.setRowExpandRatio(1, 0.0F);
         grid.setRowExpandRatio(2, 50.0F);
-        grid.setRowExpandRatio(3, 20.0F);
-        grid.setRowExpandRatio(4, 20.0F);
-        
+        grid.setRowExpandRatio(3, 0.0F);
+        grid.setRowExpandRatio(4, 50.0F);
+
+        Label filler = new Label("&nbsp;", Label.CONTENT_XHTML);
+        filler.setWidth("10px");
+        grid.addComponent(filler, TEAM_COLUMN + 1, 0, TEAM_COLUMN + 1, 0);
         // we do not add the time display, plate display
         // and decision display -- they react to timekeeping
-        grid.addComponent(nameLabel, NAME_COLUMN, 0, NAME_COLUMN+2, 0);
+
+        // last name
+        grid.addComponent(nameLabel, NAME_COLUMN, 0, TEAM_COLUMN - 1, 1);
         nameLabel.setSizeUndefined();
-        nameLabel.addStyleName("text");
+        nameLabel.addStyleName("name");
+        nameLabel.addStyleName("bolded");
         grid.setComponentAlignment(nameLabel, Alignment.MIDDLE_LEFT);
 
-        grid.addComponent(firstNameLabel, NAME_COLUMN, 1, NAME_COLUMN+2, 1);
-        firstNameLabel.setSizeUndefined();
-        firstNameLabel.addStyleName("text");
-        grid.setComponentAlignment(firstNameLabel, Alignment.MIDDLE_LEFT);
+        // first name
+        // grid.addComponent(firstNameLabel, NAME_COLUMN, 1, WEIGHT_COLUMN-1, 1);
+        // firstNameLabel.setSizeUndefined();
+        // firstNameLabel.addStyleName("name");
+        // grid.setComponentAlignment(firstNameLabel, Alignment.MIDDLE_LEFT);
 
+        // start number
         grid.addComponent(startLabel, TEAM_COLUMN, 0, TEAM_COLUMN, 0);
         startLabel.setSizeUndefined();
         startLabel.addStyleName("start");
         grid.setComponentAlignment(startLabel, Alignment.MIDDLE_RIGHT);
-        
+
+        // team
         grid.addComponent(clubLabel, TEAM_COLUMN, 1, TEAM_COLUMN, 1);
         clubLabel.setSizeUndefined();
         clubLabel.addStyleName("text");
         grid.setComponentAlignment(clubLabel, Alignment.MIDDLE_RIGHT);
 
-        grid.addComponent(weightLabel, WEIGHT_COLUMN, 4, WEIGHT_COLUMN, 4);
+        // requested weight
+        grid.addComponent(weightLabel, WEIGHT_COLUMN, 4, TEAM_COLUMN, 4);
         weightLabel.setSizeUndefined();
         weightLabel.addStyleName("weightLabel");
         grid.setComponentAlignment(weightLabel, Alignment.MIDDLE_RIGHT);
 
-        grid.addComponent(attemptLabel, WEIGHT_COLUMN, 3, WEIGHT_COLUMN, 3);
+        // attempt
+        grid.addComponent(attemptLabel, WEIGHT_COLUMN, 3, TEAM_COLUMN, 3);
         attemptLabel.setSizeUndefined();
         attemptLabel.addStyleName("text");
         grid.setComponentAlignment(attemptLabel, Alignment.MIDDLE_RIGHT);
@@ -263,7 +277,6 @@ DecisionEventListener
         this.setExpandRatio(grid, 100.0F);
 
     }
-
 
     /**
      * @param platformName1
@@ -290,11 +303,10 @@ DecisionEventListener
             }
 
         }
-        logger.debug("prior to display push disabled={}",app.getPusherDisabled());
+        logger.debug("prior to display push disabled={}", app.getPusherDisabled());
 
         app.push();
     }
-
 
     /**
      * 
@@ -313,18 +325,15 @@ DecisionEventListener
         plates.setVisible(false);
     }
 
-
-
-
     /**
      * @return message used when Announcer has not selected a group
      */
     private String getWaitingMessage() {
-        String message = ""; //Messages.getString("ResultFrame.Waiting", CompetitionApplication.getCurrentLocale());
-        //        List<Competition> competitions = Competition.getAll();
-        //        if (competitions.size() > 0) {
-        //            message = competitions.get(0).getCompetitionName();
-        //        }
+        String message = ""; // Messages.getString("ResultFrame.Waiting", CompetitionApplication.getCurrentLocale());
+        // List<Competition> competitions = Competition.getAll();
+        // if (competitions.size() > 0) {
+        // message = competitions.get(0).getCompetitionName();
+        // }
         return message;
     }
 
@@ -348,8 +357,6 @@ DecisionEventListener
         return done;
     }
 
-
-
     /**
      * @param lifter
      * @param alwaysShowName
@@ -364,19 +371,18 @@ DecisionEventListener
             final String club = lifter.getClub();
             final Integer startNumber = lifter.getStartNumber();
 
-            nameLabel.setValue(lastName.toUpperCase());
+            nameLabel.setValue(formatName(lastName, firstName));
             firstNameLabel.setValue(firstName);
             clubLabel.setValue(club);
             if (startNumber != null && startNumber > 0) {
                 startLabel.setStyleName("start");
                 startLabel.setValue(MessageFormat.format(
-                        Messages.getString("AttemptBoard.startNumberFormat", locale),startNumber.toString()));
+                        Messages.getString("AttemptBoard.startNumberFormat", locale), startNumber.toString()));
             } else {
                 startLabel.setStyleName("text");
                 startLabel.setValue("");
             }
         } else {
-
             nameLabel.setValue(MessageFormat.format(
                     Messages.getString("AttemptBoard.Done", locale), masterData.getCurrentSession().getName())); //$NON-NLS-1$
             firstNameLabel.setValue("");
@@ -387,25 +393,38 @@ DecisionEventListener
 
     }
 
+    public String formatName(final String lastName, final String firstName) {
+        int hyphenIndex = lastName.indexOf('-');
+        String nLastName = lastName;
+        if (hyphenIndex > 0) {
+            if (lastName.length() >= 10) {
+                String[] parts = lastName.split("-");
+                nLastName = parts[0] + "-<br/>" + parts[1];
+            }
+        }
+        return nLastName.toUpperCase() + "<br/>" + firstName;
+    }
+
     private void showDecisionLights(boolean decisionLightsVisible) {
-        //    	logger.debug("showDecisionLights {}",decisionLightsVisible);
+        // logger.debug("showDecisionLights {}",decisionLightsVisible);
         // remove everything
         grid.removeComponent(timeDisplayLabel);
         grid.removeComponent(decisionLights);
         grid.removeComponent(plates);
 
         if (decisionLightsVisible) {
-            grid.addComponent(decisionLights,TIME_COLUMN,DECISION_ROW,TIME_COLUMN+2,DECISION_ROW+2);
+            grid.addComponent(decisionLights, TIME_COLUMN, DECISION_ROW, TIME_COLUMN + 2, DECISION_ROW + 2);
             decisionLights.setSizeFull();
             decisionLights.setMargin(true);
             grid.setComponentAlignment(decisionLights, Alignment.TOP_LEFT);
         } else {
-            grid.addComponent(timeDisplayLabel, TIME_COLUMN, PLATES_ROW, TIME_COLUMN+1, PLATES_ROW+1);
-            grid.addComponent(plates, PLATES_COLUMN, PLATES_ROW, PLATES_COLUMN, PLATES_ROW+1);
+            grid.addComponent(timeDisplayLabel, TIME_COLUMN, PLATES_ROW + 1, TIME_COLUMN + 1, PLATES_ROW + 1);
+            grid.setComponentAlignment(timeDisplayLabel, Alignment.MIDDLE_LEFT);
+            grid.addComponent(plates, PLATES_COLUMN, PLATES_ROW, PLATES_COLUMN, PLATES_ROW + 1);
             plates.computeImageArea(masterData, masterData.getPlatform());
 
             grid.setComponentAlignment(timeDisplayLabel, Alignment.MIDDLE_LEFT);
-            grid.setComponentAlignment(plates, Alignment.MIDDLE_RIGHT);
+            grid.setComponentAlignment(plates, Alignment.BOTTOM_CENTER);
             timeDisplayLabel.setVisible(true);
             plates.setVisible(true);
         }
@@ -420,7 +439,7 @@ DecisionEventListener
      */
     private void displayAttemptNumber(Lifter lifter, final Locale locale, final int currentTry, boolean done) {
         // display current attemptLabel number
-        if (!done) {  
+        if (!done) {
             //appendDiv(sb, lifter.getNextAttemptRequestedWeight()+Messages.getString("Common.kg",locale)); //$NON-NLS-1$
             final String lift = lifter.getAttemptsDone() >= 3 ? Messages.getString("Common.shortCleanJerk", locale) //$NON-NLS-1$
                     : Messages.getString("Common.shortSnatch", locale);//$NON-NLS-1$
@@ -428,7 +447,7 @@ DecisionEventListener
                     currentTry, lift);
 
             attemptLabel.setValue(tryInfo
-                    //.replace(" ","<br>")
+                    // .replace(" ","<br>")
                     );
         } else {
             attemptLabel.setValue("");
@@ -461,7 +480,7 @@ DecisionEventListener
         // computed by groupData
         int timeRemaining = groupData.getDisplayTime();
         final CountdownTimer timer = groupData.getTimer();
-        if (!intermissionTimerShown){
+        if (!intermissionTimerShown) {
             showTimeRemaining(timeRemaining);
         }
         timer.addListener(this);
@@ -474,19 +493,18 @@ DecisionEventListener
 
     @Override
     public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
-        if (!intermissionTimerShown){
+        if (!intermissionTimerShown) {
             showTimeRemaining(timeRemaining);
         }
     }
 
-
     private void showTimeRemaining(int timeRemaining) {
         synchronized (app) {
-            if (showTimer ) {
+            if (showTimer) {
                 timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
             } else {
                 timeDisplayLabel.setValue("");
-            }            
+            }
         }
         app.push();
     }
@@ -510,7 +528,8 @@ DecisionEventListener
 
     @Override
     public void normalTick(int timeRemaining) {
-        if (nameLabel == null) return;
+        if (nameLabel == null)
+            return;
         if (TimeFormatter.getSeconds(previousTimeRemaining) == TimeFormatter.getSeconds(timeRemaining)) {
             previousTimeRemaining = timeRemaining;
             return;
@@ -536,7 +555,9 @@ DecisionEventListener
         showTimeRemaining(timeRemaining);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()
      */
     @Override
@@ -549,11 +570,13 @@ DecisionEventListener
      */
     @Override
     public String getFragment() {
-        return viewName+"/"+platformName+"/"+(publicFacing == true ? "public" : "lifter")+(stylesheetName != null ? "/"+stylesheetName : "");
+        return viewName + "/" + platformName + "/" + (publicFacing == true ? "public" : "lifter")
+                + (stylesheetName != null ? "/" + stylesheetName : "");
     }
 
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#setParametersFromFragment(java.lang.String)
      */
     @Override
@@ -563,7 +586,7 @@ DecisionEventListener
         if (params.length >= 1) {
             viewName = params[0];
         } else {
-            throw new RuleViolationException("Error.ViewNameIsMissing"); 
+            throw new RuleViolationException("Error.ViewNameIsMissing");
         }
 
         if (params.length >= 2) {
@@ -572,20 +595,19 @@ DecisionEventListener
         if (params.length >= 3) {
             String publicFacingString = params[2];
             publicFacing = "public".equals(publicFacingString);
-            logger.trace("setting publicFacing to {}",publicFacing);
+            logger.trace("setting publicFacing to {}", publicFacing);
         }
         if (params.length >= 4) {
-            stylesheetName = params[3];
-            logger.trace("setting stylesheetName to {}",stylesheetName);
+            setStylesheetName(params[3]);
+            logger.trace("setting stylesheetName to {}", stylesheetName);
         }
     }
-
 
     @Override
     public void intermissionTimerUpdate(IntermissionTimerEvent event) {
         Integer remainingMilliseconds = event.getRemainingMilliseconds();
         if (remainingMilliseconds != null && remainingMilliseconds > 0) {
-            displayIntermissionTimer(remainingMilliseconds);   
+            displayIntermissionTimer(remainingMilliseconds);
         } else {
             removeIntermissionTimer();
         }
@@ -602,6 +624,7 @@ DecisionEventListener
 
     /**
      * Display the break timer
+     * 
      * @param remainingMilliseconds
      */
     private void displayIntermissionTimer(Integer remainingMilliseconds) {
@@ -618,8 +641,9 @@ DecisionEventListener
         app.push();
     }
 
-
-    /* Unregister listeners when window is closed.
+    /*
+     * Unregister listeners when window is closed.
+     * 
      * @see com.vaadin.ui.Window.CloseListener#windowClose(com.vaadin.ui.Window.CloseEvent)
      */
     @Override
@@ -629,15 +653,15 @@ DecisionEventListener
 
     @Override
     public DownloadStream handleURI(URL context, String relativeUri) {
-        logger.debug("re-registering handlers for {} {}",this,relativeUri);
+        logger.debug("re-registering handlers for {} {}", this, relativeUri);
         registerAsListener();
         return null;
     }
 
-
     /**
-     * Process a decision regarding the current lifter.
-     * Make sure that the nameLabel of the lifter does not change until after the decision has been shown.
+     * Process a decision regarding the current lifter. Make sure that the nameLabel of the lifter does not change until after the decision
+     * has been shown.
+     * 
      * @see org.concordiainternational.competition.decision.DecisionEventListener#updateEvent(org.concordiainternational.competition.decision.DecisionEvent)
      */
     @Override
@@ -663,7 +687,7 @@ DecisionEventListener
                         waitingForDecisionLightsReset = false;
                         if (shown) {
                             decisionLights.setVisible(false);
-                            showDecisionLights(false);						
+                            showDecisionLights(false);
                             shown = false;
                         }
                         display(platformName, masterData);
@@ -693,7 +717,6 @@ DecisionEventListener
         }).start();
     }
 
-
     @Override
     public void registerAsListener() {
         // listen to changes in the competition data
@@ -712,15 +735,15 @@ DecisionEventListener
         }
 
         // listen to close events
-        app.getMainWindow().addListener((CloseListener)this);
+        app.getMainWindow().addListener((CloseListener) this);
 
         // listen to keyboard
         addActions(app.getMainWindow());
-        
+
         // update whether timer is shown
         refreshShowTimer();
     }
-    
+
     /**
      * Undo what registerAsListener did.
      */
@@ -745,12 +768,11 @@ DecisionEventListener
         }
 
         // stop listening to close events
-        app.getMainWindow().removeListener((CloseListener)this);
+        app.getMainWindow().removeListener((CloseListener) this);
 
         // stop listening to keyboard
         removeActions(app.getMainWindow());
     }
-
 
     @SuppressWarnings("serial")
     private abstract class ShortcutActionListener extends ShortcutAction implements Action.Listener {
@@ -768,62 +790,62 @@ DecisionEventListener
     @SuppressWarnings("serial")
     private void addActions(Action.Notifier actionNotifier) {
         final IDecisionController refereeDecisionController = masterData.getRefereeDecisionController();
-        startAction = new ShortcutActionListener("start", ShortcutAction.KeyCode.G){
+        startAction = new ShortcutActionListener("start", ShortcutAction.KeyCode.G) {
             @Override
             public void handleAction(Object sender, Object target) {
                 masterData.startUpdateModel();
             }
         };
-        stopAction = new ShortcutActionListener("stop",ShortcutAction.KeyCode.P){
+        stopAction = new ShortcutActionListener("stop", ShortcutAction.KeyCode.P) {
             @Override
             public void handleAction(Object sender, Object target) {
                 masterData.stopUpdateModel();
             }
         };
-        oneMinuteAction = new ShortcutActionListener("1 minute",ShortcutAction.KeyCode.O){
+        oneMinuteAction = new ShortcutActionListener("1 minute", ShortcutAction.KeyCode.O) {
             @Override
             public void handleAction(Object sender, Object target) {
                 masterData.oneMinuteUpdateModel();
             }
         };
-        twoMinutesAction = new ShortcutActionListener("2 minutes",ShortcutAction.KeyCode.T){
+        twoMinutesAction = new ShortcutActionListener("2 minutes", ShortcutAction.KeyCode.T) {
             @Override
             public void handleAction(Object sender, Object target) {
-                masterData.twoMinuteUpdateModel();    
+                masterData.twoMinuteUpdateModel();
             }
         };
 
-        action1ok = new ShortcutActionListener("1+",ShortcutAction.KeyCode.NUM1) {
+        action1ok = new ShortcutActionListener("1+", ShortcutAction.KeyCode.NUM1) {
             @Override
             public void handleAction(Object sender, Object target) {
                 refereeDecisionController.decisionMade(0, true);
             }
         };
-        action1fail = new ShortcutActionListener("1-",ShortcutAction.KeyCode.NUM2){
+        action1fail = new ShortcutActionListener("1-", ShortcutAction.KeyCode.NUM2) {
             @Override
             public void handleAction(Object sender, Object target) {
                 refereeDecisionController.decisionMade(0, false);
             }
         };
-        action2ok = new ShortcutActionListener("2+",ShortcutAction.KeyCode.NUM3){
+        action2ok = new ShortcutActionListener("2+", ShortcutAction.KeyCode.NUM3) {
             @Override
             public void handleAction(Object sender, Object target) {
                 refereeDecisionController.decisionMade(1, true);
             }
         };
-        action2fail = new ShortcutActionListener("2-",ShortcutAction.KeyCode.NUM4){
+        action2fail = new ShortcutActionListener("2-", ShortcutAction.KeyCode.NUM4) {
             @Override
             public void handleAction(Object sender, Object target) {
                 refereeDecisionController.decisionMade(1, false);
             }
         };
-        action3ok = new ShortcutActionListener("3+",ShortcutAction.KeyCode.NUM5){
+        action3ok = new ShortcutActionListener("3+", ShortcutAction.KeyCode.NUM5) {
             @Override
             public void handleAction(Object sender, Object target) {
                 refereeDecisionController.decisionMade(2, true);
             }
         };
-        action3fail = new ShortcutActionListener("3-",ShortcutAction.KeyCode.NUM6){
+        action3fail = new ShortcutActionListener("3-", ShortcutAction.KeyCode.NUM6) {
             @Override
             public void handleAction(Object sender, Object target) {
                 refereeDecisionController.decisionMade(2, false);
@@ -853,6 +875,16 @@ DecisionEventListener
         actionNotifier.removeAction(action2fail);
         actionNotifier.removeAction(action3ok);
         actionNotifier.removeAction(action3fail);
+    }
+
+    @Override
+    public void setStylesheetName(String stylesheetName) {
+        this.stylesheetName = stylesheetName;
+    }
+
+    @Override
+    public String getStylesheetName() {
+        return this.stylesheetName;
     }
 
 }
