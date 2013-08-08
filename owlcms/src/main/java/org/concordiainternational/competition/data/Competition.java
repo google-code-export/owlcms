@@ -17,6 +17,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.concordiainternational.competition.tests.AllTests;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -206,7 +207,7 @@ public class Competition implements Serializable {
 
     public static Competition getCompetition() {
         final CompetitionApplication currentApp = CompetitionApplication.getCurrent();
-        final Session hbnSession = currentApp.getHbnSession();
+        final Session hbnSession = (currentApp != null ? currentApp.getHbnSession() : AllTests.getSessionManager().getHbnSession());
         @SuppressWarnings("unchecked")
         List<Competition> competitions = hbnSession.createCriteria(Competition.class).list();
         Competition competition = null;

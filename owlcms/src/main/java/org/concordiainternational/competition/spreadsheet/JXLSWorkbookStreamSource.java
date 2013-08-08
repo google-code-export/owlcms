@@ -9,7 +9,6 @@ package org.concordiainternational.competition.spreadsheet;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.HashMap;
@@ -29,14 +28,12 @@ import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.extentech.ExtenXLS.WorkBookHandle;
 import com.vaadin.terminal.StreamResource;
 
 /**
  * Encapsulate a spreadsheet as a StreamSource so that it can be used as a
  * source of data when the user clicks on a link. This class converts the output
- * stream produced by the
- * {@link OutputSheet#writeWorkBook(WorkBookHandle, OutputStream)} method to an
+ * stream to an
  * input stream that the vaadin framework can consume.
  */
 @SuppressWarnings("serial")

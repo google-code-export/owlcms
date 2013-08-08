@@ -164,6 +164,8 @@ EditableList {
         }
         table.addGeneratedColumn("total", columnGenerator); //$NON-NLS-1$
 
+        table.setColumnCollapsingAllowed(true);
+        table.setColumnCollapsed("birthDate",true);
         setExpandRatios();
     }
 
@@ -298,6 +300,7 @@ EditableList {
                 Messages.getString("Lifter.firstName", locale), //$NON-NLS-1$
                 //Messages.getString("Lifter.gender", locale), //$NON-NLS-1$
                 Messages.getString("Lifter.birthDate", locale), //$NON-NLS-1$
+                Messages.getString("Lifter.fullBirthDate", locale), //$NON-NLS-1$
                 Messages.getString("Lifter.totalRank", locale), //$NON-NLS-1$
                 Messages.getString("Lifter.category", locale), //$NON-NLS-1$
                 Messages.getString("Lifter.bodyWeight", locale), //$NON-NLS-1$
@@ -327,21 +330,22 @@ EditableList {
                 "firstName", //$NON-NLS-1$
                 //"gender", //$NON-NLS-1$
                 "birthDate", //$NON-NLS-1$
+                "fullBirthDate", //$NON-NLS-1$
                 "totalRank", //$NON-NLS-1$
                 (WinningOrderComparator.useRegistrationCategory ? "registrationCategory" //$NON-NLS-1$
                         : (Competition.isMasters() ? "mastersLongCategory" //$NON-NLS-1$
                                 : "category")), //$NON-NLS-1$		
-                                "bodyWeight", //$NON-NLS-1$
-                                "club", //$NON-NLS-1$
-                                "snatch1ActualLift", //$NON-NLS-1$
-                                "snatch2ActualLift", //$NON-NLS-1$
-                                "snatch3ActualLift", //$NON-NLS-1$
-                                "cleanJerk1ActualLift", //$NON-NLS-1$
-                                "cleanJerk2ActualLift", //$NON-NLS-1$
-                                "cleanJerk3ActualLift", //$NON-NLS-1$
-                                "total", //$NON-NLS-1$
-                                "sinclair", //$NON-NLS-1$
-                                "categorySinclair", //$NON-NLS-1$
+                "bodyWeight", //$NON-NLS-1$
+                "club", //$NON-NLS-1$
+                "snatch1ActualLift", //$NON-NLS-1$
+                "snatch2ActualLift", //$NON-NLS-1$
+                "snatch3ActualLift", //$NON-NLS-1$
+                "cleanJerk1ActualLift", //$NON-NLS-1$
+                "cleanJerk2ActualLift", //$NON-NLS-1$
+                "cleanJerk3ActualLift", //$NON-NLS-1$
+                "total", //$NON-NLS-1$
+                "sinclair", //$NON-NLS-1$
+                "categorySinclair", //$NON-NLS-1$
         };
         return NATURAL_COL_ORDER;
     }
