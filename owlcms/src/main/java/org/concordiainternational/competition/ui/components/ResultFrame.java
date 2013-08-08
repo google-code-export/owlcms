@@ -61,7 +61,8 @@ public class ResultFrame extends VerticalLayout implements
 		MessageDisplayListener,
 		Window.CloseListener, 
 		URIHandler,
-		DecisionEventListener
+		DecisionEventListener,
+		Stylable
 		{ 
 	
     private static final String ATTEMPT_WIDTH = "6em";
@@ -253,11 +254,11 @@ public class ResultFrame extends VerticalLayout implements
         } catch (UnsupportedEncodingException e1) {
             throw new RuntimeException(e1);
         }
-        String styleSheet = getStylesheet();
+        String styleSheet = getStylesheetName();
         if (styleSheet == null || styleSheet.isEmpty()) {
         	styleSheet = "";
         } else {
-        	styleSheet = "&style=" + getStylesheet() + ".css";
+        	styleSheet = "&style=" + getStylesheetName() + ".css";
         }
         final String spec = appUrlString + urlString + encodedPlatformName + styleSheet +"&time=" + System.currentTimeMillis(); //$NON-NLS-1$
         try {
@@ -618,11 +619,16 @@ public class ResultFrame extends VerticalLayout implements
 	}
 
 
-	public void setStylesheet(String stylesheetName) {
+	/* (non-Javadoc)
+     * @see org.concordiainternational.competition.ui.components.Stylable#setStylesheet(java.lang.String)
+     */
+    @Override
+    public void setStylesheetName(String stylesheetName) {
 		this.stylesheetName = stylesheetName;
 	}
 	
-    private String getStylesheet() {
+    @Override
+    public String getStylesheetName() {
 		return stylesheetName;
 	}
 

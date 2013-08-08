@@ -54,14 +54,18 @@ public class Menu extends MenuBar implements Serializable {
         createDisplayMenuItem(projectors, competitionApplication, locale, "dlp");
         createDisplayMenuItem(projectors, competitionApplication, locale, "lcd");
         createDisplayMenuItem(projectors, competitionApplication, locale, "pale");
-        //createSimpleDisplayMenuItem(projectors, competitionApplication, locale);
+        // createSimpleDisplayMenuItem(projectors, competitionApplication, locale);
         projectors.addSeparator();
-        createPublicAttemptBoardMenuItem(projectors, competitionApplication, locale);
-        createLifterAttemptBoardMenuItem(projectors, competitionApplication, locale);
+        createPublicAttemptBoardMenuItem(projectors, competitionApplication, locale, "s4_3");
+        createPublicAttemptBoardMenuItem(projectors, competitionApplication, locale, "s720p");
+        createPublicAttemptBoardMenuItem(projectors, competitionApplication, locale, "s1080p");
         projectors.addSeparator();
-        //createLiftOrderMenuItem(projectors, competitionApplication, locale);
+        createLifterAttemptBoardMenuItem(projectors, competitionApplication, locale, "s4_3");
+        createLifterAttemptBoardMenuItem(projectors, competitionApplication, locale, "s720p");
+        createLifterAttemptBoardMenuItem(projectors, competitionApplication, locale, "s1080p");
+        projectors.addSeparator();
+        // createLiftOrderMenuItem(projectors, competitionApplication, locale);
         createSummaryLiftOrderMenuItem(projectors, competitionApplication, locale);
-        
 
         createLoadComputerMenuItem(menu, competitionApplication, locale);
 
@@ -90,7 +94,7 @@ public class Menu extends MenuBar implements Serializable {
         createLiftersMenuItem(administration, competitionApplication, locale);
         administration.addSeparator();
         createRestartMenuItem(administration, competitionApplication, locale);
-        
+
         createAboutMenuItem(menu, competitionApplication, locale);
 
         if (Platform.getSize() > 1) {
@@ -106,8 +110,8 @@ public class Menu extends MenuBar implements Serializable {
      */
     private MenuItem createConsoleMenu(MenuBar menu, final CompetitionApplication competitionApplication, final Locale locale) {
         return menu.addItem(Messages.getString("CompetitionApplication.Console", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/document.png"),
-            null);
+                null, // new ThemeResource("icons/32/document.png"),
+                null);
     }
 
     /**
@@ -116,15 +120,15 @@ public class Menu extends MenuBar implements Serializable {
      */
     private MenuItem createAnnouncerMenuItem(MenuItem menu, final Locale locale) {
         return menu.addItem(Messages.getString("CompetitionApplication.Announcer", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/document.png"),
-            new Command() {
-                private static final long serialVersionUID = -547788870764317931L;
+                null, // new ThemeResource("icons/32/document.png"),
+                new Command() {
+                    private static final long serialVersionUID = -547788870764317931L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    CompetitionApplication.getCurrent().doDisplay(CompetitionApplicationComponents.ANNOUNCER_VIEW);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        CompetitionApplication.getCurrent().doDisplay(CompetitionApplicationComponents.ANNOUNCER_VIEW);
+                    }
+                });
     }
 
     /**
@@ -133,15 +137,15 @@ public class Menu extends MenuBar implements Serializable {
      */
     private MenuItem createChangesMenuItem(MenuItem menu, final Locale locale) {
         return menu.addItem(Messages.getString("CompetitionApplication.Changes", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/document.png"),
-            new Command() {
-                private static final long serialVersionUID = -547788870764317931L;
+                null, // new ThemeResource("icons/32/document.png"),
+                new Command() {
+                    private static final long serialVersionUID = -547788870764317931L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    CompetitionApplication.getCurrent().doDisplay(CompetitionApplicationComponents.CHANGES_VIEW);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        CompetitionApplication.getCurrent().doDisplay(CompetitionApplicationComponents.CHANGES_VIEW);
+                    }
+                });
     }
 
     /**
@@ -150,15 +154,15 @@ public class Menu extends MenuBar implements Serializable {
      */
     private MenuItem createTimeKeeperMenuItem(MenuItem menu, final Locale locale) {
         return menu.addItem(Messages.getString("CompetitionApplication.TimeKeeper", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/document.png"),
-            new Command() {
-                private static final long serialVersionUID = -547788870764317931L;
+                null, // new ThemeResource("icons/32/document.png"),
+                new Command() {
+                    private static final long serialVersionUID = -547788870764317931L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    CompetitionApplication.getCurrent().doDisplay(CompetitionApplicationComponents.TIMEKEEPER_VIEW);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        CompetitionApplication.getCurrent().doDisplay(CompetitionApplicationComponents.TIMEKEEPER_VIEW);
+                    }
+                });
     }
 
     /**
@@ -167,15 +171,15 @@ public class Menu extends MenuBar implements Serializable {
      */
     private MenuItem createResultsMenuItem(MenuBar menu, final CompetitionApplication competitionApplication, final Locale locale) {
         return menu.addItem(Messages.getString("CompetitionApplication.Results", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/document.png"),
-            new Command() {
-                private static final long serialVersionUID = 5577281157225515360L;
+                null, // new ThemeResource("icons/32/document.png"),
+                new Command() {
+                    private static final long serialVersionUID = 5577281157225515360L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.RESULT_VIEW);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        competitionApplication.doDisplay(CompetitionApplicationComponents.RESULT_VIEW);
+                    }
+                });
     }
 
     /**
@@ -185,19 +189,19 @@ public class Menu extends MenuBar implements Serializable {
     private MenuItem createLoadComputerMenuItem(MenuBar menu, final CompetitionApplication competitionApplication,
             final Locale locale) {
         return menu.addItem(Messages.getString("CompetitionApplication.Load", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/document.png"),
-            new Command() {
-                private static final long serialVersionUID = 5577281157225515360L;
+                null, // new ThemeResource("icons/32/document.png"),
+                new Command() {
+                    private static final long serialVersionUID = 5577281157225515360L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    if (getLoadComputerWindow() == null) {
-                        displayLoadComputerWindow();
-                    } else {
-                        closeLoadComputerWindow();
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        if (getLoadComputerWindow() == null) {
+                            displayLoadComputerWindow();
+                        } else {
+                            closeLoadComputerWindow();
+                        }
                     }
-                }
-            });
+                });
     }
 
     /**
@@ -206,21 +210,21 @@ public class Menu extends MenuBar implements Serializable {
      */
     private MenuItem createWeighInsMenuItem(MenuBar menu, final CompetitionApplication competitionApplication, final Locale locale) {
         return menu.addItem(Messages.getString("CompetitionApplication.WeighIn", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/users.png"),
-            new Command() {
-                private static final long serialVersionUID = 3563330867710192233L;
+                null, // new ThemeResource("icons/32/users.png"),
+                new Command() {
+                    private static final long serialVersionUID = 3563330867710192233L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.WEIGH_IN_LIST);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        competitionApplication.doDisplay(CompetitionApplicationComponents.WEIGH_IN_LIST);
+                    }
+                });
     }
 
     private MenuItem createProjectorsMenuItem(MenuBar menu, CompetitionApplication competitionApplication, Locale locale) {
         return menu.addItem(Messages.getString("CompetitionApplication.Projectors", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/folder-add.png"),
-            null);
+                null, // new ThemeResource("icons/32/folder-add.png"),
+                null);
     }
 
     /**
@@ -231,18 +235,18 @@ public class Menu extends MenuBar implements Serializable {
     private MenuItem createDisplayMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
             final Locale locale, final String stylesheet) {
         return projectors.addItem(
-        		Messages.getString("CompetitionApplication.Display",locale)//$NON-NLS-1$
-        		+ " - "
-        		+ Messages.getString("CompetitionApplication.Display."+stylesheet,locale), //$NON-NLS-1$
-        		null, // new ThemeResource("icons/32/folder-add.png"),
-            new Command() {
-                private static final long serialVersionUID = -4179990860181438187L;
+                Messages.getString("CompetitionApplication.Display", locale)//$NON-NLS-1$
+                        + " - "
+                        + Messages.getString("CompetitionApplication.Display." + stylesheet, locale), //$NON-NLS-1$
+                null, // new ThemeResource("icons/32/folder-add.png"),
+                new Command() {
+                    private static final long serialVersionUID = -4179990860181438187L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.displayProjector(CompetitionApplicationComponents.RESULT_BOARD, stylesheet);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        competitionApplication.displayWithStyle(CompetitionApplicationComponents.RESULT_BOARD, stylesheet);
+                    }
+                });
     }
 
     /**
@@ -252,82 +256,75 @@ public class Menu extends MenuBar implements Serializable {
     private MenuItem createSummaryLiftOrderMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
             final Locale locale) {
         return projectors.addItem(Messages.getString("CompetitionApplication.SummaryLiftOrder", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/folder-add.png"),
-            new Command() {
-                private static final long serialVersionUID = 5658882232799685230L;
+                null, // new ThemeResource("icons/32/folder-add.png"),
+                new Command() {
+                    private static final long serialVersionUID = 5658882232799685230L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.SUMMARY_LIFT_ORDER_VIEW);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        competitionApplication.doDisplay(CompetitionApplicationComponents.SUMMARY_LIFT_ORDER_VIEW);
+                    }
+                });
     }
 
     /**
      * @param competitionApplication
      * @param locale
+     * @param style
+     *            TODO
      */
     private MenuItem createPublicAttemptBoardMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
-            final Locale locale) {
-        return projectors.addItem(Messages.getString("CompetitionApplication.PublicAttemptBoard", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/folder-add.png"),
-            new Command() {
-                private static final long serialVersionUID = 5658882232799685230L;
+            final Locale locale, final String style) {
+        String menuEntryString = Messages.getString("CompetitionApplication.PublicAttemptBoard", locale)//$NON-NLS-1$
+                + " - "
+                + Messages.getString("CompetitionApplication.Display." + style, locale); //$NON-NLS-1$
+        return projectors.addItem(
+                menuEntryString,
+                null, // new ThemeResource("icons/32/folder-add.png"),
+                new Command() {
+                    private static final long serialVersionUID = 5658882232799685230L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.PUBLIC_ATTEMPT_BOARD_VIEW);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        competitionApplication.displayWithStyle(CompetitionApplicationComponents.PUBLIC_ATTEMPT_BOARD_VIEW, style);
+                    }
+                });
     }
-    
+
     /**
      * @param competitionApplication
      * @param locale
+     * @param style
+     *            TODO
      */
     private MenuItem createLifterAttemptBoardMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
-            final Locale locale) {
-        return projectors.addItem(Messages.getString("CompetitionApplication.LifterAttemptBoard", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/folder-add.png"),
-            new Command() {
-                private static final long serialVersionUID = 5658882232799685230L;
+            final Locale locale, final String style) {
+        String menuEntryString = Messages.getString("CompetitionApplication.LifterAttemptBoard", locale)//$NON-NLS-1$
+                + " - "
+                + Messages.getString("CompetitionApplication.Display." + style, locale); //$NON-NLS-1$
+        return projectors.addItem(
+                menuEntryString,
+                null, // new ThemeResource("icons/32/folder-add.png"),
+                new Command() {
+                    private static final long serialVersionUID = 5658882232799685230L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.LIFTER_ATTEMPT_BOARD_VIEW);
-                }
-            });
-    }
-
-    /**
-     * @param competitionApplication
-     * @param locale
-     */
-    @SuppressWarnings("unused")
-	private MenuItem createLiftOrderMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
-            final Locale locale) {
-        return projectors.addItem(Messages.getString("CompetitionApplication.LiftOrder", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/folder-add.png"),
-            new Command() {
-                private static final long serialVersionUID = 5658882232799685230L;
-
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.LIFT_ORDER_VIEW);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        competitionApplication.displayWithStyle(CompetitionApplicationComponents.LIFTER_ATTEMPT_BOARD_VIEW, style);
+                    }
+                });
     }
 
     private MenuItem createAdminMenuItem(MenuBar menu, CompetitionApplication competitionApplication, Locale locale) {
         return menu.addItem(Messages.getString("CompetitionApplication.Administration", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/folder-add.png"),
-            null);
+                null, // new ThemeResource("icons/32/folder-add.png"),
+                null);
     }
 
     private MenuItem createPlatformsMenuItem(MenuBar menu, CompetitionApplication competitionApplication, Locale locale) {
         return menu.addItem(Messages.getString("CompetitionApplication.Platforms", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/folder-add.png"),
-            null);
+                null, // new ThemeResource("icons/32/folder-add.png"),
+                null);
     }
 
     /**
@@ -337,15 +334,15 @@ public class Menu extends MenuBar implements Serializable {
     private MenuItem createPlatformsMenuItem(MenuItem administration, final CompetitionApplication competitionApplication,
             final Locale locale) {
         return administration.addItem(Messages.getString("CompetitionApplication.Platforms", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/folder-add.png"),
-            new Command() {
-                private static final long serialVersionUID = -3184587992763328917L;
+                null, // new ThemeResource("icons/32/folder-add.png"),
+                new Command() {
+                    private static final long serialVersionUID = -3184587992763328917L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.PLATFORM_LIST);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        competitionApplication.doDisplay(CompetitionApplicationComponents.PLATFORM_LIST);
+                    }
+                });
     }
 
     /**
@@ -355,15 +352,15 @@ public class Menu extends MenuBar implements Serializable {
     private MenuItem createCompetitionMenuItem(MenuItem administration, final CompetitionApplication competitionApplication,
             final Locale locale) {
         return administration.addItem(Messages.getString("CompetitionApplication.Competition", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/folder-add.png"),
-            new Command() {
-                private static final long serialVersionUID = -3184587992763328917L;
+                null, // new ThemeResource("icons/32/folder-add.png"),
+                new Command() {
+                    private static final long serialVersionUID = -3184587992763328917L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.COMPETITION_EDITOR);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        competitionApplication.doDisplay(CompetitionApplicationComponents.COMPETITION_EDITOR);
+                    }
+                });
     }
 
     /**
@@ -373,15 +370,15 @@ public class Menu extends MenuBar implements Serializable {
     private MenuItem createCategoriesMenuItem(MenuItem administration, final CompetitionApplication competitionApplication,
             final Locale locale) {
         return administration.addItem(Messages.getString("CompetitionApplication.Categories", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/folder-add.png"),
-            new Command() {
-                private static final long serialVersionUID = -6471211259031643832L;
+                null, // new ThemeResource("icons/32/folder-add.png"),
+                new Command() {
+                    private static final long serialVersionUID = -6471211259031643832L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.CATEGORY_LIST);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        competitionApplication.doDisplay(CompetitionApplicationComponents.CATEGORY_LIST);
+                    }
+                });
     }
 
     /**
@@ -391,43 +388,43 @@ public class Menu extends MenuBar implements Serializable {
     private MenuItem createGroupsMenuItem(MenuItem administration, final CompetitionApplication competitionApplication,
             final Locale locale) {
         return administration.addItem(Messages.getString("CompetitionApplication.Groups", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/folder-add.png"),
-            new Command() {
-                private static final long serialVersionUID = -6740574252795556971L;
+                null, // new ThemeResource("icons/32/folder-add.png"),
+                new Command() {
+                    private static final long serialVersionUID = -6740574252795556971L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.GROUP_LIST);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        competitionApplication.doDisplay(CompetitionApplicationComponents.GROUP_LIST);
+                    }
+                });
     }
 
     private MenuItem createLiftersMenuItem(MenuItem administration,
             final CompetitionApplication competitionApplication, Locale locale) {
         return administration.addItem(Messages.getString("CompetitionApplication.Lifters", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/users.png"),
-            new Command() {
-                private static final long serialVersionUID = 3563330867710192233L;
+                null, // new ThemeResource("icons/32/users.png"),
+                new Command() {
+                    private static final long serialVersionUID = 3563330867710192233L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.REGISTRATION_LIST);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        competitionApplication.doDisplay(CompetitionApplicationComponents.REGISTRATION_LIST);
+                    }
+                });
     }
 
     private MenuItem createRestartMenuItem(MenuItem administration,
             final CompetitionApplication competitionApplication, Locale locale) {
         return administration.addItem(Messages.getString("Restart.Restart", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/users.png"),
-            new Command() {
-                private static final long serialVersionUID = 3563330867710192233L;
+                null, // new ThemeResource("icons/32/users.png"),
+                new Command() {
+                    private static final long serialVersionUID = 3563330867710192233L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    displayRestartConfirmation();
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        displayRestartConfirmation();
+                    }
+                });
     }
 
     protected void restart() {
@@ -441,15 +438,15 @@ public class Menu extends MenuBar implements Serializable {
     private MenuItem createUploadMenuItem(MenuItem administration, final CompetitionApplication competitionApplication,
             Locale locale) {
         return administration.addItem(Messages.getString("CompetitionApplication.Upload", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/users.png"),
-            new Command() {
-                private static final long serialVersionUID = 3563330867710192233L;
+                null, // new ThemeResource("icons/32/users.png"),
+                new Command() {
+                    private static final long serialVersionUID = 3563330867710192233L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.UPLOAD_VIEW);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        competitionApplication.doDisplay(CompetitionApplicationComponents.UPLOAD_VIEW);
+                    }
+                });
 
     }
 
@@ -459,90 +456,89 @@ public class Menu extends MenuBar implements Serializable {
             final String name = (platform.getName() == null ? "?" : platform.getName()); //$NON-NLS-1$
             platforms.addItem(name, null, // new
                                           // ThemeResource("icons/32/users.png"),
-                new Command() {
-                    private static final long serialVersionUID = 3563330867710192233L;
+                    new Command() {
+                        private static final long serialVersionUID = 3563330867710192233L;
 
-                    @Override
-                    public void menuSelected(MenuItem selectedItem) {
-                        Menu.this.setComponentError(null); // erase error
-                                                           // marker;
-                        competitionApplication.setPlatformByName(name);
-                        SessionData masterData = competitionApplication.getMasterData(name);
-                        logger.debug("new platform={}, new group = {}", name, masterData.getCurrentSession()); //$NON-NLS-1$
-                        competitionApplication.setCurrentCompetitionSession(masterData.getCurrentSession());
-                    }
-                });
+                        @Override
+                        public void menuSelected(MenuItem selectedItem) {
+                            Menu.this.setComponentError(null); // erase error
+                                                               // marker;
+                            competitionApplication.setPlatformByName(name);
+                            SessionData masterData = competitionApplication.getMasterData(name);
+                            logger.debug("new platform={}, new group = {}", name, masterData.getCurrentSession()); //$NON-NLS-1$
+                            competitionApplication.setCurrentCompetitionSession(masterData.getCurrentSession());
+                        }
+                    });
         }
     }
 
     private MenuItem createDecisionMenuItem(MenuBar menu, final CompetitionApplication competitionApplication,
             Locale locale) {
         return menu.addItem(Messages.getString("CompetitionApplication.Refereeing", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/document.png"),
-            null);
+                null, // new ThemeResource("icons/32/document.png"),
+                null);
     }
 
     private MenuItem createRefereeTestingMenuItem(MenuItem item, final CompetitionApplication competitionApplication,
             Locale locale) {
         return item.addItem(Messages.getString("CompetitionApplication.DecisionLights", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/document.png"),
-            new Command() {
-                private static final long serialVersionUID = 5577281157225515360L;
+                null, // new ThemeResource("icons/32/document.png"),
+                new Command() {
+                    private static final long serialVersionUID = 5577281157225515360L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.REFEREE_TESTING);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        competitionApplication.doDisplay(CompetitionApplicationComponents.REFEREE_TESTING);
+                    }
+                });
     }
-    
+
     private MenuItem createJuryLightsMenuItem(MenuItem item, final CompetitionApplication competitionApplication,
             Locale locale) {
         return item.addItem(Messages.getString("CompetitionApplication.JuryLights", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/document.png"),
-            new Command() {
-                private static final long serialVersionUID = 5577281157225515360L;
+                null, // new ThemeResource("icons/32/document.png"),
+                new Command() {
+                    private static final long serialVersionUID = 5577281157225515360L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.JURY_LIGHTS);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        competitionApplication.doDisplay(CompetitionApplicationComponents.JURY_LIGHTS);
+                    }
+                });
     }
 
     private MenuItem createCountdownDisplayMenuItem(MenuItem item, final CompetitionApplication competitionApplication,
             Locale locale) {
         return item.addItem(Messages.getString("CompetitionApplication.CountdownDisplay", locale), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/document.png"),
-            new Command() {
-                private static final long serialVersionUID = 5577281157225515360L;
+                null, // new ThemeResource("icons/32/document.png"),
+                new Command() {
+                    private static final long serialVersionUID = 5577281157225515360L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.doDisplay(CompetitionApplicationComponents.COUNTDOWN_DISPLAY);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        competitionApplication.doDisplay(CompetitionApplicationComponents.COUNTDOWN_DISPLAY);
+                    }
+                });
     }
 
     private MenuItem createRefereeMenuItem(MenuItem item, final CompetitionApplication competitionApplication,
             Locale locale, final int refereeIndex) {
         return item.addItem(Messages.getString("CompetitionApplication.Referee", locale) + " " + (refereeIndex + 1), //$NON-NLS-1$
-            null, // new ThemeResource("icons/32/document.png"),
-            new Command() {
-                private static final long serialVersionUID = 5577281157225515360L;
+                null, // new ThemeResource("icons/32/document.png"),
+                new Command() {
+                    private static final long serialVersionUID = 5577281157225515360L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    competitionApplication.displayRefereeConsole(refereeIndex);
-                }
-            });
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        competitionApplication.displayRefereeConsole(refereeIndex);
+                    }
+                });
     }
 
     public void displayRestartConfirmation() {
 
         // Create the window...
-        final Window subwindow = new Window(Messages.getString(
-            "Restart.ConfirmationDialogTitle", getApplication().getLocale())); //$NON-NLS-1$
+        final Window subwindow = new Window(Messages.getString("Restart.ConfirmationDialogTitle", getApplication().getLocale())); //$NON-NLS-1$
         // ...and make it modal
         subwindow.setModal(true);
         subwindow.setWidth("10cm"); //$NON-NLS-1$
@@ -563,7 +559,7 @@ public class Menu extends MenuBar implements Serializable {
 
                     // inline click-listener
                     @Override
-					public void buttonClick(ClickEvent event) {
+                    public void buttonClick(ClickEvent event) {
                         // close the window by removing it from the main window
                         getApplication().getMainWindow().removeWindow(subwindow);
                     }
@@ -571,21 +567,21 @@ public class Menu extends MenuBar implements Serializable {
 
         final Button ok = new Button(Messages.getString("Restart.Restart", getApplication().getLocale()));
         ok.addListener(new Button.ClickListener() { //$NON-NLS-1$
-                    private static final long serialVersionUID = 1L;
+            private static final long serialVersionUID = 1L;
 
-                    // inline click-listener
-                    @Override
-					public void buttonClick(ClickEvent event) {
-                        // close the window by removing it from the main window
-                        restart();
-                        message.setValue(Messages.getString("Restart.InProgress", getApplication().getLocale()));//$NON-NLS-1$
-                        // getApplication().getMainWindow().removeWindow(subwindow);
-                        // close.setVisible(false);
-                        ok.setVisible(false);
-                        close.setCaption(Messages.getString("Common.done", getApplication().getLocale()));
+            // inline click-listener
+            @Override
+            public void buttonClick(ClickEvent event) {
+                // close the window by removing it from the main window
+                restart();
+                message.setValue(Messages.getString("Restart.InProgress", getApplication().getLocale()));//$NON-NLS-1$
+                // getApplication().getMainWindow().removeWindow(subwindow);
+                // close.setVisible(false);
+                ok.setVisible(false);
+                close.setCaption(Messages.getString("Common.done", getApplication().getLocale()));
 
-                    }
-                });
+            }
+        });
 
         // The components added to the window are actually added to the window's
         // layout; you can use either. Alignments are set using the layout
@@ -609,12 +605,12 @@ public class Menu extends MenuBar implements Serializable {
     }
 
     public void closeLoadComputerWindow() {
-    	LoadWindow loadComputerWindow2 = getLoadComputerWindow();
-    	getApplication().getMainWindow().removeWindow(loadComputerWindow2);
+        LoadWindow loadComputerWindow2 = getLoadComputerWindow();
+        getApplication().getMainWindow().removeWindow(loadComputerWindow2);
         loadComputerWindow2 = getLoadComputerWindow();
-		if (loadComputerWindow2 != null) {
-			loadComputerWindow2.close();			
-		}
+        if (loadComputerWindow2 != null) {
+            loadComputerWindow2.close();
+        }
         setLoadComputerWindow(null);
     }
 
@@ -632,7 +628,7 @@ public class Menu extends MenuBar implements Serializable {
     public LoadWindow getLoadComputerWindow() {
         return loadComputerWindow;
     }
-    
+
     /**
      * @param competitionApplication
      * @param locale
@@ -640,31 +636,32 @@ public class Menu extends MenuBar implements Serializable {
     private MenuItem createAboutMenuItem(MenuBar menu, final CompetitionApplication competitionApplication,
             final Locale locale) {
         return menu.addItem(Messages.getString("About.menu", CompetitionApplication.getCurrentLocale()), //$NON-NLS-1$
-            null,
-            new Command() {
-                private static final long serialVersionUID = 5577281157225515360L;
+                null,
+                new Command() {
+                    private static final long serialVersionUID = 5577281157225515360L;
 
-                @Override
-                public void menuSelected(MenuItem selectedItem) {
-                    if (getLoadComputerWindow() == null) {
-                        displayAboutWindow();
+                    @Override
+                    public void menuSelected(MenuItem selectedItem) {
+                        if (getLoadComputerWindow() == null) {
+                            displayAboutWindow();
+                        }
                     }
-                }
 
-				private void displayAboutWindow() {
-					Window window = new Window();
-					window.setIcon(new ThemeResource("icons/16/appIcon.png"));
-					ServletContext servletContext = CompetitionApplication.getCurrent().getServletContext();
-					String name = servletContext.getInitParameter("appName");
-					String version = servletContext.getInitParameter("appVersion");
-					String url = servletContext.getInitParameter("appUrl");
-					window.setCaption(" "+name);
-					String pattern = Messages.getString("About.message", CompetitionApplication.getCurrentLocale());
-					String message = MessageFormat.format(pattern, version, "Jean-François Lamy", url, url, "lamyjeanfrancois@gmail.com");
-					window.addComponent(new Label(message, Label.CONTENT_XHTML));
-					getApplication().getMainWindow().addWindow(window);
-					window.center();
-				}
-            });
+                    private void displayAboutWindow() {
+                        Window window = new Window();
+                        window.setIcon(new ThemeResource("icons/16/appIcon.png"));
+                        ServletContext servletContext = CompetitionApplication.getCurrent().getServletContext();
+                        String name = servletContext.getInitParameter("appName");
+                        String version = servletContext.getInitParameter("appVersion");
+                        String url = servletContext.getInitParameter("appUrl");
+                        window.setCaption(" " + name);
+                        String pattern = Messages.getString("About.message", CompetitionApplication.getCurrentLocale());
+                        String message = MessageFormat.format(pattern, version, "Jean-François Lamy", url, url,
+                                "lamyjeanfrancois@gmail.com");
+                        window.addComponent(new Label(message, Label.CONTENT_XHTML));
+                        getApplication().getMainWindow().addWindow(window);
+                        window.center();
+                    }
+                });
     }
 }
