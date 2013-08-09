@@ -1211,10 +1211,12 @@ public class Lifter implements MethodEventSource, Notifier {
         
         Integer birthDate2 = getYearOfBirth();
         
-        return (birthDate2 < threshold)
-            || membership.equalsIgnoreCase(Messages.getString("Lifter.InvitedAbbreviated", locale)) //$NON-NLS-1$
-        // || !getTeamMember()
-        ;
+        return
+                birthDate2 == null
+                || (birthDate2 < threshold)
+                || membership.equalsIgnoreCase(Messages.getString("Lifter.InvitedAbbreviated", locale)) //$NON-NLS-1$
+                // || !getTeamMember()
+                ;
     }
 
     public void removeAllListeners() {
