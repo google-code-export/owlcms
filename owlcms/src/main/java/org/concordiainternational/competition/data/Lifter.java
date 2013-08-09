@@ -582,7 +582,7 @@ public class Lifter implements MethodEventSource, Notifier {
     }
     
     /**
-     * @return the birthDate
+     * @return the year of birth (null if both birthDate and fullBirthDate are null)
      */
     public Integer getYearOfBirth() {
         if (fullBirthDate == null) {
@@ -590,7 +590,8 @@ public class Lifter implements MethodEventSource, Notifier {
         } else if (birthDateAsLocalDate != null) {
             return birthDateAsLocalDate.getYear();
         } else {
-            return null;
+            setAllBirthDates(fullBirthDate);
+            return birthDate;
         }
     };
     
@@ -1208,7 +1209,7 @@ public class Lifter implements MethodEventSource, Notifier {
         final Locale locale = CompetitionApplication.getCurrentLocale();
         int threshold = Competition.invitedIfBornBefore();
         
-        Integer birthDate2 = getBirthDate();
+        Integer birthDate2 = getYearOfBirth();
         
         return (birthDate2 < threshold)
             || membership.equalsIgnoreCase(Messages.getString("Lifter.InvitedAbbreviated", locale)) //$NON-NLS-1$
