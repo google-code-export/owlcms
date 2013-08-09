@@ -566,11 +566,16 @@ public class Lifter implements MethodEventSource, Notifier {
      */
     public Date getFullBirthDate() {
         if (fullBirthDate != null) { 
+            if (birthDateAsLocalDate == null) {
+                setAllBirthDates(fullBirthDate);
+            }
             return fullBirthDate;
-        } else {
+        } else if (birthDate != null) {
+            // do not store the faked full birth date.
             return new DateTime(birthDate,1,1,0,0).toDate();
+        } else {
+            return null;
         }
-
     };
     
     /**
