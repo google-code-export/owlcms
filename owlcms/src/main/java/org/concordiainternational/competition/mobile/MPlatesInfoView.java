@@ -231,6 +231,9 @@ public class MPlatesInfoView extends VerticalLayout implements
 		doDisplay();
 	}
 
-
+    @Override
+    public boolean needsBlack() {
+        return false;
+    }
 
 }

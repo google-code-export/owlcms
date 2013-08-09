@@ -32,7 +32,7 @@ import org.concordiainternational.competition.ui.CompetitionApplicationComponent
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
-import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
+import org.concordiainternational.competition.ui.InteractionNotificationReason;
 import org.concordiainternational.competition.ui.UserActions;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
@@ -61,7 +61,8 @@ public class ResultFrame extends VerticalLayout implements
 		MessageDisplayListener,
 		Window.CloseListener, 
 		URIHandler,
-		DecisionEventListener
+		DecisionEventListener,
+		Stylable
 		{ 
 	
     private static final String ATTEMPT_WIDTH = "6em";
@@ -253,11 +254,11 @@ public class ResultFrame extends VerticalLayout implements
         } catch (UnsupportedEncodingException e1) {
             throw new RuntimeException(e1);
         }
-        String styleSheet = getStylesheet();
+        String styleSheet = getStylesheetName();
         if (styleSheet == null || styleSheet.isEmpty()) {
         	styleSheet = "";
         } else {
-        	styleSheet = "&style=" + getStylesheet() + ".css";
+        	styleSheet = "&style=" + getStylesheetName() + ".css";
         }
         final String spec = appUrlString + urlString + encodedPlatformName + styleSheet +"&time=" + System.currentTimeMillis(); //$NON-NLS-1$
         try {
@@ -395,7 +396,7 @@ public class ResultFrame extends VerticalLayout implements
     }
 
     @Override
-    public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
         timeDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
     }
 
@@ -433,7 +434,7 @@ public class ResultFrame extends VerticalLayout implements
     }
 
     @Override
-    public void pause(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void pause(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
     }
 
     @Override
@@ -441,7 +442,7 @@ public class ResultFrame extends VerticalLayout implements
     }
 
     @Override
-    public void stop(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void stop(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
     }
 
     /* (non-Javadoc)
@@ -618,11 +619,16 @@ public class ResultFrame extends VerticalLayout implements
 	}
 
 
-	public void setStylesheet(String stylesheetName) {
+	/* (non-Javadoc)
+     * @see org.concordiainternational.competition.ui.components.Stylable#setStylesheet(java.lang.String)
+     */
+    @Override
+    public void setStylesheetName(String stylesheetName) {
 		this.stylesheetName = stylesheetName;
 	}
 	
-    private String getStylesheet() {
+    @Override
+    public String getStylesheetName() {
 		return stylesheetName;
 	}
 
@@ -678,4 +684,13 @@ public class ResultFrame extends VerticalLayout implements
 	}
 
 
+    @Override
+    public void showInteractionNotification(CompetitionApplication originatingApp, InteractionNotificationReason reason) {
+        // ignored.
+    }
+
+    @Override
+    public boolean needsBlack() {
+        return false;
+    }
 }

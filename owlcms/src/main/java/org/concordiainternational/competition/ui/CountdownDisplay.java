@@ -225,7 +225,7 @@ URIHandler
     }
 
     @Override
-    public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
         pushTime(timeRemaining);
     }
 
@@ -265,7 +265,7 @@ URIHandler
     }
 
     @Override
-    public void pause(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void pause(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
     }
 
     @Override
@@ -273,7 +273,7 @@ URIHandler
     }
 
     @Override
-    public void stop(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void stop(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
     }
 
 
@@ -640,5 +640,15 @@ URIHandler
         app.push();
     }
 
+
+    @Override
+    public void showInteractionNotification(CompetitionApplication originatingApp,InteractionNotificationReason reason) {
+        // do nothing - notifications are meant for technical officials
+    }
+
+    @Override
+    public boolean needsBlack() {
+        return true;
+    }
 
 }

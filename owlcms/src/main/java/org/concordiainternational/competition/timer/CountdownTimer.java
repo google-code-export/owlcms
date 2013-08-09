@@ -15,7 +15,7 @@ import java.util.Timer;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.LifterInfo;
-import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
+import org.concordiainternational.competition.ui.InteractionNotificationReason;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,11 +113,11 @@ public class CountdownTimer implements Serializable {
      * Stop the timer, without clearing the associated lifter.
      */
     public void pause() {
-    	pause(TimeStoppedNotificationReason.UNKNOWN);
+    	pause(InteractionNotificationReason.UNKNOWN);
     }
     
 	@SuppressWarnings("unchecked")
-	public void pause(TimeStoppedNotificationReason reason) {
+	public void pause(InteractionNotificationReason reason) {
         logger.debug("enter pause {} {}", getTimeRemaining()); //$NON-NLS-1$
         if (countdownTask != null) {
             setTimeRemaining((int) countdownTask.getBestTimeRemaining());
@@ -164,10 +164,10 @@ public class CountdownTimer implements Serializable {
      * Stop the timer, clear the associated lifter.
      */
     public void stop() {
-    	stop(TimeStoppedNotificationReason.UNKNOWN);
+    	stop(InteractionNotificationReason.UNKNOWN);
     }
     
-    public void stop(TimeStoppedNotificationReason reason) {
+    public void stop(InteractionNotificationReason reason) {
         logger.debug("enter stop {} {}", getTimeRemaining()); //$NON-NLS-1$
         if (timer != null) timer.cancel();
         timer = null;
@@ -203,10 +203,10 @@ public class CountdownTimer implements Serializable {
      * so that the time is reset correctly.
      */
     public void forceTimeRemaining(int remainingTime) {
-    	forceTimeRemaining(remainingTime, TimeStoppedNotificationReason.UNKNOWN);
+    	forceTimeRemaining(remainingTime, InteractionNotificationReason.UNKNOWN);
     }
     
-    public void forceTimeRemaining(int remainingTime,TimeStoppedNotificationReason reason) {
+    public void forceTimeRemaining(int remainingTime,InteractionNotificationReason reason) {
         if (timer != null) timer.cancel();
         timer = null;
         if (countdownTask != null) {
@@ -262,6 +262,14 @@ public class CountdownTimer implements Serializable {
 
     public int getTimeRemaining() {
         return timeRemaining;
+    }
+    
+    public Long getRunningTimeRemaining() {
+        if (countdownTask != null) {
+            return countdownTask.getBestTimeRemaining();
+        } else {
+            return null;
+        }  
     }
 
     /**

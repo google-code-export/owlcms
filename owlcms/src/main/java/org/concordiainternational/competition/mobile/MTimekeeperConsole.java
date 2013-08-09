@@ -19,7 +19,7 @@ import org.concordiainternational.competition.ui.CompetitionApplicationComponent
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
-import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
+import org.concordiainternational.competition.ui.InteractionNotificationReason;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
@@ -533,7 +533,7 @@ URIHandler {
 
 
     @Override
-    public void pause(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void pause(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {
             enableStopStart(false);
@@ -541,7 +541,7 @@ URIHandler {
                 showTimerDisplay(false);
             }
         }
-        showNotification(originatingApp, reason);
+        showInteractionNotification(originatingApp, reason);
         app.push();
     }
 
@@ -563,7 +563,7 @@ URIHandler {
 
 
     @Override
-    public void stop(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void stop(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {
             enableStopStart(false);
@@ -571,13 +571,13 @@ URIHandler {
                 showTimerDisplay(false);
             }
         }
-        showNotification(originatingApp, reason);
+        showInteractionNotification(originatingApp, reason);
         app.push();
     }
 
 
     @Override
-    public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
         
         logger.debug("forceTimeRemaining {}", timeRemaining);
         if (timerDisplay == null) return;
@@ -588,7 +588,7 @@ URIHandler {
             enableStopStart(false);
             setBlocked(false);
         }
-        showNotification(originatingApp, reason);
+        showInteractionNotification(originatingApp, reason);
         app.push();
     }
 
@@ -600,12 +600,6 @@ URIHandler {
 
 
 
-    private void showNotification(CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
-        // do nothing
-        
-    }
-
-
 
     boolean isBlocked() {
         return this.blocked;
@@ -615,6 +609,18 @@ URIHandler {
 
     void setBlocked(boolean blocked) {
         this.blocked = blocked;
+    }
+
+
+
+    @Override
+    public void showInteractionNotification(CompetitionApplication originatingApp, InteractionNotificationReason reason) {
+        // TODO Auto-generated method stub
+    }
+    
+    @Override
+    public boolean needsBlack() {
+        return false;
     }
 
 
