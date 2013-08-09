@@ -789,9 +789,6 @@ public class CompetitionApplication extends Application implements HbnSessionMan
             this.components.currentView = c;
     		final Menu menu = this.components.menu;
     		if (menu != null) menu.setVisible(needsMenu);
-    		if (c.needsBlack()) {
-    		    this.getMainWindow().setStyleName(Reindeer.LAYOUT_BLACK);
-    		}
             this.components.mainPanel.setContent(c);
         } else {
         	getMobileMenu().setVisible(needsMenu);
@@ -800,6 +797,10 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         	mobilePanel.setContent(c);
         	mainLayout.setExpandRatio(getMobileMenu(),0);
         	mainLayout.setExpandRatio(mobilePanel,100);
+        }
+        logger.info("setting to black {} {}", c.needsBlack(), c.getClass().getSimpleName());
+        if (c.needsBlack()) {
+            this.getMainWindow().setStyleName(Reindeer.LAYOUT_BLACK);
         }
     }
     

@@ -280,41 +280,48 @@ button.v-button-failedLift span {
 
 
 
-/*
-body.v-generated-body.v-sa.v-ch.v-webkit{
+
+body.v-generated-body.v-sa.v-ch.v-webkit {
 	background: black;
 }
-.v-app {
+.black .v-app {
 	background: black;
 }
-.v-sa .v-panel-content, .v-ff3 .v-panel-content {
+.black .v-sa .v-panel-content, .v-ff3 .v-panel-content {
 	border-style: none;
 	border-color: black;
 	border: 0px solid black;
 }
-.v-sa .v-panel-content > div.blendWithBackground {
+.black .v-panel-content > div {
 	background: black;
 	border-color: black;
 	border: 0px solid black;
 }
-.v-panel-content > div.blendWithBackground {
+.black .v-panel-content {
 	background: black;
 	border-color: black;
 	border: 0px solid black;
 }
-div.blendWithBackground > div {
-	background: black;
-	border-color: black;
-}
-div.v-panel-deco {
-	border-color: black;
-}
-.v-sa .v-panel-deco {
+
+.black .v-panel-deco {
 	border-color: black;
 	background: black;
 	border-top: 0px solid black;
+	border: 0px solid black;
 }
-*/
+.black div.v-panel-deco {
+	border-color: black;
+	background: black;
+	border-top: 0px solid black;
+	border: 0px solid black;
+}
+.black .v-sa .v-panel-deco {
+	border-color: black;
+	background: black;
+	border-top: 0px solid black;
+	border: 0px solid black;;
+}
+
 
 .newAttemptBoard {
 	background-color: black;
