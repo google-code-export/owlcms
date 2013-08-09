@@ -260,8 +260,8 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
      */
     @Override
     public void updateEvent(final SessionData.UpdateEvent updateEvent) {
-    	// FIXME: this throws an IllegalStateException
-    	// Strange because this pattern is used everywhere else
+    	// TODO: Fix ResultList to update automatically
+    	// this causes an IllegalStateException -- why?
 //        new Thread(new Runnable() {
 //			@Override
 //			public void run() {
@@ -406,5 +406,10 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
 	public ResultList getResultList() {
 		return resultList;
 	}
+	
+    @Override
+    public boolean needsBlack() {
+        return false;
+    }
 
 }

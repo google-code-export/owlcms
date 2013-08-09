@@ -407,6 +407,9 @@ public class OJuryConsole extends VerticalLayout implements DecisionEventListene
 	public void windowClose(CloseEvent e) {
 		unregisterAsListener();
 	}
-
+    @Override
+    public boolean needsBlack() {
+        return false;
+    }
 
 }

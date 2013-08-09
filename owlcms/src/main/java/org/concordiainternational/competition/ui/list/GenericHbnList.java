@@ -150,4 +150,6 @@ public abstract class GenericHbnList<T> extends GenericList<T> {
         super.positionTable();
         table.setSelectable(false);
     }
+    
+
 }

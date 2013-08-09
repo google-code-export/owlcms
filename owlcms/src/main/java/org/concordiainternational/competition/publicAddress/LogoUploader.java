@@ -186,5 +186,10 @@ Upload.Receiver, ApplicationView {
 		registerAsListener();
 		return null;
 	}
+	
+    @Override
+    public boolean needsBlack() {
+        return false;
+    }
 
 }

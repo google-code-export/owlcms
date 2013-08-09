@@ -10,7 +10,7 @@ package org.concordiainternational.competition.decision;
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.mobile.IRefereeConsole;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
+import org.concordiainternational.competition.ui.InteractionNotificationReason;
 
 public interface IDecisionController {
 
@@ -50,7 +50,7 @@ public interface IDecisionController {
 
 	public abstract void forceTimeRemaining(int startTime,
 			CompetitionApplication originatingApp,
-			TimeStoppedNotificationReason reason);
+			InteractionNotificationReason reason);
 
 	public abstract void initialWarning(int timeRemaining);
 
@@ -59,12 +59,12 @@ public interface IDecisionController {
 	public abstract void normalTick(int timeRemaining);
 
 	public abstract void pause(int timeRemaining, CompetitionApplication app,
-			TimeStoppedNotificationReason reason);
+			InteractionNotificationReason reason);
 
 	public abstract void start(int timeRemaining);
 
 	public abstract void stop(int timeRemaining, CompetitionApplication app,
-			TimeStoppedNotificationReason reason);
+			InteractionNotificationReason reason);
 
 	public abstract void addListener(IRefereeConsole refereeConsole,
 			int refereeIndex);
