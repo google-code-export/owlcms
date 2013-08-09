@@ -8,7 +8,7 @@
 package org.concordiainternational.competition.timer;
 
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
+import org.concordiainternational.competition.ui.InteractionNotificationReason;
 
 public interface CountdownTimerListener {
 
@@ -27,7 +27,7 @@ public interface CountdownTimerListener {
      * @param reason 
      * @param competitionApplication 
      */
-    void pause(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason);
+    void pause(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason);
 
     void start(int timeRemaining);
 
@@ -36,13 +36,19 @@ public interface CountdownTimerListener {
      * 
      * @param timeRemaining
      */
-    void stop(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason);
+    void stop(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason);
 
     /**
      * someone is forcing the amount of time.
      * 
      * @param startTime
      */
-    void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason);
+    void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, InteractionNotificationReason reason);
+    
+    /**
+     * Show a notification without stopping the timer
+     * @param reason
+     */
+    void showInteractionNotification(CompetitionApplication originatingApp, InteractionNotificationReason reason);
 
 }

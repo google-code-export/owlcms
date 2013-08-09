@@ -68,6 +68,7 @@ import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.Notification;
+import com.vaadin.ui.themes.Reindeer;
 
 public class CompetitionApplication extends Application implements HbnSessionManager, UserActions, Serializable  {
     private static final long serialVersionUID = -1774806616519381075L;
@@ -788,6 +789,9 @@ public class CompetitionApplication extends Application implements HbnSessionMan
             this.components.currentView = c;
     		final Menu menu = this.components.menu;
     		if (menu != null) menu.setVisible(needsMenu);
+    		if (c.needsBlack()) {
+    		    this.getMainWindow().setStyleName(Reindeer.LAYOUT_BLACK);
+    		}
             this.components.mainPanel.setContent(c);
         } else {
         	getMobileMenu().setVisible(needsMenu);

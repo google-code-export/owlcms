@@ -17,7 +17,7 @@ import org.concordiainternational.competition.mobile.IRefereeConsole;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.SessionData;
-import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
+import org.concordiainternational.competition.ui.InteractionNotificationReason;
 import org.concordiainternational.competition.utils.EventHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -329,7 +329,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 	 * @see org.concordiainternational.competition.decision.IDecisionController#forceTimeRemaining(int, org.concordiainternational.competition.ui.CompetitionApplication, org.concordiainternational.competition.ui.TimeStoppedNotificationReason)
 	 */
 	@Override
-    public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
     }
 
     /* (non-Javadoc)
@@ -357,7 +357,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 	 * @see org.concordiainternational.competition.decision.IDecisionController#pause(int, org.concordiainternational.competition.ui.CompetitionApplication, org.concordiainternational.competition.ui.TimeStoppedNotificationReason)
 	 */
 	@Override
-    public void pause(int timeRemaining, CompetitionApplication app, TimeStoppedNotificationReason reason) {
+    public void pause(int timeRemaining, CompetitionApplication app, InteractionNotificationReason reason) {
     }
 
     /* (non-Javadoc)
@@ -371,7 +371,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 	 * @see org.concordiainternational.competition.decision.IDecisionController#stop(int, org.concordiainternational.competition.ui.CompetitionApplication, org.concordiainternational.competition.ui.TimeStoppedNotificationReason)
 	 */
 	@Override
-    public void stop(int timeRemaining, CompetitionApplication app, TimeStoppedNotificationReason reason) {
+    public void stop(int timeRemaining, CompetitionApplication app, InteractionNotificationReason reason) {
     }
 
 	/* (non-Javadoc)
@@ -402,4 +402,9 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 	public Lifter getLifter() {
 		return groupData.getCurrentLifter();
 	}
+
+    @Override
+    public void showInteractionNotification(CompetitionApplication originatingApp,InteractionNotificationReason reason) {
+        // ignored.
+    }
 }

@@ -270,5 +270,8 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 		return null;
 	}
 
-    
+    @Override
+    public boolean needsBlack() {
+        return true;
+    }    
 }

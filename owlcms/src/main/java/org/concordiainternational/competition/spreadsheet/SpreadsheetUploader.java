@@ -248,5 +248,9 @@ Upload.Receiver, ApplicationView {
 		return null;
 	}
 
+    @Override
+    public boolean needsBlack() {
+        return false;
+    }
 
 }

@@ -279,20 +279,8 @@ button.v-button-failedLift span {
 }
 
 
-.newAttemptBoard {
-	background-color: black;
-	color: white;
-}
 
-.bolded { 
-	font-weight: bold;
-}
-
-.newAttemptBoard .v-caption-loadChart .v-captiontext {
-	display: none;
-}
-
-
+/*
 body.v-generated-body.v-sa.v-ch.v-webkit{
 	background: black;
 }
@@ -326,11 +314,24 @@ div.v-panel-deco {
 	background: black;
 	border-top: 0px solid black;
 }
+*/
+
+.newAttemptBoard {
+	background-color: black;
+	color: white;
+}
+
+.bolded { 
+	font-weight: bold;
+}
+
+.newAttemptBoard .v-caption-loadChart .v-captiontext {
+	display: none;
+}
 
 .newAttemptBoard .intermission {
 	color: lime;
 }
-
 
 .newAttemptBoard .largeCountdown {
 	line-height: 1em;
