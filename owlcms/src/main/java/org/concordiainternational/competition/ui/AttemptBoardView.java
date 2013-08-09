@@ -492,7 +492,7 @@ public class AttemptBoardView extends VerticalLayout implements
     }
 
     @Override
-    public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
         if (!intermissionTimerShown) {
             showTimeRemaining(timeRemaining);
         }
@@ -541,7 +541,7 @@ public class AttemptBoardView extends VerticalLayout implements
     }
 
     @Override
-    public void pause(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void pause(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
         showTimeRemaining(timeRemaining);
     }
 
@@ -551,7 +551,7 @@ public class AttemptBoardView extends VerticalLayout implements
     }
 
     @Override
-    public void stop(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void stop(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
         showTimeRemaining(timeRemaining);
     }
 
@@ -887,4 +887,13 @@ public class AttemptBoardView extends VerticalLayout implements
         return this.stylesheetName;
     }
 
+    @Override
+    public void showInteractionNotification(CompetitionApplication originatingApp, InteractionNotificationReason reason) {
+        // do nothing - notifications are meant for technical officials
+    }
+
+    @Override
+    public boolean needsBlack() {
+        return true;
+    }
 }

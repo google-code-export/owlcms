@@ -235,7 +235,6 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
     }
 
     private void translateSheets(Workbook workbook) {
-        //TODO: also set headers and footers
         int nbSheets = workbook.getNumberOfSheets();
         for (int sheetIndex = 0; sheetIndex < nbSheets; sheetIndex++) {
             Sheet curSheet = workbook.getSheetAt(sheetIndex);

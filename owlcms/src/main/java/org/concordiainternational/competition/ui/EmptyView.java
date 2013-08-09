@@ -57,5 +57,10 @@ public class EmptyView extends VerticalLayout implements ApplicationView {
 		registerAsListener();
 		return null;
 	}
+	
+    @Override
+    public boolean needsBlack() {
+        return false;
+    }
 
 }

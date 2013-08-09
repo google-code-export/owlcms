@@ -271,7 +271,6 @@ public class Menu extends MenuBar implements Serializable {
      * @param competitionApplication
      * @param locale
      * @param style
-     *            TODO
      */
     private MenuItem createPublicAttemptBoardMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
             final Locale locale, final String style) {
@@ -295,7 +294,6 @@ public class Menu extends MenuBar implements Serializable {
      * @param competitionApplication
      * @param locale
      * @param style
-     *            TODO
      */
     private MenuItem createLifterAttemptBoardMenuItem(MenuItem projectors, final CompetitionApplication competitionApplication,
             final Locale locale, final String style) {

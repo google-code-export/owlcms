@@ -408,5 +408,8 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
 		unregisterAsListener();
 	}
 
-
+    @Override
+    public boolean needsBlack() {
+        return false;
+    }
 }

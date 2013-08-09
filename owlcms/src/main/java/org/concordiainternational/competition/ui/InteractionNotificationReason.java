@@ -7,7 +7,7 @@
  */
 package org.concordiainternational.competition.ui;
 
-public enum TimeStoppedNotificationReason {
+public enum InteractionNotificationReason {
 	UNKNOWN,
 	STOP_START_BUTTON,
 	FORCE_AS_CURRENT,

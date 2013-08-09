@@ -16,7 +16,7 @@ import org.concordiainternational.competition.mobile.IRefereeConsole;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.SessionData;
-import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
+import org.concordiainternational.competition.ui.InteractionNotificationReason;
 import org.concordiainternational.competition.utils.EventHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -241,7 +241,7 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
     }
 
     @Override
-    public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
     }
 
     @Override
@@ -257,7 +257,7 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
     }
 
     @Override
-    public void pause(int timeRemaining, CompetitionApplication app, TimeStoppedNotificationReason reason) {
+    public void pause(int timeRemaining, CompetitionApplication app, InteractionNotificationReason reason) {
     }
 
     @Override
@@ -265,7 +265,7 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
     }
 
     @Override
-    public void stop(int timeRemaining, CompetitionApplication app, TimeStoppedNotificationReason reason) {
+    public void stop(int timeRemaining, CompetitionApplication app, InteractionNotificationReason reason) {
     }
 
 	@Override
@@ -295,5 +295,11 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
 	public Lifter getLifter() {
 		return null;
 	}
+
+
+    @Override
+    public void showInteractionNotification(CompetitionApplication originatingApp,InteractionNotificationReason reason) {
+        // ignored. 
+    }
 
 }
