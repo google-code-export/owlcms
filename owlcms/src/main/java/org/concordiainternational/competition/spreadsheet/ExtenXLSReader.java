@@ -347,12 +347,12 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
 
     @Override
     public void init(ExtenXLSReader ish) {
-        // do nothing.
+        // Nothing to do in this helper class.
     }
 
     @Override
     public List<Lifter> getLifters(boolean excludeNotWeighed) {
-        // TODO Auto-generated method stub
+        // Nothing to do in this helper class.
         return null;
     }
 

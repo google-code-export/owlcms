@@ -235,6 +235,11 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
 		registerAsListener();
 		return null;
 	}
+	
+    @Override
+    public boolean needsBlack() {
+        return false;
+    }
 
     
 }

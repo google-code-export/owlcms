@@ -360,4 +360,7 @@ public abstract class GenericList<T> extends VerticalLayout {
         editingWindow.center();
     }
 
+    public boolean needsBlack() {
+        return false;
+    }
 }

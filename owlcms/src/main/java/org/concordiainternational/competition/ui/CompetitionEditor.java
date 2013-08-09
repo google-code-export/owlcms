@@ -418,4 +418,8 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
 		return null;
 	}
 
+    @Override
+    public boolean needsBlack() {
+        return false;
+    }
 }

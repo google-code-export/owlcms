@@ -535,7 +535,7 @@ public class LifterInfo extends VerticalLayout implements
     }
 
     @Override
-    public void forceTimeRemaining(int remaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void forceTimeRemaining(int remaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
         if (timerDisplay == null) return;
         prevTimeRemaining = remaining;
 
@@ -545,13 +545,13 @@ public class LifterInfo extends VerticalLayout implements
             timerControls.enableStopStart(false);
             setBlocked(false);
         }
-        showNotification(originatingApp, reason);
+        showInteractionNotification(originatingApp, reason);
         app.push();
 
     }
 
     @Override
-    public void pause(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void pause(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
     	
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {
@@ -562,7 +562,7 @@ public class LifterInfo extends VerticalLayout implements
 	            timerDisplay.setEnabled(false);
 	        }
         }
-        showNotification(originatingApp, reason);
+        showInteractionNotification(originatingApp, reason);
         app.push();
     }
 
@@ -574,7 +574,8 @@ public class LifterInfo extends VerticalLayout implements
 	 * @param originatingApp
 	 * @param reason
 	 */
-	private void showNotification(CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+	@Override
+    public void showInteractionNotification(CompetitionApplication originatingApp, InteractionNotificationReason reason) {
 
 		if (isTop() && app != originatingApp) {
 			CompetitionApplication receivingApp = app;
@@ -587,7 +588,7 @@ public class LifterInfo extends VerticalLayout implements
 				traceBack(originatingApp);
 			}
         	
-			if (receivingApp.components.currentView instanceof AnnouncerView && reason != TimeStoppedNotificationReason.UNKNOWN) {
+			if (receivingApp.components.currentView instanceof AnnouncerView && reason != InteractionNotificationReason.UNKNOWN) {
 				AnnouncerView receivingView = (AnnouncerView) receivingApp.components.currentView;
 				ApplicationView originatingAppView = originatingApp.components.currentView;
 				if (originatingAppView instanceof AnnouncerView) {
@@ -627,7 +628,7 @@ public class LifterInfo extends VerticalLayout implements
 
 
     @Override
-    public void stop(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void stop(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
 
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {
@@ -636,7 +637,7 @@ public class LifterInfo extends VerticalLayout implements
 	            timerDisplay.setEnabled(false);
 	        }
         }
-        showNotification(originatingApp, reason);
+        showInteractionNotification(originatingApp, reason);
         app.push();
     }
 
@@ -720,13 +721,13 @@ public class LifterInfo extends VerticalLayout implements
 				switch (updateEvent.getType()) {
 				case SHOW:
 					 shown = true;
-					 displayNotification(updateEvent);
+					 displayDecisionNotification(updateEvent);
 					 if (timerControls != null) { timerControls.hideLiftControls(); }
 					 break;
 					 // go on to UPDATE;
 				case UPDATE:
 					if (shown) {
-						displayNotification(updateEvent);
+						displayDecisionNotification(updateEvent);
 					}
 					break;
 				case RESET:
@@ -740,7 +741,7 @@ public class LifterInfo extends VerticalLayout implements
 			/**
 			 * @param newEvent
 			 */
-			protected void displayNotification(final DecisionEvent newEvent) {
+			protected void displayDecisionNotification(final DecisionEvent newEvent) {
 				synchronized (app) {
 					final ApplicationView currentView = app.components.currentView;
 					if (currentView instanceof AnnouncerView) {
@@ -874,8 +875,6 @@ public class LifterInfo extends VerticalLayout implements
 		if (masterApplication == app && isTop()) {
 			// down signal (for buzzer)
 			groupData.getRefereeDecisionController().addListener(this);
-			// timer will buzz on this console
-			// TODO: now obsolete? - javax.sound is used from server
 			if (timer != null) timer.setMasterBuzzer(this);
         }
 		// timer countdown events; bottom information does not show timer.
@@ -945,6 +944,9 @@ public class LifterInfo extends VerticalLayout implements
             app.getMainWindow().showNotification(notification);
         }
     }
-
-
+    
+    @Override
+    public boolean needsBlack() {
+        return false;
+    }
 }

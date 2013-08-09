@@ -24,6 +24,11 @@ public interface ApplicationView extends ComponentContainer, CloseListener, URIH
      * @return true if the menu bar is needed
      */
     public boolean needsMenu();
+    
+    /**
+     * @return true if the window uses a black background
+     */
+    public boolean needsBlack();
 
     /**
      */

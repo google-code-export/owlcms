@@ -32,7 +32,7 @@ import org.concordiainternational.competition.ui.CompetitionApplicationComponent
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
-import org.concordiainternational.competition.ui.TimeStoppedNotificationReason;
+import org.concordiainternational.competition.ui.InteractionNotificationReason;
 import org.concordiainternational.competition.ui.UserActions;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
@@ -396,7 +396,7 @@ public class ResultFrame extends VerticalLayout implements
     }
 
     @Override
-    public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
         timeDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
     }
 
@@ -434,7 +434,7 @@ public class ResultFrame extends VerticalLayout implements
     }
 
     @Override
-    public void pause(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void pause(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
     }
 
     @Override
@@ -442,7 +442,7 @@ public class ResultFrame extends VerticalLayout implements
     }
 
     @Override
-    public void stop(int timeRemaining, CompetitionApplication originatingApp, TimeStoppedNotificationReason reason) {
+    public void stop(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
     }
 
     /* (non-Javadoc)
@@ -684,4 +684,13 @@ public class ResultFrame extends VerticalLayout implements
 	}
 
 
+    @Override
+    public void showInteractionNotification(CompetitionApplication originatingApp, InteractionNotificationReason reason) {
+        // ignored.
+    }
+
+    @Override
+    public boolean needsBlack() {
+        return false;
+    }
 }

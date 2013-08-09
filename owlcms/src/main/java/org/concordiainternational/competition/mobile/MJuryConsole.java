@@ -449,6 +449,9 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 		unregisterAsListener();
 	}
 
-
+    @Override
+    public boolean needsBlack() {
+        return false;
+    }
 
 }

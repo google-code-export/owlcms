@@ -527,7 +527,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
 
 
 
-	public void displayNotification(Mode mode2, TimeStoppedNotificationReason reason) {
+	public void displayNotification(Mode mode2, InteractionNotificationReason reason) {
 		Locale locale = app.getLocale();
 		String message;
 		String reasonDetails = Messages.getString("TimeStoppedNotificationReason."+reason.name(),locale);
@@ -658,5 +658,11 @@ public class AnnouncerView extends VerticalSplitPanel implements
 
     public Mode getMode() {
         return mode;
+    }
+
+
+    @Override
+    public boolean needsBlack() {
+        return false;
     }
 }

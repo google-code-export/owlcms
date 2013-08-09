@@ -283,7 +283,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
                     //&& timer2.isRunning()
                     ) {
             	if (currentLifter == priorLifter && priorRequestNum == currentRequestNum && priorRequest != currentRequest) {
-            		timer2.pause(TimeStoppedNotificationReason.CURRENT_LIFTER_CHANGE);
+            		timer2.pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE);
             	} else {
             		timer2.pause();
             	}
@@ -444,7 +444,9 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         // announce
         // if so leave it alone.
         final int timeRemaining = getTimer().getTimeRemaining();
-        if (isForcedByTimekeeper() && (timeRemaining == 120000 || timeRemaining == 60000)) {
+        if (getTimer().isRunning()) {
+            logger.info("TIMER RUNNING! call of lifter {} :  - {}ms remaining", lifter, getTimer().getRunningTimeRemaining()); //$NON-NLS-1$
+        } else if (isForcedByTimekeeper() && (timeRemaining == 120000 || timeRemaining == 60000)) {
             setForcedByTimekeeper(true, timeRemaining);
             logger.info("call of lifter {} : {}ms FORCED BY TIMEKEEPER", lifter, timeRemaining); //$NON-NLS-1$
         } else {
@@ -1057,12 +1059,18 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 	synchronized private void timerStoppedByReferee() {
 		CountdownTimer timer2 = getTimer();
 		if (timer2.isRunning()) {
-			timer2.stop(TimeStoppedNotificationReason.REFEREE_DECISION);
+			timer2.stop(InteractionNotificationReason.REFEREE_DECISION);
 		}
 	}
+	
+	
 
     public void setAnnouncerEnabled(boolean b) {
         announcerEnabled = b;
+    }
+    
+    public boolean isAnnounced() {
+        return !announcerEnabled;
     }
 
     /**
@@ -1199,7 +1207,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 		setCurrentSession(this.getCurrentSession());
 		if (isMaster) {
 			// get current platform back from database
-			// TODO: switch to JPA and use entity refresh
+			// Note: should use entity refresh
 			Platform curPlatform = this.getPlatform();
 			if (curPlatform != null) {
 				String platformName = curPlatform.getName();
