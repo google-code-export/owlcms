@@ -112,7 +112,7 @@ public class CompetitionApplicationComponents {
      * 
      */
     private interface CompetitionApplicationComponent {
-        ApplicationView get(boolean initFromFragment, String viewName) ;
+        ApplicationView get(boolean initFromFragment, String viewName, String stylesheet) ;
     }
 
     /**
@@ -122,7 +122,7 @@ public class CompetitionApplicationComponents {
         private CompetitionEditor competitionEditor = null;
 
         @Override
-		public CompetitionEditor get(boolean initFromFragment, String viewName) {
+		public CompetitionEditor get(boolean initFromFragment, String viewName, String stylesheetName) {
             competitionEditor = (new CompetitionEditor(initFromFragment, viewName));
             return competitionEditor;
         }
@@ -135,7 +135,7 @@ public class CompetitionApplicationComponents {
         private PlatformList platformList = null;
 
         @Override
-		public PlatformList get(boolean initFromFragment, String viewName) {
+		public PlatformList get(boolean initFromFragment, String viewName, String stylesheetName) {
             this.platformList = (new PlatformList(initFromFragment, viewName));
             return platformList;
         }
@@ -148,7 +148,7 @@ public class CompetitionApplicationComponents {
         private CategoryList categoryList = null;
 
         @Override
-		public CategoryList get(boolean initFromFragment, String viewName) {
+		public CategoryList get(boolean initFromFragment, String viewName, String stylesheetName) {
             this.categoryList = (new CategoryList(initFromFragment, viewName));
             return categoryList;
         }
@@ -161,7 +161,7 @@ public class CompetitionApplicationComponents {
         private SessionList groupList = null;
 
         @Override
-		public SessionList get(boolean initFromFragment, String viewName) {
+		public SessionList get(boolean initFromFragment, String viewName, String stylesheetName) {
             this.groupList = (new SessionList(initFromFragment, viewName));
             return groupList;
         }
@@ -174,7 +174,7 @@ public class CompetitionApplicationComponents {
         private WeighInList weighInList = null;
 
         @Override
-		public WeighInList get(boolean initFromFragment, String viewName) {
+		public WeighInList get(boolean initFromFragment, String viewName, String stylesheetName) {
             this.weighInList = (new WeighInList(initFromFragment, viewName, false));
             return weighInList;
         }
@@ -187,7 +187,7 @@ public class CompetitionApplicationComponents {
         private CountdownDisplay countdownDisplay = null;
 
         @Override
-		public ApplicationView get(boolean initFromFragment, String viewName) {
+		public ApplicationView get(boolean initFromFragment, String viewName, String stylesheetName) {
             this.countdownDisplay = (new CountdownDisplay(initFromFragment, viewName));
             return countdownDisplay;
         }
@@ -200,7 +200,7 @@ public class CompetitionApplicationComponents {
         private RefereeTesting decisionLights = null;
 
         @Override
-		public ApplicationView get(boolean initFromFragment, String viewName) {
+		public ApplicationView get(boolean initFromFragment, String viewName, String stylesheetName) {
             this.decisionLights = (new RefereeTesting(initFromFragment, viewName, false, false));
             return decisionLights;
         }
@@ -213,7 +213,7 @@ public class CompetitionApplicationComponents {
         private RefereeDecisions juryLights = null;
 
         @Override
-		public ApplicationView get(boolean initFromFragment, String viewName) {
+		public ApplicationView get(boolean initFromFragment, String viewName, String stylesheetName) {
             this.juryLights = (new RefereeDecisions(initFromFragment, viewName, false, true));
             return juryLights;
         }
@@ -231,7 +231,7 @@ public class CompetitionApplicationComponents {
 		}
 
 		@Override
-		public ApplicationView get(boolean initFromFragment, String viewName) {
+		public ApplicationView get(boolean initFromFragment, String viewName, String stylesheetName) {
 			if (mobile) {
 				this.refereeConsole = (new MRefereeConsole(initFromFragment, viewName));
 			} else {
@@ -249,7 +249,7 @@ public class CompetitionApplicationComponents {
         private MTimekeeperConsole timekeeperConsole = null;
 
         @Override
-        public ApplicationView get(boolean initFromFragment, String viewName) {
+        public ApplicationView get(boolean initFromFragment, String viewName, String stylesheetName) {
             this.timekeeperConsole = (new MTimekeeperConsole(initFromFragment, viewName));
             return (ApplicationView)timekeeperConsole;
         }
@@ -267,7 +267,7 @@ public class CompetitionApplicationComponents {
 		}
 
 		@Override
-		public ApplicationView get(boolean initFromFragment, String viewName) {
+		public ApplicationView get(boolean initFromFragment, String viewName, String stylesheetName) {
 			if (mobile) {
 				this.juryConsole = (new MJuryConsole(initFromFragment, viewName));
 			} else {
@@ -284,7 +284,7 @@ public class CompetitionApplicationComponents {
         private MPlatesInfoView platesInfoConsole = null;
         
         @Override
-		public ApplicationView get(boolean initFromFragment, String viewName) {
+		public ApplicationView get(boolean initFromFragment, String viewName, String stylesheetName) {
 			this.platesInfoConsole = (new MPlatesInfoView(initFromFragment, viewName));
             return (ApplicationView)platesInfoConsole;
         }
@@ -297,7 +297,7 @@ public class CompetitionApplicationComponents {
         private WeighInList weighInList = null;
 
         @Override
-		public WeighInList get(boolean initFromFragment, String viewName) {
+		public WeighInList get(boolean initFromFragment, String viewName, String stylesheetName) {
             this.weighInList = (new WeighInList(initFromFragment, viewName,true));
             return weighInList;
         }
@@ -310,7 +310,7 @@ public class CompetitionApplicationComponents {
         private SpreadsheetUploader spreadsheetUploader = null;
 
         @Override
-		public SpreadsheetUploader get(boolean initFromFragment, String viewName) {
+		public SpreadsheetUploader get(boolean initFromFragment, String viewName, String stylesheetName) {
             this.spreadsheetUploader = (new SpreadsheetUploader(initFromFragment, viewName));
             return spreadsheetUploader;
         }
@@ -323,7 +323,7 @@ public class CompetitionApplicationComponents {
         private AnnouncerView announcerView = null;
 
         @Override
-		public AnnouncerView get(boolean initFromFragment, String viewName) {
+		public AnnouncerView get(boolean initFromFragment, String viewName, String stylesheetName) {
             announcerView = (new AnnouncerView(initFromFragment, viewName, Mode.ANNOUNCER));
             announcerView.adjustSplitBarLocation();
             return announcerView;
@@ -337,7 +337,7 @@ public class CompetitionApplicationComponents {
         private AnnouncerView changesView = null;
 
         @Override
-		public AnnouncerView get(boolean initFromFragment, String viewName) {
+		public AnnouncerView get(boolean initFromFragment, String viewName, String stylesheetName) {
             changesView = (new AnnouncerView(initFromFragment, viewName,Mode.MARSHALL));
             changesView.adjustSplitBarLocation();
             return changesView;
@@ -352,7 +352,7 @@ public class CompetitionApplicationComponents {
         private AnnouncerView timekeeperView = null;
 
         @Override
-		public AnnouncerView get(boolean initFromFragment, String viewName) {
+		public AnnouncerView get(boolean initFromFragment, String viewName, String stylesheetName) {
             timekeeperView = (new AnnouncerView(initFromFragment, viewName, Mode.TIMEKEEPER));
             timekeeperView.adjustSplitBarLocation();
             return timekeeperView;
@@ -366,7 +366,7 @@ public class CompetitionApplicationComponents {
         private ResultView resultView = null;
 
         @Override
-		public ResultView get(boolean initFromFragment, String viewName) {
+		public ResultView get(boolean initFromFragment, String viewName, String stylesheetName) {
             this.resultView = (new ResultView(initFromFragment, viewName));
             return resultView;
         }
@@ -379,14 +379,15 @@ public class CompetitionApplicationComponents {
         private ResultFrame resultBoard = null;
         
         @Override
-		public ResultFrame get(boolean initFromFragment, String viewName) {
+		public ResultFrame get(boolean initFromFragment, String viewName, String stylesheetName) {
             try {
             	Locale locale = CompetitionApplication.getCurrentLocale();
             	String localeSuffix = "";
             	if ("en".equals(locale.getLanguage())) {
             		localeSuffix = "-en";
             	}
-                resultBoard = (new ResultFrame(initFromFragment, viewName,"jsp/resultBoard"+localeSuffix+".jsp?platformName=")); //$NON-NLS-1$
+                resultBoard = (new ResultFrame(initFromFragment, viewName,"jsp/resultBoard"+localeSuffix+".jsp?platformName=", stylesheetName)); //$NON-NLS-1$
+                resultBoard.setStylesheetName(stylesheetName);
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
@@ -402,14 +403,14 @@ public class CompetitionApplicationComponents {
         private ResultFrame liftOrderBoard = null;
 
         @Override
-		public ResultFrame get(boolean initFromFragment, String viewName) {
+		public ResultFrame get(boolean initFromFragment, String viewName, String stylesheetName) {
             try {
             	Locale locale = CompetitionApplication.getCurrentLocale();
             	String localeSuffix = "";
             	if ("en".equals(locale.getLanguage())) {
             		localeSuffix = "-en";
             	}
-                liftOrderBoard = (new ResultFrame(initFromFragment, viewName,"jsp/warmupRoom"+localeSuffix+".jsp?platformName=")); //$NON-NLS-1$
+                liftOrderBoard = (new ResultFrame(initFromFragment, viewName,"jsp/warmupRoom"+localeSuffix+".jsp?platformName=", stylesheetName)); //$NON-NLS-1$
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
@@ -424,14 +425,14 @@ public class CompetitionApplicationComponents {
         private ResultFrame summaryLifterView = null;
 
         @Override
-		public ResultFrame get(boolean initFromFragment, String viewName) {
+		public ResultFrame get(boolean initFromFragment, String viewName, String stylesheetName) {
             try {
             	Locale locale = CompetitionApplication.getCurrentLocale();
             	String localeSuffix = "";
             	if ("en".equals(locale.getLanguage())) {
             		localeSuffix = "-en";
             	}
-                summaryLifterView = (new ResultFrame(initFromFragment, viewName, "jsp/liftingOrder"+localeSuffix+".jsp?platformName=")); //$NON-NLS-1$
+                summaryLifterView = (new ResultFrame(initFromFragment, viewName, "jsp/liftingOrder"+localeSuffix+".jsp?platformName=", stylesheetName)); //$NON-NLS-1$
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
@@ -446,8 +447,8 @@ public class CompetitionApplicationComponents {
         // private ResultFrame currentLifterPanel = null;
 
         @Override
-		public AttemptBoardView get(boolean initFromFragment, String viewName) {
-            return new AttemptBoardView(initFromFragment, viewName, true);
+		public AttemptBoardView get(boolean initFromFragment, String viewName, String stylesheetName) {
+            return new AttemptBoardView(initFromFragment, viewName, true, stylesheetName);
         }
     }
     
@@ -458,8 +459,8 @@ public class CompetitionApplicationComponents {
         // private ResultFrame currentLifterPanel = null;
 
         @Override
-		public AttemptBoardView get(boolean initFromFragment, String viewName) {
-            return new AttemptBoardView(initFromFragment, viewName, false);
+		public AttemptBoardView get(boolean initFromFragment, String viewName, String stylesheetName) {
+            return new AttemptBoardView(initFromFragment, viewName, false, stylesheetName);
         }
     }
     
@@ -470,13 +471,17 @@ public class CompetitionApplicationComponents {
         private EmptyView emptyView = null;
 
         @Override
-		public EmptyView get(boolean initFromFragment, String viewName) {
+		public EmptyView get(boolean initFromFragment, String viewName, String stylesheetName) {
             emptyView = (new EmptyView());
             return emptyView;
         }
     }
 
     public ApplicationView getViewByName(String fragment, boolean initFromFragment)  {
+        return getViewByName(fragment, initFromFragment, null);
+    }
+
+    public ApplicationView getViewByName(String fragment, boolean initFromFragment, String stylesheet) {
         int where = fragment.indexOf("/");
         String viewName = fragment;
         if (where != -1) {
@@ -484,7 +489,7 @@ public class CompetitionApplicationComponents {
         }
         final CompetitionApplicationComponent component = urlFragmentToView.get(viewName);
         if (component != null) {
-            final ApplicationView applicationView = component.get(initFromFragment,viewName);
+            final ApplicationView applicationView = component.get(initFromFragment,viewName, stylesheet);
 //            LoggerUtils.logException(logger, new Exception("fragment "+fragment));
 //            logger.debug("getViewByName returning {}",applicationView);
             return applicationView;
@@ -493,7 +498,8 @@ public class CompetitionApplicationComponents {
                 "CompetitionApplicationComponents.ViewNotFound", CompetitionApplication.getCurrentLocale()) + viewName); //$NON-NLS-1$
         }
     }
-
+    
+    
     public void setPlatform(Platform platform) {
         this.platform = platform;
     }
@@ -583,6 +589,7 @@ public class CompetitionApplicationComponents {
         }
         return platformName;
     }
-    
+
+
 
 }

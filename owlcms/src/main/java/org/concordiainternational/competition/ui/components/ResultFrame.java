@@ -83,12 +83,13 @@ public class ResultFrame extends VerticalLayout implements
 	private DecisionLightsWindow decisionLights;
 	protected boolean waitingForDecisionLightsReset;
 
-    public ResultFrame(boolean initFromFragment, String viewName, String urlString) throws MalformedURLException {
+    public ResultFrame(boolean initFromFragment, String viewName, String urlString, String stylesheetName) throws MalformedURLException {
 
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
             this.viewName = viewName;
+            this.stylesheetName = stylesheetName;
         }
         
         this.app = CompetitionApplication.getCurrent();

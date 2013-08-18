@@ -102,15 +102,16 @@ public class AttemptBoardView extends VerticalLayout implements
     private ShortcutActionListener twoMinutesAction;
     private boolean showTimer = true;
 
-    public AttemptBoardView(boolean initFromFragment, String viewName, boolean publicFacing) {
-
+    public AttemptBoardView(boolean initFromFragment, String viewName, boolean publicFacing, String stylesheetName) {
+//Thread.dumpStack();
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
             this.viewName = viewName;
             this.publicFacing = publicFacing;
+            this.stylesheetName = stylesheetName;
         }
-        addStyleName("blendWithBackground");
+//        addStyleName("blendWithBackground");
         this.app = CompetitionApplication.getCurrent();
 
         boolean prevDisabledPush = app.getPusherDisabled();
@@ -123,29 +124,32 @@ public class AttemptBoardView extends VerticalLayout implements
                 app.setPlatformByName(platformName);
             }
 
-            create(app);
-            masterData = app.getMasterData(platformName);
-            refreshShowTimer();
-
-            // we cannot call push() at this point
-            synchronized (app) {
-                boolean prevDisabled = app.getPusherDisabled();
-                try {
-                    app.setPusherDisabled(true);
-                    createDecisionLights();
-                    plates = new LoadImage(null);
-                    display(platformName, masterData);
-                } finally {
-                    app.setPusherDisabled(prevDisabled);
-                }
-                logger.debug("browser panel: push disabled = {}", app.getPusherDisabled());
-            }
+            doCreate();
 
             // URI handler must remain, so is not part of the register/unRegister pair
             app.getMainWindow().addURIHandler(this);
             registerAsListener();
         } finally {
             app.setPusherDisabled(prevDisabledPush);
+        }
+    }
+
+    public void doCreate() {
+        create(app);
+        masterData = app.getMasterData(platformName);
+        refreshShowTimer();
+
+        // we cannot call push() at this point
+        synchronized (app) {
+            boolean prevDisabled = app.getPusherDisabled();
+            try {
+                app.setPusherDisabled(true);
+                createDecisionLights();
+                plates = new LoadImage(null);
+                display(platformName, masterData);
+            } finally {
+                app.setPusherDisabled(prevDisabled);
+            }
         }
     }
 
@@ -213,7 +217,10 @@ public class AttemptBoardView extends VerticalLayout implements
 
         grid.setMargin(true);
         grid.addStyleName("newAttemptBoard");
-        grid.addStyleName(getStylesheetName());
+        String stylesheetName2 = getStylesheetName();
+
+//        logger.warn("grid {}: setting grid style name to {}",System.identityHashCode(grid),stylesheetName2);
+        grid.addStyleName(stylesheetName2);
         grid.setSpacing(false);
 
         // grid.setColumnExpandRatio(0, 0.0F);
@@ -339,7 +346,7 @@ public class AttemptBoardView extends VerticalLayout implements
 
     @Override
     public void refresh() {
-        display(platformName, masterData);
+        doCreate();
     }
 
     public boolean fillLifterInfo(Lifter lifter) {

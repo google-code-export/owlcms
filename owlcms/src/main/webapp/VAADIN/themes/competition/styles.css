@@ -322,6 +322,22 @@ body.v-generated-body.v-sa.v-ch.v-webkit {
 	border: 0px solid black;;
 }
 
+/* Readonly */
+input.v-textfield-readonly,
+.black input.v-textfield-readonly,
+textarea.v-textarea-readonly,
+.black textarea.v-textarea-readonly {
+	border: none;
+	background: transparent;
+}
+
+/* Readonly */
+.white input.v-textfield-readonly,
+.white textarea.v-textarea-readonly {
+	border: none;
+	background: transparent;
+}
+
 
 .newAttemptBoard {
 	background-color: black;
@@ -348,7 +364,7 @@ body.v-generated-body.v-sa.v-ch.v-webkit {
 }
 .newAttemptBoard.s4_3 .largeCountdown {font-size: 16em;}
 .newAttemptBoard.s720p .largeCountdown {font-size: 18em;}
-.newAttemptBoard.s1080p .largeCountdown {font-size: 22em;}
+.newAttemptBoard.s1080p .largeCountdown {font-size: 20em;}
 
 
 .newAttemptBoard .v-label-weightLabel {
@@ -358,7 +374,7 @@ body.v-generated-body.v-sa.v-ch.v-webkit {
 }
 .newAttemptBoard.s4_3 .v-label-weightLabel {font-size: 10em;}
 .newAttemptBoard.s720p .v-label-weightLabel {font-size: 12em;}
-.newAttemptBoard.s1080p .v-label-weightLabel {font-size: 20em;}
+.newAttemptBoard.s1080p .v-label-weightLabel {font-size: 18em;}
 
 
 .newAttemptBoard .v-label-name {
@@ -367,7 +383,7 @@ body.v-generated-body.v-sa.v-ch.v-webkit {
 }
 .newAttemptBoard.s4_3 .v-label-name {font-size: 6.5em; line-height: 1.2em;}
 .newAttemptBoard.s720p .v-label-name {font-size: 6.5em;}
-.newAttemptBoard.s1080p .v-label-name {font-size: 8em;}
+.newAttemptBoard.s1080p .v-label-name {font-size: 9.5em;}
 
 
 .newAttemptBoard .v-label-text {
