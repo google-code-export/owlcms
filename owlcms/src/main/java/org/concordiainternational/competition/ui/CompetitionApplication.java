@@ -29,7 +29,6 @@ import org.concordiainternational.competition.mobile.MRefereeConsole;
 import org.concordiainternational.competition.mobile.MobileMenu;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.Menu;
-import org.concordiainternational.competition.ui.components.Stylable;
 import org.concordiainternational.competition.utils.Localized;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.hibernate.HibernateException;
@@ -295,10 +294,10 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         // remove all listeners on current view.
         getMainLayoutContent().unregisterAsListener();
         
-        ApplicationView view = components.getViewByName(viewName, false);
+        ApplicationView view = components.getViewByName(viewName, false, stylesheet);
+        
         setMainLayoutContent(view);
-        ((Stylable)view).setStylesheetName(stylesheet);
-        view.refresh();
+
         uriFragmentUtility.setFragment(view.getFragment(), false);
     }
 
@@ -782,6 +781,12 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 	}
 	
     public void setMainLayoutContent(ApplicationView c) {
+//        logger.info("setting to black {} {}", c.needsBlack(), c.getClass().getSimpleName());
+        if (c.needsBlack()) {
+            this.getMainWindow().setStyleName(Reindeer.LAYOUT_BLACK);
+        } else {
+            this.getMainWindow().setStyleName(Reindeer.LAYOUT_WHITE);
+        }
     	mainLayoutContent = c;
         boolean needsMenu = c.needsMenu();
     	//logger.debug(">>>>> setting app view for {} -- view {}",this,c);
@@ -798,10 +803,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         	mainLayout.setExpandRatio(getMobileMenu(),0);
         	mainLayout.setExpandRatio(mobilePanel,100);
         }
-        logger.info("setting to black {} {}", c.needsBlack(), c.getClass().getSimpleName());
-        if (c.needsBlack()) {
-            this.getMainWindow().setStyleName(Reindeer.LAYOUT_BLACK);
-        }
+
     }
     
     public ApplicationView getMainLayoutContent() {
