@@ -331,12 +331,12 @@ textarea.v-textarea-readonly,
 	background: transparent;
 }
 
-/* Readonly */
 .white input.v-textfield-readonly,
 .white textarea.v-textarea-readonly {
 	border: none;
 	background: transparent;
 }
+
 
 
 .newAttemptBoard {
@@ -402,6 +402,7 @@ textarea.v-textarea-readonly,
 	border-width: thick;
 	border-style: solid;
 	color: #7FFFFF;
+	text-align: center;
 }
 .newAttemptBoard.s4_3 .v-label-start {font-size: 7em;}
 .newAttemptBoard.s720p .v-label-start {font-size: 7em;}
