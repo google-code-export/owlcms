@@ -31,13 +31,13 @@ import org.concordiainternational.competition.ui.components.Stylable;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vaadin.weelayout.WeeLayout;
+import org.vaadin.weelayout.WeeLayout.Direction;
 
-import com.vaadin.event.Action;
-import com.vaadin.event.ShortcutAction;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
@@ -63,47 +63,52 @@ public class AttemptBoardView extends VerticalLayout implements
 
     public final static Logger logger = LoggerFactory.getLogger(AttemptBoardView.class);
     private static final long serialVersionUID = 1437157542240297372L;
-    private static final int TEAM_COLUMN = 4;
-    private static final int NAME_COLUMN = 0;
-    private static final int TIME_COLUMN = 0;
-    private static final int PLATES_COLUMN = 2;
-    private static final int WEIGHT_COLUMN = 3;
-    private static final int PLATES_ROW = 3;
-    private static final int DECISION_ROW = PLATES_ROW - 1;
 
     public String urlString;
     private String platformName;
     private SessionData masterData;
-    private GridLayout grid;
     final private transient CompetitionApplication app;
 
+    private WeeLayout attemptBoardBox = new WeeLayout(Direction.VERTICAL);
+    private WeeLayout topRowBox = new WeeLayout(Direction.HORIZONTAL);
+    private WeeLayout bottomRowBox = new WeeLayout(Direction.HORIZONTAL);
+    private WeeLayout topRightBox = new WeeLayout(Direction.VERTICAL);
+    private WeeLayout bottomLeftBox = new WeeLayout(Direction.HORIZONTAL);
+    private WeeLayout bottomRightBox = new WeeLayout(Direction.VERTICAL);
+
+    private WeeLayout nameVBox = new WeeLayout(Direction.VERTICAL);
+    private WeeLayout startVBox = new WeeLayout(Direction.VERTICAL);
+    private WeeLayout teamVBox = new WeeLayout(Direction.VERTICAL);
+    private WeeLayout timeVBox = new WeeLayout(Direction.VERTICAL);
+    private WeeLayout weightVBox = new WeeLayout(Direction.VERTICAL);
+    private WeeLayout attemptVBox = new WeeLayout(Direction.VERTICAL);
+    private WeeLayout platesVBox = new WeeLayout(Direction.VERTICAL);
+
+    private WeeLayout nameHBox = new WeeLayout(Direction.HORIZONTAL);
+    private WeeLayout startHBox = new WeeLayout(Direction.HORIZONTAL);
+    private WeeLayout teamHBox = new WeeLayout(Direction.HORIZONTAL);
+    private WeeLayout timeHBox = new WeeLayout(Direction.HORIZONTAL);
+    private WeeLayout weightHBox = new WeeLayout(Direction.HORIZONTAL);
+    private WeeLayout attemptHBox = new WeeLayout(Direction.HORIZONTAL);
+    private WeeLayout platesHBox = new WeeLayout(Direction.HORIZONTAL);
+
     private Label nameLabel = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
-    private Label firstNameLabel = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
     private Label clubLabel = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
     private Label startLabel = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
     private Label attemptLabel = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
-    private Label timeDisplayLabel = new Label();
+    private Label timeLabel = new Label();
     private Label weightLabel = new Label();
+
     private LoadImage plates;
 
     private UpdateEventListener updateListener;
     private DecisionLightsWindow decisionLights;
     protected boolean waitingForDecisionLightsReset;
 
-    private ShortcutActionListener action1ok;
-    private ShortcutActionListener action1fail;
-    private ShortcutActionListener action2ok;
-    private ShortcutActionListener action2fail;
-    private ShortcutActionListener action3ok;
-    private ShortcutActionListener action3fail;
-    private ShortcutActionListener startAction;
-    private ShortcutActionListener stopAction;
-    private ShortcutActionListener oneMinuteAction;
-    private ShortcutActionListener twoMinutesAction;
     private boolean showTimer = true;
 
     public AttemptBoardView(boolean initFromFragment, String viewName, boolean publicFacing, String stylesheetName) {
-//Thread.dumpStack();
+        logger.trace("entry {} {} {}", new Object[] { initFromFragment, viewName, stylesheetName });
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
@@ -111,7 +116,6 @@ public class AttemptBoardView extends VerticalLayout implements
             this.publicFacing = publicFacing;
             this.stylesheetName = stylesheetName;
         }
-//        addStyleName("blendWithBackground");
         this.app = CompetitionApplication.getCurrent();
 
         boolean prevDisabledPush = app.getPusherDisabled();
@@ -124,7 +128,7 @@ public class AttemptBoardView extends VerticalLayout implements
                 app.setPlatformByName(platformName);
             }
 
-            doCreate();
+            doCreate(false);
 
             // URI handler must remain, so is not part of the register/unRegister pair
             app.getMainWindow().addURIHandler(this);
@@ -132,28 +136,34 @@ public class AttemptBoardView extends VerticalLayout implements
         } finally {
             app.setPusherDisabled(prevDisabledPush);
         }
+        logger.trace("exit");
     }
 
-    public void doCreate() {
-        create(app);
-        masterData = app.getMasterData(platformName);
-        refreshShowTimer();
+    public void doCreate(boolean disablePush) {
+        logger.trace("entry {}", disablePush);
 
-        // we cannot call push() at this point
+        // disable push if requested by caller
         synchronized (app) {
             boolean prevDisabled = app.getPusherDisabled();
             try {
-                app.setPusherDisabled(true);
+                app.setPusherDisabled(disablePush);
+                masterData = app.getMasterData(platformName);
+                refreshShowTimer();
                 createDecisionLights();
                 plates = new LoadImage(null);
+
+                create();
+
                 display(platformName, masterData);
             } finally {
                 app.setPusherDisabled(prevDisabled);
             }
         }
+        logger.trace("exit");
     }
 
     public void refreshShowTimer() {
+        logger.trace("entry");
         // force use of current value.
         Platform curPlatform = masterData.getPlatform();
         if (curPlatform != null) {
@@ -161,22 +171,25 @@ public class AttemptBoardView extends VerticalLayout implements
             Platform refreshedPlatform = Platform.getByName(platformName1);
             showTimer = refreshedPlatform.getShowTimer();
         }
+        logger.trace("exit");
     }
 
     /**
      * 
      */
     protected void createDecisionLights() {
+        logger.trace("entry");
         decisionLights = new DecisionLightsWindow(false, publicFacing);
         decisionLights.setSizeFull();
         decisionLights.setMargin(false);
+        logger.trace("exit");
     }
 
     private UpdateEventListener registerAsListener(final String platformName1, final SessionData masterData1) {
+        logger.trace("entry");
         // locate the current group data for the platformName
         if (masterData1 != null) {
-            logger.debug(urlString + "{} listening to: {}", platformName1, masterData1); //$NON-NLS-1$	
-            //masterData.addListener(SessionData.UpdateEvent.class, this, "update"); //$NON-NLS-1$
+            logger.debug("{} listening to: {}", platformName1, masterData1); //$NON-NLS-1$	
 
             SessionData.UpdateEventListener listener = new SessionData.UpdateEventListener() {
 
@@ -185,104 +198,101 @@ public class AttemptBoardView extends VerticalLayout implements
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
+                            logger.trace("entry");
                             // logger.debug("request to display {}",AttemptBoardView.this);
                             if (!waitingForDecisionLightsReset) {
                                 display(platformName1, masterData1);
                             }
+                            logger.trace("exit");
                         }
                     }).start();
                 }
 
             };
-            masterData1.addListener(listener); //$NON-NLS-1$		
+            masterData1.addListener(listener); //$NON-NLS-1$
+            logger.trace("exit");
             return listener;
 
         } else {
-            logger.debug(urlString + "{} NOT listening to:  = {}", platformName1, masterData1); //$NON-NLS-1$	
+            logger.debug("{} NOT listening to:  = {}", platformName1, masterData1); //$NON-NLS-1$
+            logger.trace("exit");
             return null;
         }
+
     }
 
     /**
-     * @param app1
      * @param platformName
      * @throws MalformedURLException
      */
-    private void create(UserActions app1) {
+    private void create() {
+        logger.trace("entry");
         this.setSizeFull();
         this.setMargin(true);
 
-        grid = new GridLayout(6, 5);
-        grid.setSizeFull();
-
-        grid.setMargin(true);
-        grid.addStyleName("newAttemptBoard");
-        String stylesheetName2 = getStylesheetName();
-
-//        logger.warn("grid {}: setting grid style name to {}",System.identityHashCode(grid),stylesheetName2);
-        grid.addStyleName(stylesheetName2);
-        grid.setSpacing(false);
-
-        // grid.setColumnExpandRatio(0, 0.0F);
-        // grid.setColumnExpandRatio(1, 0.0F);
-        // grid.setColumnExpandRatio(2, 0.0F);
-        // grid.setColumnExpandRatio(3, 0.0F);
-        // grid.setColumnExpandRatio(4, 0.0F);
-        grid.setRowExpandRatio(0, 50.0F);
-        grid.setRowExpandRatio(1, 0.0F);
-        grid.setRowExpandRatio(2, 50.0F);
-        grid.setRowExpandRatio(3, 0.0F);
-        grid.setRowExpandRatio(4, 50.0F);
-
-        Label filler = new Label("&nbsp;", Label.CONTENT_XHTML);
-        filler.setWidth("10px");
-        grid.addComponent(filler, TEAM_COLUMN + 1, 0, TEAM_COLUMN + 1, 0);
-        // we do not add the time display, plate display
-        // and decision display -- they react to timekeeping
-
-        // last name
-        grid.addComponent(nameLabel, NAME_COLUMN, 0, TEAM_COLUMN - 1, 1);
-        nameLabel.setSizeUndefined();
-        nameLabel.addStyleName("name");
+        createAlignedLabel(nameLabel, nameHBox, nameVBox, Alignment.MIDDLE_LEFT, Alignment.MIDDLE_CENTER, "100%", "80%", "name");
         nameLabel.addStyleName("bolded");
-        grid.setComponentAlignment(nameLabel, Alignment.MIDDLE_LEFT);
+        createAlignedLabel(startLabel, startHBox, startVBox, Alignment.MIDDLE_CENTER, Alignment.MIDDLE_CENTER, "50%", "100%", "start");
+        createAlignedLabel(clubLabel, teamHBox, teamVBox, Alignment.MIDDLE_RIGHT, Alignment.MIDDLE_RIGHT, "50%", "100%", "text");
+        createAlignedLabel(attemptLabel, attemptHBox, attemptVBox, Alignment.MIDDLE_RIGHT, Alignment.MIDDLE_CENTER, "50%", "100%", "text");
+        createAlignedLabel(weightLabel, weightHBox, weightVBox, Alignment.MIDDLE_RIGHT, Alignment.MIDDLE_CENTER, "50%", "100%",
+                "weightLabel");
+        createAlignedLabel(timeLabel, timeHBox, timeVBox, Alignment.MIDDLE_LEFT, Alignment.MIDDLE_CENTER, "100%", "66%", "largeCountdown");
 
-        // first name
-        // grid.addComponent(firstNameLabel, NAME_COLUMN, 1, WEIGHT_COLUMN-1, 1);
-        // firstNameLabel.setSizeUndefined();
-        // firstNameLabel.addStyleName("name");
-        // grid.setComponentAlignment(firstNameLabel, Alignment.MIDDLE_LEFT);
+        createAlignmentContainer(plates, platesHBox, platesVBox, Alignment.MIDDLE_CENTER, Alignment.MIDDLE_CENTER, "100%", "33%");
 
-        // start number
-        grid.addComponent(startLabel, TEAM_COLUMN, 0, TEAM_COLUMN, 0);
-        startLabel.setSizeUndefined();
-        startLabel.addStyleName("start");
-        grid.setComponentAlignment(startLabel, Alignment.MIDDLE_RIGHT);
+        topRightBox.setWidth("20%");
+        topRightBox.setHeight("100%");
+        topRightBox.addComponent(startVBox);
+        topRightBox.addComponent(teamVBox);
 
-        // team
-        grid.addComponent(clubLabel, TEAM_COLUMN, 1, TEAM_COLUMN, 1);
-        clubLabel.setSizeUndefined();
-        clubLabel.addStyleName("text");
-        grid.setComponentAlignment(clubLabel, Alignment.MIDDLE_RIGHT);
+        bottomLeftBox.setWidth("60%");
+        bottomLeftBox.setHeight("100%");
 
-        // requested weight
-        grid.addComponent(weightLabel, WEIGHT_COLUMN, 4, TEAM_COLUMN, 4);
-        weightLabel.setSizeUndefined();
-        weightLabel.addStyleName("weightLabel");
-        grid.setComponentAlignment(weightLabel, Alignment.MIDDLE_RIGHT);
+        bottomRightBox.setWidth("40%");
+        bottomRightBox.setHeight("100%");
+        bottomRightBox.addComponent(attemptVBox);
+        bottomRightBox.addComponent(weightVBox);
 
-        // attempt
-        grid.addComponent(attemptLabel, WEIGHT_COLUMN, 3, TEAM_COLUMN, 3);
-        attemptLabel.setSizeUndefined();
-        attemptLabel.addStyleName("text");
-        grid.setComponentAlignment(attemptLabel, Alignment.MIDDLE_RIGHT);
+        topRowBox.setSmartRelativeSizes(true);
+        topRowBox.addComponent(nameVBox);
+        topRowBox.addComponent(topRightBox);
+        topRowBox.setHeight("50%");
+        topRowBox.setWidth("100%");
 
-        timeDisplayLabel.setSizeUndefined();
-        timeDisplayLabel.addStyleName("largeCountdown");
+        bottomRowBox.setSmartRelativeSizes(true);
+        bottomRowBox.addComponent(bottomLeftBox);
+        bottomRowBox.addComponent(bottomRightBox);
+        bottomRowBox.setHeight("50%");
+        bottomRowBox.setWidth("100%");
 
-        this.addComponent(grid);
-        this.setExpandRatio(grid, 100.0F);
+        attemptBoardBox.setSizeFull();
+        attemptBoardBox.setSmartRelativeSizes(true);
+        attemptBoardBox.addStyleName("newAttemptBoard");
+        attemptBoardBox.addStyleName(stylesheetName);
+        attemptBoardBox.addComponent(topRowBox);
+        attemptBoardBox.addComponent(bottomRowBox);
 
+        this.addComponent(attemptBoardBox);
+        logger.trace("exit");
+    }
+
+    private void createAlignedLabel(Label label, WeeLayout hBox, WeeLayout vBox, Alignment hAlignment, Alignment vAlignment, String height,
+            String width, String styleName) {
+        label.setSizeUndefined();
+        label.addStyleName(styleName);
+        createAlignmentContainer(label, hBox, vBox, hAlignment, vAlignment, height, width);
+    }
+
+    private void createAlignmentContainer(Component component, WeeLayout hBox, WeeLayout vBox, Alignment hAlignment, Alignment vAlignment,
+            String height, String width) {
+        vBox.addComponent(hBox);
+        vBox.setComponentAlignment(hBox, hAlignment);
+        vBox.setHeight(height);
+        vBox.setWidth(width);
+        hBox.setHeight("100%");
+        hBox.addComponent(component);
+        hBox.setComponentAlignment(component, vAlignment);
     }
 
     /**
@@ -291,45 +301,47 @@ public class AttemptBoardView extends VerticalLayout implements
      * @throws RuntimeException
      */
     private void display(final String platformName1, final SessionData masterData1) throws RuntimeException {
+        logger.trace("entry {} {}", platformName1, masterData1);
         if (intermissionTimerShown) {
+            logger.trace("exit because intermissionTimerShown");
             return;
         }
         synchronized (app) {
             final Lifter currentLifter = masterData1.getCurrentLifter();
             if (currentLifter != null) {
+                logger.debug("lifter {}", currentLifter);
                 boolean done = fillLifterInfo(currentLifter);
                 updateTime(masterData1);
                 showDecisionLights(false);
-                timeDisplayLabel.removeStyleName("intermission");
-                timeDisplayLabel.setSizeUndefined();
-                timeDisplayLabel.setVisible(!done);
+                timeLabel.removeStyleName("intermission");
+                timeLabel.addStyleName("largeCountdown");
+                timeLabel.setVisible(!done);
                 startLabel.setVisible(!done);
             } else {
-                logger.debug("lifter null");
+                logger.info("lifter null");
                 hideAttemptBoard();
             }
-
         }
-        logger.debug("prior to display push disabled={}", app.getPusherDisabled());
-
         app.push();
+        logger.trace("exit pusherDisabled={}", app.getPusherDisabled());
     }
 
     /**
      * 
      */
     protected void hideAttemptBoard() {
+        logger.trace("entry");
         nameLabel.setValue(getWaitingMessage()); //$NON-NLS-1$
         showDecisionLights(false);
-        timeDisplayLabel.setSizeUndefined();
-        timeDisplayLabel.setVisible(false);
-        firstNameLabel.setValue("");
+        timeLabel.setVisible(false);
         clubLabel.setValue("");
         attemptLabel.setValue("");
         weightLabel.setValue("");
         startLabel.setValue("");
         startLabel.setVisible(false);
-        plates.setVisible(false);
+        if (plates != null)
+            plates.setVisible(false);
+        logger.trace("exit");
     }
 
     /**
@@ -346,10 +358,13 @@ public class AttemptBoardView extends VerticalLayout implements
 
     @Override
     public void refresh() {
-        doCreate();
+        logger.trace("entry");
+        doCreate(false);
+        logger.trace("exit");
     }
 
     public boolean fillLifterInfo(Lifter lifter) {
+        logger.trace("entry");
         final Locale locale = CompetitionApplication.getCurrentLocale();
         final int currentTry = 1 + (lifter.getAttemptsDone() >= 3 ? lifter.getCleanJerkAttemptsDone() : lifter
                 .getSnatchAttemptsDone());
@@ -361,6 +376,7 @@ public class AttemptBoardView extends VerticalLayout implements
             displayRequestedWeight(lifter, locale, done);
         }
         app.push();
+        logger.trace("exit");
         return done;
     }
 
@@ -371,7 +387,8 @@ public class AttemptBoardView extends VerticalLayout implements
      * @param done
      */
     private void displayName(Lifter lifter, final Locale locale, boolean done) {
-        // display lifter nameLabel and affiliation
+        logger.trace("entry");
+        // display lifter name and affiliation
         if (!done) {
             final String lastName = lifter.getLastName();
             final String firstName = lifter.getFirstName();
@@ -379,7 +396,6 @@ public class AttemptBoardView extends VerticalLayout implements
             final Integer startNumber = lifter.getStartNumber();
 
             nameLabel.setValue(formatName(lastName, firstName));
-            firstNameLabel.setValue(firstName);
             clubLabel.setValue(club);
             if (startNumber != null && startNumber > 0) {
                 startLabel.setStyleName("start");
@@ -392,12 +408,11 @@ public class AttemptBoardView extends VerticalLayout implements
         } else {
             nameLabel.setValue(MessageFormat.format(
                     Messages.getString("AttemptBoard.Done", locale), masterData.getCurrentSession().getName())); //$NON-NLS-1$
-            firstNameLabel.setValue("");
             clubLabel.setValue("");
             startLabel.setStyleName("text");
             startLabel.setValue("");
         }
-
+        logger.trace("exit");
     }
 
     public String formatName(final String lastName, final String firstName) {
@@ -412,29 +427,22 @@ public class AttemptBoardView extends VerticalLayout implements
         return nLastName.toUpperCase() + "<br/>" + firstName;
     }
 
-    private void showDecisionLights(boolean decisionLightsVisible) {
-        // logger.debug("showDecisionLights {}",decisionLightsVisible);
-        // remove everything
-        grid.removeComponent(timeDisplayLabel);
-        grid.removeComponent(decisionLights);
-        grid.removeComponent(plates);
+    private void showDecisionLights(boolean doShow) {
+        logger.trace("entry {}", doShow);
+        // LoggerUtils.logException(logger, new Exception("stack trace"));
 
-        if (decisionLightsVisible) {
-            grid.addComponent(decisionLights, TIME_COLUMN, DECISION_ROW, TIME_COLUMN + 2, DECISION_ROW + 2);
-            decisionLights.setSizeFull();
-            decisionLights.setMargin(true);
-            grid.setComponentAlignment(decisionLights, Alignment.TOP_LEFT);
+        if (doShow) {
+            bottomLeftBox.removeComponent(timeVBox);
+            bottomLeftBox.removeComponent(platesVBox);
+            bottomLeftBox.addComponent(decisionLights);
+            decisionLights.refresh();
         } else {
-            grid.addComponent(timeDisplayLabel, TIME_COLUMN, PLATES_ROW + 1, TIME_COLUMN + 1, PLATES_ROW + 1);
-            grid.setComponentAlignment(timeDisplayLabel, Alignment.MIDDLE_LEFT);
-            grid.addComponent(plates, PLATES_COLUMN, PLATES_ROW, PLATES_COLUMN, PLATES_ROW + 1);
-            plates.computeImageArea(masterData, masterData.getPlatform());
-
-            grid.setComponentAlignment(timeDisplayLabel, Alignment.MIDDLE_LEFT);
-            grid.setComponentAlignment(plates, Alignment.BOTTOM_CENTER);
-            timeDisplayLabel.setVisible(true);
-            plates.setVisible(true);
+            bottomLeftBox.removeComponent(decisionLights);
+            bottomLeftBox.addComponent(timeVBox);
+            bottomLeftBox.addComponent(platesVBox);
+            plates.computeImageArea(masterData, masterData.getPlatform(), false);
         }
+        logger.trace("exit");
     }
 
     /**
@@ -447,15 +455,11 @@ public class AttemptBoardView extends VerticalLayout implements
     private void displayAttemptNumber(Lifter lifter, final Locale locale, final int currentTry, boolean done) {
         // display current attemptLabel number
         if (!done) {
-            //appendDiv(sb, lifter.getNextAttemptRequestedWeight()+Messages.getString("Common.kg",locale)); //$NON-NLS-1$
             final String lift = lifter.getAttemptsDone() >= 3 ? Messages.getString("Common.shortCleanJerk", locale) //$NON-NLS-1$
                     : Messages.getString("Common.shortSnatch", locale);//$NON-NLS-1$
             String tryInfo = MessageFormat.format(Messages.getString("ResultFrame.tryNumber", locale), //$NON-NLS-1$
                     currentTry, lift);
-
-            attemptLabel.setValue(tryInfo
-                    // .replace(" ","<br>")
-                    );
+            attemptLabel.setValue(tryInfo);
         } else {
             attemptLabel.setValue("");
         }
@@ -476,13 +480,13 @@ public class AttemptBoardView extends VerticalLayout implements
         } else {
             weightLabel.setValue(""); //$NON-NLS-1$
         }
-        //grid.addComponent(weightLabel, 3, 2, 3, 2); //$NON-NLS-1$
     }
 
     /**
      * @param groupData
      */
     private void updateTime(final SessionData groupData) {
+        logger.trace("entry");
         // we set the value to the time remaining for the current lifter as
         // computed by groupData
         int timeRemaining = groupData.getDisplayTime();
@@ -491,6 +495,7 @@ public class AttemptBoardView extends VerticalLayout implements
             showTimeRemaining(timeRemaining);
         }
         timer.addListener(this);
+        logger.trace("exit");
     }
 
     @Override
@@ -506,14 +511,16 @@ public class AttemptBoardView extends VerticalLayout implements
     }
 
     private void showTimeRemaining(int timeRemaining) {
+        logger.trace("entry");
         synchronized (app) {
             if (showTimer) {
-                timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
+                timeLabel.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
             } else {
-                timeDisplayLabel.setValue("");
+                timeLabel.setValue("");
             }
         }
         app.push();
+        logger.trace("exit");
     }
 
     @Override
@@ -530,8 +537,9 @@ public class AttemptBoardView extends VerticalLayout implements
     private String viewName;
     protected boolean shown;
     private String stylesheetName;
-    private boolean intermissionTimerShown;
+    private boolean intermissionTimerShown = false;
     private boolean publicFacing;
+    private boolean registered;
 
     @Override
     public void normalTick(int timeRemaining) {
@@ -549,7 +557,9 @@ public class AttemptBoardView extends VerticalLayout implements
 
     @Override
     public void pause(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
+        logger.trace("entry");
         showTimeRemaining(timeRemaining);
+        logger.trace("entry");
     }
 
     @Override
@@ -588,6 +598,7 @@ public class AttemptBoardView extends VerticalLayout implements
      */
     @Override
     public void setParametersFromFragment() {
+        logger.trace("entry");
         String frag = CompetitionApplication.getCurrent().getUriFragmentUtility().getFragment();
         String[] params = frag.split("/");
         if (params.length >= 1) {
@@ -608,6 +619,7 @@ public class AttemptBoardView extends VerticalLayout implements
             setStylesheetName(params[3]);
             logger.trace("setting stylesheetName to {}", stylesheetName);
         }
+        logger.trace("exit");
     }
 
     @Override
@@ -625,8 +637,10 @@ public class AttemptBoardView extends VerticalLayout implements
      * Hide the break timer
      */
     private void removeIntermissionTimer() {
+        logger.trace("entry");
         intermissionTimerShown = false;
         refresh();
+        logger.trace("exit");
     }
 
     /**
@@ -635,17 +649,19 @@ public class AttemptBoardView extends VerticalLayout implements
      * @param remainingMilliseconds
      */
     private void displayIntermissionTimer(Integer remainingMilliseconds) {
+        logger.trace("entry");
         synchronized (app) {
             if (!intermissionTimerShown) {
                 hideAttemptBoard();
             }
             intermissionTimerShown = true;
             nameLabel.setValue(Messages.getString("AttemptBoard.Pause", CompetitionApplication.getCurrentLocale()));
-            timeDisplayLabel.setVisible(true);
-            timeDisplayLabel.addStyleName("intermission");
-            timeDisplayLabel.setValue(TimeFormatter.formatAsSeconds(remainingMilliseconds));
+            timeLabel.setVisible(true);
+            timeLabel.addStyleName("intermission");
+            timeLabel.setValue(TimeFormatter.formatAsSeconds(remainingMilliseconds));
         }
         app.push();
+        logger.trace("exit");
     }
 
     /*
@@ -660,7 +676,7 @@ public class AttemptBoardView extends VerticalLayout implements
 
     @Override
     public DownloadStream handleURI(URL context, String relativeUri) {
-        logger.debug("re-registering handlers for {} {}", this, relativeUri);
+        logger.debug("registering handlers for {} {}", this, relativeUri);
         registerAsListener();
         return null;
     }
@@ -726,6 +742,12 @@ public class AttemptBoardView extends VerticalLayout implements
 
     @Override
     public void registerAsListener() {
+        logger.trace("entry");
+        if (registered) {
+            logger.trace("exit registered already");
+            return;
+        }
+
         // listen to changes in the competition data
         logger.debug("listening to session data updates.");
         updateListener = registerAsListener(platformName, masterData);
@@ -737,18 +759,19 @@ public class AttemptBoardView extends VerticalLayout implements
         // listen to decisions
         IDecisionController decisionController = masterData.getRefereeDecisionController();
         if (decisionController != null) {
-            decisionController.addListener(decisionLights);
+            if (decisionLights != null)
+                decisionController.addListener(decisionLights);
             decisionController.addListener(this);
         }
 
         // listen to close events
         app.getMainWindow().addListener((CloseListener) this);
 
-        // listen to keyboard
-        addActions(app.getMainWindow());
-
         // update whether timer is shown
         refreshShowTimer();
+
+        registered = true;
+        logger.trace("exit");
     }
 
     /**
@@ -756,6 +779,9 @@ public class AttemptBoardView extends VerticalLayout implements
      */
     @Override
     public void unregisterAsListener() {
+        logger.trace("entry");
+        if (!registered)
+            return;
         // stop listening to changes in the competition data
         if (updateListener != null) {
             masterData.removeListener(updateListener);
@@ -763,7 +789,7 @@ public class AttemptBoardView extends VerticalLayout implements
         }
 
         // stop listening to intermission timer events
-        removeIntermissionTimer();
+        intermissionTimerShown = false;
         masterData.removeBlackBoardListener(this);
         logger.debug("stopped listening to intermission timer events");
 
@@ -777,116 +803,15 @@ public class AttemptBoardView extends VerticalLayout implements
         // stop listening to close events
         app.getMainWindow().removeListener((CloseListener) this);
 
-        // stop listening to keyboard
-        removeActions(app.getMainWindow());
-    }
-
-    @SuppressWarnings("serial")
-    private abstract class ShortcutActionListener extends ShortcutAction implements Action.Listener {
-
-        public ShortcutActionListener(String caption, int kc, int[] m) {
-            super(caption, kc, m);
-        }
-
-        public ShortcutActionListener(String caption, int kc) {
-            super(caption, kc, null);
-        }
-
-    }
-
-    @SuppressWarnings("serial")
-    private void addActions(Action.Notifier actionNotifier) {
-        final IDecisionController refereeDecisionController = masterData.getRefereeDecisionController();
-        startAction = new ShortcutActionListener("start", ShortcutAction.KeyCode.G) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                masterData.startUpdateModel();
-            }
-        };
-        stopAction = new ShortcutActionListener("stop", ShortcutAction.KeyCode.P) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                masterData.stopUpdateModel();
-            }
-        };
-        oneMinuteAction = new ShortcutActionListener("1 minute", ShortcutAction.KeyCode.O) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                masterData.oneMinuteUpdateModel();
-            }
-        };
-        twoMinutesAction = new ShortcutActionListener("2 minutes", ShortcutAction.KeyCode.T) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                masterData.twoMinuteUpdateModel();
-            }
-        };
-
-        action1ok = new ShortcutActionListener("1+", ShortcutAction.KeyCode.NUM1) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                refereeDecisionController.decisionMade(0, true);
-            }
-        };
-        action1fail = new ShortcutActionListener("1-", ShortcutAction.KeyCode.NUM2) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                refereeDecisionController.decisionMade(0, false);
-            }
-        };
-        action2ok = new ShortcutActionListener("2+", ShortcutAction.KeyCode.NUM3) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                refereeDecisionController.decisionMade(1, true);
-            }
-        };
-        action2fail = new ShortcutActionListener("2-", ShortcutAction.KeyCode.NUM4) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                refereeDecisionController.decisionMade(1, false);
-            }
-        };
-        action3ok = new ShortcutActionListener("3+", ShortcutAction.KeyCode.NUM5) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                refereeDecisionController.decisionMade(2, true);
-            }
-        };
-        action3fail = new ShortcutActionListener("3-", ShortcutAction.KeyCode.NUM6) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                refereeDecisionController.decisionMade(2, false);
-            }
-        };
-
-        actionNotifier.addAction(startAction);
-        actionNotifier.addAction(stopAction);
-        actionNotifier.addAction(oneMinuteAction);
-        actionNotifier.addAction(twoMinutesAction);
-        actionNotifier.addAction(action1ok);
-        actionNotifier.addAction(action1fail);
-        actionNotifier.addAction(action2ok);
-        actionNotifier.addAction(action2fail);
-        actionNotifier.addAction(action3ok);
-        actionNotifier.addAction(action3fail);
-    }
-
-    private void removeActions(Action.Notifier actionNotifier) {
-        actionNotifier.removeAction(startAction);
-        actionNotifier.removeAction(stopAction);
-        actionNotifier.removeAction(oneMinuteAction);
-        actionNotifier.removeAction(twoMinutesAction);
-        actionNotifier.removeAction(action1ok);
-        actionNotifier.removeAction(action1fail);
-        actionNotifier.removeAction(action2ok);
-        actionNotifier.removeAction(action2fail);
-        actionNotifier.removeAction(action3ok);
-        actionNotifier.removeAction(action3fail);
+        registered = false;
+        logger.trace("exit");
     }
 
     @Override
     public void setStylesheetName(String stylesheetName) {
+        logger.trace("entry {}", stylesheetName);
         this.stylesheetName = stylesheetName;
+        logger.trace("exit");
     }
 
     @Override
