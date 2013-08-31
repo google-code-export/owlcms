@@ -781,7 +781,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 	}
 	
     public void setMainLayoutContent(ApplicationView c) {
-//        logger.info("setting to black {} {}", c.needsBlack(), c.getClass().getSimpleName());
+        logger.debug("setting to black {} {}", c.needsBlack(), c.getClass().getSimpleName());
         if (c.needsBlack()) {
             this.getMainWindow().setStyleName(Reindeer.LAYOUT_BLACK);
         } else {
@@ -789,7 +789,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         }
     	mainLayoutContent = c;
         boolean needsMenu = c.needsMenu();
-    	//logger.debug(">>>>> setting app view for {} -- view {}",this,c);
+    	logger.info(">>>>> setting app view for {} -- view {}",this,c);
         if (this.mobilePanel == null) {
             this.components.currentView = c;
     		final Menu menu = this.components.menu;

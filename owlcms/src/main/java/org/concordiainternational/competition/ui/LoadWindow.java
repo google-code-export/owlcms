@@ -171,7 +171,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
             grid.setMargin(false);
             root.addComponent(top);
             root.addComponent(liftGrid);
-            imageArea.computeImageArea(masterData, platform);
+            imageArea.computeImageArea(masterData, platform, true);
             resize(resizeButton);
 
             top.setSizeFull();
@@ -357,7 +357,7 @@ public class LoadWindow extends Window implements Property.ValueChangeListener,
 			}
 			CompetitionApplication.getCurrent().getHbnSession().merge(masterData.getPlatform());
 			//logger.debug("value change, after merge, collars: {}",masterData.getPlatform().getNbC_2_5());
-			imageArea.computeImageArea(masterData, masterData.getPlatform());
+			imageArea.computeImageArea(masterData, masterData.getPlatform(), true);
 			masterData.fireBlackBoardEvent(new PlatesInfoEvent(this));
 		} finally {
 			ignoreChanges = prevIgnoreChanges;

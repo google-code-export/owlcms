@@ -37,7 +37,7 @@ public class LoadImage extends WeeLayout {
         this.parentWindow = parentWindow;
     }
 
-    public void computeImageArea(SessionData masterData, Platform platform) {
+    public void computeImageArea(SessionData masterData, Platform platform, boolean showCaption) {
         final Lifter currentLifter = masterData.getCurrentLifter();
         final Integer barWeight = computeBarWeight(masterData, platform);
         if (currentLifter == null) {
@@ -47,7 +47,7 @@ public class LoadImage extends WeeLayout {
         weight = currentLifter.getNextAttemptRequestedWeight();
         final String caption = weight + "kg";
 
-        createImageArea(platform, barWeight, caption);
+        createImageArea(platform, barWeight, (showCaption ? caption : ""));
     }
 
     /**

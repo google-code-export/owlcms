@@ -25,12 +25,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.hibernate.Session;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.addons.criteriacore.LoggerUtils;
 
 import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 

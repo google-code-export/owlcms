@@ -138,7 +138,7 @@ public class MPlatesInfoView extends VerticalLayout implements
 			plates.setVisible(false);
 			if (!done || ie) {
 				//logger.debug("recomputing image area: pusherDisabled = {}",app.getPusherDisabled());
-	            plates.computeImageArea(masterData, masterData.getPlatform());
+	            plates.computeImageArea(masterData, masterData.getPlatform(), true);
 				plates.setVisible(true);
 				//horLayout.setComponentAlignment(plates, Alignment.MIDDLE_CENTER);
 				//horLayout.setExpandRatio(plates, 80);

@@ -14,9 +14,15 @@ import org.slf4j.Logger;
 
 public class LoggerUtils {
 
-    public static void logException(Logger logger2, Throwable t) {
+    public static void logException(Logger logger, Throwable t) {
         StringWriter sw = new StringWriter();
         t.printStackTrace(new PrintWriter(sw));
-        logger2.info(sw.toString());
+        logger.info(sw.toString());
+    }
+
+    public static void logErrorException(Logger logger, Throwable t) {
+        StringWriter sw = new StringWriter();
+        t.printStackTrace(new PrintWriter(sw));
+        logger.error(sw.toString());
     }
 }
