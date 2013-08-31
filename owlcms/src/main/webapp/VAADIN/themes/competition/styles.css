@@ -279,10 +279,11 @@ button.v-button-failedLift span {
 }
 
 
-
-
 body.v-generated-body.v-sa.v-ch.v-webkit {
 	background: black;
+	border-style: none;
+	border-color: black;
+	border: 0px solid black;
 }
 .black .v-app {
 	background: black;
@@ -301,21 +302,34 @@ body.v-generated-body.v-sa.v-ch.v-webkit {
 	background: black;
 	border-color: black;
 	border: 0px solid black;
+	outline: none;
+	outline-color: black;
+	outline-style: hidden;
+	outline-width: 0px;
 }
 
 .black .v-panel-deco {
+	display: none;
+	height: 0px;
+	overflow: hidden;
 	border-color: black;
 	background: black;
 	border-top: 0px solid black;
 	border: 0px solid black;
 }
 .black div.v-panel-deco {
+	display: none;
+	height: 0px;
+	overflow: hidden;
 	border-color: black;
 	background: black;
 	border-top: 0px solid black;
 	border: 0px solid black;
 }
 .black .v-sa .v-panel-deco {
+	display: none;
+	height: 0px;
+	overflow: hidden;
 	border-color: black;
 	background: black;
 	border-top: 0px solid black;
@@ -337,6 +351,24 @@ textarea.v-textarea-readonly,
 	background: transparent;
 }
 
+.white .lifterGrid input.v-textfield-readonly,
+.white .lifterGrid textarea.v-textarea-readonly {
+	-webkit-border-image: none;
+	border: thin solid;
+	border-color: silver;
+	-webkit-border-radius: 4px;
+	border-style: solid;
+	margin-bottom: 2px;
+	background-color: rgb(240, 240, 240);
+	color: gray;
+	margin-right: 3px;
+	padding-right: 2px;
+}
+
+.black .v-panel-nocaption {
+	border: none;
+	border-color: black;
+}
 
 
 .newAttemptBoard {
@@ -364,7 +396,7 @@ textarea.v-textarea-readonly,
 }
 .newAttemptBoard.s4_3 .largeCountdown {font-size: 16em;}
 .newAttemptBoard.s720p .largeCountdown {font-size: 18em;}
-.newAttemptBoard.s1080p .largeCountdown {font-size: 20em;}
+.newAttemptBoard.s1080p .largeCountdown {font-size: 24em;}
 
 
 .newAttemptBoard .v-label-weightLabel {

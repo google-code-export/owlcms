@@ -32,14 +32,12 @@ import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.weelayout.WeeLayout;
-import org.vaadin.weelayout.WeeLayout.Direction;
 
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
@@ -51,7 +49,7 @@ import com.vaadin.ui.Window.CloseListener;
  * 
  */
 
-public class AttemptBoardView extends VerticalLayout implements
+public class AttemptBoardView extends WeeLayout implements
         ApplicationView,
         CountdownTimerListener,
         IntermissionTimerListener,
@@ -108,6 +106,7 @@ public class AttemptBoardView extends VerticalLayout implements
     private boolean showTimer = true;
 
     public AttemptBoardView(boolean initFromFragment, String viewName, boolean publicFacing, String stylesheetName) {
+        super(Direction.VERTICAL);
         logger.trace("entry {} {} {}", new Object[] { initFromFragment, viewName, stylesheetName });
         if (initFromFragment) {
             setParametersFromFragment();
