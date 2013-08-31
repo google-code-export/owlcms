@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration scan="true">
+<!--
+  Copyright 2009-2012, Jean-François Lamy
+  
+  This Source Code Form is subject to the terms of the Mozilla Public License,
+  v. 2.0. If a copy of the MPL was not distributed with this file, 
+  You can obtain one at http://mozilla.org/MPL/2.0/.
+-->
+<configuration scan="true" debug="true">
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
@@ -9,20 +16,19 @@
 		</encoder>
 	</appender>
 
-	<logger name="com" level="INFO" />
-	<logger name="net" level="INFO" />
+	<logger name="com" level="WARN" />
+	<logger name="net" level="WARN" />
 	<logger name="net.sf.ehcache.config.ConfigurationFactory" level="ERROR" />
 	<logger name="net.sf.ehcache.hibernate" level="ERROR" />
-	<logger name="org" level="INFO" />
+	<logger name="org" level="WARN" />
 	<logger name="org.hibernate" level="WARN" />
 	<logger name="org.hibernate.cache.EhCacheProvider" level="ERROR" />
 	<logger name="org.apache.commons.jexl2.Interpreter" level="ERROR" />
-	<logger name="org.concordiainternational.org" level="INFO" /> 
 
+	<logger name="org.concordiainternational" level="INFO" />
 
-    <!--
-        <logger name="com.vaadin.event" level="DEBUG" />
-    	<logger name="org.concordiainternational.competition.timer" level="DEBUG" />        
+    <!--   
+		<logger name="org.concordiainternational.competition.ui.AttemptBoardView" level="TRACE" />
         <logger name="org.concordiainternational.competition.publicAddress" level="WARN" />
         <logger name="org.concordiainternational.competition.ui.AnnouncerView" level="TRACE" />
         <logger name="org.concordiainternational.competition.ui.GroupData" level="TRACE" />
@@ -38,7 +44,6 @@
         <logger name="org.concordiainternational.competition.ui.CompetitionApplication" level="DEBUG" />
         <logger name="org.concordiainternational.competition.data.Lifter" level="TRACE" />
         <logger name="org.concordiainternational.competition.ui.components.BrowserPanel" level="DEBUG" />
-        <logger name="org.concordiainternational.competition.nec" level="DEBUG" />
     -->
 	
 	<root level="WARN">
