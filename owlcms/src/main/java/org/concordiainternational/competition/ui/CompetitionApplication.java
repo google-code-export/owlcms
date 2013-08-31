@@ -789,7 +789,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         }
     	mainLayoutContent = c;
         boolean needsMenu = c.needsMenu();
-    	logger.info(">>>>> setting app view for {} -- view {}",this,c);
+    	logger.debug(">>>>> setting app view for {} -- view {}",this,c);
         if (this.mobilePanel == null) {
             this.components.currentView = c;
     		final Menu menu = this.components.menu;
