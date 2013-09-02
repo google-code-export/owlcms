@@ -22,7 +22,6 @@ import org.concordiainternational.competition.data.lifterSort.LifterSorter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
 import org.concordiainternational.competition.ui.SessionData;
-import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,16 +69,12 @@ public class TwoMinutesRuleTest {
         	if (portName != null && portName.trim().isEmpty()) portName = null;
         } catch (IOException ioe) {        	
         }
-        if (portName != null) {
-            WebApplicationConfiguration.getNecDisplay(portName);
-        }
 
     }
 
     @After
     public void tearDownTest() {
         hbnSessionManager.getHbnSession().close();
-        if (WebApplicationConfiguration.necDisplay != null) WebApplicationConfiguration.necDisplay.close();
     }
 
     @Test
