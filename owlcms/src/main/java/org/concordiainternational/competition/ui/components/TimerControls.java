@@ -123,7 +123,7 @@ public class TimerControls extends GridLayout {
 			failedLift.addStyleName("failedLift"); //$NON-NLS-1$
 
 			final boolean announced = !groupData.getNeedToAnnounce();
-			if (!WebApplicationConfiguration.NECShowsLifterImmediately) {
+			if (!WebApplicationConfiguration.ShowLifterImmediately) {
 				announce.setEnabled(true); // allow announcer to call lifter at
 				// will
 				changeWeight.setEnabled(true); // always allow changes
@@ -392,13 +392,6 @@ public class TimerControls extends GridLayout {
 				logger.info("WEIGHT CHANGE button clicked");
 				groupData.getTimer().pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE);
 				if (mode == Mode.ANNOUNCER || mode == Mode.MARSHALL) {
-					// if
-					// (!WebApplicationConfiguration.NECShowsLifterImmediately)
-					// {
-					// groupData.displayWeight(lifter);
-					// } else {
-					// groupData.displayLifterInfo(lifter);
-					// }
 					AnnouncerView announcerView = (AnnouncerView) CompetitionApplication.getCurrent().components.currentView;
 					announcerView.setStickyEditor(false, false);
 					announcerView.editFirstLifterInfo(groupData, WebApplicationConfiguration.DEFAULT_STICKINESS);
