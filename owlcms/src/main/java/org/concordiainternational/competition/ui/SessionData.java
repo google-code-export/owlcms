@@ -30,7 +30,6 @@ import org.concordiainternational.competition.decision.IDecisionController;
 import org.concordiainternational.competition.decision.JuryDecisionController;
 import org.concordiainternational.competition.decision.RefereeDecisionController;
 import org.concordiainternational.competition.i18n.Messages;
-import org.concordiainternational.competition.nec.NECDisplay;
 import org.concordiainternational.competition.publicAddress.IntermissionTimer;
 import org.concordiainternational.competition.publicAddress.IntermissionTimerEvent;
 import org.concordiainternational.competition.publicAddress.IntermissionTimerEvent.IntermissionTimerListener;
@@ -41,7 +40,6 @@ import org.concordiainternational.competition.ui.PlatesInfoEvent.PlatesInfoListe
 import org.concordiainternational.competition.ui.components.DecisionLightsWindow;
 import org.concordiainternational.competition.utils.EventHelper;
 import org.concordiainternational.competition.utils.IdentitySet;
-import org.concordiainternational.competition.utils.LoggerUtils;
 import org.concordiainternational.competition.utils.NotificationManager;
 import org.hibernate.Session;
 import org.hibernate.StaleObjectStateException;
@@ -89,7 +87,6 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
     private CompetitionSession currentSession;
     private Lifter currentLifter;
-    public boolean needToUpdateNEC;
 
     private List<Lifter> currentDisplayOrder;
     private List<Lifter> currentLiftingOrder;
@@ -263,7 +260,6 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         this.liftsDone = LifterSorter.countLiftsDone(lifters);
 
         LifterSorter.liftingOrder(lifters);
-        this.needToUpdateNEC = false;
         currentLifter = LifterSorter.markCurrentLifter(lifters);
 
         Integer currentRequest = (currentLifter != null ? currentLifter.getNextAttemptRequestedWeight() : null);
@@ -289,12 +285,9 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             	}
             } // stop time something is happening.
             setTimeAllowed(timeAllowed(currentLifter));
-            needToUpdateNEC = true;
+
             logger.debug(
                         "paused time, needToUpdateNec = true, timeAllowed={}, timeRemaining={}", timeAllowed, timer2.getTimeRemaining()); //$NON-NLS-1$
-        } else {
-            needToUpdateNEC = false;
-            logger.debug("needToUpdateNEC = false"); //$NON-NLS-1$
         }
 
         if (currentLifter != null) {
@@ -461,8 +454,6 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             setForcedByTimeKeeper(false);
         }
 
-        displayLifterInfo(lifter);
-
         refereeDecisionController.reset(); 
         juryDecisionController.reset();
 
@@ -480,37 +471,6 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      */
     private void setForcedByTimeKeeper(boolean b) {
         this.forcedByTimekeeper = b;
-    }
-
-    /**
-     * @param lifter
-     */
-    public void displayLifterInfo(Lifter lifter) {
-        if (lifter.getAttemptsDone() >= 6) {
-            displayNothing();
-        } else {
-            if (getNECDisplay() != null) getNECDisplay().writeLifterInfo(lifter, false, getPlatform());
-        }
-    }
-
-    public void displayWeight(Lifter lifter) {
-        LoggerUtils.logException(logger, new Exception("whocalls")); //$NON-NLS-1$
-        if (lifter.getAttemptsDone() >= 6) {
-            displayNothing();
-        } else {
-            if (getNECDisplay() != null) getNECDisplay().writeLifterInfo(lifter, true, getPlatform());
-        }
-    }
-
-    /**
-     * Clear the LED display
-     */
-    private void displayNothing() {
-        if (getNECDisplay() != null) try {
-            getNECDisplay().writeStrings("", "", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-        } catch (Exception e) {
-            // nothing to do
-        }
     }
 
     public List<Lifter> getLiftTimeOrder() {
@@ -584,14 +544,6 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      */
     public List<Lifter> getCurrentLiftingOrder() {
         return currentLiftingOrder;
-    }
-
-    public NECDisplay getNECDisplay() {
-        if (getPlatform() != null) {
-            return getPlatform().getNECDisplay();
-        } else {
-            return null;
-        }
     }
     
     
