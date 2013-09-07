@@ -66,7 +66,6 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
         if (NATURAL_COL_ORDER != null) return NATURAL_COL_ORDER;
         NATURAL_COL_ORDER = new String[] {
         		"name", //$NON-NLS-1$
-                "hasDisplay", //$NON-NLS-1$
                 "showDecisionLights", //$NON-NLS-1$
                 "showTimer", //$NON-NLS-1$
                 "mixerName", //$NON-NLS-1$
@@ -85,7 +84,6 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
         if (COL_HEADERS != null) return COL_HEADERS;
         COL_HEADERS = new String[] {
         		Messages.getString("CategoryEditor.name", locale), //$NON-NLS-1$
-                Messages.getString("Platform.NECDisplay", locale), //$NON-NLS-1$
                 Messages.getString("Platform.showDecisionLights", locale), //$NON-NLS-1$
                 Messages.getString("Platform.showTimer", locale), //$NON-NLS-1$
                 Messages.getString("Platform.speakers", locale), //$NON-NLS-1$

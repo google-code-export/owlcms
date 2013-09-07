@@ -24,7 +24,6 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.TimerControls;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.concordiainternational.competition.ui.generators.TryFormatter;
-import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.notifique.Notifique;
@@ -33,11 +32,8 @@ import org.vaadin.notifique.Notifique.Message;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.MethodProperty;
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.Resource;
-import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
@@ -93,7 +89,6 @@ public class LifterInfo extends VerticalLayout implements
 
 	protected DecisionEvent prevEvent;
 	
-    @SuppressWarnings("serial")
     public LifterInfo(String identifier, final SessionData groupData, AnnouncerView.Mode mode, Component parentView) {
         final CompetitionApplication currentApp = CompetitionApplication.getCurrent();
         this.app = currentApp;
@@ -103,20 +98,6 @@ public class LifterInfo extends VerticalLayout implements
         this.parentView = parentView;
         this.mode = mode;
         this.sessionData = groupData;
-
-        this.addListener(new LayoutClickListener() {
-
-            @Override
-            public void layoutClick(LayoutClickEvent event) {
-                // if the announcer clicks on the name, then send again to NEC
-                // display
-                // test for announcer view done in updateDisplayBoard.
-                Component child = event.getChildComponent();
-                if (child != null && child instanceof Label && "lifter".equals(((AbstractComponent) child).getData())) {
-                    updateDisplayBoard(lifter, groupData);
-                }
-            }
-        });
         
 		// URI handler must remain, so is not part of the register/unRegister pair
 		app.getMainWindow().addURIHandler(this);
@@ -164,9 +145,10 @@ public class LifterInfo extends VerticalLayout implements
 			}
 			// prepare new display.
 			this.removeAllComponents();
-			if (lifter1 == null)
-				return;
-			updateDisplayBoard(lifter1, groupData1);
+			if (lifter1 == null) {
+	             return;
+			}
+
 			StringBuilder sb = new StringBuilder();
 			boolean done = getHTMLLifterInfo(lifter1,
 					isBottom(), sb); //$NON-NLS-1$
@@ -235,42 +217,6 @@ public class LifterInfo extends VerticalLayout implements
         return done;
     }
     
-    /**
-     * @param lifter1
-     * @param groupData1
-     */
-    private void updateDisplayBoard(final Lifter lifter1, final SessionData groupData1) {
-        logger.trace("loadLifter prior to updateNEC {} {} {} ", new Object[] { identifier, parentView, mode }); //$NON-NLS-1$
-        if (isTop() && parentView == groupData1.getAnnouncerView() && mode == Mode.ANNOUNCER) { //$NON-NLS-1$
-            updateNECOnWeightChange(lifter1, groupData1);
-        }
-        logger.trace("loadLifter after updateNEC"); //$NON-NLS-1$
-    }
-
-    /**
-     * Update the NEC Display.
-     * 
-     * Changed weight.
-     * 
-     * @param lifter1
-     * @param groupData1
-     */
-    private void updateNECOnWeightChange(final Lifter lifter1, final SessionData groupData1) {
-        // top part of announcer view drives electronic display
-        if (groupData1.needToUpdateNEC) {
-            if (WebApplicationConfiguration.NECShowsLifterImmediately) {
-                groupData1.displayLifterInfo(lifter1);
-            } else {
-                final Lifter currentLifter = groupData1.getNECDisplay().getCurrentLifter();
-                logger.trace("lifter = {}  currentLifter={}", lifter1, currentLifter); //$NON-NLS-1$
-                if (currentLifter != null && currentLifter.equals(lifter1)) {
-                    groupData1.displayLifterInfo(lifter1);
-                } else {
-                    groupData1.displayWeight(lifter1);
-                }
-            }
-        }
-    }
 
     private FormLayout timekeeperOptions() {
         actAsTimekeeper.setCaption(Messages.getString("LifterInfo.actAsTimeKeeper", locale)); //$NON-NLS-1$
