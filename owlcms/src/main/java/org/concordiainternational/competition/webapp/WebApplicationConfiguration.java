@@ -30,7 +30,6 @@ import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.data.lifterSort.WinningOrderComparator;
 import org.concordiainternational.competition.decision.Speakers;
 import org.concordiainternational.competition.i18n.Messages;
-import org.concordiainternational.competition.nec.NECDisplay;
 import org.concordiainternational.competition.utils.LoggerUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -56,13 +55,11 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 	private static SessionFactory sessionFactory = null;
 	private static final boolean TEST_MODE = false;
 
-	public static final boolean NECShowsLifterImmediately = true;
+	public static final boolean ShowLifterImmediately = true;
 
 	public static final boolean DEFAULT_STICKINESS = true;
 
 	private static AnnotationConfiguration cnf;
-
-	public static NECDisplay necDisplay = null;
 
 	/**
 	 * this constructor sets the default values if the full parameterized
@@ -271,7 +268,6 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 	protected static void setupEmptyCompetition(Competition competition, org.hibernate.Session sess) {
 		Platform platform1 = new Platform("Platform"); //$NON-NLS-1$
 		setDefaultMixerName(platform1);
-		platform1.setHasDisplay(false);
 		platform1.setShowDecisionLights(true);
 		platform1.setShowTimer(true);
 		// collar
@@ -414,15 +410,8 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
-		WebApplicationConfiguration.getSessionFactory().close(); // Free all
-		// templates,
-		// should free
-		// H2
+		WebApplicationConfiguration.getSessionFactory().close(); 
 		h2Shutdown();
-		if (necDisplay != null) {
-			necDisplay.close();
-		}
-		necDisplay = null;
 		logger.debug("contextDestroyed() done"); //$NON-NLS-1$
 	}
 
@@ -464,12 +453,6 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 		} else {
 			WebApplicationConfiguration.getSessionFactory(TEST_MODE, "db/" + appName).getCurrentSession(); //$NON-NLS-1$
 		}
-		if (necDisplay != null) {
-			necDisplay.close();
-			necDisplay = null;
-		}
-		final String comPortName = sCtx.getInitParameter("comPort"); //$NON-NLS-1$
-		getNecDisplay(comPortName);
 		
 		final String useCategorySinclair = sCtx.getInitParameter("useCategorySinclair");
 		WinningOrderComparator.useCategorySinclair = Boolean.parseBoolean(useCategorySinclair);
@@ -481,19 +464,5 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
 		logger.debug("contextInitialized() done"); //$NON-NLS-1$
 	}
 
-	/**
-	 * @param comPortName
-	 * @throws RuntimeException
-	 */
-	public static void getNecDisplay(final String comPortName) throws RuntimeException {
-		try {
-			if (comPortName != null && !comPortName.isEmpty()) {
-				necDisplay = new NECDisplay();
-				necDisplay.setComPortName(comPortName);
-			}
-		} catch (Exception e) {
-			logger.warn("Could not open port {} {}",comPortName,e.getMessage());
-		}
-	}
 
 }
