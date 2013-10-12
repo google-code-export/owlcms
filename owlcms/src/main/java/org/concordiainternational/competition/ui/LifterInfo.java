@@ -402,13 +402,14 @@ public class LifterInfo extends VerticalLayout implements
         if (!isMasterConsole(masterData)) return;
         
         // no need to beep if current lifter has declared
-        Integer currentAttemptDeclaration = lifter.getCurrentAttemptDeclaration();
-        if (currentAttemptDeclaration != null && currentAttemptDeclaration > 0) {
-            logger.info("lifter {} has declared {}, no initial warning needed.", lifter, currentAttemptDeclaration);
-            return;
-        } else {
-            logger.info("lifter {} has NOT declared, initial warning.", lifter, currentAttemptDeclaration);
-        }
+        // FALSE: the TCRR explicitly states that there is a buzzer at 90 secs.
+        //        Integer currentAttemptDeclaration = lifter.getCurrentAttemptDeclaration();
+        //        if (currentAttemptDeclaration != null && currentAttemptDeclaration > 0) {
+        //            logger.info("lifter {} has declared {}, no initial warning needed.", lifter, currentAttemptDeclaration);
+        //            return;
+        //        } else {
+        //            logger.info("lifter {} has NOT declared, initial warning.", lifter, currentAttemptDeclaration);
+        //        }
 
         synchronized (app) {
             if (!isBlocked()) {
