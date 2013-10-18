@@ -44,6 +44,8 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 	private static final int DECISION_DISPLAY_DELAY = 1000;
 
     Logger logger = LoggerFactory.getLogger(RefereeDecisionController.class);
+    static final Logger buttonLogger = LoggerFactory
+            .getLogger("org.concordiainternational.competition.ButtonsLogger"); //$NON-NLS-1$
 
     Decision[] refereeDecisions = new Decision[3];
     DecisionEventListener[] listeners = new DecisionEventListener[3];

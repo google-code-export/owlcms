@@ -20,6 +20,8 @@ import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
+import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
+import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.TimerControls;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
@@ -58,11 +60,13 @@ public class LifterInfo extends VerticalLayout implements
 	CountdownTimerListener,
 	DecisionEventListener,
 	ApplicationView,
-	Notifyable
+	Notifyable, UpdateEventListener
 	{
     static final Logger logger = LoggerFactory.getLogger(LifterInfo.class);
     static final Logger timingLogger = LoggerFactory
             .getLogger("org.concordiainternational.competition.timer.TimingLogger"); //$NON-NLS-1$
+    static final Logger buttonLogger = LoggerFactory
+            .getLogger("org.concordiainternational.competition.ButtonsLogger"); //$NON-NLS-1$
 
     private static final long serialVersionUID = -3687013148334708795L;
     public Locale locale;
@@ -86,6 +90,9 @@ public class LifterInfo extends VerticalLayout implements
     private long lastOkButtonClick = 0L;
     private long lastFailedButtonClick = 0L;
 	private SessionData sessionData;
+	
+	private String notAnnounced;
+	private String announced;
 
 	protected DecisionEvent prevEvent;
 	
@@ -98,6 +105,9 @@ public class LifterInfo extends VerticalLayout implements
         this.parentView = parentView;
         this.mode = mode;
         this.sessionData = groupData;
+        
+        notAnnounced = Messages.getString("LifterInfo.NotAnnounced", locale);
+        announced = Messages.getString("LifterInfo.Announced", locale);
         
 		// URI handler must remain, so is not part of the register/unRegister pair
 		app.getMainWindow().addURIHandler(this);
@@ -330,16 +340,18 @@ public class LifterInfo extends VerticalLayout implements
         timerDisplay = new Label();
         timerDisplay.addStyleName("zoomable");
         timerDisplay.addStyleName("timerDisplay");
+        
+        buttonLogger.debug("setting data to {}",groupData1.getCurrentSession().getName());
+        timerDisplay.setData(groupData1);
 
         // we set the value to the time allowed for the current lifter as
         // computed by groupData
         int timeAllowed = groupData1.getDisplayTime();  // was getTimeAllowed();
         final CountdownTimer timer = groupData1.getTimer();
         final boolean running = timer.isRunning();
-        logger.debug("timeAllowed={} timer.isRunning()={}", timeAllowed, running); //$NON-NLS-1$
+        logger.warn("timeAllowed={} timer.isRunning()={}", timeAllowed, running); //$NON-NLS-1$
         if (!running) {
-            timerDisplay.setValue(TimeFormatter.formatAsSeconds(timeAllowed));
-            timerDisplay.setEnabled(false); // greyed out.
+            setTimerDisplay(timeAllowed);
         }
         this.addComponent(timerDisplay);
     }
@@ -363,12 +375,30 @@ public class LifterInfo extends VerticalLayout implements
 
         synchronized (app) {
             if (!isBlocked()) {
-                timerDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
-                timerDisplay.setEnabled(true);
+                setTimerDisplay(timeRemaining);
             }
             setBlocked(false);
         }
         app.push();
+    }
+
+    public void setTimerDisplay(int timeRemaining) {
+        if (timerDisplay == null) return;
+        SessionData groupData1 = (SessionData) timerDisplay.getData();
+        if (groupData1 == null) return;
+        timerDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining)+
+                getAnnouncedIndicator(groupData1));
+        if (groupData1 != null) {
+            timerDisplay.setEnabled(groupData1.getTimer().isRunning());
+        }
+    }
+
+    public String getAnnouncedIndicator(SessionData groupData1) {
+
+        return groupData1 != null &&
+        groupData1.getNeedToAnnounce()  
+               ? " "+notAnnounced
+                       : " "+announced;
     }
 
     @Override
@@ -382,7 +412,7 @@ public class LifterInfo extends VerticalLayout implements
 
         synchronized (app) {
             if (!isBlocked()) {
-                timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
+                setTimerDisplay(remaining);
 //                final ClassResource resource = new ClassResource("/sounds/finalWarning.mp3", app); //$NON-NLS-1$
 //                playSound(resource);
                 playSound("/sounds/finalWarning2.wav", masterData);
@@ -413,7 +443,7 @@ public class LifterInfo extends VerticalLayout implements
 
         synchronized (app) {
             if (!isBlocked()) {
-                timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
+                setTimerDisplay(remaining);
 //                final ClassResource resource = new ClassResource("/sounds/initialWarning.mp3", app); //$NON-NLS-1$
 //                playSound(resource);
                 playSound("/sounds/initialWarning2.wav", masterData);
@@ -468,7 +498,7 @@ public class LifterInfo extends VerticalLayout implements
 
         synchronized (app) {
             if (!isBlocked()) {
-                timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
+                setTimerDisplay(remaining);
 //                final ClassResource resource = new ClassResource("/sounds/timeOver.mp3", app); //$NON-NLS-1$
 //                playSound(resource);
                 playSound("/sounds/timeOver2.wav", masterData);
@@ -488,7 +518,7 @@ public class LifterInfo extends VerticalLayout implements
 
         synchronized (app) {
         	timerDisplay.setEnabled(false); // show that timer has stopped.
-            timerDisplay.setValue(TimeFormatter.formatAsSeconds(remaining));
+        	setTimerDisplay(remaining);
             timerControls.enableStopStart(false);
             setBlocked(false);
         }
@@ -824,11 +854,14 @@ public class LifterInfo extends VerticalLayout implements
 			groupData.getRefereeDecisionController().addListener(this);
 			if (timer != null) timer.setMasterBuzzer(this);
         }
+		
 		// timer countdown events; bottom information does not show timer.
 		// if already master buzzer, do not register twice.
         if (timer != null && ! isBottom() && !(timer.getMasterBuzzer() == this)) {
         	timer.addListener(this);
-        } 
+        }
+        
+        groupData.addListener(this);
 
 	}
 
@@ -895,5 +928,18 @@ public class LifterInfo extends VerticalLayout implements
     @Override
     public boolean needsBlack() {
         return false;
+    }
+
+    @Override
+    public void updateEvent(UpdateEvent updateEvent) {
+        // use allowed time if current lifter does not own clock
+        Lifter clockOwner = groupData.getTimer().getOwner();
+        Lifter currentLifter = updateEvent.getCurrentLifter();
+        if (currentLifter == clockOwner) {
+            // lifter owns clock, start with remaining time.
+            setTimerDisplay(groupData.getTimeRemaining());
+        } else {
+            setTimerDisplay(groupData.getTimeAllowed());
+        }
     }
 }
