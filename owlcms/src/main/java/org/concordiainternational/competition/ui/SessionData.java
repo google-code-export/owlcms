@@ -287,7 +287,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             setTimeAllowed(timeAllowed(currentLifter));
 
             logger.debug(
-                        "paused time, needToUpdateNec = true, timeAllowed={}, timeRemaining={}", timeAllowed, timer2.getTimeRemaining()); //$NON-NLS-1$
+                        "paused time, timeAllowed={}, timeRemaining={}", timeAllowed, timer2.getTimeRemaining()); //$NON-NLS-1$
         }
 
         if (currentLifter != null) {
@@ -456,6 +456,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
         refereeDecisionController.reset(); 
         juryDecisionController.reset();
+        announcerEnabled = false;
 
         if (startTimeAutomatically) {
             startTimer(lifter,this,getTimer());
@@ -463,6 +464,10 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             logger.info("timekeeping NOT in use, setting lifter {} as owner", lifter);
             getTimer().setOwner(lifter);
         } 
+        
+        // we just did the announce.
+        setNeedToAnnounce(false);
+        notifyListeners();
     }
 
 

@@ -14,9 +14,9 @@ import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.AnnouncerView;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
 import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.ui.InteractionNotificationReason;
 import org.concordiainternational.competition.ui.LifterInfo;
 import org.concordiainternational.competition.ui.SessionData;
-import org.concordiainternational.competition.ui.InteractionNotificationReason;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +35,8 @@ public class TimerControls extends GridLayout {
 	static final Logger logger = LoggerFactory.getLogger(TimerControls.class);
 	static final Logger timingLogger = LoggerFactory
 			.getLogger("org.concordiainternational.competition.timer.TimingLogger"); //$NON-NLS-1$
+	static final Logger buttonLogger = LoggerFactory
+	            .getLogger("org.concordiainternational.competition.ButtonsLogger"); //$NON-NLS-1$
 
 	/**
 	 * a click that take place less than MIN_CLICK_DELAY milliseconds after an
@@ -110,7 +112,6 @@ public class TimerControls extends GridLayout {
 
 			this.addComponent(announce, 0, 0, 1, 0);
 			this.addComponent(changeWeight, 2, 0, 3, 0);
-			//this.addComponent(stopStart, 0, 1, 1, 1);
 			this.addComponent(start, 0, 1, 0, 1);
 			this.addComponent(stop, 1, 1, 1, 1);
 
@@ -122,23 +123,19 @@ public class TimerControls extends GridLayout {
 			okLift.addStyleName("okLift"); //$NON-NLS-1$
 			failedLift.addStyleName("failedLift"); //$NON-NLS-1$
 
-			final boolean announced = !groupData.getNeedToAnnounce();
+//			final boolean announced = !groupData.getNeedToAnnounce();
 			if (!WebApplicationConfiguration.ShowLifterImmediately) {
-				announce.setEnabled(true); // allow announcer to call lifter at
-				// will
+//				announce.setEnabled(true); // allow announcer to call lifter at will
+//				buttonLogger.debug("announce: "+"do not show lifter immediately"+": {}", announce.isEnabled() );
 				changeWeight.setEnabled(true); // always allow changes
 				enableStopStart(true);
-				//stopStart.setEnabled(announced);
 			} else {
-				announce.setEnabled(!announced && groupData.getAnnouncerEnabled()); // if lifter has been
-				// announced, disable this
-				// button
+			    // if lifter has been announced, disable this button
+//				announce.setEnabled(!announced /*&& groupData.getAnnouncerEnabled()*/);
+//				buttonLogger.debug("announce: "+"!announced "+": {}", announce.isEnabled() );
 				changeWeight.setEnabled(true); // always allow changes
 				enableStopStart(groupData.getTimer().isRunning());
-				//stopStart.setEnabled(announced);
 			}
-			// okLift.setEnabled(false);
-			// failedLift.setEnabled(false);
 
 			if (timerVisible) {
 				showTimerControls(groupData.getTimer().isRunning());
@@ -259,41 +256,6 @@ public class TimerControls extends GridLayout {
 		okLift.setEnabled(groupData.getAnnouncerEnabled());
 	}
 
-	//    /**
-	//     * @param lifter
-	//     * @param groupData
-	//     * @param locale
-	//     */
-	//    private void configureStopStart(final Lifter lifter, final SessionData groupData, Locale locale) {
-	//        final Button.ClickListener stopStartListener = new Button.ClickListener() { //$NON-NLS-1$
-	//            private static final long serialVersionUID = -2582860566509880474L;
-	//
-	//            @Override
-	//            public void buttonClick(ClickEvent event) {
-	//                logger.debug("stop/start clicked");
-	//                final CountdownTimer timer = groupData.getTimer();
-	//                groupData.manageTimerOwner(lifter, groupData, timer);
-	//
-	//                final boolean running = timer.isRunning();
-	//                timingLogger.debug("stop/start timer.isRunning()={}", running); //$NON-NLS-1$
-	//                if (running) {
-	//                    lifterInfo.setBlocked(true);
-	//                    timer.pause(TimeStoppedNotificationReason.STOP_START_BUTTON); // pause() does not clear the associated
-	//                                   // lifter
-	//                } else {
-	//                    lifterInfo.setBlocked(false); // !!!!
-	//                    timer.restart();
-	//                    groupData.setLifterAsHavingStarted(lifter);
-	//                    groupData.getRefereeDecisionController().setBlocked(false);
-	//                }
-	//                // announce.setEnabled(false);
-	//                // changeWeight.setEnabled(false);
-	//            }
-	//        };
-	////        stopStart.addListener(stopStartListener);
-	////        stopStart.setWidth(ANNOUNCER_BUTTON_WIDTH); //$NON-NLS-1$
-	////        stopStart.setCaption(Messages.getString("LifterInfo.StopStartTime", locale)); //$NON-NLS-1$
-	//    }
 
 	/**
 	 * @param lifter
@@ -310,9 +272,7 @@ public class TimerControls extends GridLayout {
 			}
 		};
 		start.addListener(startListener);
-		//start.setWidth(ANNOUNCER_BUTTON_WIDTH); //$NON-NLS-1$
 		start.setIcon(new ThemeResource("icons/16/playTriangle.png"));
-		//start.setCaption(Messages.getString("LifterInfo.StartTime", locale)); //$NON-NLS-1$
 	}
 
 	/**
@@ -330,9 +290,7 @@ public class TimerControls extends GridLayout {
 			}
 		};
 		stop.addListener(stopListener);
-		//stop.setWidth(ANNOUNCER_BUTTON_WIDTH); //$NON-NLS-1$
 		stop.setIcon(new ThemeResource("icons/16/pause.png"));
-		//stop.setCaption(Messages.getString("LifterInfo.StopTime", locale)); //$NON-NLS-1$
 	}
 
 	/**
@@ -397,7 +355,8 @@ public class TimerControls extends GridLayout {
 					announcerView.editFirstLifterInfo(groupData, WebApplicationConfiguration.DEFAULT_STICKINESS);
 					changeWeight.setEnabled(true);
 					if (mode == Mode.ANNOUNCER) {
-						announce.setEnabled(true);
+//						announce.setEnabled(true);
+//						buttonLogger.debug("announce:"+"Mode.ANNOUNCER"+": {}", announce.isEnabled() );
 						announcerView.selectFirstLifter();
 					}
 				}
@@ -427,7 +386,8 @@ public class TimerControls extends GridLayout {
 				checkDecisionHasBeenDisplayed(groupData, locale);
 				groupData.callLifter(lifter); // will call start which will cause the timer buttons to do their thing.
 				enableStopStart(groupData.getTimer().isRunning());
-				announce.setEnabled(false);
+//				announce.setEnabled(false);
+//				buttonLogger.debug("announce:"+"Mode.ANNOUNCER"+": {}", announce.isEnabled());
 				changeWeight.setEnabled(true);
 				groupData.getRefereeDecisionController().setBlocked(false);
 				// okLift.setEnabled(true);
@@ -438,13 +398,14 @@ public class TimerControls extends GridLayout {
 		announce.addListener(announceListener);
 		announce.setWidth(ANNOUNCER_BUTTON_WIDTH); //$NON-NLS-1$
 		announce.setCaption(Messages.getString("LifterInfo.Announce", locale)); //$NON-NLS-1$
-		announce.setEnabled(groupData.getAnnouncerEnabled());
+//		announce.setEnabled(groupData.getAnnouncerEnabled());
+//		buttonLogger.debug("announce:"+"groupData.getAnnouncerEnabled()"+": {}", announce.isEnabled() );
 	}
 
 	protected void checkDecisionHasBeenDisplayed(SessionData groupData, Locale locale) {
-		if (!groupData.getAnnouncerEnabled()) {
-			throw new RuntimeException(Messages.getString("LifterInfo.Busy", locale)); //$NON-NLS-1$
-		}
+//		if (!groupData.getAnnouncerEnabled()) {
+//			throw new RuntimeException(Messages.getString("LifterInfo.Busy", locale)); //$NON-NLS-1$
+//		}
 	}
 
 	/**
@@ -493,14 +454,16 @@ public class TimerControls extends GridLayout {
 
 	public void showLiftControls() {
 		logger.trace("showing announcer decision buttons");
-		announce.setEnabled(true);
+//		announce.setEnabled(true);
+//		buttonLogger.debug("announce:"+"showLiftControls"+": {}", announce.isEnabled() );
 		okLift.setEnabled(true);
 		failedLift.setEnabled(true);
 	}
 
 	public void hideLiftControls() {
 		logger.trace("hiding announcer decision buttons");
-		announce.setEnabled(false);
+//		announce.setEnabled(false);
+//		buttonLogger.debug("announce:"+"hideLiftControls"+": {}", announce.isEnabled() );
 		okLift.setEnabled(false);
 		failedLift.setEnabled(false);
 	}

@@ -57,6 +57,8 @@ public class CountdownTimer implements Serializable {
      */
     private LifterInfo masterBuzzer = null;
 
+    private boolean started = false;
+
     public CountdownTimer() {
         logger.debug("new {}",this); //$NON-NLS-1$
     }
@@ -87,6 +89,7 @@ public class CountdownTimer implements Serializable {
         
         final Set<CountdownTimerListener> listeners2 = getListeners();
         logger.trace("start: {}  - {} listeners", timeRemaining, listeners2.size()); //$NON-NLS-1$
+        setStarted(true);
         if (countdownDisplay != null) {
             countdownDisplay.start(timeRemaining);
         }
@@ -130,6 +133,7 @@ public class CountdownTimer implements Serializable {
             countdownTask.cancel();
             countdownTask = null;
         }
+        setStarted(false);
         logger.info("pause: {}", timeRemaining); //$NON-NLS-1$
         if (countdownDisplay != null) {
             countdownDisplay.pause(timeRemaining, CompetitionApplication.getCurrent(), reason);
@@ -176,6 +180,7 @@ public class CountdownTimer implements Serializable {
             setTimeRemaining((int) countdownTask.getBestTimeRemaining());
         }
         setOwner(null);
+        setStarted(false);
         logger.info("stop: {}", timeRemaining); //$NON-NLS-1$
         if (countdownDisplay != null) {
             countdownDisplay.stop(timeRemaining, CompetitionApplication.getCurrent(), reason);
@@ -372,6 +377,14 @@ public class CountdownTimer implements Serializable {
 		logger.debug("cancelling timer");
 		this.timer.cancel();
 	}
+
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void setStarted(boolean started) {
+        this.started = started;
+    }
 
 
 

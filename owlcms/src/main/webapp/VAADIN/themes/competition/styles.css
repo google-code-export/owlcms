@@ -384,8 +384,8 @@ textarea.v-textarea-readonly,
 	display: none;
 }
 
-.newAttemptBoard .intermission {
-	color: lime;
+.newAttemptBoard .largeCountdown.intermission {
+	color: red;
 }
 
 .newAttemptBoard .largeCountdown {
@@ -735,7 +735,7 @@ button.yesButton {
 
 .v-panel-content .largeCountdownBackground .intermission {
 	background-color: black;
-	color: lime;
+	color: red;
 	font-size: 40em;
 }
 
@@ -805,7 +805,7 @@ table.publicAddressOverlay {
 .publicAddressOverlay tr td.remainingTime .v-label {
 	font-size: 5em;
 	font-weight: bold;
-	color: lime;
+	color: red;
 }
 
 .publicAddressOverlay img {
