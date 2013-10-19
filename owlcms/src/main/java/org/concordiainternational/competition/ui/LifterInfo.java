@@ -349,7 +349,7 @@ public class LifterInfo extends VerticalLayout implements
         int timeAllowed = groupData1.getDisplayTime();  // was getTimeAllowed();
         final CountdownTimer timer = groupData1.getTimer();
         final boolean running = timer.isRunning();
-        logger.warn("timeAllowed={} timer.isRunning()={}", timeAllowed, running); //$NON-NLS-1$
+        logger.debug("timeAllowed={} timer.isRunning()={}", timeAllowed, running); //$NON-NLS-1$
         if (!running) {
             setTimerDisplay(timeAllowed);
         }
@@ -922,7 +922,7 @@ public class LifterInfo extends VerticalLayout implements
 
     @Override
     public void showNotificationForLifter(Lifter lifter1, Notification notification, boolean unlessCurrent) {
-        logger.warn("lifter {} unlessCurrent{}",lifter1,unlessCurrent);
+        logger.debug("lifter {} unlessCurrent{}",lifter1,unlessCurrent);
         if (!unlessCurrent) {
             // always show notification
             app.getMainWindow().showNotification(notification);
