@@ -861,6 +861,7 @@ public class LifterInfo extends VerticalLayout implements
         	timer.addListener(this);
         }
         
+        // session updates and announces
         groupData.addListener(this);
 
 	}
@@ -876,9 +877,15 @@ public class LifterInfo extends VerticalLayout implements
 		// cleanup referee decision listening.
 		CountdownTimer timer = groupData.getTimer();	
 		groupData.getRefereeDecisionController().removeListener(this);
+		
+		// buzzer
 		if (timer != null && timer.getMasterBuzzer() == this) timer.setMasterBuzzer(null);
+		
 		// timer countdown events
 		if (timer != null) timer.removeListener(this);
+		        
+        // session updates and announces
+        groupData.removeListener(this);
 	}
 
 
