@@ -26,6 +26,7 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.TimerControls;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.concordiainternational.competition.ui.generators.TryFormatter;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.notifique.Notifique;
@@ -564,7 +565,7 @@ public class LifterInfo extends VerticalLayout implements
 			// defensive
 			String originatingPlatformName = originatingApp.components.getPlatformName();
 			String receivingPlatformName = receivingApp.components.getPlatformName();
-			if (! originatingPlatformName.equals(receivingPlatformName)) {
+			if ( originatingPlatformName == null || ! originatingPlatformName.equals(receivingPlatformName)) {
 				logger.error("event from platform {} sent to {}",originatingPlatformName, receivingPlatformName);
 				traceBack(originatingApp);
 			}
@@ -593,8 +594,10 @@ public class LifterInfo extends VerticalLayout implements
 	 * @param originatingApp
 	 */
 	private void traceBack(CompetitionApplication originatingApp) {
-//		logger.trace("showNotification in {} from {}",app,originatingApp);
-//		LoggerUtils.logException(logger, new Exception("Stack Trace"));
+	    if (logger.isTraceEnabled()) {
+	        logger.trace("showNotification in {} from {}",app,originatingApp);
+	        LoggerUtils.logException(logger, new Exception("Stack Trace"));
+	    }
 	}
 
     @Override
@@ -700,7 +703,7 @@ public class LifterInfo extends VerticalLayout implements
 			public void run() {
 				// show a notification
 				// only the master console is registered for these events.
-				logger.trace("received event {}",updateEvent);
+				logger.debug("received event {}",updateEvent);
 				switch (updateEvent.getType()) {
 				case SHOW:
 					 shown = true;
@@ -771,7 +774,7 @@ public class LifterInfo extends VerticalLayout implements
 			@SuppressWarnings("unused")
             private boolean stutteringEvent(DecisionEvent curEvent,
 					DecisionEvent prevEvent1) {
-				logger.trace("curEvent={} prevEvent={}",curEvent,prevEvent1);
+				logger.debug("curEvent={} prevEvent={}",curEvent,prevEvent1);
 				if (curEvent != null && prevEvent1 != null) {
 					Lifter cur = updateEvent.getLifter();
 					Lifter prev = prevEvent1.getLifter();
@@ -779,37 +782,37 @@ public class LifterInfo extends VerticalLayout implements
 						if (cur != prev) {
 							return false;	
 						}
-						logger.trace("same lifter");
+						logger.debug("same lifter");
 						Integer curAtt = cur.getAttemptsDone();
 						Integer prevAtt = cur.getAttemptsDone();
 						if (curAtt != null && prevAtt != null) {
 							if (!curAtt.equals(prevAtt)){
 								return false;
 							}
-							logger.trace("same attempt");
+							logger.debug("same attempt");
 							Boolean prevDecision = prevEvent1.isAccepted();
 							Boolean curDecision = curEvent.isAccepted();
 							if (prevDecision != null && curDecision != null) {
-								logger.trace("prevDecision={} curDecision={}",prevDecision,curDecision);
+								logger.debug("prevDecision={} curDecision={}",prevDecision,curDecision);
 								return prevDecision.equals(curDecision);
 							} else {
 								final boolean b = prevDecision == null && curDecision == null;
-								logger.trace("either decision is null prevDecision={} curDecision={}",prevDecision,curDecision);
+								logger.debug("either decision is null prevDecision={} curDecision={}",prevDecision,curDecision);
 								return b;
 							}
 						} else {
 							final boolean b = curAtt == null && prevAtt == null;
-							logger.trace("either attempt is null prevAtt={} curAtt={}",prevAtt,curAtt);
+							logger.debug("either attempt is null prevAtt={} curAtt={}",prevAtt,curAtt);
 							return b;
 						}
 					} else {
 						final boolean b = cur == null && prev == null;
-						logger.trace("either lifter is null prev={} cur={}",prev,cur);
+						logger.debug("either lifter is null prev={} cur={}",prev,cur);
 						return b;
 					}
 				}  else {
 					final boolean b = curEvent == null && prevEvent1 == null;
-					logger.trace("either event is null prevEvent1={} curEvent={}",prevEvent1,curEvent);
+					logger.debug("either event is null prevEvent1={} curEvent={}",prevEvent1,curEvent);
 					return b;
 				}
 			}
@@ -902,7 +905,7 @@ public class LifterInfo extends VerticalLayout implements
 
 	@Override
 	public DownloadStream handleURI(URL context, String relativeUri) {
-		logger.trace("registering listeners");
+		logger.debug("registering listeners");
 		// called on refresh
 		registerAsListener();
 		return null;

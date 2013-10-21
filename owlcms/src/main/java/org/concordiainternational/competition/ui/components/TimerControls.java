@@ -348,7 +348,7 @@ public class TimerControls extends GridLayout {
 			public void buttonClick(ClickEvent event) {
 				timingLogger.debug("weightChangeButton clicked"); //$NON-NLS-1$
 				logger.info("WEIGHT CHANGE button clicked");
-				groupData.getTimer().pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE);
+				groupData.getTimer().pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE_STARTED);
 				if (mode == Mode.ANNOUNCER || mode == Mode.MARSHALL) {
 					AnnouncerView announcerView = (AnnouncerView) CompetitionApplication.getCurrent().components.currentView;
 					announcerView.setStickyEditor(false, false);
@@ -422,7 +422,7 @@ public class TimerControls extends GridLayout {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				timingLogger.debug("stopTimeBottom"); //$NON-NLS-1$
-				groupData.getTimer().pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE);
+				groupData.getTimer().pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE_DONE);
 			}
 		};
 		stopTimeBottom.addListener(stopTimeBottomListener);

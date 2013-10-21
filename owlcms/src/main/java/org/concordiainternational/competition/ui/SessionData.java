@@ -279,7 +279,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
                     //&& timer2.isRunning()
                     ) {
             	if (currentLifter == priorLifter && priorRequestNum == currentRequestNum && priorRequest != currentRequest) {
-            		timer2.pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE);
+            		timer2.pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE_DONE);
             	} else {
             		timer2.pause();
             	}

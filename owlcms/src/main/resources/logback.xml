@@ -25,11 +25,11 @@
 	<logger name="org.hibernate.cache.EhCacheProvider" level="ERROR" />
 	<logger name="org.apache.commons.jexl2.Interpreter" level="ERROR" />
 
-	<logger name="org.concordiainternational" level="WARN" />
-	
-	<logger name="org.concordiainternational.competition.ButtonsLogger" level="DEBUG" />
+	<logger name="org.concordiainternational" level="INFO" />
 
     <!--   
+		<logger name="org.concordiainternational.competition.ui.LifterInfo" level="TRACE" />
+    	<logger name="org.concordiainternational.competition.ButtonsLogger" level="DEBUG" />
 		<logger name="org.concordiainternational.competition.ui.AttemptBoardView" level="TRACE" />
         <logger name="org.concordiainternational.competition.publicAddress" level="WARN" />
         <logger name="org.concordiainternational.competition.ui.AnnouncerView" level="TRACE" />

@@ -534,13 +534,14 @@ public class AnnouncerView extends VerticalSplitPanel implements
 		Lifter curLifter = masterData.getCurrentLifter();
 		Integer curWeight = curLifter.getNextAttemptRequestedWeight();
 		
+        Object curWght = reason == InteractionNotificationReason.CURRENT_LIFTER_CHANGE_STARTED ? "" : curWeight;
         if (mode2 == null) {
             message = MessageFormat.format(
                     Messages.getString("TimeStoppedNotificationReason.NotificationFormatShort", locale),
                     reasonDetails,
                     curLifter.getLastName(),
                     curLifter.getFirstName(),
-                    curWeight);
+                    curWght);
 		} else {
 			message = MessageFormat.format(
 					Messages.getString("TimeStoppedNotificationReason.NotificationFormat", locale),
@@ -548,11 +549,12 @@ public class AnnouncerView extends VerticalSplitPanel implements
 					reasonDetails,
 					curLifter.getLastName(),
 					curLifter.getFirstName(),
-					curWeight);
+					curWght);
 		}
 		final Message addedMessage = notifications.add((Resource)null,message,true,Notifique.Styles.VAADIN_ORANGE,true);
 		switch (reason) {
-		case CURRENT_LIFTER_CHANGE:
+		case CURRENT_LIFTER_CHANGE_STARTED:
+		case CURRENT_LIFTER_CHANGE_DONE:
 			// the announcer must acknowledge explicitly
 			if (this.mode != Mode.ANNOUNCER) {
 				scheduleMessageRemoval(addedMessage, messageRemovalMs);

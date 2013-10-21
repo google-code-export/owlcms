@@ -531,7 +531,7 @@ public class CompetitionApplicationComponents {
             app.setCurrentCompetitionSession(currentGroup);
         } else {
             logger.error(Messages.getString(
-                "CompetitionApplicationComponents.PlatformNotFound", CompetitionApplication.getCurrentLocale())); //$NON-NLS-1$
+                "CompetitionApplicationComponents.PlatformNotFound", CompetitionApplication.getCurrentLocale()),platformName); //$NON-NLS-1$
         }
         logger.debug("finish +++++"); //$NON-NLS-1$
     }
