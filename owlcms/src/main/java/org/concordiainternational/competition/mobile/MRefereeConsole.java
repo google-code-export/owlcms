@@ -87,7 +87,8 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 		} else if (app.getPlatform() == null) {
 			app.setPlatformByName(platformName);
 		}
-
+		logger.warn("platform name = {}",platformName);
+		
 		if (masterData == null) masterData = app.getMasterData(platformName);
 		if (decisionController == null) decisionController = getDecisionController();
 
