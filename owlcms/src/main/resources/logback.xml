@@ -25,7 +25,7 @@
 	<logger name="org.hibernate.cache.EhCacheProvider" level="ERROR" />
 	<logger name="org.apache.commons.jexl2.Interpreter" level="ERROR" />
 
-	<logger name="org.concordiainternational" level="INFO" />
+	<logger name="org.concordiainternational" level="WARN" />
 	
 	<logger name="org.concordiainternational.competition.ButtonsLogger" level="DEBUG" />
 

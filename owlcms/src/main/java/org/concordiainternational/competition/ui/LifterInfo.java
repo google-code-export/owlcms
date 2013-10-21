@@ -554,7 +554,11 @@ public class LifterInfo extends VerticalLayout implements
 	@Override
     public void showInteractionNotification(CompetitionApplication originatingApp, InteractionNotificationReason reason) {
 
-		if (isTop() && app != originatingApp) {
+	    // display notifications from other apps, except for no_timer and not_announced, which
+	    // are mistakes that should always be shown.
+		if (isTop() && 
+		        (app != originatingApp
+		        || reason == InteractionNotificationReason.NO_TIMER|| reason == InteractionNotificationReason.NOT_ANNOUNCED )) {
 			CompetitionApplication receivingApp = app;
 			
 			// defensive
@@ -574,6 +578,8 @@ public class LifterInfo extends VerticalLayout implements
 							&& originatingView.mode != Mode.TIMEKEEPER) {
 						traceBack(originatingApp);
 						receivingView.displayNotification(originatingView.mode,reason);
+					} else if (reason == InteractionNotificationReason.NO_TIMER || reason == InteractionNotificationReason.NOT_ANNOUNCED) {
+					    receivingView.displayNotification(originatingView.mode,reason);
 					}
 				} else {
 					traceBack(originatingApp);

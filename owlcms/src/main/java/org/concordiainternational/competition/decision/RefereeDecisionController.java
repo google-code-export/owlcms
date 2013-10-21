@@ -101,10 +101,17 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 	 */
     @Override
 	public synchronized void decisionMade(int refereeNo, boolean accepted) {
-    	if (isBlocked()) return;
+//    	if (isBlocked() 
+//    	        || !groupData.isAnnounced()
+//    	        ) {
+//            logger.warn("decision IGNORED from referee {}: {} (not announced)", 
+//                    refereeNo + 1,
+//                    (accepted ? "lift" : "no lift"));
+//            return;
+//        }
 
     	if (refereeDecisions[refereeNo] == null) {
-    		logger.warn("decision ignored from referee {}: {} (not in a session)", 
+    		logger.warn("decision IGNORED from referee {}: {} (not in a session)", 
         			refereeNo + 1,
                     (accepted ? "lift" : "no lift"));
         	return;
@@ -113,7 +120,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
     	// prevent reversal from red to white.
         if ((refereeDecisions[refereeNo].accepted != null) && !(refereeDecisions[refereeNo].accepted)) {
         	// cannot reverse from red to white.
-        	logger.warn("decision ignored from referee {}: {} (prior decision was {})", 
+        	logger.warn("decision IGNORED from referee {}: {} (prior decision was {})", 
         			new Object[] { refereeNo + 1,
                     (accepted ? "lift" : "no lift"), 
                     refereeDecisions[refereeNo].accepted});
@@ -124,7 +131,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
         long deltaTime = currentTimeMillis - allDecisionsMadeTime;
         if (decisionsMade == 3 && deltaTime > DECISION_REVERSAL_DELAY) {
             // too late to reverse decision
-            logger.warn("decision ignored from referee {}: {} (too late by {} ms)", new Object[] { refereeNo + 1,
+            logger.warn("decision IGNORED from referee {}: {} (too late by {} ms)", new Object[] { refereeNo + 1,
                     (accepted ? "lift" : "no lift"), deltaTime - DECISION_REVERSAL_DELAY });
             return;
         }
