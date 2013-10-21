@@ -279,7 +279,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
                     //&& timer2.isRunning()
                     ) {
             	if (currentLifter == priorLifter && priorRequestNum == currentRequestNum && priorRequest != currentRequest) {
-            		timer2.pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE);
+            		timer2.pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE_DONE);
             	} else {
             		timer2.pause();
             	}
@@ -1007,17 +1007,21 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 				logger.error("decision lights is null");
 			}
 		}
-		timerStoppedByReferee();
+		notifyPrematureDecision();
 	}
 
 	/**
 	 * 
 	 */
-	synchronized private void timerStoppedByReferee() {
+	synchronized public void notifyPrematureDecision() {
 		CountdownTimer timer2 = getTimer();
-		if (timer2.isRunning()) {
+		if (!isAnnounced()) {
+		    timer2.stop(InteractionNotificationReason.NOT_ANNOUNCED);
+		} else if (timeKeepingInUse && timer2.isRunning()) {
 			timer2.stop(InteractionNotificationReason.REFEREE_DECISION);
-		}
+		} else if (timeKeepingInUse) {
+            timer2.stop(InteractionNotificationReason.NO_TIMER);
+        }
 	}
 	
 	

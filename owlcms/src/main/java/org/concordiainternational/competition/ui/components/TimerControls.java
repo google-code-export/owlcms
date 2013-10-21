@@ -348,7 +348,7 @@ public class TimerControls extends GridLayout {
 			public void buttonClick(ClickEvent event) {
 				timingLogger.debug("weightChangeButton clicked"); //$NON-NLS-1$
 				logger.info("WEIGHT CHANGE button clicked");
-				groupData.getTimer().pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE);
+				groupData.getTimer().pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE_STARTED);
 				if (mode == Mode.ANNOUNCER || mode == Mode.MARSHALL) {
 					AnnouncerView announcerView = (AnnouncerView) CompetitionApplication.getCurrent().components.currentView;
 					announcerView.setStickyEditor(false, false);
@@ -422,7 +422,7 @@ public class TimerControls extends GridLayout {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				timingLogger.debug("stopTimeBottom"); //$NON-NLS-1$
-				groupData.getTimer().pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE);
+				groupData.getTimer().pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE_DONE);
 			}
 		};
 		stopTimeBottom.addListener(stopTimeBottomListener);
@@ -477,11 +477,14 @@ public class TimerControls extends GridLayout {
 					(currentTimeMillis - lifterInfo.getLastOkButtonClick()) });
 			lifterInfo.setLastOkButtonClick(currentTimeMillis);
 			logger.debug("Ok: dernier click accepté: {} {}", (lifterInfo.getLastOkButtonClick()), lifterInfo);
-			timingLogger.debug("okLift"); //$NON-NLS-1$
+			
+	        groupData.notifyPrematureDecision();
+			timingLogger.debug("okLift"); //$NON-NLS-1$	
 			// call group data first because this resets the timers
 			logger.info("successful lift for {} {}", lifter.getLastName(), lifter.getFirstName()); //$NON-NLS-1$
-			lifterInfo.setBlocked(true);
+			lifterInfo.setBlocked(true);		
 			groupData.okLiftUpdateModel();
+			
 		} else {
 			logger.debug("Ok: délai Inacceptable: {}", currentTimeMillis - lifterInfo.getLastOkButtonClick());
 		}
@@ -494,11 +497,15 @@ public class TimerControls extends GridLayout {
             logger.debug("Failed: délai acceptable: {}", currentTimeMillis
                     - lifterInfo.getLastFailedButtonClick());
             lifterInfo.setLastFailedButtonClick(currentTimeMillis);
+            
+            groupData.notifyPrematureDecision();
             timingLogger.debug("failedLift"); //$NON-NLS-1$
             // call group data first because this resets the timers
             logger.info("failed lift for {} {}", lifter.getLastName(), lifter.getFirstName()); //$NON-NLS-1$
             lifterInfo.setBlocked(true);
+            
             groupData.failedListUpdateModel();
+
         } else {
             logger.debug("Failed: délai Inacceptable: {}", currentTimeMillis
                     - lifterInfo.getLastFailedButtonClick());
