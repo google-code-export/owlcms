@@ -552,6 +552,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
 					curWght);
 		}
 		final Message addedMessage = notifications.add((Resource)null,message,true,Notifique.Styles.VAADIN_ORANGE,true);
+		logger.warn("{} informed of event: {}");
 		switch (reason) {
 		case CURRENT_LIFTER_CHANGE_STARTED:
 		case CURRENT_LIFTER_CHANGE_DONE:
