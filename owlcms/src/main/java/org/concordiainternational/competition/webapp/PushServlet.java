@@ -72,6 +72,10 @@ public class PushServlet extends ApplicationServlet {
 //        page.write("<meta name='viewport' content='width=device-width' />");
 //        page.write("<meta name='apple-mobile-web-app-capable' content='yes' />");
         
+        // android chrome 31 and later
+        page.append("<meta name=\"mobile-web-app-capable\" content=\"yes\">");
+        
+        // mobile safari
         page.append("<meta name=\"viewport\" content="
                 + "\"user-scalable=no, width=device-width, "
                 + "initial-scale=1.0, maximum-scale=1.0;\" />");
