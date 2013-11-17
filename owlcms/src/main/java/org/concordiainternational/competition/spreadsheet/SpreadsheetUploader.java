@@ -22,10 +22,10 @@ import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.components.ApplicationView;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 import com.vaadin.terminal.DownloadStream;
@@ -65,7 +65,7 @@ public class SpreadsheetUploader extends CustomComponent implements Upload.Succe
         } else {
             this.viewName = viewName;
         }
-        MDC.put("view", getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
 
         this.app = CompetitionApplication.getCurrent();
         this.locale = app.getLocale();

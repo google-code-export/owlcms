@@ -32,10 +32,10 @@ import org.concordiainternational.competition.ui.generators.CommonColumnGenerato
 import org.concordiainternational.competition.ui.generators.LiftCellStyleGenerator;
 import org.concordiainternational.competition.ui.list.LifterHbnList;
 import org.concordiainternational.competition.utils.ItemAdapter;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.slf4j.MDC;
 
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.SystemError;
@@ -61,7 +61,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
         } else {
             this.viewName = viewName;
         }
-        MDC.put("view", getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
 
         this.registration = registration;
         init();

@@ -45,7 +45,6 @@ import org.hibernate.Session;
 import org.hibernate.StaleObjectStateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 
@@ -590,10 +589,10 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      * @return the currentSession
      */
     public CompetitionSession getCurrentSession() {
-    	if (currentSession != null) {
-			final String name = currentSession.getName();
-			MDC.put("currentGroup", ">"+name);
-    	}
+//    	if (currentSession != null) {
+//			final String name = currentSession.getName();
+//			LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.currentGroup, ">"+name);
+//    	}
         return currentSession;
     }
     

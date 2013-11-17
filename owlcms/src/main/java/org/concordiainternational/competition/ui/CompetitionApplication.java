@@ -36,7 +36,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 import org.vaadin.artur.icepush.ICEPush;
@@ -238,7 +237,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     private boolean refreshing;
 
     public void displayRefereeConsole(int refereeIndex) {
-        MDC.put("view", "ref" + refereeIndex);
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,"ref" + refereeIndex);
 
         // remove all listeners on current view.
         getMainLayoutContent().unregisterAsListener();
@@ -251,7 +250,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
 
     public void displayOJuryConsole(int refereeIndex) {
-        MDC.put("view", "oJury" + refereeIndex);
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,"oJury" + refereeIndex);
 
         // remove all listeners on current view.
         getMainLayoutContent().unregisterAsListener();
@@ -264,7 +263,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
 
     public void displayMRefereeConsole(int refereeIndex) {
-        MDC.put("view", "mRef" + refereeIndex);
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,"mRef" + refereeIndex);
         
         // remove all listeners on current view.
         getMainLayoutContent().unregisterAsListener();
@@ -277,7 +276,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
 
     public void displayMJuryConsole(int refereeIndex) {
-        MDC.put("view", "mJury" + refereeIndex);
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,"mJury" + refereeIndex);
 
         // remove all listeners on current view.
         getMainLayoutContent().unregisterAsListener();
@@ -293,7 +292,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @param viewName
      */
     public void doDisplay(String viewName) {
-        MDC.put("view", viewName);
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,viewName);
         
         // remove all listeners on current view.
         ApplicationView mainLayoutContent2 = getMainLayoutContent();
@@ -302,7 +301,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         }
 
         ApplicationView view = components.getViewByName(viewName, false);
-        MDC.put("view", viewName + view.getInstanceId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,viewName + view.getInstanceId());
         setMainLayoutContent(view);
         uriFragmentUtility.setFragment(view.getFragment(), false);
     }
@@ -311,13 +310,13 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @param viewName
      */
     public void displayWithStyle(String viewName, String stylesheet) {
-        MDC.put("view", viewName+"_"+stylesheet);
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,viewName+"_"+stylesheet);
   
         // remove all listeners on current view.
         getMainLayoutContent().unregisterAsListener();
 
         ApplicationView view = components.getViewByName(viewName, false, stylesheet);
-        MDC.put("view", viewName+"_"+stylesheet + view.getInstanceId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,viewName+"_"+stylesheet + view.getInstanceId());
         setMainLayoutContent(view);
 
         uriFragmentUtility.setFragment(view.getFragment(), false);
@@ -335,10 +334,13 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
 
     synchronized public void push() {
-        String string = MDC.get("view");
-        if (string!= null && string.startsWith(DEFAULT_VIEW)) {
-            LoggerUtils.logException(logger, new Exception("pushing from competitionEditor traceback"));
+        if (logger.isDebugEnabled()) {
+            String string = LoggerUtils.mdcGet("view");
+            if (string!= null && string.startsWith(DEFAULT_VIEW)) {
+                LoggerUtils.logException(logger, new Exception("pushing from competitionEditor traceback"));
+            }            
         }
+
         pusher = this.ensurePusher();
         if (!pusherDisabled) {
             logger.trace("pushing with {} on window {}", pusher, getMainWindow());
@@ -362,13 +364,13 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     // }
 
     public CompetitionSession getCurrentCompetitionSession() {
-        if (currentGroup != null) {
-            final String name = currentGroup.getName();
-            MDC.put("currentGroup", name);
-        } else {
-            MDC.put("currentGroup", "-");
-        }
-        return currentGroup;
+//        if (getCurrentGroup() != null) {
+//            final String name = getCurrentGroup().getName();
+//            LoggerUtils.mdcPut("currentGroup", name);
+//        } else {
+//            LoggerUtils.mdcPut("currentGroup", "noSession");
+//        }
+        return getCurrentGroup();
     }
 
     /**
@@ -534,12 +536,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      */
     @Override
     public void setCurrentCompetitionSession(CompetitionSession newSession) {
-        if (newSession != null) {
-            final String name = newSession.getName();
-            MDC.put("currentGroup", "*" + name);
-        }
-        final CompetitionSession oldSession = currentGroup;
-        currentGroup = newSession;
+        final CompetitionSession oldSession = getCurrentGroup();
+        setCurrentGroup(newSession);
         final ApplicationView currentView = components.currentView;
         if (currentView != null) {
             if (currentView instanceof EditingView && oldSession != newSession) {
@@ -943,6 +941,19 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
     public MobileMenu getMobileMenu() {
         return mobileMenu;
+    }
+
+    private CompetitionSession getCurrentGroup() {
+        return currentGroup;
+    }
+
+    private void setCurrentGroup(CompetitionSession currentGroup) {
+        this.currentGroup = currentGroup;
+        String name = "*";
+        if (currentGroup != null) {
+            name = currentGroup.getName();
+        }
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.currentGroup, name);
     }
 
 }

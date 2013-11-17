@@ -20,10 +20,10 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.generators.CommonColumnGenerator;
 import org.concordiainternational.competition.ui.list.GenericHbnList;
 import org.concordiainternational.competition.utils.ItemAdapter;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import com.vaadin.data.Item;
 import com.vaadin.terminal.DownloadStream;
@@ -53,7 +53,7 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
         } else {
             this.viewName = viewName;
         }
-        MDC.put("view", getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
 
         init();
     }

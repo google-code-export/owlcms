@@ -19,9 +19,9 @@ import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.components.ApplicationView;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.vaadin.touchdiv.TouchDiv;
 import org.vaadin.touchdiv.TouchDiv.TouchEvent;
 import org.vaadin.touchdiv.TouchDiv.TouchListener;
@@ -79,7 +79,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
         } else {
             this.viewName = viewName;
         }
-        MDC.put("view", getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
 
         if (app == null)
             this.app = CompetitionApplication.getCurrent();
