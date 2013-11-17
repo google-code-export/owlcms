@@ -60,4 +60,13 @@ public class LoggerUtils {
         LoggerUtils.mdcPut(LoggingKeys.currentGroup, "*");
         LoggerUtils.mdcPut(LoggingKeys.view, CompetitionApplication.getCurrent().getMainLayoutContent().getLoggingId());
     }
+
+
+    public static void traceBack(Logger logger) {
+        logException(logger, new Exception("traceBack")); 
+    }
+    
+    public static void traceBack(Logger logger, String whereFrom) {
+        logException(logger, new Exception(whereFrom)); 
+    }
 }
