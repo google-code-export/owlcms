@@ -110,6 +110,7 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
 
                 @Override
                 public void buttonClick(ClickEvent event) {
+                    LoggerUtils.buttonSetup(masterData);
                     masterData.getRefereeDecisionController().decisionMade(j, true);
                 }
 
@@ -126,6 +127,7 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
 
                 @Override
                 public void buttonClick(ClickEvent event) {
+                    LoggerUtils.buttonSetup(masterData);
                     masterData.getRefereeDecisionController().decisionMade(j, false);
                 }
 

@@ -20,6 +20,7 @@ import org.concordiainternational.competition.ui.components.SessionSelect;
 import org.concordiainternational.competition.ui.generators.CommonColumnGenerator;
 import org.concordiainternational.competition.ui.generators.LiftCellStyleGenerator;
 import org.concordiainternational.competition.ui.list.GenericBeanList;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -191,6 +192,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
 
                 @Override
 				public void buttonClick(ClickEvent event) {
+                    LoggerUtils.buttonSetup(getGroupData());
                     logger.debug("reloading"); //$NON-NLS-1$
                     masterDataForCurrentPlatform.refresh(true);
                 }
@@ -205,6 +207,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
 
             @Override
 			public void buttonClick(ClickEvent event) {
+                LoggerUtils.buttonSetup(getGroupData());
             	CompetitionApplication current = CompetitionApplication.getCurrent();
             	SessionData masterData = current.getMasterData(current.getPlatformName());
 				PublicAddressForm.editPublicAddress(LiftList.this, masterData);

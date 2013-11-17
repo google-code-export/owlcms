@@ -10,6 +10,8 @@ package org.concordiainternational.competition.utils;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.ui.SessionData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -46,5 +48,16 @@ public class LoggerUtils {
     
     public static String mdcGet(String key) {
         return MDC.get(key);
+    }
+    
+    public static void buttonSetup(final SessionData groupData) {
+        LoggerUtils.mdcPut(LoggingKeys.currentGroup, groupData.getCurrentSession().getName());
+        LoggerUtils.mdcPut(LoggingKeys.view, CompetitionApplication.getCurrent().getMainLayoutContent().getLoggingId());
+    }
+
+
+    public static void buttonSetup() {
+        LoggerUtils.mdcPut(LoggingKeys.currentGroup, "*");
+        LoggerUtils.mdcPut(LoggingKeys.view, CompetitionApplication.getCurrent().getMainLayoutContent().getLoggingId());
     }
 }

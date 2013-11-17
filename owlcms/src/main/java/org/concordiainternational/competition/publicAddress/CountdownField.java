@@ -12,6 +12,7 @@ import org.concordiainternational.competition.publicAddress.IntermissionTimerEve
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.components.ISO8601DateField;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.addon.customfield.CustomField;
@@ -70,6 +71,7 @@ public class CountdownField extends CustomField implements IntermissionTimerList
 		Button start = new Button(Messages.getString("Field.CountdownField.start", app.getLocale()), new ClickListener() {	
 			@Override
 			public void buttonClick(ClickEvent event) {
+			    LoggerUtils.buttonSetup();
 				timer.restart(); // start from the current remaining number, or from scratch if none.
 			}
 		});
@@ -77,6 +79,7 @@ public class CountdownField extends CustomField implements IntermissionTimerList
 		Button stop = new Button(Messages.getString("Field.CountdownField.stop", app.getLocale()), new ClickListener() {	
 			@Override
 			public void buttonClick(ClickEvent event) {
+			    LoggerUtils.buttonSetup();
 				timer.pause();
 			}
 		});
@@ -84,6 +87,7 @@ public class CountdownField extends CustomField implements IntermissionTimerList
         Button clear = new Button(Messages.getString("Field.CountdownField.clear", app.getLocale()), new ClickListener() {    
             @Override
             public void buttonClick(ClickEvent event) {
+                LoggerUtils.buttonSetup();
                 requestedSeconds.setValue(0);
             }
         });
@@ -110,6 +114,7 @@ public class CountdownField extends CustomField implements IntermissionTimerList
 		Button set = new Button(Messages.getString("Field.CountdownField.set", app.getLocale()), new ClickListener() {	
 			@Override
 			public void buttonClick(ClickEvent event) {
+			    LoggerUtils.buttonSetup();
 				endTime.commit(); // write to the underlying bean.
 			}
 		});
@@ -137,6 +142,7 @@ public class CountdownField extends CustomField implements IntermissionTimerList
 		Button set = new Button(Messages.getString("Field.CountdownField.set", app.getLocale()), new ClickListener() {	
 			@Override
 			public void buttonClick(ClickEvent event) {
+			    LoggerUtils.buttonSetup();
 				logger.debug("requestedSeconds prior to commit {}, rawfield={}",requestedSeconds.getValue(),rawField.getValue());
 				requestedSeconds.commit(); // write to the underlying bean.
 			}
@@ -145,6 +151,7 @@ public class CountdownField extends CustomField implements IntermissionTimerList
         Button five = new Button("5", new ClickListener() {  
             @Override
             public void buttonClick(ClickEvent event) {
+                LoggerUtils.buttonSetup();
                 requestedSeconds.setValue(5*60);
                 logger.debug("requestedSeconds prior to commit {}, rawfield={}",requestedSeconds.getValue(),rawField.getValue());
                 requestedSeconds.commit(); // write to the underlying bean.
@@ -153,6 +160,7 @@ public class CountdownField extends CustomField implements IntermissionTimerList
         Button ten = new Button("10", new ClickListener() {  
             @Override
             public void buttonClick(ClickEvent event) {
+                LoggerUtils.buttonSetup();
                 requestedSeconds.setValue(10*60);
                 logger.debug("requestedSeconds prior to commit {}, rawfield={}",requestedSeconds.getValue(),rawField.getValue());
                 requestedSeconds.commit(); // write to the underlying bean.
@@ -161,6 +169,7 @@ public class CountdownField extends CustomField implements IntermissionTimerList
         Button fifteen = new Button("15", new ClickListener() {  
             @Override
             public void buttonClick(ClickEvent event) {
+                LoggerUtils.buttonSetup();
                 requestedSeconds.setValue(15*60);
                 logger.debug("requestedSeconds prior to commit {}, rawfield={}",requestedSeconds.getValue(),rawField.getValue());
                 requestedSeconds.commit(); // write to the underlying bean.
