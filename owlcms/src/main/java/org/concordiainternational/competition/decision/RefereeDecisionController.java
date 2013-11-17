@@ -43,9 +43,10 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 	 */
 	private static final int DECISION_DISPLAY_DELAY = 1000;
 
-    Logger logger = LoggerFactory.getLogger(RefereeDecisionController.class);
-    static final Logger buttonLogger = LoggerFactory
-            .getLogger("org.concordiainternational.competition.ButtonsLogger"); //$NON-NLS-1$
+    private static final Logger logger = LoggerFactory.getLogger(RefereeDecisionController.class);
+//    private static final Logger timingLogger = LoggerFactory.getLogger("timing."+SessionData.class.getSimpleName()); //$NON-NLS-1$
+//    private static final Logger buttonLogger = LoggerFactory.getLogger("buttons."+SessionData.class.getSimpleName()); //$NON-NLS-1$
+    private static Logger listenerLogger = LoggerFactory.getLogger("listeners."+SessionData.class.getSimpleName()); //$NON-NLS-1$
 
     Decision[] refereeDecisions = new Decision[3];
     DecisionEventListener[] listeners = new DecisionEventListener[3];
@@ -92,7 +93,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
         allDecisionsMadeTime = 0L; // all 3 referees have pressed
         decisionsMade = 0;
         downSignaled = false;
-        groupData.setAnnouncerEnabled(true);
+        groupData.setAnnounced(false);
         fireEvent(new DecisionEvent(this, DecisionEvent.Type.RESET, System.currentTimeMillis(), refereeDecisions));
     }
 
@@ -201,7 +202,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
                 // in 3 seconds
                 allDecisionsMadeTime = System.currentTimeMillis();
                 logger.info("all decisions made {}", allDecisionsMadeTime);
-                groupData.setAnnouncerEnabled(false);
+                groupData.setAnnounced(false);
                 scheduleDisplay(currentTimeMillis);
                 scheduleBlock();
                 scheduleReset();
@@ -293,7 +294,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 	 */
     @Override
 	public void addListener(DecisionEventListener listener) {
-        logger.debug("add listener {}", listener); //$NON-NLS-1$
+        listenerLogger.debug("add listener {}", listener); //$NON-NLS-1$
         getEventRouter().addListener(DecisionEvent.class, listener, DECISION_EVENT_METHOD);
     }
 
@@ -303,7 +304,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
     @Override
 	public void removeListener(DecisionEventListener listener) {
         if (eventRouter != null) {
-            logger.debug("hide listener {}", listener); //$NON-NLS-1$
+            listenerLogger.debug("remove listener {}", listener); //$NON-NLS-1$
             eventRouter.removeListener(DecisionEvent.class, listener, DECISION_EVENT_METHOD);
         }
     }
@@ -389,12 +390,12 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
 	@Override
 	public void addListener(IRefereeConsole refereeConsole, int refereeIndex) {
 		if (listeners[refereeIndex] != null) {
-			logger.trace("removing previous ORefereeConsole listener {}",listeners[refereeIndex]);
+			listenerLogger.debug("removing previous ORefereeConsole listener {}",listeners[refereeIndex]);
 			removeListener(listeners[refereeIndex]);
 		}
 		addListener(refereeConsole);
 		listeners[refereeIndex] = refereeConsole;
-		logger.trace("adding new ORefereeConsole listener {}",listeners[refereeIndex]);
+		listenerLogger.debug("adding new ORefereeConsole listener {}",listeners[refereeIndex]);
 	}
 
 	@Override

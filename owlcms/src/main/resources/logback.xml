@@ -6,7 +6,7 @@
   v. 2.0. If a copy of the MPL was not distributed with this file, 
   You can obtain one at http://mozilla.org/MPL/2.0/.
 -->
-<configuration scan="true" debug="true">
+<configuration scan="true" debug="false">
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
@@ -27,11 +27,15 @@
 
 	<logger name="org.concordiainternational" level="INFO" />
 	<logger name="org.concordiainternational.competition.ui.CompetitionApplication" level="DEBUG" />
-	<logger name="listeners" level="DEBUG" />
+	
+
+	<logger name="buttons" level="DEBUG" />
 
     <!--   
+		<logger name="listeners" level="DEBUG" />
+
 		<logger name="org.concordiainternational.competition.ui.LifterInfo" level="TRACE" />
-    	<logger name="org.concordiainternational.competition.ButtonsLogger" level="DEBUG" />
+    	
 		<logger name="org.concordiainternational.competition.ui.AttemptBoardView" level="TRACE" />
         <logger name="org.concordiainternational.competition.publicAddress" level="WARN" />
         <logger name="org.concordiainternational.competition.ui.AnnouncerView" level="TRACE" />
