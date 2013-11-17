@@ -1100,14 +1100,14 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         }
     }
 
-    /**
-     * @param lifter
-     * @param groupData
-     */
-    private void startTimer(Lifter lifter, SessionData groupData,CountdownTimer timing) {
-        manageTimerOwner(lifter,groupData, timing);
-        timing.restart();
-    }
+//    /**
+//     * @param lifter
+//     * @param groupData
+//     */
+//    private void startTimer(Lifter lifter, SessionData groupData,CountdownTimer timing) {
+//        manageTimerOwner(lifter,groupData, timing);
+//        timing.restart();
+//    }
     
     public Item getPublicAddressItem() {
 		return publicAddressItem;
