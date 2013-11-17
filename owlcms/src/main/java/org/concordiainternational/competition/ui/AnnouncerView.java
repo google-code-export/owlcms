@@ -23,6 +23,7 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.vaadin.notifique.Notifique;
 import org.vaadin.notifique.Notifique.Message;
 import org.vaadin.overlay.CustomOverlay;
@@ -44,17 +45,15 @@ import com.vaadin.ui.Window.Notification;
  * This class defines the screen layout for the announcer.
  * <p>
  * <ul>
- * The top part shows the current lifter information and the lifters in lifting
- * order. This list is actually the container from which data is pulled out.
+ * The top part shows the current lifter information and the lifters in lifting order. This list is actually the container from which data
+ * is pulled out.
  * </ul>
  * <ul>
- * Clicking in the lift list selects a lifter, whose detail in shown in the
- * bottom part.
+ * Clicking in the lift list selects a lifter, whose detail in shown in the bottom part.
  * </ul>
  * <ul>
- * Editing the bottom part triggers recalculation of the lifting order; this in
- * turn triggers an update event to all layouts that display a lifter list
- * (including this one).
+ * Editing the bottom part triggers recalculation of the lifting order; this in turn triggers an update event to all layouts that display a
+ * lifter list (including this one).
  * </ul>
  * </p>
  * 
@@ -62,34 +61,34 @@ import com.vaadin.ui.Window.Notification;
  * 
  */
 public class AnnouncerView extends VerticalSplitPanel implements
-	ApplicationView,
-	SessionData.UpdateEventListener,
-	EditingView,
-	Notifyable,
-	Window.CloseListener,
-	URIHandler
-	{
-	private static final long serialVersionUID = 7881028819569705161L;
+        ApplicationView,
+        SessionData.UpdateEventListener,
+        EditingView,
+        Notifyable,
+        Window.CloseListener,
+        URIHandler
+{
+    private static final long serialVersionUID = 7881028819569705161L;
     private static final Logger logger = LoggerFactory.getLogger(AnnouncerView.class);
     public static final boolean PUSHING = true;
 
-	/** remove message after this delay (ms) */
+    /** remove message after this delay (ms) */
     private static final int messageRemovalMs = 5000;
-    
+
     private HorizontalLayout topPart;
     private LifterInfo announcerInfo;
     private LiftList liftList;
 
-	private LifterCardEditor lifterCardEditor;
+    private LifterCardEditor lifterCardEditor;
     private CompetitionApplication app;
     private boolean stickyEditor = false;
     private SessionData masterData;
     Mode mode;
-    
+
     private String platformName;
     private String viewName;
     private String groupName;
-	private Notifique notifications;
+    private Notifique notifications;
 
     public enum Mode {
         ANNOUNCER, TIMEKEEPER, MARSHALL, DISPLAY
@@ -102,39 +101,39 @@ public class AnnouncerView extends VerticalSplitPanel implements
      */
     public AnnouncerView(boolean initFromFragment, String viewName, Mode mode) {
         logger.trace("constructor");
-        
+
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
             this.viewName = viewName;
         }
-        
+        MDC.put("view", getLoggingId());
+
         this.app = CompetitionApplication.getCurrent();
         this.mode = mode;
 
         if (platformName == null) {
-        	// get the default platform name
+            // get the default platform name
             platformName = CompetitionApplicationComponents.initPlatformName();
         }
         if (app.getPlatform() == null || !platformName.equals(app.getPlatformName())) {
-        	app.setPlatformByName(platformName);
+            app.setPlatformByName(platformName);
         }
 
-        
         masterData = app.getMasterData(platformName);
         if (mode == Mode.ANNOUNCER) {
             final CompetitionSession currentGroup = masterData.getCurrentSession();
             masterData.setAnnouncerView(this);
             masterData.setMasterApplication(this.app);
-            
+
             if (groupName != null && groupName.length() > 0) {
                 switchGroup(new CompetitionSessionLookup(app).lookup(groupName));
             } else {
                 app.setCurrentCompetitionSession(currentGroup);
                 if (currentGroup != null) {
-                	 groupName = currentGroup.getName();
+                    groupName = currentGroup.getName();
                 }
-               
+
             }
 
         }
@@ -143,7 +142,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
         announcerInfo = new LifterInfo("topPart", masterData, mode, this); //$NON-NLS-1$
         announcerInfo.addStyleName("currentLifterSummary"); //$NON-NLS-1$
         //announcerInfo.setWidth(7.0F, Sizeable.UNITS_CM); //$NON-NLS-1$
-        announcerInfo.setMargin(true,true,false,false);
+        announcerInfo.setMargin(true, true, false, false);
         announcerInfo.setSizeFull();
 
         // left side is the lifting order, as well as the menu to switch groups.
@@ -154,60 +153,56 @@ public class AnnouncerView extends VerticalSplitPanel implements
         liftList.table.setPageLength(15);
         liftList.table.setSizeFull();
         liftList.setSizeFull();
-        liftList.setMargin(false,false,true,true);
+        liftList.setMargin(false, false, true, true);
 
         topPart = new HorizontalLayout();
         topPart.setMargin(false);
         setupNotifications();
 
         synchronized (app) {
-        	boolean prevDisabled = app.getPusherDisabled();
-        	app.setPusherDisabled(true);
-			topPart.setSizeFull();
-			if (mode != Mode.TIMEKEEPER) {
-				topPart.addComponent(liftList);				
-				topPart.setExpandRatio(liftList, 100.0F);
-			}
+            boolean prevDisabled = app.getPusherDisabled();
+            app.setPusherDisabled(true);
+            topPart.setSizeFull();
+            if (mode != Mode.TIMEKEEPER) {
+                topPart.addComponent(liftList);
+                topPart.setExpandRatio(liftList, 100.0F);
+            }
 
-			announcerInfo.setSizeUndefined();
-			announcerInfo.setWidth("36ex");
-			topPart.addComponent(announcerInfo);
-			
-			if (mode != Mode.TIMEKEEPER) {			
-				topPart.setExpandRatio(announcerInfo, 3.5F);
-			}
-			topPart.setComponentAlignment(announcerInfo, Alignment.TOP_RIGHT);
+            announcerInfo.setSizeUndefined();
+            announcerInfo.setWidth("36ex");
+            topPart.addComponent(announcerInfo);
 
-			this.setMargin(false);
-			this.setFirstComponent(topPart);
-			loadFirstLifterInfo(masterData,
-					WebApplicationConfiguration.DEFAULT_STICKINESS);
-			adjustSplitBarLocation();
-			// we are now fully initialized
-			masterData.setAllowAll(false);
-			
-			// URI handler must remain, so is not part of the register/unRegister pair
-			app.getMainWindow().addURIHandler(this);
-			registerAsListener();
-			
-			if (masterData.lifters.isEmpty()) {
-				logger.debug(
-						"switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
-				switchGroup(app.getCurrentCompetitionSession());
-			} else {
-				logger.debug(
-						"not switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
-			}
-			CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
-			app.setPusherDisabled(prevDisabled);
-		}
-		app.push();
+            if (mode != Mode.TIMEKEEPER) {
+                topPart.setExpandRatio(announcerInfo, 3.5F);
+            }
+            topPart.setComponentAlignment(announcerInfo, Alignment.TOP_RIGHT);
+
+            this.setMargin(false);
+            this.setFirstComponent(topPart);
+            loadFirstLifterInfo(masterData,
+                    WebApplicationConfiguration.DEFAULT_STICKINESS);
+            adjustSplitBarLocation();
+            // we are now fully initialized
+            masterData.setAllowAll(false);
+
+            // URI handler must remain, so is not part of the register/unRegister pair
+            app.getMainWindow().addURIHandler(this);
+            registerAsListener();
+
+            if (masterData.lifters.isEmpty()) {
+                logger.debug("switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
+                switchGroup(app.getCurrentCompetitionSession());
+            } else {
+                logger.debug("not switching masterData.lifters {}", masterData.lifters); //$NON-NLS-1$
+            }
+            CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
+            app.setPusherDisabled(prevDisabled);
+        }
+        app.push();
     }
 
-
-	/**
-     * Update the lifter editor and the information panels with the first
-     * lifter.
+    /**
+     * Update the lifter editor and the information panels with the first lifter.
      * 
      * @param masterData
      */
@@ -220,8 +215,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
     }
 
     /**
-     * Update the lifter editor and the information panels with the first
-     * lifter.
+     * Update the lifter editor and the information panels with the first lifter.
      * 
      * @param masterData
      */
@@ -233,8 +227,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
     }
 
     /**
-     * Update the lifter editor and the information panels with the first
-     * lifter.
+     * Update the lifter editor and the information panels with the first lifter.
      * 
      * @param masterData
      */
@@ -275,8 +268,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
         }
     }
 
-
-	/*
+    /*
      * (non-Javadoc)
      * 
      * @see org.concordiainternational.competition.ui.Refreshable#refresh()
@@ -296,17 +288,17 @@ public class AnnouncerView extends VerticalSplitPanel implements
      * Set the split bar location
      */
     void adjustSplitBarLocation() {
-    	if (mode == Mode.TIMEKEEPER) {
-    		this.setSplitPosition(0, true);
-    	} else {
-    		// compute percentage of split bar.
-    		float height = app.getMainWindow().getHeight();
-    		if (height > 0) {
-    			this.setSplitPosition((int) ((height - 225) * 100 / height));
-    		} else {
-    			this.setSplitPosition(65);
-    		}
-    	}
+        if (mode == Mode.TIMEKEEPER) {
+            this.setSplitPosition(0, true);
+        } else {
+            // compute percentage of split bar.
+            float height = app.getMainWindow().getHeight();
+            if (height > 0) {
+                this.setSplitPosition((int) ((height - 225) * 100 / height));
+            } else {
+                this.setSplitPosition(65);
+            }
+        }
     }
 
     /**
@@ -316,7 +308,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
      * @param lifterItem
      */
     @Override
-	public void editLifter(Lifter lifter, Item lifterItem) {
+    public void editLifter(Lifter lifter, Item lifterItem) {
         updateLifterEditor(lifter, lifterItem);
     }
 
@@ -324,7 +316,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
      * @return true if editor in bottom pane is pinned (not to be updated)
      */
     @Override
-	public boolean isStickyEditor() {
+    public boolean isStickyEditor() {
         return stickyEditor;
     }
 
@@ -334,7 +326,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
      * @param freezeLifterCardEditor
      */
     @Override
-	public void setStickyEditor(boolean freezeLifterCardEditor) {
+    public void setStickyEditor(boolean freezeLifterCardEditor) {
         setStickyEditor(freezeLifterCardEditor, true);
     }
 
@@ -344,93 +336,91 @@ public class AnnouncerView extends VerticalSplitPanel implements
      * @param freezeLifterCardEditor
      */
     @Override
-	public void setStickyEditor(boolean freezeLifterCardEditor, boolean reloadLifterInfo) {
+    public void setStickyEditor(boolean freezeLifterCardEditor, boolean reloadLifterInfo) {
         // logger.debug("is frozen: {}",freezeLifterCardEditor);
         boolean wasSticky = this.stickyEditor;
         this.stickyEditor = freezeLifterCardEditor;
         // was sticky, no longer is
-        if (reloadLifterInfo && wasSticky && !freezeLifterCardEditor) loadFirstLifterInfo(masterData, false);
-        if (lifterCardEditor != null) lifterCardEditor.setSticky(freezeLifterCardEditor);
+        if (reloadLifterInfo && wasSticky && !freezeLifterCardEditor)
+            loadFirstLifterInfo(masterData, false);
+        if (lifterCardEditor != null)
+            lifterCardEditor.setSticky(freezeLifterCardEditor);
     }
 
     /**
-     * Copied from interface. Lift order has changed. Update the lift list and
-     * editor in the bottom part of the view.
+     * Copied from interface. Lift order has changed. Update the lift list and editor in the bottom part of the view.
      * 
      * @see org.concordiainternational.competition.ui.SessionData.UpdateEventListener#updateEvent(org.concordiainternational.competition.ui.SessionData.UpdateEvent)
      */
     @Override
     public void updateEvent(final SessionData.UpdateEvent updateEvent) {
         new Thread(new Runnable() {
-			@Override
-			public void run() {
-				synchronized (app) {
-					if (updateEvent.getForceRefresh()) {
-						logger.debug("updateEvent() received in {} view -- forced refresh. ----------------------------------", mode); //$NON-NLS-1$
-						refresh();
-					} else {
-						Lifter currentLifter = updateEvent.getCurrentLifter();
+            @Override
+            public void run() {
+                synchronized (app) {
+                    if (updateEvent.getForceRefresh()) {
+                        logger.debug("updateEvent() received in {} view -- forced refresh. ----------------------------------", mode); //$NON-NLS-1$
+                        refresh();
+                    } else {
+                        Lifter currentLifter = updateEvent.getCurrentLifter();
                         logger.debug("updateEvent() received in {} view  first is now: {}", AnnouncerView.this.getMode(), currentLifter); //$NON-NLS-1$
-						
-						liftList.updateTable();
-						loadFirstLifterInfo(masterData,
-								WebApplicationConfiguration.DEFAULT_STICKINESS);
-						
 
-						// update the info on the left side of the bottom part. This
-						// depends on the liftList info
-						// which has just changed.
-						if (lifterCardEditor != null
-								&& lifterCardEditor.lifterCardIdentification != null
-								&& !stickyEditor) {
-							lifterCardEditor.lifterCardIdentification
-									.loadLifter(currentLifter,
-											liftList.getGroupData());
-						}
+                        liftList.updateTable();
+                        loadFirstLifterInfo(masterData,
+                                WebApplicationConfiguration.DEFAULT_STICKINESS);
 
-						// updateLifterEditor(updateEvent.getCurrentLifter(),
-						// liftList.getFirstLifterItem());
-					}
-				}
-				app.push();
-			}
-		}).start();
+                        // update the info on the left side of the bottom part. This
+                        // depends on the liftList info
+                        // which has just changed.
+                        if (lifterCardEditor != null
+                                && lifterCardEditor.lifterCardIdentification != null
+                                && !stickyEditor) {
+                            lifterCardEditor.lifterCardIdentification
+                                    .loadLifter(currentLifter,
+                                            liftList.getGroupData());
+                        }
+
+                        // updateLifterEditor(updateEvent.getCurrentLifter(),
+                        // liftList.getFirstLifterItem());
+                    }
+                }
+                app.push();
+            }
+        }).start();
     }
 
     /**
-     * Reload data according to this session's (CompetitionApplication) current
-     * lifter group.
+     * Reload data according to this session's (CompetitionApplication) current lifter group.
      * 
      * @param newSession
      */
     private void switchGroup(final CompetitionSession newSession) {
-    	CompetitionSession oldSession = masterData.getCurrentSession();
+        CompetitionSession oldSession = masterData.getCurrentSession();
         boolean switching = oldSession != newSession;
-        
-        if (mode == Mode.ANNOUNCER) {
-            
 
-			if (switching) {
-	            logger.debug("=============== switching from {} to group {}", oldSession, newSession); //$NON-NLS-1$
-	            logger.debug("=============== modifying group data {}", masterData, (newSession != null ? newSession.getName() : null)); //$NON-NLS-1$
-            	masterData.setCurrentSession(newSession);
+        if (mode == Mode.ANNOUNCER) {
+
+            if (switching) {
+                logger.debug("=============== switching from {} to group {}", oldSession, newSession); //$NON-NLS-1$
+                logger.debug("=============== modifying group data {}", masterData, (newSession != null ? newSession.getName() : null)); //$NON-NLS-1$
+                masterData.setCurrentSession(newSession);
             }
-            
+
             CompetitionSession currentCompetitionSession = masterData.getCurrentSession();
             if (currentCompetitionSession != null) {
                 groupName = currentCompetitionSession.getName();
             } else {
                 groupName = "";
             }
-            
+
             if (switching) {
-            	CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
+                CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
             }
         }
     }
 
     @Override
-	public void setCurrentSession(CompetitionSession competitionSession) {
+    public void setCurrentSession(CompetitionSession competitionSession) {
         setStickyEditor(false, false);
         switchGroup(competitionSession);
     }
@@ -440,7 +430,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
      *            the masterData to set
      */
     @Override
-	public void setSessionData(SessionData sessionData) {
+    public void setSessionData(SessionData sessionData) {
         this.masterData = sessionData;
     }
 
@@ -455,7 +445,9 @@ public class AnnouncerView extends VerticalSplitPanel implements
         liftList.clearSelection();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()
      */
     @Override
@@ -463,17 +455,17 @@ public class AnnouncerView extends VerticalSplitPanel implements
         return true;
     }
 
-
     /**
      * @return
      */
     @Override
-	public String getFragment() {
-        return viewName+"/"+(platformName == null ? "" : platformName)+"/"+(groupName == null ? "" : groupName);
+    public String getFragment() {
+        return viewName + "/" + (platformName == null ? "" : platformName) + "/" + (groupName == null ? "" : groupName);
     }
-    
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#setParametersFromFragment(java.lang.String)
      */
     @Override
@@ -483,57 +475,55 @@ public class AnnouncerView extends VerticalSplitPanel implements
         if (params.length >= 1) {
             viewName = params[0];
         } else {
-            throw new RuleViolationException("Error.ViewNameIsMissing"); 
+            throw new RuleViolationException("Error.ViewNameIsMissing");
         }
-        
+
         if (params.length >= 2) {
             platformName = params[1];
         } else {
-        	platformName = CompetitionApplicationComponents.initPlatformName();
+            platformName = CompetitionApplicationComponents.initPlatformName();
         }
-        
+
         if (params.length >= 3) {
             groupName = params[2];
         } else {
             groupName = null;
         }
     }
-    
+
     private void setupNotifications() {
-    	// Notification area. Full width.
-    	notifications = new Notifique(true);
-    	notifications.setWidth("100%");
-    	notifications.setVisibleCount(3);
-    	
-    	// Hide messages when clicked anywhere (not only with the close
-    	// button)
-    	notifications.setClickListener(new Notifique.ClickListener() {
-    	    private static final long serialVersionUID = 1L;
+        // Notification area. Full width.
+        notifications = new Notifique(true);
+        notifications.setWidth("100%");
+        notifications.setVisibleCount(3);
 
-    	    @Override
-    	    public void messageClicked(Message message) {
-    	        message.hide();
-    	    }
-    	});
-    	
-    	// Display as overlay in top of the main window
-    	Window mainWindow = CompetitionApplication.getCurrent().getMainWindow();
-		CustomOverlay ol = new CustomOverlay(notifications, mainWindow);
-		ol.addStyleName("timeStoppedNotifications");
-		mainWindow.addComponent(ol);
-    	
-    	//notifications.add((Resource)null,"1!",true,Notifique.Styles.VAADIN_ORANGE,true);
-	}
+        // Hide messages when clicked anywhere (not only with the close
+        // button)
+        notifications.setClickListener(new Notifique.ClickListener() {
+            private static final long serialVersionUID = 1L;
 
+            @Override
+            public void messageClicked(Message message) {
+                message.hide();
+            }
+        });
 
+        // Display as overlay in top of the main window
+        Window mainWindow = CompetitionApplication.getCurrent().getMainWindow();
+        CustomOverlay ol = new CustomOverlay(notifications, mainWindow);
+        ol.addStyleName("timeStoppedNotifications");
+        mainWindow.addComponent(ol);
 
-	public void displayNotification(Mode mode2, InteractionNotificationReason reason) {
-		Locale locale = app.getLocale();
-		String message;
-		String reasonDetails = Messages.getString("TimeStoppedNotificationReason."+reason.name(),locale);
-		Lifter curLifter = masterData.getCurrentLifter();
-		Integer curWeight = curLifter.getNextAttemptRequestedWeight();
-		
+        // notifications.add((Resource)null,"1!",true,Notifique.Styles.VAADIN_ORANGE,true);
+    }
+
+    public void displayNotification(Mode mode2, InteractionNotificationReason reason) {
+        Locale locale = app.getLocale();
+        String message;
+        String reasonDetails = Messages.getString("TimeStoppedNotificationReason." + reason.name(), locale);
+        Lifter curLifter = masterData.getCurrentLifter();
+        Integer curWeight = curLifter.getNextAttemptRequestedWeight();
+
         Object curWght = reason == InteractionNotificationReason.CURRENT_LIFTER_CHANGE_STARTED ? "" : curWeight;
         if (mode2 == null) {
             message = MessageFormat.format(
@@ -542,112 +532,106 @@ public class AnnouncerView extends VerticalSplitPanel implements
                     curLifter.getLastName(),
                     curLifter.getFirstName(),
                     curWght);
-		} else {
-			message = MessageFormat.format(
-					Messages.getString("TimeStoppedNotificationReason.NotificationFormat", locale),
-					Messages.getString("LiftList."+mode2.name(), locale),
-					reasonDetails,
-					curLifter.getLastName(),
-					curLifter.getFirstName(),
-					curWght);
-		}
-		final Message addedMessage = notifications.add((Resource)null,message,true,Notifique.Styles.VAADIN_ORANGE,true);
-		switch (reason) {
-		case CURRENT_LIFTER_CHANGE_STARTED:
-		case CURRENT_LIFTER_CHANGE_DONE:
-			// the announcer must acknowledge explicitly
-			if (this.mode != Mode.ANNOUNCER) {
-				scheduleMessageRemoval(addedMessage, messageRemovalMs);
-			}	
-			break;
-		default:
-			// remove automatically
-			scheduleMessageRemoval(addedMessage, messageRemovalMs);
-			break;
-		}
-	}
+        } else {
+            message = MessageFormat.format(
+                    Messages.getString("TimeStoppedNotificationReason.NotificationFormat", locale),
+                    Messages.getString("LiftList." + mode2.name(), locale),
+                    reasonDetails,
+                    curLifter.getLastName(),
+                    curLifter.getFirstName(),
+                    curWght);
+        }
+        final Message addedMessage = notifications.add((Resource) null, message, true, Notifique.Styles.VAADIN_ORANGE, true);
+        switch (reason) {
+        case CURRENT_LIFTER_CHANGE_STARTED:
+        case CURRENT_LIFTER_CHANGE_DONE:
+            // the announcer must acknowledge explicitly
+            if (this.mode != Mode.ANNOUNCER) {
+                scheduleMessageRemoval(addedMessage, messageRemovalMs);
+            }
+            break;
+        default:
+            // remove automatically
+            scheduleMessageRemoval(addedMessage, messageRemovalMs);
+            break;
+        }
+    }
 
+    /**
+     * @param addedMessage
+     * @param i
+     */
+    public void scheduleMessageRemoval(final Message addedMessage, int msgRemovalMs) {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // remove message, push to client.
+                if (addedMessage.isVisible()) {
+                    synchronized (app) {
+                        addedMessage.hide();
+                    }
+                    app.push();
+                }
+            }
+        }, msgRemovalMs);
+    }
 
-	/**
-	 * @param addedMessage
-	 * @param i 
-	 */
-	public void scheduleMessageRemoval(final Message addedMessage, int msgRemovalMs) {
-		new Timer().schedule(new TimerTask(){
-			@Override
-			public void run() {
-				// remove message, push to client.
-				if (addedMessage.isVisible()) {
-					synchronized (app) {
-						addedMessage.hide();
-					}
-					app.push();
-				}
-			}	
-		}, msgRemovalMs);
-	}
-	
-	/**
-	 * Register all handlers that listen to model or outside events.
-	 */
-	@Override
-	public void registerAsListener() {
-		logger.debug("registering listeners");
-		masterData.addListener(this);
+    /**
+     * Register all handlers that listen to model or outside events.
+     */
+    @Override
+    public void registerAsListener() {
+        logger.debug("registering listeners");
+        masterData.addListener(this);
 
         // listen to close events
-        app.getMainWindow().addListener((CloseListener)this);
-	}
-	
-	/**
+        app.getMainWindow().addListener((CloseListener) this);
+    }
+
+    /**
 	 * 
 	 */
-	@Override
-	public void unregisterAsListener() {
-		logger.debug("unregistering listeners");
-		masterData.removeListener(this);
-		announcerInfo.unregisterAsListener();
+    @Override
+    public void unregisterAsListener() {
+        logger.debug("unregistering listeners");
+        masterData.removeListener(this);
+        announcerInfo.unregisterAsListener();
         if (lifterCardEditor != null) {
             lifterCardEditor.unregisterAsListener();
         }
         // stop listening to close events
-        app.getMainWindow().removeListener((CloseListener)this);
-	}
+        app.getMainWindow().removeListener((CloseListener) this);
+    }
 
+    @Override
+    public void windowClose(CloseEvent e) {
+        unregisterAsListener();
+    }
 
-
-	@Override
-	public void windowClose(CloseEvent e) {
-		unregisterAsListener();
-	}
-
-
-	@Override
-	public DownloadStream handleURI(URL context, String relativeUri) {
-		logger.debug("registering URI listeners");
-		registerAsListener();
-		return null;
-	}
-
-
-	/**
-	 * @return the notifications
-	 */
-	public Notifique getNotifications() {
-		return notifications;
-	}
+    @Override
+    public DownloadStream handleURI(URL context, String relativeUri) {
+        logger.debug("registering URI listeners");
+        registerAsListener();
+        return null;
+    }
 
     /**
-	 * @return the liftList
-	 */
-	public LiftList getLiftList() {
-		return liftList;
-	}
+     * @return the notifications
+     */
+    public Notifique getNotifications() {
+        return notifications;
+    }
 
+    /**
+     * @return the liftList
+     */
+    public LiftList getLiftList() {
+        return liftList;
+    }
 
     @Override
     public void showNotificationForLifter(Lifter lifter, Notification notification, boolean unlessCurrent) {
-        logger.debug("lifter {} unlessCurrent{}",lifter,unlessCurrent);
+        logger.debug("lifter {} unlessCurrent{}", lifter, unlessCurrent);
         if (!unlessCurrent) {
             // always show notification
             app.getMainWindow().showNotification(notification);
@@ -657,14 +641,31 @@ public class AnnouncerView extends VerticalSplitPanel implements
         }
     }
 
-
     public Mode getMode() {
         return mode;
     }
-
 
     @Override
     public boolean needsBlack() {
         return false;
     }
+
+    private static int classCounter = 0; // per class
+    private final int instanceId = classCounter++; // per instance
+
+    @Override
+    public String getInstanceId() {
+        return Long.toString(instanceId);
+    }
+
+    @Override
+    public String getLoggingId() {
+        return getViewName() + getInstanceId();
+    }
+
+    @Override
+    public String getViewName() {
+        return viewName;
+    }
+
 }

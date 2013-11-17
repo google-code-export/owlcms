@@ -31,6 +31,7 @@ import org.concordiainternational.competition.ui.components.Stylable;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.vaadin.weelayout.WeeLayout;
 
 import com.vaadin.terminal.DownloadStream;
@@ -115,6 +116,7 @@ public class AttemptBoardView extends WeeLayout implements
             this.publicFacing = publicFacing;
             this.stylesheetName = stylesheetName;
         }
+        MDC.put("view", getLoggingId());
         this.app = CompetitionApplication.getCurrent();
 
         boolean prevDisabledPush = app.getPusherDisabled();
@@ -826,5 +828,18 @@ public class AttemptBoardView extends WeeLayout implements
     @Override
     public boolean needsBlack() {
         return true;
+    }
+
+    private static int classCounter = 0; // per class
+    private final int instanceId = classCounter++; // per instance
+
+    @Override
+    public String getInstanceId() {
+        return Long.toString(instanceId);
+    }
+
+    @Override
+    public String getLoggingId() {
+        return viewName + getInstanceId();
     }
 }

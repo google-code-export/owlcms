@@ -18,6 +18,7 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import com.vaadin.data.Item;
 import com.vaadin.terminal.DownloadStream;
@@ -31,12 +32,11 @@ import com.vaadin.ui.Window.CloseListener;
  * This class defines the screen layout for the competition secretary.
  * <p>
  * <ul>
- * The top part shows the current lifter information and the lifters in lifting
- * order. This list is actually the container from which data is pulled out.
+ * The top part shows the current lifter information and the lifters in lifting order. This list is actually the container from which data
+ * is pulled out.
  * </ul>
  * <ul>
- * Clicking in the lift list selects a lifter, whose detail in shown in the
- * bottom part.
+ * Clicking in the lift list selects a lifter, whose detail in shown in the bottom part.
  * </ul>
  * </p>
  * 
@@ -50,7 +50,7 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
     private HorizontalLayout topPart;
     private ResultList resultList;
 
-	private LifterCardEditor lifterCardEditor;
+    private LifterCardEditor lifterCardEditor;
     private CompetitionApplication app;
     private boolean stickyEditor = false;
     private SessionData groupData;
@@ -69,17 +69,18 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
         } else {
             this.viewName = viewName;
         }
+        MDC.put("view", getLoggingId());
 
         this.app = CompetitionApplication.getCurrent();
-        
+
         if (platformName == null) {
-        	// get the default platform name
+            // get the default platform name
             platformName = CompetitionApplicationComponents.initPlatformName();
         }
         if (app.getPlatform() == null || !platformName.equals(app.getPlatformName())) {
-        	app.setPlatformByName(platformName);
+            app.setPlatformByName(platformName);
         }
-        
+
         this.app = CompetitionApplication.getCurrent();
         groupData = SessionData.getIndependentInstance();
         final CompetitionSession currentGroup = groupData.getCurrentSession();
@@ -88,9 +89,9 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
         } else {
             app.setCurrentCompetitionSession(currentGroup);
             if (currentGroup != null) {
-            	 groupName = currentGroup.getName();
+                groupName = currentGroup.getName();
             }
-           
+
         }
 
         // left side is the lifting order, as well as the menu to switch groups.
@@ -110,30 +111,26 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
         adjustSplitBarLocation();
 
         synchronized (app) {
-        	boolean prevDisabled = app.getPusherDisabled();
-        	app.setPusherDisabled(true);
-	        // we are now fully initialized
-	        groupData.addListener(this);
-	        groupData.setAllowAll(true);
-			if (groupData.lifters.isEmpty()) {
-				logger.debug(
-						"switching groupData.lifters {}", groupData.lifters); //$NON-NLS-1$
-				switchGroup(app.getCurrentCompetitionSession());
-			} else {
-				logger.debug(
-						"not switching groupData {}", groupData.lifters); //$NON-NLS-1$
-			}
-			CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
-			app.setPusherDisabled(prevDisabled);
-		}
-		app.push();
+            boolean prevDisabled = app.getPusherDisabled();
+            app.setPusherDisabled(true);
+            // we are now fully initialized
+            groupData.addListener(this);
+            groupData.setAllowAll(true);
+            if (groupData.lifters.isEmpty()) {
+                logger.debug("switching groupData.lifters {}", groupData.lifters); //$NON-NLS-1$
+                switchGroup(app.getCurrentCompetitionSession());
+            } else {
+                logger.debug("not switching groupData {}", groupData.lifters); //$NON-NLS-1$
+            }
+            CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
+            app.setPusherDisabled(prevDisabled);
+        }
+        app.push();
 
     }
 
-
     /**
-     * Update the lifter editor and the information panels with the first
-     * lifter.
+     * Update the lifter editor and the information panels with the first lifter.
      * 
      * @param groupData1
      */
@@ -144,8 +141,7 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
     }
 
     /**
-     * Update the lifter editor and the information panels with the first
-     * lifter.
+     * Update the lifter editor and the information panels with the first lifter.
      * 
      * @param groupData1
      */
@@ -205,7 +201,8 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
     void adjustSplitBarLocation() {
         // compute percentage of split bar.
         float height = app.getMainWindow().getHeight();
-        if (height > 0) this.setSplitPosition((int) ((height - 225) * 100 / height));
+        if (height > 0)
+            this.setSplitPosition((int) ((height - 225) * 100 / height));
     }
 
     /**
@@ -215,7 +212,7 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
      * @param lifterItem
      */
     @Override
-	public void editLifter(Lifter lifter, Item lifterItem) {
+    public void editLifter(Lifter lifter, Item lifterItem) {
         updateLifterEditor(lifter, lifterItem);
     }
 
@@ -223,7 +220,7 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
      * @return true if editor in bottom pane is pinned (not to be updated)
      */
     @Override
-	public boolean isStickyEditor() {
+    public boolean isStickyEditor() {
         return stickyEditor;
     }
 
@@ -233,7 +230,7 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
      * @param freezeLifterCardEditor
      */
     @Override
-	public void setStickyEditor(boolean freezeLifterCardEditor) {
+    public void setStickyEditor(boolean freezeLifterCardEditor) {
         setStickyEditor(freezeLifterCardEditor, true);
     }
 
@@ -243,56 +240,58 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
      * @param freezeLifterCardEditor
      */
     @Override
-	public void setStickyEditor(boolean freezeLifterCardEditor, boolean reloadLifterInfo) {
+    public void setStickyEditor(boolean freezeLifterCardEditor, boolean reloadLifterInfo) {
         // logger.debug("is frozen: {}",freezeLifterCardEditor);
         boolean wasSticky = this.stickyEditor;
         this.stickyEditor = freezeLifterCardEditor;
         // was sticky, no longer is
-        if (reloadLifterInfo && wasSticky && !freezeLifterCardEditor) loadFirstLifterInfo(groupData, false);
-        if (lifterCardEditor != null) lifterCardEditor.setSticky(freezeLifterCardEditor);
+        if (reloadLifterInfo && wasSticky && !freezeLifterCardEditor)
+            loadFirstLifterInfo(groupData, false);
+        if (lifterCardEditor != null)
+            lifterCardEditor.setSticky(freezeLifterCardEditor);
     }
 
     /**
-     * Copied from interface. Lift order has changed. Update the lift list and
-     * editor in the bottom part of the view.
+     * Copied from interface. Lift order has changed. Update the lift list and editor in the bottom part of the view.
      * 
      * @see org.concordiainternational.competition.ui.SessionData.UpdateEventListener#updateEvent(org.concordiainternational.competition.ui.SessionData.UpdateEvent)
      */
     @Override
     public void updateEvent(final SessionData.UpdateEvent updateEvent) {
-    	// TODO: Fix ResultList to update automatically
-    	// this causes an IllegalStateException -- why?
-//        new Thread(new Runnable() {
-//			@Override
-//			public void run() {
-				synchronized (app) {
-					if (updateEvent.getForceRefresh()) {
-						logger.trace("updateEvent() received in Result view -- refreshing. ----------------------------------"); //$NON-NLS-1$
-						refresh();
-						return;
-					}
-					logger.trace("updateEvent() received in ResultView"); //$NON-NLS-1$
+        // TODO: Fix ResultList to update automatically
+        // this causes an IllegalStateException -- why?
+        // new Thread(new Runnable() {
+        // @Override
+        // public void run() {
+        synchronized (app) {
+            if (updateEvent.getForceRefresh()) {
+                logger.trace("updateEvent() received in Result view -- refreshing. ----------------------------------"); //$NON-NLS-1$
+                refresh();
+                return;
+            }
+            logger.trace("updateEvent() received in ResultView"); //$NON-NLS-1$
 
-					resultList.updateTable();
-					// loadFirstLifterInfo(groupData,WebApplicationConfiguration.DEFAULT_STICKINESS);
+            resultList.updateTable();
+            // loadFirstLifterInfo(groupData,WebApplicationConfiguration.DEFAULT_STICKINESS);
 
-					// update the info on the left side of the bottom part. This depends
-					// on the liftList info
-					// which has just changed.
-					if (lifterCardEditor != null
-							&& lifterCardEditor.lifterCardIdentification != null
-							&& !stickyEditor) {
-						lifterCardEditor.lifterCardIdentification.loadLifter(
-								lifterCardEditor.getLifter(),
-								resultList.getGroupData());
-					}
-					// updateLifterEditor(updateEvent.getCurrentLifter(),
-					// liftList.getFirstLifterItem());
-				}
-				app.push();
-			}
-//		}).start();
-//    }
+            // update the info on the left side of the bottom part. This depends
+            // on the liftList info
+            // which has just changed.
+            if (lifterCardEditor != null
+                    && lifterCardEditor.lifterCardIdentification != null
+                    && !stickyEditor) {
+                lifterCardEditor.lifterCardIdentification.loadLifter(
+                        lifterCardEditor.getLifter(),
+                        resultList.getGroupData());
+            }
+            // updateLifterEditor(updateEvent.getCurrentLifter(),
+            // liftList.getFirstLifterItem());
+        }
+        app.push();
+    }
+
+    // }).start();
+    // }
 
     /**
      * Change the group that is being listened to.
@@ -311,7 +310,7 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
     }
 
     @Override
-	public void setCurrentSession(CompetitionSession competitionSession) {
+    public void setCurrentSession(CompetitionSession competitionSession) {
         setStickyEditor(false, false);
         switchGroup(competitionSession);
     }
@@ -321,7 +320,7 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
      *            the groupData to set
      */
     @Override
-	public void setSessionData(SessionData groupData) {
+    public void setSessionData(SessionData groupData) {
         this.groupData = groupData;
     }
 
@@ -332,24 +331,27 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
         return groupData;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()
      */
     @Override
     public boolean needsMenu() {
         return true;
     }
-    
+
     /**
      * @return
      */
     @Override
-	public String getFragment() {
-        return viewName+"/"+(platformName == null ? "" : platformName)+"/"+(groupName == null ? "" : groupName);
+    public String getFragment() {
+        return viewName + "/" + (platformName == null ? "" : platformName) + "/" + (groupName == null ? "" : groupName);
     }
-    
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#setParametersFromFragment(java.lang.String)
      */
     @Override
@@ -359,15 +361,15 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
         if (params.length >= 1) {
             viewName = params[0];
         } else {
-            throw new RuleViolationException("Error.ViewNameIsMissing"); 
+            throw new RuleViolationException("Error.ViewNameIsMissing");
         }
-        
+
         if (params.length >= 2) {
             platformName = params[1];
         } else {
-        	platformName = CompetitionApplicationComponents.initPlatformName();
+            platformName = CompetitionApplicationComponents.initPlatformName();
         }
-        
+
         if (params.length >= 3) {
             groupName = params[2];
         } else {
@@ -375,41 +377,60 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
         }
     }
 
+    @Override
+    public void registerAsListener() {
+        app.getMainWindow().addListener((CloseListener) this);
+    }
 
-	@Override
-	public void registerAsListener() {
-		app.getMainWindow().addListener((CloseListener) this);
-	}
+    @Override
+    public void unregisterAsListener() {
+        app.getMainWindow().addListener((CloseListener) this);
+    }
 
-	@Override
-	public void unregisterAsListener() {
-		app.getMainWindow().addListener((CloseListener) this);
-	}
-	
-	@Override
-	public void windowClose(CloseEvent e) {
-		unregisterAsListener();	
-	}
-	
-	/* Called on refresh.
-	 * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
-	 */
-	@Override
-	public DownloadStream handleURI(URL context, String relativeUri) {
-		registerAsListener();
-		return null;
-	}
+    @Override
+    public void windowClose(CloseEvent e) {
+        unregisterAsListener();
+    }
+
+    /*
+     * Called on refresh.
+     * 
+     * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
+     */
+    @Override
+    public DownloadStream handleURI(URL context, String relativeUri) {
+        registerAsListener();
+        return null;
+    }
 
     /**
-	 * @return the resultList
-	 */
-	public ResultList getResultList() {
-		return resultList;
-	}
-	
+     * @return the resultList
+     */
+    public ResultList getResultList() {
+        return resultList;
+    }
+
     @Override
     public boolean needsBlack() {
         return false;
+    }
+
+    private static int classCounter = 0; // per class
+    private final int instanceId = classCounter++; // per instance
+
+    @Override
+    public String getInstanceId() {
+        return Long.toString(instanceId);
+    }
+
+    @Override
+    public String getLoggingId() {
+        return viewName + getInstanceId();
+    }
+
+    @Override
+    public String getViewName() {
+        return viewName;
     }
 
 }

@@ -16,6 +16,7 @@ import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.list.GenericHbnList;
+import org.slf4j.MDC;
 
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.ui.Window.CloseEvent;
@@ -28,12 +29,13 @@ public class CategoryList extends GenericHbnList<Category> implements Applicatio
 
     public CategoryList(boolean initFromFragment, String viewName) {
         super(CompetitionApplication.getCurrent(), Category.class, Messages.getString(
-            "CategoryList.Categories", CompetitionApplication.getCurrentLocale())); //$NON-NLS-1$
+                "CategoryList.Categories", CompetitionApplication.getCurrentLocale())); //$NON-NLS-1$
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
             this.viewName = viewName;
         }
+        MDC.put("view", getLoggingId());
         init();
     }
 
@@ -41,12 +43,12 @@ public class CategoryList extends GenericHbnList<Category> implements Applicatio
     private static String[] COL_HEADERS = null;
 
     /**
-     * @return Natural property order for Category bean. Used in tables and
-     *         forms.
+     * @return Natural property order for Category bean. Used in tables and forms.
      */
     @Override
     public String[] getColOrder() {
-        if (NATURAL_COL_ORDER != null) return NATURAL_COL_ORDER;
+        if (NATURAL_COL_ORDER != null)
+            return NATURAL_COL_ORDER;
         NATURAL_COL_ORDER = new String[] { "name", //$NON-NLS-1$
                 "gender", //$NON-NLS-1$
                 "minimumWeight", //$NON-NLS-1$
@@ -58,13 +60,13 @@ public class CategoryList extends GenericHbnList<Category> implements Applicatio
     }
 
     /**
-     * @return Localized captions for properties in same order as in
-     *         {@link #getColOrder()}
+     * @return Localized captions for properties in same order as in {@link #getColOrder()}
      */
     @Override
     public String[] getColHeaders() {
         Locale locale = app.getLocale();
-        if (COL_HEADERS != null) return COL_HEADERS;
+        if (COL_HEADERS != null)
+            return COL_HEADERS;
         COL_HEADERS = new String[] { Messages.getString("CategoryEditor.name", locale), //$NON-NLS-1$
                 Messages.getString("CategoryEditor.gender", locale), //$NON-NLS-1$
                 Messages.getString("CategoryEditor.minimumWeight", locale), //$NON-NLS-1$
@@ -74,7 +76,7 @@ public class CategoryList extends GenericHbnList<Category> implements Applicatio
         };
         return COL_HEADERS;
     }
-    
+
     /**
      * This method is used in response to a button click.
      */
@@ -82,11 +84,13 @@ public class CategoryList extends GenericHbnList<Category> implements Applicatio
     public void toggleEditable() {
         super.toggleEditable();
         if (!table.isEditable()) {
-        	CategoryLookup.getSharedInstance().reload();
+            CategoryLookup.getSharedInstance().reload();
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()
      */
     @Override
@@ -98,12 +102,13 @@ public class CategoryList extends GenericHbnList<Category> implements Applicatio
      * @return
      */
     @Override
-	public String getFragment() {
+    public String getFragment() {
         return viewName;
     }
-    
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#setParametersFromFragment(java.lang.String)
      */
     @Override
@@ -113,30 +118,42 @@ public class CategoryList extends GenericHbnList<Category> implements Applicatio
         if (params.length >= 1) {
             viewName = params[0];
         } else {
-            throw new RuleViolationException("Error.ViewNameIsMissing"); 
+            throw new RuleViolationException("Error.ViewNameIsMissing");
         }
     }
 
-	@Override
-	public void registerAsListener() {
-		CompetitionApplication.getCurrent().getMainWindow().addListener((CloseListener) this);
-	}
+    @Override
+    public void registerAsListener() {
+        CompetitionApplication.getCurrent().getMainWindow().addListener((CloseListener) this);
+    }
 
-	@Override
-	public void unregisterAsListener() {
-		CompetitionApplication.getCurrent().getMainWindow().addListener((CloseListener) this);
-	}
-	
-	@Override
-	public void windowClose(CloseEvent e) {
-		unregisterAsListener();	
-	}
+    @Override
+    public void unregisterAsListener() {
+        CompetitionApplication.getCurrent().getMainWindow().addListener((CloseListener) this);
+    }
 
-	@Override
-	public DownloadStream handleURI(URL context, String relativeUri) {
-		registerAsListener();
-		return null;
-	}
+    @Override
+    public void windowClose(CloseEvent e) {
+        unregisterAsListener();
+    }
 
+    @Override
+    public DownloadStream handleURI(URL context, String relativeUri) {
+        registerAsListener();
+        return null;
+    }
+
+    private static int classCounter = 0; // per class
+    private final int instanceId = classCounter++; // per instance
+
+    @Override
+    public String getInstanceId() {
+        return Long.toString(instanceId);
+    }
+
+    @Override
+    public String getLoggingId() {
+        return viewName + getInstanceId();
+    }
 
 }

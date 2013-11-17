@@ -29,14 +29,15 @@ import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
+import org.concordiainternational.competition.ui.InteractionNotificationReason;
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
-import org.concordiainternational.competition.ui.InteractionNotificationReason;
 import org.concordiainternational.competition.ui.UserActions;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.ExternalResource;
@@ -51,22 +52,23 @@ import com.vaadin.ui.Window.CloseListener;
 
 /**
  * Show an WebPage underneath a banner.
+ * 
  * @author jflamy
- *
+ * 
  */
 
-public class ResultFrame extends VerticalLayout implements 
-		ApplicationView, 
-		CountdownTimerListener,
-		MessageDisplayListener,
-		Window.CloseListener, 
-		URIHandler,
-		DecisionEventListener,
-		Stylable
-		{ 
-	
+public class ResultFrame extends VerticalLayout implements
+        ApplicationView,
+        CountdownTimerListener,
+        MessageDisplayListener,
+        Window.CloseListener,
+        URIHandler,
+        DecisionEventListener,
+        Stylable
+{
+
     private static final String ATTEMPT_WIDTH = "6em";
-	public final static Logger logger = LoggerFactory.getLogger(ResultFrame.class);
+    public final static Logger logger = LoggerFactory.getLogger(ResultFrame.class);
     private static final long serialVersionUID = 1437157542240297372L;
     private Embedded iframe;
     public String urlString;
@@ -79,9 +81,9 @@ public class ResultFrame extends VerticalLayout implements
     private Label timeDisplay = new Label();
     private Label weight = new Label();
     private String appUrlString;
-	private UpdateEventListener updateListener;
-	private DecisionLightsWindow decisionLights;
-	protected boolean waitingForDecisionLightsReset;
+    private UpdateEventListener updateListener;
+    private DecisionLightsWindow decisionLights;
+    protected boolean waitingForDecisionLightsReset;
 
     public ResultFrame(boolean initFromFragment, String viewName, String urlString, String stylesheetName) throws MalformedURLException {
 
@@ -91,47 +93,46 @@ public class ResultFrame extends VerticalLayout implements
             this.viewName = viewName;
             this.stylesheetName = stylesheetName;
         }
-        
+        MDC.put("view", getLoggingId());
+
         this.app = CompetitionApplication.getCurrent();
-        
+
         boolean prevDisabledPush = app.getPusherDisabled();
         try {
-        	app.setPusherDisabled(true);
-			if (platformName == null) {
-				// get the default platform name
-			    platformName = CompetitionApplicationComponents.initPlatformName();
-			} else if (app.getPlatform() == null) {
-				app.setPlatformByName(platformName);
-			}
-			
-			this.urlString = urlString;
-			getAppUrlString();
+            app.setPusherDisabled(true);
+            if (platformName == null) {
+                // get the default platform name
+                platformName = CompetitionApplicationComponents.initPlatformName();
+            } else if (app.getPlatform() == null) {
+                app.setPlatformByName(platformName);
+            }
 
-			create(app);
-			masterData = app.getMasterData(platformName);
-			
-			
-			// we cannot call push() at this point
-			synchronized (app) {
-			    boolean prevDisabled = app.getPusherDisabled();
-			    try {
-			        app.setPusherDisabled(true);
-			        decisionLights = new DecisionLightsWindow(false, true);
-			    	display(platformName, masterData);
-			    } finally {
-			        app.setPusherDisabled(prevDisabled);
-			    }
-			    logger.debug("browser panel: push disabled = {}",app.getPusherDisabled());
-			}
-			
-			// URI handler must remain, so is not part of the register/unRegister paire
-			app.getMainWindow().addURIHandler(this);
-			registerAsListener();
-		} finally {
-			app.setPusherDisabled(prevDisabledPush);
-		}
+            this.urlString = urlString;
+            getAppUrlString();
+
+            create(app);
+            masterData = app.getMasterData(platformName);
+
+            // we cannot call push() at this point
+            synchronized (app) {
+                boolean prevDisabled = app.getPusherDisabled();
+                try {
+                    app.setPusherDisabled(true);
+                    decisionLights = new DecisionLightsWindow(false, true);
+                    display(platformName, masterData);
+                } finally {
+                    app.setPusherDisabled(prevDisabled);
+                }
+                logger.debug("browser panel: push disabled = {}", app.getPusherDisabled());
+            }
+
+            // URI handler must remain, so is not part of the register/unRegister paire
+            app.getMainWindow().addURIHandler(this);
+            registerAsListener();
+        } finally {
+            app.setPusherDisabled(prevDisabledPush);
+        }
     }
-
 
     /**
      * Compute where we think the jsp file ought to be.
@@ -157,16 +158,16 @@ public class ResultFrame extends VerticalLayout implements
 
                 @Override
                 public void updateEvent(UpdateEvent updateEvent) {
-                	new Thread(new Runnable() {
-						@Override
-						public void run() {
-							logger.debug("request to display {}",
-									ResultFrame.this);
-							if (!waitingForDecisionLightsReset) {
-								display(platformName1, masterData1);
-							}
-						}
-					}).start();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            logger.debug("request to display {}",
+                                    ResultFrame.this);
+                            if (!waitingForDecisionLightsReset) {
+                                display(platformName1, masterData1);
+                            }
+                        }
+                    }).start();
                 }
 
             };
@@ -201,7 +202,6 @@ public class ResultFrame extends VerticalLayout implements
         this.setExpandRatio(iframe, 100);
     }
 
-
     /**
      * @param platformName1
      * @param masterData1
@@ -210,7 +210,7 @@ public class ResultFrame extends VerticalLayout implements
     private void display(final String platformName1, final SessionData masterData1) throws RuntimeException {
         synchronized (app) {
             URL url = computeUrl(platformName1);
-            logger.debug("display {}",url);
+            logger.debug("display {}", url);
             iframe.setSource(new ExternalResource(url));
             final Lifter currentLifter = masterData1.getCurrentLifter();
             if (currentLifter != null) {
@@ -219,10 +219,10 @@ public class ResultFrame extends VerticalLayout implements
                 top.addComponent(timeDisplay, "timeDisplay"); //$NON-NLS-1$
                 timeDisplay.setVisible(!done);
             } else {
-            	logger.debug("lifter null");
+                logger.debug("lifter null");
                 name.setValue(getWaitingMessage()); //$NON-NLS-1$
                 top.addComponent(name, "name"); //$NON-NLS-1$
-        		displayDecision(true);
+                displayDecision(true);
                 attempt.setValue(""); //$NON-NLS-1$
                 top.addComponent(attempt, "attempt"); //$NON-NLS-1$
                 attempt.setWidth(ATTEMPT_WIDTH); //$NON-NLS-1$
@@ -234,12 +234,10 @@ public class ResultFrame extends VerticalLayout implements
                 top.addComponent(weight, "weight"); //$NON-NLS-1$	
             }
         }
-        logger.debug("prior to display push disabled={}",app.getPusherDisabled());
-        
+        logger.debug("prior to display push disabled={}", app.getPusherDisabled());
+
         app.push();
     }
-
-
 
     /**
      * @param platformName1
@@ -257,24 +255,21 @@ public class ResultFrame extends VerticalLayout implements
         }
         String styleSheet = getStylesheetName();
         if (styleSheet == null || styleSheet.isEmpty()) {
-        	styleSheet = "";
+            styleSheet = "";
         } else {
-        	styleSheet = "&style=" + getStylesheetName() + ".css";
+            styleSheet = "&style=" + getStylesheetName() + ".css";
         }
-        final String spec = appUrlString + urlString + encodedPlatformName + styleSheet +"&time=" + System.currentTimeMillis(); //$NON-NLS-1$
+        final String spec = appUrlString + urlString + encodedPlatformName + styleSheet + "&time=" + System.currentTimeMillis(); //$NON-NLS-1$
         try {
             url = new URL(spec);
-            logger.debug("url={}",url.toExternalForm());
+            logger.debug("url={}", url.toExternalForm());
         } catch (MalformedURLException e) {
             throw new RuntimeException(e); // can't happen.
         }
         return url;
     }
 
-
-
-
-	/**
+    /**
      * @return message used when Announcer has not selected a group
      */
     private String getWaitingMessage() {
@@ -298,47 +293,45 @@ public class ResultFrame extends VerticalLayout implements
         boolean done = currentTry > 3;
 
         synchronized (app) {
-			displayName(lifter, locale, done);
-			displayDecision(done);
-			displayAttemptNumber(lifter, locale, currentTry, done);
-			displayRequestedWeight(lifter, locale, done);
-		}
-		app.push();
+            displayName(lifter, locale, done);
+            displayDecision(done);
+            displayAttemptNumber(lifter, locale, currentTry, done);
+            displayRequestedWeight(lifter, locale, done);
+        }
+        app.push();
         return done;
     }
 
-
-
-	/**
+    /**
      * @param lifter
      * @param alwaysShowName
      * @param sb
      * @param done
      */
     private void displayName(Lifter lifter, final Locale locale, boolean done) {
-    	// display lifter name and affiliation
-    	if (!done) {
-    		final String lastName = lifter.getLastName();
-    		final String firstName = lifter.getFirstName();
-    		final String club = lifter.getClub();
-    		name.setValue(lastName.toUpperCase() + " " + firstName + " &nbsp;&nbsp; " + club); //$NON-NLS-1$ //$NON-NLS-2$
-    		top.addComponent(name, "name"); //$NON-NLS-1$
-    	} else {
+        // display lifter name and affiliation
+        if (!done) {
+            final String lastName = lifter.getLastName();
+            final String firstName = lifter.getFirstName();
+            final String club = lifter.getClub();
+            name.setValue(lastName.toUpperCase() + " " + firstName + " &nbsp;&nbsp; " + club); //$NON-NLS-1$ //$NON-NLS-2$
+            top.addComponent(name, "name"); //$NON-NLS-1$
+        } else {
 
-    		name.setValue(MessageFormat.format(
-    				Messages.getString("ResultFrame.Done", locale), masterData.getCurrentSession().getName())); //$NON-NLS-1$
-    		top.addComponent(name, "name"); //$NON-NLS-1$
-    	}
+            name.setValue(MessageFormat.format(
+                    Messages.getString("ResultFrame.Done", locale), masterData.getCurrentSession().getName())); //$NON-NLS-1$
+            top.addComponent(name, "name"); //$NON-NLS-1$
+        }
 
     }
-    
+
     private void displayDecision(boolean done) {
-    		decisionLights.setSizeFull();
-    		decisionLights.setHeight("2ex");
-    		decisionLights.setMargin(false);
-    		top.addComponent(decisionLights, "decisionLights"); //$NON-NLS-1$
-    		decisionLights.setVisible(false);
-	}
+        decisionLights.setSizeFull();
+        decisionLights.setHeight("2ex");
+        decisionLights.setMargin(false);
+        top.addComponent(decisionLights, "decisionLights"); //$NON-NLS-1$
+        decisionLights.setVisible(false);
+    }
 
     /**
      * @param lifter
@@ -349,14 +342,14 @@ public class ResultFrame extends VerticalLayout implements
      */
     private void displayAttemptNumber(Lifter lifter, final Locale locale, final int currentTry, boolean done) {
         // display current attempt number
-        if (!done) {  
+        if (!done) {
             //appendDiv(sb, lifter.getNextAttemptRequestedWeight()+Messages.getString("Common.kg",locale)); //$NON-NLS-1$
             String tryInfo = MessageFormat.format(Messages.getString("ResultFrame.tryNumber", locale), //$NON-NLS-1$
-                currentTry, (lifter.getAttemptsDone() >= 3 ? Messages.getString("Common.shortCleanJerk", locale) //$NON-NLS-1$
-                        : Messages.getString("Common.shortSnatch", locale))); //$NON-NLS-1$
+                    currentTry, (lifter.getAttemptsDone() >= 3 ? Messages.getString("Common.shortCleanJerk", locale) //$NON-NLS-1$
+                            : Messages.getString("Common.shortSnatch", locale))); //$NON-NLS-1$
             attempt.setValue(tryInfo);
         } else {
-        	attempt.setValue("");
+            attempt.setValue("");
         }
         attempt.setWidth(ATTEMPT_WIDTH);
         top.addComponent(attempt, "attempt"); //$NON-NLS-1$
@@ -413,14 +406,15 @@ public class ResultFrame extends VerticalLayout implements
 
     int previousTimeRemaining = 0;
     private String viewName;
-	private PublicAddressOverlay overlayContent;
-	private Window overlay;
-	protected boolean shown;
-	private String stylesheetName;
+    private PublicAddressOverlay overlayContent;
+    private Window overlay;
+    protected boolean shown;
+    private String stylesheetName;
 
     @Override
     public void normalTick(int timeRemaining) {
-        if (name == null) return;
+        if (name == null)
+            return;
         if (TimeFormatter.getSeconds(previousTimeRemaining) == TimeFormatter.getSeconds(timeRemaining)) {
             previousTimeRemaining = timeRemaining;
             return;
@@ -446,7 +440,9 @@ public class ResultFrame extends VerticalLayout implements
     public void stop(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()
      */
     @Override
@@ -458,12 +454,13 @@ public class ResultFrame extends VerticalLayout implements
      * @return
      */
     @Override
-	public String getFragment() {
-        return viewName+"/"+platformName+(stylesheetName != null ? "/"+stylesheetName : "");
+    public String getFragment() {
+        return viewName + "/" + platformName + (stylesheetName != null ? "/" + stylesheetName : "");
     }
-    
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#setParametersFromFragment(java.lang.String)
      */
     @Override
@@ -473,179 +470,182 @@ public class ResultFrame extends VerticalLayout implements
         if (params.length >= 1) {
             viewName = params[0];
         } else {
-            throw new RuleViolationException("Error.ViewNameIsMissing"); 
+            throw new RuleViolationException("Error.ViewNameIsMissing");
         }
-        
+
         if (params.length >= 2) {
             platformName = params[1];
         }
-        
+
         if (params.length >= 3) {
             stylesheetName = params[2];
-            logger.debug("setting stylesheetName to {}",stylesheetName);
+            logger.debug("setting stylesheetName to {}", stylesheetName);
         }
     }
 
-	/* Listen to public address notifications.
-	 * We only deal with creating and destroying the overlay that hides the normal display.
-	 * @see org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener#messageUpdate(org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent)
-	 */
-	@Override
-	public void messageUpdate(PublicAddressMessageEvent event) {
-		synchronized(app) {
-			if (viewName.contains("resultBoard")) {
-				if (event.setHide()) {
-					removeMessage();
-				} else if (overlay == null) {				
-					displayMessage(event.getTitle(),event.getMessage(),event.getRemainingMilliseconds());
-				}  else {
-					// nothing to do: overlayContent listens to the events on its own
-				}
-			}
-		}
-		app.push();
+    /*
+     * Listen to public address notifications. We only deal with creating and destroying the overlay that hides the normal display.
+     * 
+     * @see org.concordiainternational.competition.publicAddress.PublicAddressMessageEvent.MessageDisplayListener#messageUpdate(org.
+     * concordiainternational.competition.publicAddress.PublicAddressMessageEvent)
+     */
+    @Override
+    public void messageUpdate(PublicAddressMessageEvent event) {
+        synchronized (app) {
+            if (viewName.contains("resultBoard")) {
+                if (event.setHide()) {
+                    removeMessage();
+                } else if (overlay == null) {
+                    displayMessage(event.getTitle(), event.getMessage(), event.getRemainingMilliseconds());
+                } else {
+                    // nothing to do: overlayContent listens to the events on its own
+                }
+            }
+        }
+        app.push();
 
-	}
+    }
 
-	/**
-	 * Remove the currently displayed message, if any.
-	 */
-	private void removeMessage() {
-		if (overlayContent != null) masterData.removeBlackBoardListener(overlayContent);
-		overlayContent = null;
-		if (overlay != null) app.getMainWindow().removeWindow(overlay);
-		overlay = null;
-	}
+    /**
+     * Remove the currently displayed message, if any.
+     */
+    private void removeMessage() {
+        if (overlayContent != null)
+            masterData.removeBlackBoardListener(overlayContent);
+        overlayContent = null;
+        if (overlay != null)
+            app.getMainWindow().removeWindow(overlay);
+        overlay = null;
+    }
 
-	/**
-	 * Display a new public address message
-	 * Hide the current display with a popup.
-	 * @param title
-	 * @param message
-	 * @param remainingMilliseconds
-	 */
-	private void displayMessage(String title, String message, Integer remainingMilliseconds) {
-		// create content formatting
-		logger.debug("displayMessage {} {}",title,message);
-		if (overlayContent == null) {
-			overlayContent = new PublicAddressOverlay(title,message,remainingMilliseconds);
-			// overlayContent listens to message updates and timer updates
-			masterData.addBlackBoardListener(overlayContent);
-		}
-		synchronized (app) {
-			// create window
-			if (overlay == null) {
-				logger.debug("creating window");
-				Window mainWindow = app.getMainWindow();;
-				overlay = new Window(platformName);
-				overlay.addStyleName("decisionLightsWindow");
-				overlay.setSizeFull();
-				mainWindow.addWindow(overlay);
-				overlay.center();
-				overlay.setContent(overlayContent);
-				overlay.setVisible(true);
-			}
-		}
-		app.push();
-	}
+    /**
+     * Display a new public address message Hide the current display with a popup.
+     * 
+     * @param title
+     * @param message
+     * @param remainingMilliseconds
+     */
+    private void displayMessage(String title, String message, Integer remainingMilliseconds) {
+        // create content formatting
+        logger.debug("displayMessage {} {}", title, message);
+        if (overlayContent == null) {
+            overlayContent = new PublicAddressOverlay(title, message, remainingMilliseconds);
+            // overlayContent listens to message updates and timer updates
+            masterData.addBlackBoardListener(overlayContent);
+        }
+        synchronized (app) {
+            // create window
+            if (overlay == null) {
+                logger.debug("creating window");
+                Window mainWindow = app.getMainWindow();
+                ;
+                overlay = new Window(platformName);
+                overlay.addStyleName("decisionLightsWindow");
+                overlay.setSizeFull();
+                mainWindow.addWindow(overlay);
+                overlay.center();
+                overlay.setContent(overlayContent);
+                overlay.setVisible(true);
+            }
+        }
+        app.push();
+    }
 
-
-	
-	
-
-	/* Unregister listeners when window is closed.
-	 * @see com.vaadin.ui.Window.CloseListener#windowClose(com.vaadin.ui.Window.CloseEvent)
-	 */
-	@Override
-	public void windowClose(CloseEvent e) {
+    /*
+     * Unregister listeners when window is closed.
+     * 
+     * @see com.vaadin.ui.Window.CloseListener#windowClose(com.vaadin.ui.Window.CloseEvent)
+     */
+    @Override
+    public void windowClose(CloseEvent e) {
         unregisterAsListener();
-	}
+    }
 
-	@Override
-	public DownloadStream handleURI(URL context, String relativeUri) {
-		logger.trace("re-registering handlers for {} {}",this,relativeUri);
-		registerAsListener();
-		return null;
-	}
+    @Override
+    public DownloadStream handleURI(URL context, String relativeUri) {
+        logger.trace("re-registering handlers for {} {}", this, relativeUri);
+        registerAsListener();
+        return null;
+    }
 
+    /**
+     * Process a decision regarding the current lifter. Make sure that the name of the lifter does not change until after the decision has
+     * been shown.
+     * 
+     * @see org.concordiainternational.competition.decision.DecisionEventListener#updateEvent(org.concordiainternational.competition.decision.DecisionEvent)
+     */
+    @Override
+    public void updateEvent(final DecisionEvent updateEvent) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (app) {
+                    switch (updateEvent.getType()) {
+                    case DOWN:
+                        waitingForDecisionLightsReset = true;
+                        decisionLights.setVisible(false);
+                        break;
+                    case SHOW:
+                        // if window is not up, show it.
+                        waitingForDecisionLightsReset = true;
+                        shown = true;
+                        decisionLights.setVisible(true);
+                        break;
+                    case RESET:
+                        // we are done
+                        waitingForDecisionLightsReset = false;
+                        decisionLights.setVisible(false);
+                        shown = false;
+                        display(platformName, masterData);
+                        break;
+                    case WAITING:
+                        waitingForDecisionLightsReset = true;
+                        decisionLights.setVisible(false);
+                        break;
+                    case UPDATE:
+                        // show change only if the lights are already on.
+                        waitingForDecisionLightsReset = true;
+                        if (shown) {
+                            decisionLights.setVisible(true);
+                        }
+                        break;
+                    case BLOCK:
+                        waitingForDecisionLightsReset = true;
+                        decisionLights.setVisible(true);
+                        break;
+                    }
+                }
+            }
+        }).start();
+    }
 
-	/**
-	 * Process a decision regarding the current lifter.
-	 * Make sure that the name of the lifter does not change until after the decision has been shown.
-	 * @see org.concordiainternational.competition.decision.DecisionEventListener#updateEvent(org.concordiainternational.competition.decision.DecisionEvent)
-	 */
-	@Override
-	public void updateEvent(final DecisionEvent updateEvent) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				synchronized (app) {
-					switch (updateEvent.getType()) {
-					case DOWN:
-						waitingForDecisionLightsReset = true;
-						decisionLights.setVisible(false);
-						break;
-					case SHOW:
-						// if window is not up, show it.
-						waitingForDecisionLightsReset = true;
-						shown = true;
-						decisionLights.setVisible(true);
-						break;
-					case RESET:
-						// we are done
-						waitingForDecisionLightsReset = false;
-						decisionLights.setVisible(false);
-						shown = false;
-						display(platformName, masterData);
-						break;
-					case WAITING:
-						waitingForDecisionLightsReset = true;
-						decisionLights.setVisible(false);
-						break;
-					case UPDATE:
-						// show change only if the lights are already on.
-						waitingForDecisionLightsReset = true;
-						if (shown) {
-							decisionLights.setVisible(true);
-						}
-						break;
-					case BLOCK:
-						waitingForDecisionLightsReset = true;
-						decisionLights.setVisible(true);
-						break;
-					}
-				}
-			}
-		}).start();
-	}
-
-
-	/* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.Stylable#setStylesheet(java.lang.String)
      */
     @Override
     public void setStylesheetName(String stylesheetName) {
-		this.stylesheetName = stylesheetName;
-	}
-	
+        this.stylesheetName = stylesheetName;
+    }
+
     @Override
     public String getStylesheetName() {
-		return stylesheetName;
-	}
+        return stylesheetName;
+    }
 
-
-	@Override
-	public void registerAsListener() {
-	       // listen to changes in the competition data
+    @Override
+    public void registerAsListener() {
+        // listen to changes in the competition data
         logger.debug("listening to session data updates.");
         updateListener = registerAsListener(platformName, masterData);
-        
+
         // listen to public address events
         if (viewName.contains("resultBoard")) {
             logger.debug("listening to public address events.");
             masterData.addBlackBoardListener(this);
         }
-        
+
         // listen to decisions
         IDecisionController decisionController = masterData.getRefereeDecisionController();
         if (decisionController != null) {
@@ -654,36 +654,34 @@ public class ResultFrame extends VerticalLayout implements
         }
 
         // listen to close events
-        app.getMainWindow().addListener((CloseListener)this);
-	}
+        app.getMainWindow().addListener((CloseListener) this);
+    }
 
-
-	@Override
-	public void unregisterAsListener() {
-	       // stop listening to changes in the competition data
+    @Override
+    public void unregisterAsListener() {
+        // stop listening to changes in the competition data
         if (updateListener != null) {
             masterData.removeListener(updateListener);
             logger.debug("stopped listening to UpdateEvents");
         }
-        
+
         // stop listening to public address events
         removeMessage();
         if (viewName.contains("resultBoard")) {
             masterData.removeBlackBoardListener(this);
             logger.debug("stopped listening to PublicAddress TimerEvents");
         }
-        
+
         // stop listening to decisions
         IDecisionController decisionController = masterData.getRefereeDecisionController();
         if (decisionController != null) {
             decisionController.removeListener(decisionLights);
             decisionController.removeListener(this);
         }
-        
-        // stop listening to close events
-        app.getMainWindow().removeListener((CloseListener)this);
-	}
 
+        // stop listening to close events
+        app.getMainWindow().removeListener((CloseListener) this);
+    }
 
     @Override
     public void showInteractionNotification(CompetitionApplication originatingApp, InteractionNotificationReason reason) {
@@ -694,4 +692,18 @@ public class ResultFrame extends VerticalLayout implements
     public boolean needsBlack() {
         return false;
     }
+
+    private static int classCounter = 0; // per class
+    private final int instanceId = classCounter++; // per instance
+
+    @Override
+    public String getInstanceId() {
+        return Long.toString(instanceId);
+    }
+
+    @Override
+    public  String getLoggingId() {
+        return viewName + getInstanceId();
+    }
+
 }

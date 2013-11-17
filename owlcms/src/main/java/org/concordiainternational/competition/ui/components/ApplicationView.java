@@ -42,4 +42,8 @@ public interface ApplicationView extends ComponentContainer, CloseListener, URIH
     
     public void unregisterAsListener();
 
+    public String getInstanceId();
+    
+    public String getLoggingId();
+
 }
