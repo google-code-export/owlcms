@@ -16,6 +16,7 @@ import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.CustomTextField;
 import org.concordiainternational.competition.ui.generators.WeightFormatter;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,6 +124,7 @@ public class LifterCardEditor extends Panel implements
 
             @Override
             public void buttonClick(ClickEvent event) {
+                LoggerUtils.buttonSetup(liftList.getGroupData());
                 logger.info("OK button pushed.");
                 lifter.check15_20kiloRule(false);
                 parentView.setStickyEditor(false);
@@ -138,12 +140,12 @@ public class LifterCardEditor extends Panel implements
 
                     @Override
                     public void buttonClick(ClickEvent event) {
-                        // next statement no longer needed as we are currently
-                        // listening to the lifter
-                        // and once setForceAsCurrent fires, the various new
-                        // editors will register themselves
-                        // liftList.getGroupData().trackEditors(lifter,
-                        // previousLifter, editor);
+                        LoggerUtils.buttonSetup(liftList.getGroupData());
+                        
+                        // next statement no longer needed as we are currently listening to the lifter
+                        // and once setForceAsCurrent fires, the various new editors will register themselves                      
+                        // liftList.getGroupData().trackEditors(lifter,previousLifter, editor);
+                        
                         logger.info("FORCE AS CURRENT button pushed.");
                         final CountdownTimer timer = liftList.getGroupData().getTimer();
                         if (timer != null)
@@ -162,6 +164,7 @@ public class LifterCardEditor extends Panel implements
 
             @Override
             public void buttonClick(ClickEvent event) {
+                LoggerUtils.buttonSetup(liftList.getGroupData());
                 logger.info("WITHDRAW button pushed.");
                 final CountdownTimer timer = liftList.getGroupData().getTimer();
                 if (timer != null)
@@ -190,6 +193,7 @@ public class LifterCardEditor extends Panel implements
     }
 
     public void buttonClick(ClickEvent event) {
+        LoggerUtils.buttonSetup(liftList.getGroupData());
         if (event.getButton() == delete) {
             liftList.deleteItem(lifter.getId());
         } else if (event.getButton() == save) {

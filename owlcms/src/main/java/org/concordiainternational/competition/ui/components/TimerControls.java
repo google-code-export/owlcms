@@ -17,6 +17,7 @@ import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.InteractionNotificationReason;
 import org.concordiainternational.competition.ui.LifterInfo;
 import org.concordiainternational.competition.ui.SessionData;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -227,6 +228,7 @@ public class TimerControls extends GridLayout {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+			    LoggerUtils.buttonSetup(groupData);
 				failedLiftDoIt(lifter, groupData);
 			}
 		};
@@ -247,6 +249,7 @@ public class TimerControls extends GridLayout {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+			    LoggerUtils.buttonSetup(groupData);
 				okLiftDoIt(lifter, groupData);
 			}
 		};
@@ -268,6 +271,7 @@ public class TimerControls extends GridLayout {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+			    LoggerUtils.buttonSetup(groupData);
 				startDoIt(lifter, groupData);
 			}
 		};
@@ -286,6 +290,7 @@ public class TimerControls extends GridLayout {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+			    LoggerUtils.buttonSetup(groupData);
 				stopDoIt(lifter, groupData);
 			}
 		};
@@ -305,6 +310,7 @@ public class TimerControls extends GridLayout {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+			    LoggerUtils.buttonSetup(groupData);
 				oneMinuteDoIt(lifter, groupData);
 
 			}
@@ -326,6 +332,7 @@ public class TimerControls extends GridLayout {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+			    LoggerUtils.buttonSetup(groupData);
 				twoMinutesDoIt(lifter, groupData);
 			}
 
@@ -346,6 +353,7 @@ public class TimerControls extends GridLayout {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+			    LoggerUtils.buttonSetup(groupData);
 				timingLogger.debug("weightChangeButton clicked"); //$NON-NLS-1$
 				logger.info("WEIGHT CHANGE button clicked");
 				groupData.getTimer().pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE_STARTED);
@@ -382,6 +390,8 @@ public class TimerControls extends GridLayout {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+			    LoggerUtils.buttonSetup(groupData);
+			    
 				timingLogger.debug("announce"); //$NON-NLS-1$
 				checkDecisionHasBeenDisplayed(groupData, locale);
 				groupData.callLifter(lifter); // will call start which will cause the timer buttons to do their thing.
@@ -421,6 +431,7 @@ public class TimerControls extends GridLayout {
 
 			@Override
 			public void buttonClick(ClickEvent event) {
+			    LoggerUtils.buttonSetup(groupData);
 				timingLogger.debug("stopTimeBottom"); //$NON-NLS-1$
 				groupData.getTimer().pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE_DONE);
 			}
@@ -631,7 +642,6 @@ public class TimerControls extends GridLayout {
 //		Window mainWindow = CompetitionApplication.getCurrent().getMainWindow();
 ////		initActions(mainWindow, lifter, groupData);
 	}
-
 
 
 }

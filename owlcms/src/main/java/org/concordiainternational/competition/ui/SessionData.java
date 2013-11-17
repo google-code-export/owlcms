@@ -462,7 +462,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             startUpdateModel();
             //startTimer(lifter,this,getTimer());
         } else if (!getTimeKeepingInUse()) {
-            logger.info("timekeeping NOT in use, setting lifter {} as owner", lifter);
+            logger.info("setting lifter {} as owner", lifter);
             getTimer().setOwner(lifter);
         } 
         

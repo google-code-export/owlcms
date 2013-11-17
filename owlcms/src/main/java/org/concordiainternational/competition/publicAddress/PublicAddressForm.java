@@ -15,6 +15,7 @@ import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.generators.CommonFieldFactory;
 import org.concordiainternational.competition.ui.list.GenericList;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,6 +136,7 @@ public class PublicAddressForm extends Form implements Window.CloseListener {
 	Button display = new Button(Messages.getString("PublicAddress.display", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	 //$NON-NLS-1$
 		@Override
 		public void buttonClick(ClickEvent event) {
+		    LoggerUtils.buttonSetup();
 			commit();
 			display();
 		}
@@ -143,6 +145,7 @@ public class PublicAddressForm extends Form implements Window.CloseListener {
 	Button clear = new Button(Messages.getString("PublicAddress.clear", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	 //$NON-NLS-1$
 		@Override
 		public void buttonClick(ClickEvent event) {
+		    LoggerUtils.buttonSetup();
 			commit();
 			clearDisplay();
 		}
@@ -160,6 +163,7 @@ public class PublicAddressForm extends Form implements Window.CloseListener {
 	Button cancel = new Button(Messages.getString("Common.cancel", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	 //$NON-NLS-1$
 		@Override
 		public void buttonClick(ClickEvent event) {
+		    LoggerUtils.buttonSetup();
 			discard();
 			closeWindow();
 		}

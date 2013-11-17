@@ -322,6 +322,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
 
             @Override
             public void buttonClick(ClickEvent event) {
+                LoggerUtils.buttonSetup();
                 if (editable) {
                     // layout currently says "OK"
                     event.getButton().setCaption(Messages.getString("Common.edit", locale)); //$NON-NLS-1$

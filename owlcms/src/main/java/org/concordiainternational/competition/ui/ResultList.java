@@ -24,6 +24,7 @@ import org.concordiainternational.competition.ui.components.SessionSelect;
 import org.concordiainternational.competition.ui.generators.CommonColumnGenerator;
 import org.concordiainternational.competition.ui.generators.LiftCellStyleGenerator;
 import org.concordiainternational.competition.ui.list.GenericBeanList;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -253,6 +254,9 @@ EditableList {
 
             @Override
             public void buttonClick(ClickEvent event) {
+                CompetitionApplication current = CompetitionApplication.getCurrent();
+                SessionData masterData = current.getMasterData(current.getPlatformName());
+                LoggerUtils.buttonSetup(masterData);
                 logger.debug("reloading"); //$NON-NLS-1$
                 data.refresh(false);
             }
@@ -280,6 +284,7 @@ EditableList {
             public void buttonClick(ClickEvent event) {
                 CompetitionApplication current = CompetitionApplication.getCurrent();
                 SessionData masterData = current.getMasterData(current.getPlatformName());
+                LoggerUtils.buttonSetup(masterData);
                 PublicAddressForm.editPublicAddress(ResultList.this, masterData);
             }
         };
