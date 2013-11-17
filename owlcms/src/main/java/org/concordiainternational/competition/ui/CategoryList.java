@@ -16,7 +16,7 @@ import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.list.GenericHbnList;
-import org.slf4j.MDC;
+import org.concordiainternational.competition.utils.LoggerUtils;
 
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.ui.Window.CloseEvent;
@@ -35,7 +35,7 @@ public class CategoryList extends GenericHbnList<Category> implements Applicatio
         } else {
             this.viewName = viewName;
         }
-        MDC.put("view", getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
         init();
     }
 

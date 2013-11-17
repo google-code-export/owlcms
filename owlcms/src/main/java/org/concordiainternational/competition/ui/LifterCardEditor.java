@@ -65,7 +65,7 @@ public class LifterCardEditor extends Panel implements
 
     public LifterCardEditor(EditableList announcerList, EditingView parentView) {
         super();
-        // MDC.put("view", parentView.getClass().getSimpleName()+parentView.getInstanceId()+".lifterCardEditor"+getInstanceId());
+        // LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,parentView.getClass().getSimpleName()+parentView.getInstanceId()+".lifterCardEditor"+getInstanceId());
         this.parentView = parentView;
         final Locale locale = CompetitionApplication.getCurrent().getLocale();
 

@@ -20,9 +20,9 @@ import org.concordiainternational.competition.ui.PlatesInfoEvent.PlatesInfoListe
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.components.ApplicationView;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.URIHandler;
@@ -68,7 +68,7 @@ public class MPlatesInfoView extends VerticalLayout implements
         } else {
             this.viewName = viewName;
         }
-        MDC.put("view", getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
 
         app = CompetitionApplication.getCurrent();
         this.addStyleName("loadChart");

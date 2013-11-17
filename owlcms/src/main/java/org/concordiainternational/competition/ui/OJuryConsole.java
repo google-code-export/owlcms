@@ -17,9 +17,9 @@ import org.concordiainternational.competition.decision.IDecisionController;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.mobile.IRefereeConsole;
 import org.concordiainternational.competition.ui.components.ApplicationView;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
@@ -76,7 +76,7 @@ public class OJuryConsole extends VerticalLayout implements DecisionEventListene
         } else {
             this.viewName = viewName;
         }
-        MDC.put("view", getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
 
         if (app == null)
             this.app = CompetitionApplication.getCurrent();

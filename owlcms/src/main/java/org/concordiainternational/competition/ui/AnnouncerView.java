@@ -20,10 +20,10 @@ import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.concordiainternational.competition.webapp.WebApplicationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.vaadin.notifique.Notifique;
 import org.vaadin.notifique.Notifique.Message;
 import org.vaadin.overlay.CustomOverlay;
@@ -107,7 +107,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
         } else {
             this.viewName = viewName;
         }
-        MDC.put("view", getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
 
         this.app = CompetitionApplication.getCurrent();
         this.mode = mode;

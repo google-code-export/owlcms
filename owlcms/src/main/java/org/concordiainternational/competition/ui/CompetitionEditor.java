@@ -19,10 +19,10 @@ import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.publicAddress.LogoUploader;
 import org.concordiainternational.competition.ui.components.ApplicationView;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import com.vaadin.data.Buffered.SourceException;
 import com.vaadin.data.Property;
@@ -76,7 +76,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         } else {
             this.viewName = viewName;
         }
-        MDC.put("view", getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
 
         app = CompetitionApplication.getCurrent();
         final Locale locale = app.getLocale();

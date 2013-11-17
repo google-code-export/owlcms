@@ -29,9 +29,9 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.DecisionLightsWindow;
 import org.concordiainternational.competition.ui.components.Stylable;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.vaadin.weelayout.WeeLayout;
 
 import com.vaadin.terminal.DownloadStream;
@@ -116,7 +116,7 @@ public class AttemptBoardView extends WeeLayout implements
             this.publicFacing = publicFacing;
             this.stylesheetName = stylesheetName;
         }
-        MDC.put("view", getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
         this.app = CompetitionApplication.getCurrent();
 
         boolean prevDisabledPush = app.getPusherDisabled();

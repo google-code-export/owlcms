@@ -25,9 +25,9 @@ import org.concordiainternational.competition.ui.SessionData.UpdateEventListener
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.DecisionLightsWindow;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 import com.vaadin.event.Action;
 import com.vaadin.event.ShortcutAction;
@@ -83,7 +83,7 @@ public class CountdownDisplay extends VerticalLayout implements
         } else {
             this.viewName = viewName;
         }
-        MDC.put("view", getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
 
         this.app = CompetitionApplication.getCurrent();
 

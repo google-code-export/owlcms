@@ -97,7 +97,7 @@ public class LifterInfo extends VerticalLayout implements
     protected DecisionEvent prevEvent;
 
     public LifterInfo(String identifier, final SessionData groupData, AnnouncerView.Mode mode, EditingView parentView) {
-        // MDC.put("view", parentView.getClass().getSimpleName()+parentView.getInstanceId()+".lifterInfo"+getInstanceId());
+        // LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,parentView.getClass().getSimpleName()+parentView.getInstanceId()+".lifterInfo"+getInstanceId());
         final CompetitionApplication currentApp = CompetitionApplication.getCurrent();
         this.app = currentApp;
         this.locale = currentApp.getLocale();
