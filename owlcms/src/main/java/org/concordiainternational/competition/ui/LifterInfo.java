@@ -62,11 +62,10 @@ public class LifterInfo extends VerticalLayout implements
         ApplicationView,
         Notifyable, UpdateEventListener
 {
-    static final Logger logger = LoggerFactory.getLogger(LifterInfo.class);
-    static final Logger timingLogger = LoggerFactory
-            .getLogger("org.concordiainternational.competition.timer.TimingLogger"); //$NON-NLS-1$
-    static final Logger buttonLogger = LoggerFactory
-            .getLogger("org.concordiainternational.competition.ButtonsLogger"); //$NON-NLS-1$
+    private static final Logger logger = LoggerFactory.getLogger(LifterInfo.class);
+//    private static final Logger timingLogger = LoggerFactory.getLogger("timing."+SessionData.class.getSimpleName()); //$NON-NLS-1$
+    private static final Logger buttonLogger = LoggerFactory.getLogger("buttons."+SessionData.class.getSimpleName()); //$NON-NLS-1$
+    private static Logger listenerLogger = LoggerFactory.getLogger("listeners."+SessionData.class.getSimpleName()); //$NON-NLS-1$
 
     private static final long serialVersionUID = -3687013148334708795L;
     public Locale locale;
@@ -244,7 +243,7 @@ public class LifterInfo extends VerticalLayout implements
                 if (showTimerControls) {
                     automaticStartTime.setValue(false);
                     automaticStartTime.setVisible(showTimerControls);
-                    timerControls.showTimerControls(groupData.getTimer().isRunning());
+                    timerControls.showTimerControls(groupData);
                 } else {
                     automaticStartTime.setVisible(false);
                     timerControls.hideTimerControls();
@@ -395,9 +394,9 @@ public class LifterInfo extends VerticalLayout implements
     public String getAnnouncedIndicator(SessionData groupData1) {
 
         return groupData1 != null &&
-                groupData1.getNeedToAnnounce()
-                ? " " + notAnnounced
-                : " " + announced;
+                groupData1.isAnnounced()
+                ? " " + announced
+                : " " + notAnnounced;
     }
 
     @Override
@@ -524,7 +523,7 @@ public class LifterInfo extends VerticalLayout implements
         synchronized (app) {
             timerDisplay.setEnabled(false); // show that timer has stopped.
             setTimerDisplay(remaining);
-            timerControls.enableStopStart(false);
+            timerControls.enableButtons(groupData,"LifterInfo forceTimeRemaining");
             setBlocked(false);
         }
         showInteractionNotification(originatingApp, reason);
@@ -538,7 +537,7 @@ public class LifterInfo extends VerticalLayout implements
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {
             if (timerControls != null) {
-                timerControls.enableStopStart(false);
+                timerControls.enableButtons(groupData,"LifterInfo pause");
             }
             if (timerDisplay != null) {
                 timerDisplay.setEnabled(false);
@@ -560,9 +559,10 @@ public class LifterInfo extends VerticalLayout implements
 
         // display notifications from other apps, except for no_timer and not_announced, which
         // are mistakes that should always be shown.
-        if (isTop() &&
-                (app != originatingApp
-                        || reason == InteractionNotificationReason.NO_TIMER || reason == InteractionNotificationReason.NOT_ANNOUNCED)) {
+        boolean announcerShouldSee = (reason == InteractionNotificationReason.NO_TIMER
+                                || reason == InteractionNotificationReason.NOT_ANNOUNCED
+                                || reason == InteractionNotificationReason.CLOCK_EXPIRED);
+        if (isTop() && (app != originatingApp || announcerShouldSee)) {
             CompetitionApplication receivingApp = app;
 
             // defensive
@@ -582,7 +582,7 @@ public class LifterInfo extends VerticalLayout implements
                             && originatingView.mode != Mode.TIMEKEEPER) {
                         traceBack(originatingApp);
                         receivingView.displayNotification(originatingView.mode, reason);
-                    } else if (reason == InteractionNotificationReason.NO_TIMER || reason == InteractionNotificationReason.NOT_ANNOUNCED) {
+                    } else if (announcerShouldSee) {
                         receivingView.displayNotification(originatingView.mode, reason);
                     }
                 } else {
@@ -607,8 +607,10 @@ public class LifterInfo extends VerticalLayout implements
     public void start(int timeRemaining) {
         setBlocked(false);
         synchronized (app) {
-            if (timerControls != null)
-                timerControls.enableStopStart(true);
+            if (timerControls != null) {
+                timerControls.enableButtons(groupData,"LifterInfo start");
+                LoggerUtils.traceBack(buttonLogger);
+            } 
             if (timerDisplay != null) {
                 timerDisplay.setEnabled(true);
             }
@@ -621,8 +623,9 @@ public class LifterInfo extends VerticalLayout implements
 
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {
-            if (timerControls != null)
-                timerControls.enableStopStart(false);
+            if (timerControls != null) {
+                timerControls.enableButtons(groupData, "LifterInfo stop");
+            }
             if (timerDisplay != null) {
                 timerDisplay.setEnabled(false);
             }
@@ -710,9 +713,6 @@ public class LifterInfo extends VerticalLayout implements
                 case SHOW:
                     shown = true;
                     displayDecisionNotification(updateEvent);
-                    if (timerControls != null) {
-                        timerControls.hideLiftControls();
-                    }
                     break;
                 // go on to UPDATE;
                 case UPDATE:
@@ -723,56 +723,28 @@ public class LifterInfo extends VerticalLayout implements
                 case RESET:
                     shown = false;
                     prevEvent = null;
-                    if (timerControls != null) {
-                        timerControls.showLiftControls();
-                    }
                     break;
                 }
+                synchronized (app) {
+                    if (timerControls != null) {
+                        timerControls.enableButtons(groupData,"LifterInfo.updateEvent");
+                    }
+                }
+                app.push();
             }
 
             /**
              * @param newEvent
              */
             protected void displayDecisionNotification(final DecisionEvent newEvent) {
-                synchronized (app) {
-                    final ApplicationView currentView = app.components.currentView;
-                    if (currentView instanceof AnnouncerView) {
-                        // if (stutteringEvent(newEvent,prevEvent)) {
-                        // prevEvent = newEvent;
-                        // logger.trace("A prevented notification for {}",newEvent);
-                        // logger.trace("A prevEvent={}",prevEvent);
-                        // return;
-                        // }
-                        // prevEvent = newEvent;
-                        // logger.trace("B prevEvent={}",prevEvent);
-
-                        final AnnouncerView announcerView = (AnnouncerView) currentView;
-                        Notifique notifications = announcerView.getNotifications();
-                        String style;
-                        String message;
-                        final Boolean accepted = newEvent.isAccepted();
-                        logger.trace("B YES notification for {} accepted={}", newEvent, accepted);
-                        if (accepted != null) {
-                            final Lifter lifter2 = newEvent.getLifter();
-                            final String name = (lifter2 != null ? lifter2.getLastName().toUpperCase() + " " + lifter2.getFirstName()
-                                    : " «?» ");
-                            Integer attemptedWeight = newEvent.getAttemptedWeight();
-                            attemptedWeight = (attemptedWeight != null ? attemptedWeight : 0);
-                            if (accepted) {
-                                style = "owlcms-white";
-                                message = MessageFormat.format(Messages.getString("Decision.lift", locale), name, attemptedWeight);
-                            } else {
-                                style = "owlcms-red";
-                                message = MessageFormat.format(Messages.getString("Decision.noLift", locale), name, attemptedWeight);
-                            }
-                            final Message addedMessage = notifications.add((Resource) null, message, true, style, true);
-                            announcerView.scheduleMessageRemoval(addedMessage, 10000);
-                        }
-                    }
-                }
-                app.push();
+                final Boolean accepted = newEvent.isAccepted();
+                Integer attemptedWeight = newEvent.getAttemptedWeight();
+                attemptedWeight = (attemptedWeight != null ? attemptedWeight : 0);
+                final Lifter lifter2 = newEvent.getLifter();
+                logger.trace("B YES notification for {} accepted={}", newEvent, accepted);
+                doDisplayDecision(accepted, attemptedWeight, lifter2);
             }
-
+            
             /**
              * @param curEvent
              * @param prevEvent1
@@ -827,6 +799,37 @@ public class LifterInfo extends VerticalLayout implements
         }).start();
     }
 
+
+
+    public void doDisplayDecision(final Boolean accepted, Integer attemptedWeight, final Lifter lifter2) {
+        synchronized (app) {
+            final ApplicationView currentView = app.components.currentView;
+            if (currentView instanceof AnnouncerView) {
+
+                final AnnouncerView announcerView = (AnnouncerView) currentView;
+                Notifique notifications = announcerView.getNotifications();
+                String style;
+                String message;
+
+                if (accepted != null) {
+                    
+                    final String name = (lifter2 != null ? lifter2.getLastName().toUpperCase() + " " + lifter2.getFirstName()
+                            : " «?» ");
+                    if (accepted) {
+                        style = "owlcms-white";
+                        message = MessageFormat.format(Messages.getString("Decision.lift", locale), name, attemptedWeight);
+                    } else {
+                        style = "owlcms-red";
+                        message = MessageFormat.format(Messages.getString("Decision.noLift", locale), name, attemptedWeight);
+                    }
+                    final Message addedMessage = notifications.add((Resource) null, message, true, style, true);
+                    announcerView.scheduleMessageRemoval(addedMessage, 10000);
+                }
+            }
+        }
+        app.push();
+    }
+    
     /**
      * @return
      */
@@ -855,7 +858,7 @@ public class LifterInfo extends VerticalLayout implements
     public void registerAsListener() {
         // window close
         final Window mainWindow = app.getMainWindow();
-        logger.debug("window: {} register for {} {}",
+        listenerLogger.debug("window: {} register for {} {}",
                 new Object[] { mainWindow, identifier, this });
         mainWindow.addListener(this);
 
@@ -885,7 +888,7 @@ public class LifterInfo extends VerticalLayout implements
     public void unregisterAsListener() {
         // window close
         final Window mainWindow = app.getMainWindow();
-        logger.debug("window: {} UNregister for {} {}",
+        listenerLogger.debug("window: {} UNregister for {} {}",
                 new Object[] { mainWindow, identifier, this });
         mainWindow.removeListener(this);
 

@@ -16,6 +16,7 @@ import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.InteractionNotificationReason;
 import org.concordiainternational.competition.ui.LifterInfo;
+import org.concordiainternational.competition.ui.SessionData;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,8 @@ public class CountdownTimer implements Serializable {
 
     private static final long serialVersionUID = 8921641103581546472L;
 
-    final static Logger logger = LoggerFactory.getLogger(CountdownTimer.class);
+    private final static Logger logger = LoggerFactory.getLogger(CountdownTimer.class);
+    private final static Logger listenerLogger = LoggerFactory.getLogger("listeners."+SessionData.class.getSimpleName()); //$NON-NLS-1$
 
     private boolean platformFree;
     private Lifter owner = null;
@@ -219,7 +221,7 @@ public class CountdownTimer implements Serializable {
             countdownTask = null;
         }
         setTimeRemaining(remainingTime);
-        logger.info("forceTimeRemaining: {}", getTimeRemaining()); //$NON-NLS-1$
+        logger.info("forceTimeRemaining: {} {}", getTimeRemaining(),reason); //$NON-NLS-1$
         if (countdownDisplay != null) {
             countdownDisplay.forceTimeRemaining(timeRemaining, CompetitionApplication.getCurrent(), reason);
         }
@@ -302,15 +304,17 @@ public class CountdownTimer implements Serializable {
     }
 
     public void addListener(CountdownTimerListener timerListener) {
-        logger.debug("{} listened by {}", this, timerListener); //$NON-NLS-1$
+        listenerLogger.debug("addListener: {} listened by {}", this, timerListener); //$NON-NLS-1$
         listeners.add(timerListener);
     }
 
     public void removeAllListeners() {
+        listenerLogger.debug("removeAllListeners: no one listens to {}", this); //$NON-NLS-1$
         listeners.clear();
     }
 
     public void removeListener(CountdownTimerListener timerListener) {
+        listenerLogger.debug("removeListener: {} no longer listened by {}", this, timerListener); //$NON-NLS-1$
         listeners.remove(timerListener);
     }
 

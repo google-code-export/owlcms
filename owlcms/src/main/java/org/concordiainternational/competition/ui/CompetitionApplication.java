@@ -334,12 +334,12 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
 
     synchronized public void push() {
-        if (logger.isDebugEnabled()) {
-            String string = LoggerUtils.mdcGet("view");
-            if (string!= null && string.startsWith(DEFAULT_VIEW)) {
-                LoggerUtils.logException(logger, new Exception("pushing from competitionEditor traceback"));
-            }            
-        }
+//        if (logger.isDebugEnabled()) {
+//            String string = LoggerUtils.mdcGet("view");
+//            if (string!= null && string.startsWith(DEFAULT_VIEW)) {
+//                LoggerUtils.logException(logger, new Exception("pushing from competitionEditor traceback"));
+//            }            
+//        }
 
         pusher = this.ensurePusher();
         if (!pusherDisabled) {

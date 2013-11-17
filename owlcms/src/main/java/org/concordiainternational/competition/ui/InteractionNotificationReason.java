@@ -16,5 +16,6 @@ public enum InteractionNotificationReason {
 	LIFTER_WITHDRAWAL, 
 	REFEREE_DECISION,
 	NOT_ANNOUNCED,
-	NO_TIMER
+	NO_TIMER,
+	CLOCK_EXPIRED
 }
