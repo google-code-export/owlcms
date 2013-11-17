@@ -19,48 +19,61 @@ import com.vaadin.ui.Window.CloseListener;
 @SuppressWarnings("serial")
 public class EmptyView extends VerticalLayout implements ApplicationView {
 
-	@Override
-	public void refresh() {
-	}
+    @Override
+    public void refresh() {
+    }
 
-	@Override
-	public boolean needsMenu() {
-		return true;
-	}
+    @Override
+    public boolean needsMenu() {
+        return true;
+    }
 
-	@Override
-	public void setParametersFromFragment() {
-	}
+    @Override
+    public void setParametersFromFragment() {
+    }
 
-	@Override
-	public String getFragment() {
-		return "";
-	}
+    @Override
+    public String getFragment() {
+        return "";
+    }
 
-	@Override
-	public void registerAsListener() {
-		CompetitionApplication.getCurrent().getMainWindow().addListener((CloseListener) this);
-	}
+    @Override
+    public void registerAsListener() {
+        CompetitionApplication.getCurrent().getMainWindow().addListener((CloseListener) this);
+    }
 
-	@Override
-	public void unregisterAsListener() {
-		CompetitionApplication.getCurrent().getMainWindow().addListener((CloseListener) this);
-	}
-	
-	@Override
-	public void windowClose(CloseEvent e) {
-		unregisterAsListener();	
-	}
+    @Override
+    public void unregisterAsListener() {
+        CompetitionApplication.getCurrent().getMainWindow().addListener((CloseListener) this);
+    }
 
-	@Override
-	public DownloadStream handleURI(URL context, String relativeUri) {
-		registerAsListener();
-		return null;
-	}
-	
+    @Override
+    public void windowClose(CloseEvent e) {
+        unregisterAsListener();
+    }
+
+    @Override
+    public DownloadStream handleURI(URL context, String relativeUri) {
+        registerAsListener();
+        return null;
+    }
+
     @Override
     public boolean needsBlack() {
         return false;
+    }
+
+    private static int classCounter = 0; // per class
+    private final int instanceId = classCounter++; // per instance
+
+    @Override
+    public String getInstanceId() {
+        return Long.toString(instanceId);
+    }
+
+    @Override
+    public String getLoggingId() {
+        return "(empty)" + getInstanceId();
     }
 
 }

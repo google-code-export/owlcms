@@ -72,6 +72,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     private static XLogger logger = XLoggerFactory.getXLogger(SessionData.class);
     static final Logger timingLogger = LoggerFactory.getLogger("org.concordiainternational.competition.timer.TimingLogger"); //$NON-NLS-1$
     public static final String MASTER_KEY = "GroupData_"; //$NON-NLS-1$
+    private static Logger listenerLogger = LoggerFactory.getLogger("listeners."+SessionData.class.getSimpleName());
 
     public List<Lifter> lifters;
     /**
@@ -459,7 +460,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         announcerEnabled = false;
 
         if (startTimeAutomatically) {
-            startTimer(lifter,this,getTimer());
+            startUpdateModel();
+            //startTimer(lifter,this,getTimer());
         } else if (!getTimeKeepingInUse()) {
             logger.info("timekeeping NOT in use, setting lifter {} as owner", lifter);
             getTimer().setOwner(lifter);
@@ -718,7 +720,9 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      * @param listener
      */
     public void addListener(UpdateEventListener listener) {
-        logger.debug("group data : add listener {}", listener); //$NON-NLS-1$
+        String id = "";
+        if (listener instanceof EditingView) id = ((EditingView) listener).getLoggingId();
+        listenerLogger.debug("add listener {} {}", listener, id); //$NON-NLS-1$
         getEventRouter().addListener(UpdateEvent.class, listener, LIFTER_EVENT_METHOD);
     }
 
@@ -728,8 +732,11 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      * @param listener
      */
     public void removeListener(UpdateEventListener listener) {
+
+        String id = "";
+        if (listener instanceof EditingView) id = ((EditingView) listener).getLoggingId();
         if (eventRouter != null) {
-            logger.debug("group data : hide listener {}", listener); //$NON-NLS-1$
+            listenerLogger.debug("remove listener {} {}", listener, id); //$NON-NLS-1$
             eventRouter.removeListener(UpdateEvent.class, listener, LIFTER_EVENT_METHOD);
         }
     }
@@ -1097,7 +1104,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      * @param lifter
      * @param groupData
      */
-    public void startTimer(Lifter lifter, SessionData groupData,CountdownTimer timing) {
+    private void startTimer(Lifter lifter, SessionData groupData,CountdownTimer timing) {
         manageTimerOwner(lifter,groupData, timing);
         timing.restart();
     }

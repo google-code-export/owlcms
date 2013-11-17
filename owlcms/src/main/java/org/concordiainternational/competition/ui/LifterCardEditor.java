@@ -44,10 +44,10 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Window.CloseEvent;
 
-public class LifterCardEditor extends Panel implements 
-	Property.ValueChangeListener, // listen to changes within the editor
-	Handler, // handle keyboard shortcuts
-	ApplicationView
+public class LifterCardEditor extends Panel implements
+        Property.ValueChangeListener, // listen to changes within the editor
+        Handler, // handle keyboard shortcuts
+        ApplicationView
 {
 
     private static final long serialVersionUID = -216488484306113727L;
@@ -65,6 +65,7 @@ public class LifterCardEditor extends Panel implements
 
     public LifterCardEditor(EditableList announcerList, EditingView parentView) {
         super();
+        // MDC.put("view", parentView.getClass().getSimpleName()+parentView.getInstanceId()+".lifterCardEditor"+getInstanceId());
         this.parentView = parentView;
         final Locale locale = CompetitionApplication.getCurrent().getLocale();
 
@@ -145,7 +146,8 @@ public class LifterCardEditor extends Panel implements
                         // previousLifter, editor);
                         logger.info("FORCE AS CURRENT button pushed.");
                         final CountdownTimer timer = liftList.getGroupData().getTimer();
-                        if (timer != null) timer.pause(InteractionNotificationReason.FORCE_AS_CURRENT);
+                        if (timer != null)
+                            timer.pause(InteractionNotificationReason.FORCE_AS_CURRENT);
                         lifter.setForcedAsCurrent(true); // this will trigger an
                                                          // update event on the
                                                          // lift list.
@@ -156,15 +158,16 @@ public class LifterCardEditor extends Panel implements
         Button withdraw = new Button();
         withdraw.setCaption(Messages.getString("LifterInfo.Withdraw", locale)); //$NON-NLS-1$
         withdraw.addListener(new Button.ClickListener() { //$NON-NLS-1$
-        	private static final long serialVersionUID = 5693610077500773431L;
+            private static final long serialVersionUID = 5693610077500773431L;
 
-        	@Override
-        	public void buttonClick(ClickEvent event) {
-        		logger.info("WITHDRAW button pushed.");
-        		final CountdownTimer timer = liftList.getGroupData().getTimer();
-        		if (timer != null) timer.pause(InteractionNotificationReason.LIFTER_WITHDRAWAL);
-        		lifter.withdraw(); // this will trigger an update event on the lift list.
-        	}
+            @Override
+            public void buttonClick(ClickEvent event) {
+                logger.info("WITHDRAW button pushed.");
+                final CountdownTimer timer = liftList.getGroupData().getTimer();
+                if (timer != null)
+                    timer.pause(InteractionNotificationReason.LIFTER_WITHDRAWAL);
+                lifter.withdraw(); // this will trigger an update event on the lift list.
+            }
 
         });
 
@@ -195,8 +198,7 @@ public class LifterCardEditor extends Panel implements
     }
 
     /**
-     * Create the lifter grid to mimic the layout of a standard lifter card used
-     * by announcers.
+     * Create the lifter grid to mimic the layout of a standard lifter card used by announcers.
      * 
      * @param app
      * @param locale
@@ -254,9 +256,8 @@ public class LifterCardEditor extends Panel implements
                     field = new CustomTextField();
                     ((TextField) field).setWidth("8.5ex"); //$NON-NLS-1$
                     if (row > 1) {
-                        field.addValidator(new IntegerValidator(Messages.getString(
-                            "LifterCardEditor.integerExpected", locale) //$NON-NLS-1$
-                                ));
+                        field.addValidator(new IntegerValidator(Messages.getString("LifterCardEditor.integerExpected", locale) //$NON-NLS-1$
+                        ));
                     }
                 } else {
                     // last row gets time fields
@@ -284,16 +285,15 @@ public class LifterCardEditor extends Panel implements
     }
 
     /**
-     * Connect the lifter in the bottom part to the indicated item in the lift
-     * list. By binding to the items in the editor grid to the same property
-     * datasource as in the lift list, updates are automatic and instantaneous.
+     * Connect the lifter in the bottom part to the indicated item in the lift list. By binding to the items in the editor grid to the same
+     * property datasource as in the lift list, updates are automatic and instantaneous.
      * 
      * @param lifter1
      * @param item1
      */
     public void loadLifter(Lifter lifter1, Item item1) {
         logger.debug("announcerView={} loading {} previousLifter {}", //$NON-NLS-1$
-            new Object[] { parentView, lifter1, this.lifter }); //$NON-NLS-1$
+                new Object[] { parentView, lifter1, this.lifter }); //$NON-NLS-1$
         // LoggerUtils.logException(logger, new Exception("whoCalls"));
         final SessionData groupData = liftList.getGroupData();
         if (lifter1 == null) {
@@ -384,7 +384,7 @@ public class LifterCardEditor extends Panel implements
             logger.debug(("before setButtonVisibility")); //$NON-NLS-1$
             ignoreChanges = false;
         }
-//        lifter1.check15_20kiloRule();
+        // lifter1.check15_20kiloRule();
     }
 
     private void setFocus(Lifter lifter, Item item) {
@@ -425,8 +425,10 @@ public class LifterCardEditor extends Panel implements
             final String value = (String) f.getValue();
             // logger.trace("value = {} column={} row={}", new
             // Object[]{value,curColumn,row});
-            if (value == null) break;
-            if (value.isEmpty()) break;
+            if (value == null)
+                break;
+            if (value.isEmpty())
+                break;
             final int intValue = WeightFormatter.safeParseInt(value);
             if (intValue > 0) {
                 setStyle(f, "success"); //$NON-NLS-1$
@@ -453,16 +455,15 @@ public class LifterCardEditor extends Panel implements
         for (int column = 1; column < grid.getColumns(); column++) {
             for (int row = 1; row < grid.getRows(); row++) {
                 Field field = (Field) grid.getComponent(column, row);
-                if (!field.getStyleName().isEmpty()) field.setStyleName(""); //$NON-NLS-1$
+                if (!field.getStyleName().isEmpty())
+                    field.setStyleName(""); //$NON-NLS-1$
             }
         }
         ignoreChanges = false;
     }
 
-
     /**
-     * Utility routine to associate a grid cell with a Pojo field through a
-     * property.
+     * Utility routine to associate a grid cell with a Pojo field through a property.
      * 
      * @param column
      * @param row
@@ -475,9 +476,8 @@ public class LifterCardEditor extends Panel implements
     }
 
     /**
-     * Add value change listeners on relevant grids fields. Also make them write
-     * through and immediate. Exclude grid fields that are computed, otherwise
-     * infinite loop happens.
+     * Add value change listeners on relevant grids fields. Also make them write through and immediate. Exclude grid fields that are
+     * computed, otherwise infinite loop happens.
      */
     private void makeGridFieldsReactImmediately() {
         for (int column = 1; column <= 6; column++) {
@@ -502,23 +502,22 @@ public class LifterCardEditor extends Panel implements
     }
 
     /*
-     * Event received when any of the cells in the form has changed. We need to
-     * recompute the dependent cells (non-Javadoc)
+     * Event received when any of the cells in the form has changed. We need to recompute the dependent cells (non-Javadoc)
      * 
-     * @see
-     * com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data
-     * .Property.ValueChangeEvent)
+     * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data .Property.ValueChangeEvent)
      */
     @Override
     public void valueChange(Property.ValueChangeEvent event) {
         // prevent triggering if called recursively or during initial display
         // prior to editing.
-        if (ignoreChanges) return;
+        if (ignoreChanges)
+            return;
         ignoreChanges = true;
 
         // this means that an editable property has changed in the form; refresh
         // all the computed ones.
-        if (event != null) logger.debug(event.getProperty().toString());
+        if (event != null)
+            logger.debug(event.getProperty().toString());
         // if (! (event.getProperty() instanceof MethodProperty)) return;
         // new
         // Exception("LifterCardEditor.valueChange() whocalls ").printStackTrace();
@@ -567,11 +566,9 @@ public class LifterCardEditor extends Panel implements
     }
 
     /**
-     * Update the field with the current value of the underlying data source,
-     * which may have changed. If a MethodProperty is used, and the setter on
-     * the bean is called, the Property does not know of this change, and does
-     * not broacast. Likewise, if a getter computes from other fields, there is
-     * no broadcast when the other fields change.
+     * Update the field with the current value of the underlying data source, which may have changed. If a MethodProperty is used, and the
+     * setter on the bean is called, the Property does not know of this change, and does not broacast. Likewise, if a getter computes from
+     * other fields, there is no broadcast when the other fields change.
      * 
      * @param field
      *            the field that needs updating.
@@ -582,27 +579,25 @@ public class LifterCardEditor extends Panel implements
         field.setPropertyDataSource(dataSource);
     }
 
-
     // Have the unmodified Enter key cause an event
     Action action_ok = new ShortcutAction("Default key", //$NON-NLS-1$
             ShortcutAction.KeyCode.ENTER, null);
 
     /**
-     * Retrieve actions for a specific component. This method will be called for
-     * each object that has a handler; in this example just for login panel. The
-     * returned action list might as well be static list.
+     * Retrieve actions for a specific component. This method will be called for each object that has a handler; in this example just for
+     * login panel. The returned action list might as well be static list.
      */
     @Override
-	public Action[] getActions(Object target, Object sender) {
+    public Action[] getActions(Object target, Object sender) {
         return new Action[] { action_ok };
     }
 
     /**
-     * Handle actions received from keyboard. This simply directs the actions to
-     * the same listener methods that are called with ButtonClick events.
+     * Handle actions received from keyboard. This simply directs the actions to the same listener methods that are called with ButtonClick
+     * events.
      */
     @Override
-	public void handleAction(Action action, Object sender, Object target) {
+    public void handleAction(Action action, Object sender, Object target) {
         if (action == action_ok) {
             okHandler();
         }
@@ -618,52 +613,64 @@ public class LifterCardEditor extends Panel implements
         return lifter;
     }
 
-	@Override
-	public void registerAsListener() {
-	}
+    @Override
+    public void registerAsListener() {
+    }
 
-	@Override
-	public void unregisterAsListener() {
-		if (lifterCardIdentification != null) {
-			lifterCardIdentification.unregisterAsListener();
-		}	
-	}
+    @Override
+    public void unregisterAsListener() {
+        if (lifterCardIdentification != null) {
+            lifterCardIdentification.unregisterAsListener();
+        }
+    }
 
+    @Override
+    public void windowClose(CloseEvent e) {
+        unregisterAsListener();
+    }
 
-	@Override
-	public void windowClose(CloseEvent e) {
-		unregisterAsListener();
-	}
+    @Override
+    public DownloadStream handleURI(URL context, String relativeUri) {
+        logger.trace("registering listeners");
+        // called on refresh
+        registerAsListener();
+        return null;
+    }
 
-	@Override
-	public DownloadStream handleURI(URL context, String relativeUri) {
-		logger.trace("registering listeners");
-		// called on refresh
-		registerAsListener();
-		return null;
-	}
+    @Override
+    public void refresh() {
+    }
 
-	@Override
-	public void refresh() {
-	}
+    @Override
+    public boolean needsMenu() {
+        return false;
+    }
 
-	@Override
-	public boolean needsMenu() {
-		return false;
-	}
+    @Override
+    public void setParametersFromFragment() {
+    }
 
-	@Override
-	public void setParametersFromFragment() {
-	}
-
-	@Override
-	public String getFragment() {
-		return null;
-	}
+    @Override
+    public String getFragment() {
+        return null;
+    }
 
     @Override
     public boolean needsBlack() {
         return false;
+    }
+
+    private static int classCounter = 0; // per class
+    private final int instanceId = classCounter++; // per instance
+
+    @Override
+    public String getInstanceId() {
+        return Long.toString(instanceId);
+    }
+
+    @Override
+    public String getLoggingId() {
+        return parentView.getViewName() + getInstanceId();
     }
 
 }

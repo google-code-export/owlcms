@@ -16,14 +16,15 @@ import org.concordiainternational.competition.timer.CountdownTimer;
 import org.concordiainternational.competition.timer.CountdownTimerListener;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
+import org.concordiainternational.competition.ui.InteractionNotificationReason;
 import org.concordiainternational.competition.ui.SessionData;
 import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
-import org.concordiainternational.competition.ui.InteractionNotificationReason;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.vaadin.touchdiv.TouchDiv;
 import org.vaadin.touchdiv.TouchDiv.TouchEvent;
 import org.vaadin.touchdiv.TouchDiv.TouchListener;
@@ -38,25 +39,23 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
-
 /**
  * @author jflamy
- *
+ * 
  */
 @SuppressWarnings("serial")
-public class MTimekeeperConsole extends VerticalLayout implements 
-ApplicationView,
-CountdownTimerListener,
-CloseListener,
-URIHandler {
-    
+public class MTimekeeperConsole extends VerticalLayout implements
+        ApplicationView,
+        CountdownTimerListener,
+        CloseListener,
+        URIHandler {
+
     private static final long serialVersionUID = 1L;
     static final Logger timingLogger = LoggerFactory
             .getLogger("org.concordiainternational.competition.timer.TimingLogger"); //$NON-NLS-1$
 
     private HorizontalLayout top;
     private HorizontalLayout bottom;
-
 
     private SessionData groupData;
     private CompetitionApplication app = CompetitionApplication.getCurrent();
@@ -73,12 +72,11 @@ URIHandler {
     private TouchDiv stop;
     private TouchDiv one;
     private TouchDiv two;
-    
+
     private boolean blocked = false;
 
     private int prevTimeRemaining;
     private UpdateEventListener updateEventListener;
-    
 
     public MTimekeeperConsole(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
@@ -86,6 +84,7 @@ URIHandler {
         } else {
             this.viewName = CompetitionApplicationComponents.MTIMEKEEPER_CONSOLE;
         }
+        MDC.put("view", getLoggingId());
 
         this.app = CompetitionApplication.getCurrent();
 
@@ -95,7 +94,7 @@ URIHandler {
         } else if (app.getPlatform() == null) {
             app.setPlatformByName(platformName);
         }
-        
+
         synchronized (app) {
             boolean prevDisabled = app.getPusherDisabled();
             try {
@@ -112,8 +111,6 @@ URIHandler {
         }
     }
 
-
-
     /**
      * 
      */
@@ -122,29 +119,27 @@ URIHandler {
             this.setSizeFull();
             this.addStyleName("mtkPad");
             setupTop();
-            setupBottom(); 
-    
+            setupBottom();
+
             this.addComponent(top);
             this.addComponent(bottom);
             this.setExpandRatio(top, 33.0F);
             this.setExpandRatio(bottom, 66.0F);
-            
+
             enableStopStart(groupData.getTimer().isRunning());
         }
         app.push();
     }
 
-
-
     /**
      * 
      */
     private void setupTop() {
-        timerDisplay = new Label("",Label.CONTENT_XHTML);
-        
+        timerDisplay = new Label("", Label.CONTENT_XHTML);
+
         int timeRemaining = groupData.getDisplayTime();
         updateTimeRemaining(timeRemaining);
-        
+
         timerDisplay.setSizeFull();
         WebBrowser browser = (WebBrowser) app.getMainWindow().getTerminal();
         if (browser.getScreenHeight() < 600) {
@@ -152,7 +147,7 @@ URIHandler {
         } else {
             timerDisplay.setStyleName("mtkTimerDisplay");
         }
-        
+
         if (top == null) {
             top = new HorizontalLayout();
         } else {
@@ -175,101 +170,105 @@ URIHandler {
         bottom.setMargin(true);
         bottom.setSpacing(true);
 
-        //start = new TouchDiv("<div id='mtkStartLabel'>GO<img src='../VAADIN/themes/m/images/playTriangle.png'></img></div>",Label.CONTENT_XHTML);
-        start = new TouchDiv("<div id='mtkStartLabel'>"+Messages.getString("TimekeeperPad.GO", CompetitionApplication.getCurrentLocale())+"</div>",Label.CONTENT_XHTML);
+        // start = new
+        // TouchDiv("<div id='mtkStartLabel'>GO<img src='../VAADIN/themes/m/images/playTriangle.png'></img></div>",Label.CONTENT_XHTML);
+        start = new TouchDiv("<div id='mtkStartLabel'>" + Messages.getString("TimekeeperPad.GO", CompetitionApplication.getCurrentLocale())
+                + "</div>", Label.CONTENT_XHTML);
         start.setHeight("90%");
         start.setWidth("90%");
         start.addStyleName("mtkStart");
-        start.addListener(new TouchListener(){
+        start.addListener(new TouchListener() {
 
             @Override
             public void onTouch(TouchEvent event) {
-                //startSelected();
+                // startSelected();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         startDoIt();
                     }
                 }).start();
-            }});
+            }
+        });
 
-        //stop = new TouchDiv("<div id='mtkStopLabel'>STOP</div>",Label.CONTENT_XHTML);
-        stop = new TouchDiv("<div id='mtkStopLabel'>"+Messages.getString("TimekeeperPad.STOP", CompetitionApplication.getCurrentLocale())+"</div>",Label.CONTENT_XHTML);
+        // stop = new TouchDiv("<div id='mtkStopLabel'>STOP</div>",Label.CONTENT_XHTML);
+        stop = new TouchDiv("<div id='mtkStopLabel'>" + Messages.getString("TimekeeperPad.STOP", CompetitionApplication.getCurrentLocale())
+                + "</div>", Label.CONTENT_XHTML);
         stop.addStyleName("mtkStop");
         stop.setHeight("90%");
         stop.setWidth("90%");
-        stop.addListener(new TouchListener(){
+        stop.addListener(new TouchListener() {
 
             @Override
             public void onTouch(TouchEvent event) {
-                //stopSelected();
+                // stopSelected();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         stopDoIt();
                     }
                 }).start();
-            }});
-
+            }
+        });
 
         VerticalLayout minutes = new VerticalLayout();
-        one = new TouchDiv("<div id='mtkOneLabel'>1</div>",Label.CONTENT_XHTML);
+        one = new TouchDiv("<div id='mtkOneLabel'>1</div>", Label.CONTENT_XHTML);
         one.addStyleName("mtkOne");
         one.setHeight("90%");
         one.setWidth("90%");
-        one.addListener(new TouchListener(){
+        one.addListener(new TouchListener() {
 
             @Override
             public void onTouch(TouchEvent event) {
-                //stopSelected();
+                // stopSelected();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         oneMinuteDoIt();
                     }
                 }).start();
-            }});
+            }
+        });
 
-        two = new TouchDiv("<div id='mtkTwoLabel'>2</div>",Label.CONTENT_XHTML);
+        two = new TouchDiv("<div id='mtkTwoLabel'>2</div>", Label.CONTENT_XHTML);
         two.addStyleName("mtkTwo");
         two.setHeight("90%");
         two.setWidth("90%");
-        //two.setSizeFull();
-        two.addListener(new TouchListener(){
+        // two.setSizeFull();
+        two.addListener(new TouchListener() {
 
             @Override
             public void onTouch(TouchEvent event) {
-                //stopSelected();
+                // stopSelected();
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         twoMinutesDoIt();
                     }
                 }).start();
-            }});
+            }
+        });
 
         minutes.setHeight("95%");
         minutes.setWidth("95%");
         minutes.addComponent(one);
-        minutes.setComponentAlignment(one,Alignment.MIDDLE_CENTER);
+        minutes.setComponentAlignment(one, Alignment.MIDDLE_CENTER);
         minutes.addComponent(two);
-        minutes.setComponentAlignment(two,Alignment.MIDDLE_CENTER);
-        minutes.setExpandRatio(one,50.0F);
-        minutes.setExpandRatio(two,50.0F);
+        minutes.setComponentAlignment(two, Alignment.MIDDLE_CENTER);
+        minutes.setExpandRatio(one, 50.0F);
+        minutes.setExpandRatio(two, 50.0F);
 
         bottom.addComponent(start);
-        bottom.setComponentAlignment(start,Alignment.MIDDLE_CENTER);
+        bottom.setComponentAlignment(start, Alignment.MIDDLE_CENTER);
         bottom.addComponent(stop);
-        bottom.setComponentAlignment(stop,Alignment.MIDDLE_CENTER);
+        bottom.setComponentAlignment(stop, Alignment.MIDDLE_CENTER);
         bottom.addComponent(minutes);
-        bottom.setComponentAlignment(minutes,Alignment.MIDDLE_CENTER);
+        bottom.setComponentAlignment(minutes, Alignment.MIDDLE_CENTER);
 
-        bottom.setExpandRatio(start,50.0F);
-        bottom.setExpandRatio(stop,50.0F);
-        bottom.setExpandRatio(minutes,50.0F);
+        bottom.setExpandRatio(start, 50.0F);
+        bottom.setExpandRatio(stop, 50.0F);
+        bottom.setExpandRatio(minutes, 50.0F);
     }
-    
-        
 
     private void startDoIt() {
         logger.info("start clicked");
@@ -317,14 +316,13 @@ URIHandler {
         enableStopStart(false);
     }
 
-
     public void enableStopStart(boolean running) {
         /* leave timekeeper in control at all times */
         synchronized (app) {
             if (!running) {
                 start.setEnabled(true);
                 stop.setEnabled(false);
-                showTimerDisplay(false);             
+                showTimerDisplay(false);
             } else {
                 start.setEnabled(false);
                 stop.setEnabled(true);
@@ -338,24 +336,26 @@ URIHandler {
             timerDisplay.removeStyleName("blocked");
         } else {
             timerDisplay.addStyleName("blocked");
-        }  
+        }
     }
 
-
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.IRefereeConsole#refresh()
      */
     @Override
     public void refresh() {
     }
 
-
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()
      */
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.IRefereeConsole#needsMenu()
      */
     @Override
@@ -363,16 +363,19 @@ URIHandler {
         return false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.IRefereeConsole#getFragment()
      */
     @Override
     public String getFragment() {
-        return viewName+"/"+(platformName == null ? "" : platformName);
+        return viewName + "/" + (platformName == null ? "" : platformName);
     }
 
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.IRefereeConsole#setParametersFromFragment()
      */
     @Override
@@ -382,7 +385,7 @@ URIHandler {
         if (params.length >= 1) {
             viewName = params[0];
         } else {
-            throw new RuleViolationException("Error.ViewNameIsMissing"); 
+            throw new RuleViolationException("Error.ViewNameIsMissing");
         }
 
         if (params.length >= 2) {
@@ -392,19 +395,18 @@ URIHandler {
         }
     }
 
-
     /**
-     * Register all listeners for this app.
-     * Exception: do not register the URIHandler here.
+     * Register all listeners for this app. Exception: do not register the URIHandler here.
      */
     @Override
     public void registerAsListener() {
         unregisterAsListenerDoIt();
         logger.debug("registering as listener");
-        app.getMainWindow().addListener((CloseListener)this);
+        app.getMainWindow().addListener((CloseListener) this);
         CountdownTimer timer = groupData.getTimer();
-        if (timer != null) timer.addListener(this);
-        
+        if (timer != null)
+            timer.addListener(this);
+
         updateEventListener = new SessionData.UpdateEventListener() {
 
             @Override
@@ -413,7 +415,7 @@ URIHandler {
                     @Override
                     public void run() {
                         synchronized (app) {
-                            // check current lifter                       
+                            // check current lifter
                             Lifter eventLifter = updateEvent.getCurrentLifter();
                             Lifter groupLifter = groupData.getCurrentLifter();
                             CountdownTimer timer2 = groupData.getTimer();
@@ -433,7 +435,6 @@ URIHandler {
         groupData.addListener(updateEventListener); //$NON-NLS-1$ 
     }
 
-
     /**
      * Undo all registrations in {@link #registerAsListener()}.
      */
@@ -443,20 +444,24 @@ URIHandler {
         unregisterAsListenerDoIt();
     }
 
-
     public void unregisterAsListenerDoIt() {
-        app.getMainWindow().removeListener((CloseListener)this);
+        app.getMainWindow().removeListener((CloseListener) this);
         // timer countdown events
-        CountdownTimer timer = groupData.getTimer();    
-        if (timer != null) timer.removeListener(this);
-        if (updateEventListener != null) groupData.removeListener(updateEventListener);
+        CountdownTimer timer = groupData.getTimer();
+        if (timer != null)
+            timer.removeListener(this);
+        if (updateEventListener != null)
+            groupData.removeListener(updateEventListener);
     }
 
-
-    /* Will be called when page is loaded.
+    /*
+     * Will be called when page is loaded.
+     * 
      * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
      */
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.IRefereeConsole#handleURI(java.net.URL, java.lang.String)
      */
     @Override
@@ -466,8 +471,9 @@ URIHandler {
         return null;
     }
 
-
-    /* Will be called when page is unloaded (including on refresh).
+    /*
+     * Will be called when page is unloaded (including on refresh).
+     * 
      * @see com.vaadin.ui.Window.CloseListener#windowClose(com.vaadin.ui.Window.CloseEvent)
      */
     @Override
@@ -475,27 +481,20 @@ URIHandler {
         unregisterAsListener();
     }
 
-
-
     @Override
     public void finalWarning(int timeRemaining) {
-        // do nothing      
+        // do nothing
     }
-
-
 
     @Override
     public void initialWarning(int timeRemaining) {
         // do nothing
     }
 
-
-
     @Override
     public void noTimeLeft(int timeRemaining) {
-        pushTime(0);  
+        pushTime(0);
     }
-
 
     @Override
     public void normalTick(int timeRemaining) {
@@ -513,24 +512,20 @@ URIHandler {
         pushTime(timeRemaining);
     }
 
-
-
     public void pushTime(int timeRemaining) {
         synchronized (app) {
             if (!isBlocked()) {
-                //logger.trace("not blocked");
+                // logger.trace("not blocked");
                 updateTimeRemaining(timeRemaining);
                 showTimerDisplay(true);
             } else {
-                //logger.trace("blocked");
+                // logger.trace("blocked");
             }
             setBlocked(false);
         }
         app.push();
-        logger.debug("pushed time {}",timeRemaining);
+        logger.debug("pushed time {}", timeRemaining);
     }
-
-
 
     @Override
     public void pause(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
@@ -544,8 +539,6 @@ URIHandler {
         showInteractionNotification(originatingApp, reason);
         app.push();
     }
-
-
 
     @Override
     public void start(int timeRemaining) {
@@ -561,7 +554,6 @@ URIHandler {
         app.push();
     }
 
-
     @Override
     public void stop(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
         setBlocked(true); // don't process the next update from the timer.
@@ -575,12 +567,12 @@ URIHandler {
         app.push();
     }
 
-
     @Override
     public void forceTimeRemaining(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
-        
+
         logger.debug("forceTimeRemaining {}", timeRemaining);
-        if (timerDisplay == null) return;
+        if (timerDisplay == null)
+            return;
         prevTimeRemaining = timeRemaining;
 
         synchronized (app) {
@@ -592,36 +584,38 @@ URIHandler {
         app.push();
     }
 
-
-
     public void updateTimeRemaining(int timeRemaining) {
-        timerDisplay.setValue("<div id='mtkTimeLabel'>"+TimeFormatter.formatAsSeconds(timeRemaining)+"</div>");
+        timerDisplay.setValue("<div id='mtkTimeLabel'>" + TimeFormatter.formatAsSeconds(timeRemaining) + "</div>");
     }
-
-
-
 
     boolean isBlocked() {
         return this.blocked;
     }
 
-
-
     void setBlocked(boolean blocked) {
         this.blocked = blocked;
     }
 
-
-
     @Override
     public void showInteractionNotification(CompetitionApplication originatingApp, InteractionNotificationReason reason) {
-        // TODO Auto-generated method stub
     }
-    
+
     @Override
     public boolean needsBlack() {
         return false;
     }
 
+    private static int classCounter = 0; // per class
+    private final int instanceId = classCounter++; // per instance
+
+    @Override
+    public String getInstanceId() {
+        return Long.toString(instanceId);
+    }
+
+    @Override
+    public String getLoggingId() {
+        return viewName + getInstanceId();
+    }
 
 }

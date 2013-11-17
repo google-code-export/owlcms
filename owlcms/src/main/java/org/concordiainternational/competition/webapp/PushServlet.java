@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.icepush.servlet.MainServlet;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.vaadin.terminal.gwt.server.ApplicationServlet;
 
@@ -27,6 +28,14 @@ public class PushServlet extends ApplicationServlet {
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
+        
+        // Optionally remove existing handlers attached to j.u.l root logger
+        SLF4JBridgeHandler.removeHandlersForRootLogger();  // (since SLF4J 1.6.5)
+
+        // add SLF4JBridgeHandler to j.u.l's root logger, should be done once during
+        // the initialization phase of your application
+        SLF4JBridgeHandler.install();
+        
         pushServlet = new MainServlet(servletConfig.getServletContext());
     }
 

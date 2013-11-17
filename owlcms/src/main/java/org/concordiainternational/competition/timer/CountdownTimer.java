@@ -14,8 +14,8 @@ import java.util.Timer;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.ui.LifterInfo;
 import org.concordiainternational.competition.ui.InteractionNotificationReason;
+import org.concordiainternational.competition.ui.LifterInfo;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

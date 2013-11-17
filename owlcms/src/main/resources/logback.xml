@@ -11,7 +11,7 @@
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
 			<pattern>
-				%d{HH:mm:ss.SSS} %X{currentGroup} %-5level %class{45}:%L %M - %msg%n
+				%d{HH:mm:ss.SSS} %X{currentGroup}.%X{view} - %-5level %class{45}:%L %M - %msg%n
 			</pattern>
 		</encoder>
 	</appender>
@@ -26,6 +26,8 @@
 	<logger name="org.apache.commons.jexl2.Interpreter" level="ERROR" />
 
 	<logger name="org.concordiainternational" level="INFO" />
+	<logger name="org.concordiainternational.competition.ui.CompetitionApplication" level="DEBUG" />
+	<logger name="listeners" level="DEBUG" />
 
     <!--   
 		<logger name="org.concordiainternational.competition.ui.LifterInfo" level="TRACE" />
@@ -43,7 +45,6 @@
         <logger name="tracing" level="INFO" /> 
         <logger name="org.concordiainternational.competition.ui.LifterInfo" level="TRACE" />
         <logger name="org.concordiainternational.competition.spreadsheet" level="TRACE" />
-        <logger name="org.concordiainternational.competition.ui.CompetitionApplication" level="DEBUG" />
         <logger name="org.concordiainternational.competition.data.Lifter" level="TRACE" />
         <logger name="org.concordiainternational.competition.ui.components.BrowserPanel" level="DEBUG" />  
     -->

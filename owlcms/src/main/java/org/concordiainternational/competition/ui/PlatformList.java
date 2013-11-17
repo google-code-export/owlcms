@@ -18,6 +18,7 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.list.GenericHbnList;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -45,12 +46,14 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
 
     public PlatformList(boolean initFromFragment, String viewName) {
         super(CompetitionApplication.getCurrent(), Platform.class, Messages.getString(
-            "PlatformList.Platforms", CompetitionApplication.getCurrentLocale())); //$NON-NLS-1$
+                "PlatformList.Platforms", CompetitionApplication.getCurrentLocale())); //$NON-NLS-1$
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
             this.viewName = viewName;
         }
+        MDC.put("view", getLoggingId());
+
         init();
     }
 
@@ -58,14 +61,13 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
     private static String[] COL_HEADERS = null;
 
     /**
-     * @return Natural property order for Category bean. Used in tables and
-     *         forms.
+     * @return Natural property order for Category bean. Used in tables and forms.
      */
     @Override
     protected String[] getColOrder() {
-        if (NATURAL_COL_ORDER != null) return NATURAL_COL_ORDER;
-        NATURAL_COL_ORDER = new String[] {
-        		"name", //$NON-NLS-1$
+        if (NATURAL_COL_ORDER != null)
+            return NATURAL_COL_ORDER;
+        NATURAL_COL_ORDER = new String[] { "name", //$NON-NLS-1$
                 "showDecisionLights", //$NON-NLS-1$
                 "showTimer", //$NON-NLS-1$
                 "mixerName", //$NON-NLS-1$
@@ -75,15 +77,15 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
     }
 
     /**
-     * @return Localized captions for properties in same order as in
-     *         {@link #getColOrder()}
+     * @return Localized captions for properties in same order as in {@link #getColOrder()}
      */
     @Override
     protected String[] getColHeaders() {
         Locale locale = app.getLocale();
-        if (COL_HEADERS != null) return COL_HEADERS;
+        if (COL_HEADERS != null)
+            return COL_HEADERS;
         COL_HEADERS = new String[] {
-        		Messages.getString("CategoryEditor.name", locale), //$NON-NLS-1$
+                Messages.getString("CategoryEditor.name", locale), //$NON-NLS-1$
                 Messages.getString("Platform.showDecisionLights", locale), //$NON-NLS-1$
                 Messages.getString("Platform.showTimer", locale), //$NON-NLS-1$
                 Messages.getString("Platform.speakers", locale), //$NON-NLS-1$
@@ -99,94 +101,98 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
     protected void addDefaultActions() {
         table.removeGeneratedColumn("actions"); //$NON-NLS-1$
         table.addGeneratedColumn("actions", new ColumnGenerator() { //$NON-NLS-1$
-                private static final long serialVersionUID = 7397136740353981832L;
+                    private static final long serialVersionUID = 7397136740353981832L;
 
-                @Override
-				public Component generateCell(Table source, final Object itemId, Object columnId) {
-                    HorizontalLayout actions = new HorizontalLayout();
-                    Button del = new Button(Messages.getString("Common.delete", app.getLocale())); //$NON-NLS-1$
-                    del.addListener(new ClickListener() {
-                        private static final long serialVersionUID = 5204920602544644705L;
+                    @Override
+                    public Component generateCell(Table source, final Object itemId, Object columnId) {
+                        HorizontalLayout actions = new HorizontalLayout();
+                        Button del = new Button(Messages.getString("Common.delete", app.getLocale())); //$NON-NLS-1$
+                        del.addListener(new ClickListener() {
+                            private static final long serialVersionUID = 5204920602544644705L;
 
-                        @Override
-						public void buttonClick(ClickEvent event) {
-                            try {
-                                deleteItem(itemId);
-                            } catch (ConstraintViolationException exception) {
-                                throw new RuntimeException(Messages.getString("PlatformList.MustNotBeInUse", app
-                                        .getLocale()));
+                            @Override
+                            public void buttonClick(ClickEvent event) {
+                                try {
+                                    deleteItem(itemId);
+                                } catch (ConstraintViolationException exception) {
+                                    throw new RuntimeException(Messages.getString("PlatformList.MustNotBeInUse", app
+                                            .getLocale()));
+                                }
                             }
-                        }
-                    });
-                    actions.addComponent(del);
-                    return actions;
-                }
-            });
+                        });
+                        actions.addComponent(del);
+                        return actions;
+                    }
+                });
     }
-    
-    
 
-    /* (non-Javadoc)
-	 * @see org.concordiainternational.competition.ui.list.GenericHbnList#addGeneratedColumns()
-	 */
-	@Override
-	protected void addGeneratedColumns() {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.ui.list.GenericHbnList#addGeneratedColumns()
+     */
+    @Override
+    protected void addGeneratedColumns() {
         super.addGeneratedColumns();
         table.removeGeneratedColumn("mixerName"); //$NON-NLS-1$
         table.addGeneratedColumn("mixerName", new ColumnGenerator() { //$NON-NLS-1$
-                private static final long serialVersionUID = 7397136740353981832L;
-                
-				@SuppressWarnings("serial")
-				@Override
-				public Component generateCell(Table source, final Object itemId, Object columnId) {
-                    final Item item = table.getItem(itemId);
-                    //final Property uiProp = item.getItemProperty(columnId);
-                    final Property prop = table.getContainerProperty(itemId, columnId);
-                    
-                    if (!table.isEditable()) {
-                        final Object value = prop.getValue();
-                        return new Label((String) value); //$NON-NLS-1$
-                    } else {
-	                	ComboBox ls = new ComboBox("", Speakers.getOutputNames());
-	                	ls.setNullSelectionAllowed(true);
-	                	ls.setPropertyDataSource(prop);
-	                	ls.setImmediate(true);
-	                	
-	                	// normally, there is no need for a listener (the setImmediate will
-	                	// ensure that the setMixerName() method is called right away.  But
-	                	// we would like audio feedback right away if there are multiple audio devices.
-	                	ls.addListener(new ValueChangeListener() {
-							@SuppressWarnings("rawtypes")
-							@Override
-							public void valueChange(ValueChangeEvent event) {
-								Platform pl = (Platform)((EntityItem) item).getPojo();
-								pl.setMixerName((String) event.getProperty().getValue());
-								new Speakers().testSound(pl.getMixer());
-							}
-						});
-	                	return ls;
-                    }
-                }
-            });
-	}
+                    private static final long serialVersionUID = 7397136740353981832L;
 
-	/* (non-Javadoc)
+                    @SuppressWarnings("serial")
+                    @Override
+                    public Component generateCell(Table source, final Object itemId, Object columnId) {
+                        final Item item = table.getItem(itemId);
+                        // final Property uiProp = item.getItemProperty(columnId);
+                        final Property prop = table.getContainerProperty(itemId, columnId);
+
+                        if (!table.isEditable()) {
+                            final Object value = prop.getValue();
+                            return new Label((String) value); //$NON-NLS-1$
+                        } else {
+                            ComboBox ls = new ComboBox("", Speakers.getOutputNames());
+                            ls.setNullSelectionAllowed(true);
+                            ls.setPropertyDataSource(prop);
+                            ls.setImmediate(true);
+
+                            // normally, there is no need for a listener (the setImmediate will
+                            // ensure that the setMixerName() method is called right away. But
+                            // we would like audio feedback right away if there are multiple audio devices.
+                            ls.addListener(new ValueChangeListener() {
+                                @SuppressWarnings("rawtypes")
+                                @Override
+                                public void valueChange(ValueChangeEvent event) {
+                                    Platform pl = (Platform) ((EntityItem) item).getPojo();
+                                    pl.setMixerName((String) event.getProperty().getValue());
+                                    new Speakers().testSound(pl.getMixer());
+                                }
+                            });
+                            return ls;
+                        }
+                    }
+                });
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()
      */
     @Override
     public boolean needsMenu() {
         return true;
     }
+
     /**
      * @return
      */
     @Override
-	public String getFragment() {
+    public String getFragment() {
         return viewName;
     }
-    
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#setParametersFromFragment(java.lang.String)
      */
     @Override
@@ -196,33 +202,47 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
         if (params.length >= 1) {
             viewName = params[0];
         } else {
-            throw new RuleViolationException("Error.ViewNameIsMissing"); 
+            throw new RuleViolationException("Error.ViewNameIsMissing");
         }
     }
 
-	@Override
-	public void registerAsListener() {
-		app.getMainWindow().addListener((CloseListener) this);
-	}
+    @Override
+    public void registerAsListener() {
+        app.getMainWindow().addListener((CloseListener) this);
+    }
 
-	@Override
-	public void unregisterAsListener() {
-		app.getMainWindow().addListener((CloseListener) this);
-	}
-	
-	@Override
-	public void windowClose(CloseEvent e) {
-		unregisterAsListener();	
-	}
-	
-	/* Called on refresh.
-	 * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
-	 */
-	@Override
-	public DownloadStream handleURI(URL context, String relativeUri) {
-		registerAsListener();
-		return null;
-	}
+    @Override
+    public void unregisterAsListener() {
+        app.getMainWindow().addListener((CloseListener) this);
+    }
 
+    @Override
+    public void windowClose(CloseEvent e) {
+        unregisterAsListener();
+    }
+
+    /*
+     * Called on refresh.
+     * 
+     * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
+     */
+    @Override
+    public DownloadStream handleURI(URL context, String relativeUri) {
+        registerAsListener();
+        return null;
+    }
+
+    private static int classCounter = 0; // per class
+    private final int instanceId = classCounter++; // per instance
+
+    @Override
+    public String getInstanceId() {
+        return Long.toString(instanceId);
+    }
+
+    @Override
+    public String getLoggingId() {
+        return viewName + getInstanceId();
+    }
 
 }
