@@ -405,14 +405,17 @@ public class CompetitionApplicationComponents {
         private ResultFrame liftOrderBoard = null;
 
         @Override
-		public ResultFrame get(boolean initFromFragment, String viewName, String stylesheetName) {
+		public ResultFrame get(boolean initFromFragment, String viewName, String newStylesheetName) {
             try {
             	Locale locale = CompetitionApplication.getCurrentLocale();
             	String localeSuffix = "";
             	if ("en".equals(locale.getLanguage())) {
             		localeSuffix = "-en";
             	}
-                liftOrderBoard = (new ResultFrame(initFromFragment, viewName,"jsp/warmupRoom"+localeSuffix+".jsp?platformName=", stylesheetName)); //$NON-NLS-1$
+                liftOrderBoard = (new ResultFrame(initFromFragment, viewName,"jsp/warmupRoom"+localeSuffix+".jsp?platformName=", newStylesheetName)); //$NON-NLS-1$
+                if (newStylesheetName != null && !initFromFragment) {
+                    liftOrderBoard.setStylesheetName(newStylesheetName);                    
+                }
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
@@ -427,14 +430,17 @@ public class CompetitionApplicationComponents {
         private ResultFrame summaryLifterView = null;
 
         @Override
-		public ResultFrame get(boolean initFromFragment, String viewName, String stylesheetName) {
+		public ResultFrame get(boolean initFromFragment, String viewName, String newStylesheetName) {
             try {
             	Locale locale = CompetitionApplication.getCurrentLocale();
             	String localeSuffix = "";
             	if ("en".equals(locale.getLanguage())) {
             		localeSuffix = "-en";
             	}
-                summaryLifterView = (new ResultFrame(initFromFragment, viewName, "jsp/liftingOrder"+localeSuffix+".jsp?platformName=", stylesheetName)); //$NON-NLS-1$
+                summaryLifterView = (new ResultFrame(initFromFragment, viewName, "jsp/liftingOrder"+localeSuffix+".jsp?platformName=", newStylesheetName)); //$NON-NLS-1$
+                if (newStylesheetName != null && !initFromFragment) {
+                    summaryLifterView.setStylesheetName(newStylesheetName);                    
+                }
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }

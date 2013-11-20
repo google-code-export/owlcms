@@ -677,7 +677,7 @@ public class AttemptBoardView extends WeeLayout implements
 
     @Override
     public DownloadStream handleURI(URL context, String relativeUri) {
-        logger.debug("registering handlers for {} {}", this, relativeUri);
+        logger.debug("re-registering handlers for {} {}", this, relativeUri);
         registerAsListener();
         return null;
     }
