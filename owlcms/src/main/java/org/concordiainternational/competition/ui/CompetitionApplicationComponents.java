@@ -379,15 +379,17 @@ public class CompetitionApplicationComponents {
         private ResultFrame resultBoard = null;
         
         @Override
-		public ResultFrame get(boolean initFromFragment, String viewName, String stylesheetName) {
+		public ResultFrame get(boolean initFromFragment, String viewName, String newStyleSheetName) {
             try {
             	Locale locale = CompetitionApplication.getCurrentLocale();
             	String localeSuffix = "";
             	if ("en".equals(locale.getLanguage())) {
             		localeSuffix = "-en";
             	}
-                resultBoard = (new ResultFrame(initFromFragment, viewName,"jsp/resultBoard"+localeSuffix+".jsp?platformName=", stylesheetName)); //$NON-NLS-1$
-                resultBoard.setStylesheetName(stylesheetName);
+                resultBoard = (new ResultFrame(initFromFragment, viewName,"jsp/resultBoard"+localeSuffix+".jsp?platformName=", newStyleSheetName)); //$NON-NLS-1$
+                if (newStyleSheetName != null && !initFromFragment) {
+                    resultBoard.setStylesheetName(newStyleSheetName);                    
+                }
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
