@@ -130,9 +130,6 @@ public class AttemptBoardView extends WeeLayout implements
             }
 
             doCreate(false);
-
-            // URI handler must remain, so is not part of the register/unRegister pair
-            app.getMainWindow().addURIHandler(this);
             registerAsListener();
         } finally {
             app.setPusherDisabled(prevDisabledPush);
@@ -750,12 +747,12 @@ public class AttemptBoardView extends WeeLayout implements
         }
 
         // listen to changes in the competition data
-        logger.debug("listening to session data updates.");
         updateListener = registerAsListener(platformName, masterData);
+        logger.debug("{} listening to session data updates.", updateListener);
 
         // listen to intermission timer events
         masterData.addBlackBoardListener(this);
-        logger.debug("listening to intermission timer events.");
+        logger.debug("{} listening to intermission timer events.", this);
 
         // listen to decisions
         IDecisionController decisionController = masterData.getRefereeDecisionController();
@@ -770,6 +767,9 @@ public class AttemptBoardView extends WeeLayout implements
 
         // update whether timer is shown
         refreshShowTimer();
+        
+        // URI handler
+        app.getMainWindow().addURIHandler(this);
 
         registered = true;
         logger.trace("exit");
@@ -803,7 +803,11 @@ public class AttemptBoardView extends WeeLayout implements
 
         // stop listening to close events
         app.getMainWindow().removeListener((CloseListener) this);
-
+        
+        
+        // URI handler can go, we recreate a board on refresh.
+        app.getMainWindow().removeURIHandler(this);
+        
         registered = false;
         logger.trace("exit");
     }
