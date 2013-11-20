@@ -38,6 +38,8 @@ public class LoadImage extends WeeLayout {
     }
 
     public void computeImageArea(SessionData masterData, Platform platform, boolean showCaption) {
+        if (masterData == null || platform == null) return;
+        
         final Lifter currentLifter = masterData.getCurrentLifter();
         final Integer barWeight = computeBarWeight(masterData, platform);
         if (currentLifter == null) {
@@ -145,6 +147,7 @@ public class LoadImage extends WeeLayout {
     }
 
     private Integer computeBarWeight(SessionData masterData, Platform platform) {
+        if (masterData == null || platform == null) return 0;
         if (platform.getLightBar() > 0) {
             return platform.getLightBar();
         } else {
@@ -156,6 +159,8 @@ public class LoadImage extends WeeLayout {
      * @return
      */
     private Integer computeOfficialBarWeight(SessionData masterData, Platform platform) {
+        if (masterData == null || platform == null) return 0;
+
         final Lifter currentLifter = masterData.getCurrentLifter();
         String gender = "M";
         if (currentLifter != null) {
