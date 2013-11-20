@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.Lifter;
+import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionEventListener;
@@ -69,6 +70,8 @@ public class ResultFrame extends VerticalLayout implements
 
     private static final String ATTEMPT_WIDTH = "6em";
     public final static Logger logger = LoggerFactory.getLogger(ResultFrame.class);
+    private static Logger listenerLogger = LoggerFactory.getLogger("listeners." + ResultFrame.class.getSimpleName()); //$NON-NLS-1$
+
     private static final long serialVersionUID = 1437157542240297372L;
     private Embedded iframe;
     public String urlString;
@@ -84,16 +87,18 @@ public class ResultFrame extends VerticalLayout implements
     private UpdateEventListener updateListener;
     private DecisionLightsWindow decisionLights;
     protected boolean waitingForDecisionLightsReset;
+    private boolean showDecisions = false;
+    private boolean showTimer = false;
 
     public ResultFrame(boolean initFromFragment, String viewName, String urlString, String stylesheetName) throws MalformedURLException {
-
+        this.viewName = viewName;
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
+ 
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
-            this.viewName = viewName;
-            this.stylesheetName = stylesheetName;
+            setStylesheetName(stylesheetName);
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         this.app = CompetitionApplication.getCurrent();
 
@@ -112,6 +117,11 @@ public class ResultFrame extends VerticalLayout implements
 
             create(app);
             masterData = app.getMasterData(platformName);
+            Platform platform = masterData.getPlatform();
+            LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.currentGroup, masterData.getCurrentSession().getName());
+            
+            showDecisions = Boolean.TRUE.equals(platform.getShowDecisionLights());
+            showTimer = Boolean.TRUE.equals(platform.getShowTimer());
 
             // we cannot call push() at this point
             synchronized (app) {
@@ -123,11 +133,9 @@ public class ResultFrame extends VerticalLayout implements
                 } finally {
                     app.setPusherDisabled(prevDisabled);
                 }
-                logger.debug("browser panel: push disabled = {}", app.getPusherDisabled());
+                // logger.debug("browser panel: push disabled = {}", app.getPusherDisabled());
             }
 
-            // URI handler must remain, so is not part of the register/unRegister paire
-            app.getMainWindow().addURIHandler(this);
             registerAsListener();
         } finally {
             app.setPusherDisabled(prevDisabledPush);
@@ -148,30 +156,30 @@ public class ResultFrame extends VerticalLayout implements
         // System.err.println("appUrlString with slash="+appUrlString);
     }
 
-    private UpdateEventListener registerAsListener(final String platformName1, final SessionData masterData1) {
+    private UpdateEventListener createUpdateSessionUpdateListener(final String platformName1, final SessionData masterData1) {
         // locate the current group data for the platformName
         if (masterData1 != null) {
-            logger.debug(urlString + "{} listening to: {}", platformName1, masterData1); //$NON-NLS-1$	
-            //masterData.addListener(SessionData.UpdateEvent.class, this, "update"); //$NON-NLS-1$
-
             SessionData.UpdateEventListener listener = new SessionData.UpdateEventListener() {
 
                 @Override
                 public void updateEvent(UpdateEvent updateEvent) {
                     new Thread(new Runnable() {
+
                         @Override
                         public void run() {
-                            logger.debug("request to display {}",
-                                    ResultFrame.this);
-                            if (!waitingForDecisionLightsReset) {
+                            LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
+                            logger.debug("updateEvent {}", ResultFrame.this);
+                            if (!showDecisions || !waitingForDecisionLightsReset) {
+                                // the decision lights are not currently shown
                                 display(platformName1, masterData1);
+                            } else {
+                                // do not update the display just yet, the RESET event for the decisions will
+                                // trigger the update once the decision lights go off
                             }
                         }
                     }).start();
                 }
-
             };
-            masterData1.addListener(listener); //$NON-NLS-1$		
             return listener;
 
         } else {
@@ -210,14 +218,17 @@ public class ResultFrame extends VerticalLayout implements
     private void display(final String platformName1, final SessionData masterData1) throws RuntimeException {
         synchronized (app) {
             URL url = computeUrl(platformName1);
-            logger.debug("display {}", url);
+            logger.debug("display {}", url, getStylesheetName());
+            // LoggerUtils.traceBack(logger,"display()");
             iframe.setSource(new ExternalResource(url));
             final Lifter currentLifter = masterData1.getCurrentLifter();
             if (currentLifter != null) {
                 boolean done = fillLifterInfo(currentLifter);
-                updateTime(masterData1);
-                top.addComponent(timeDisplay, "timeDisplay"); //$NON-NLS-1$
-                timeDisplay.setVisible(!done);
+                if (showTimer) {
+                    updateTime(masterData1);
+                    top.addComponent(timeDisplay, "timeDisplay"); //$NON-NLS-1$
+                    timeDisplay.setVisible(!done);
+                }
             } else {
                 logger.debug("lifter null");
                 name.setValue(getWaitingMessage()); //$NON-NLS-1$
@@ -226,15 +237,17 @@ public class ResultFrame extends VerticalLayout implements
                 attempt.setValue(""); //$NON-NLS-1$
                 top.addComponent(attempt, "attempt"); //$NON-NLS-1$
                 attempt.setWidth(ATTEMPT_WIDTH); //$NON-NLS-1$
-                timeDisplay.setValue(""); //$NON-NLS-1$
-                timeDisplay.setWidth("4em");
-                top.addComponent(timeDisplay, "timeDisplay"); //$NON-NLS-1$
+                if (showTimer) {
+                    timeDisplay.setValue(""); //$NON-NLS-1$
+                    timeDisplay.setWidth("4em");
+                    top.addComponent(timeDisplay, "timeDisplay"); //$NON-NLS-1$
+                }
                 weight.setValue(""); //$NON-NLS-1$
                 weight.setWidth("4em"); //$NON-NLS-1$
                 top.addComponent(weight, "weight"); //$NON-NLS-1$	
             }
         }
-        logger.debug("prior to display push disabled={}", app.getPusherDisabled());
+        // logger.debug("prior to display push disabled={}", app.getPusherDisabled());
 
         app.push();
     }
@@ -262,7 +275,7 @@ public class ResultFrame extends VerticalLayout implements
         final String spec = appUrlString + urlString + encodedPlatformName + styleSheet + "&time=" + System.currentTimeMillis(); //$NON-NLS-1$
         try {
             url = new URL(spec);
-            logger.debug("url={}", url.toExternalForm());
+            // logger.debug("url={} {}", url.toExternalForm(), this);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e); // can't happen.
         }
@@ -379,9 +392,7 @@ public class ResultFrame extends VerticalLayout implements
         // we set the value to the time remaining for the current lifter as
         // computed by groupData
         int timeRemaining = groupData.getDisplayTime();
-        final CountdownTimer timer = groupData.getTimer();
         timeDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
-        timer.addListener(this);
     }
 
     @Override
@@ -410,6 +421,7 @@ public class ResultFrame extends VerticalLayout implements
     private Window overlay;
     protected boolean shown;
     private String stylesheetName;
+    private CountdownTimer timer;
 
     @Override
     public void normalTick(int timeRemaining) {
@@ -455,7 +467,8 @@ public class ResultFrame extends VerticalLayout implements
      */
     @Override
     public String getFragment() {
-        return viewName + "/" + platformName + (stylesheetName != null ? "/" + stylesheetName : "");
+        String stn = getStylesheetName();
+        return viewName + "/" + platformName + (stn != null ? "/" + stn : "");
     }
 
     /*
@@ -478,8 +491,8 @@ public class ResultFrame extends VerticalLayout implements
         }
 
         if (params.length >= 3) {
-            stylesheetName = params[2];
-            logger.debug("setting stylesheetName to {}", stylesheetName);
+            logger.debug("setting stylesheetName to {} {}", params[2], this);
+            setStylesheetName(params[2]);
         }
     }
 
@@ -563,7 +576,7 @@ public class ResultFrame extends VerticalLayout implements
 
     @Override
     public DownloadStream handleURI(URL context, String relativeUri) {
-        logger.trace("re-registering handlers for {} {}", this, relativeUri);
+        listenerLogger.debug("re-registering handlers for {} {}", this, relativeUri);
         registerAsListener();
         return null;
     }
@@ -579,40 +592,43 @@ public class ResultFrame extends VerticalLayout implements
         new Thread(new Runnable() {
             @Override
             public void run() {
-                synchronized (app) {
-                    switch (updateEvent.getType()) {
-                    case DOWN:
-                        waitingForDecisionLightsReset = true;
-                        decisionLights.setVisible(false);
-                        break;
-                    case SHOW:
-                        // if window is not up, show it.
-                        waitingForDecisionLightsReset = true;
-                        shown = true;
-                        decisionLights.setVisible(true);
-                        break;
-                    case RESET:
-                        // we are done
-                        waitingForDecisionLightsReset = false;
-                        decisionLights.setVisible(false);
-                        shown = false;
-                        display(platformName, masterData);
-                        break;
-                    case WAITING:
-                        waitingForDecisionLightsReset = true;
-                        decisionLights.setVisible(false);
-                        break;
-                    case UPDATE:
-                        // show change only if the lights are already on.
-                        waitingForDecisionLightsReset = true;
-                        if (shown) {
+                if (showDecisions) {
+                    LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
+                    synchronized (app) {
+                        switch (updateEvent.getType()) {
+                        case DOWN:
+                            waitingForDecisionLightsReset = true;
+                            decisionLights.setVisible(false);
+                            break;
+                        case SHOW:
+                            // if window is not up, show it.
+                            waitingForDecisionLightsReset = true;
+                            shown = true;
                             decisionLights.setVisible(true);
+                            break;
+                        case RESET:
+                            // we are done
+                            waitingForDecisionLightsReset = false;
+                            decisionLights.setVisible(false);
+                            shown = false;
+                            display(platformName, masterData);
+                            break;
+                        case WAITING:
+                            waitingForDecisionLightsReset = true;
+                            decisionLights.setVisible(false);
+                            break;
+                        case UPDATE:
+                            // show change only if the lights are already on.
+                            waitingForDecisionLightsReset = true;
+                            if (shown) {
+                                decisionLights.setVisible(true);
+                            }
+                            break;
+                        case BLOCK:
+                            waitingForDecisionLightsReset = true;
+                            decisionLights.setVisible(true);
+                            break;
                         }
-                        break;
-                    case BLOCK:
-                        waitingForDecisionLightsReset = true;
-                        decisionLights.setVisible(true);
-                        break;
                     }
                 }
             }
@@ -627,60 +643,93 @@ public class ResultFrame extends VerticalLayout implements
     @Override
     public void setStylesheetName(String stylesheetName) {
         this.stylesheetName = stylesheetName;
+        // String callerClassName = LoggerUtils.getCallerClassName();
+        // logger.trace("stylesheetName={} ({}) {}", stylesheetName, callerClassName, this);
+        // LoggerUtils.traceBack(logger);
     }
 
     @Override
     public String getStylesheetName() {
+        // String callerClassName = LoggerUtils.getCallerClassName();
+        // logger.trace("stylesheetName={} ({}) {}", stylesheetName, callerClassName, this);
         return stylesheetName;
     }
 
     @Override
     public void registerAsListener() {
         // listen to changes in the competition data
-        logger.debug("listening to session data updates.");
-        updateListener = registerAsListener(platformName, masterData);
+        if (updateListener == null) {
+            updateListener = createUpdateSessionUpdateListener(platformName, masterData);
+        }
+        masterData.addListener(updateListener);
+        listenerLogger.debug("{} listening to session data updates.", updateListener);
 
         // listen to public address events
         if (viewName.contains("resultBoard")) {
-            logger.debug("listening to public address events.");
             masterData.addBlackBoardListener(this);
+            listenerLogger.debug("{} listening to public address events.", this);
         }
 
         // listen to decisions
         IDecisionController decisionController = masterData.getRefereeDecisionController();
         if (decisionController != null) {
             decisionController.addListener(decisionLights);
+            listenerLogger.debug("{} listening to decision events.", decisionLights);
             decisionController.addListener(this);
+            listenerLogger.debug("{} listening to decision events.", this);
         }
+
+        // listen to clock
+        timer = masterData.getTimer();
+        timer.addListener(this);
+        listenerLogger.debug("{} listening to clock events.", this);
 
         // listen to close events
         app.getMainWindow().addListener((CloseListener) this);
+        listenerLogger.debug("{} listening to window close events.", this);
+
+        // // listen to URI changes
+        // app.getMainWindow().addURIHandler(this);
+        // listenerLogger.debug("{} listening to URI events.", this);
     }
 
     @Override
     public void unregisterAsListener() {
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
+
         // stop listening to changes in the competition data
         if (updateListener != null) {
             masterData.removeListener(updateListener);
-            logger.debug("stopped listening to UpdateEvents");
+            listenerLogger.debug("{} stopped listening session data updates", updateListener);
         }
 
         // stop listening to public address events
         removeMessage();
         if (viewName.contains("resultBoard")) {
             masterData.removeBlackBoardListener(this);
-            logger.debug("stopped listening to PublicAddress TimerEvents");
+            listenerLogger.debug("{} stopped listening to PublicAddress TimerEvents", this);
         }
 
         // stop listening to decisions
         IDecisionController decisionController = masterData.getRefereeDecisionController();
         if (decisionController != null) {
             decisionController.removeListener(decisionLights);
+            listenerLogger.debug("{} stopped listening to decision events.", decisionLights);
             decisionController.removeListener(this);
+            listenerLogger.debug("{} listening to decision events.", this);
         }
+
+        // stop listening to clock
+        timer.removeListener(this);
+        listenerLogger.debug("{} stopped listening to clock events.", this);
 
         // stop listening to close events
         app.getMainWindow().removeListener((CloseListener) this);
+        listenerLogger.debug("{} stopped listening to window close events..", this);
+
+        // stop listening to URI changes
+        // app.getMainWindow().removeURIHandler(this);
+        // listenerLogger.debug("{} stopped listening to URI events.", this);
     }
 
     @Override
@@ -702,7 +751,7 @@ public class ResultFrame extends VerticalLayout implements
     }
 
     @Override
-    public  String getLoggingId() {
+    public String getLoggingId() {
         return viewName + getInstanceId();
     }
 

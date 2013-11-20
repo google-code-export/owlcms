@@ -55,6 +55,12 @@ public class LoggerUtils {
         LoggerUtils.mdcPut(LoggingKeys.view, CompetitionApplication.getCurrent().getMainLayoutContent().getLoggingId());
     }
 
+    @SuppressWarnings("restriction")
+    public static String getCallerClassName() {
+        Class<?> callerClass = sun.reflect.Reflection.getCallerClass(5);
+        return callerClass.getSimpleName();
+    }
+
 
     public static void buttonSetup() {
         LoggerUtils.mdcPut(LoggingKeys.currentGroup, "*");
@@ -69,4 +75,7 @@ public class LoggerUtils {
     public static void traceBack(Logger logger, String whereFrom) {
         logException(logger, new Exception(whereFrom)); 
     }
+    
+    
+    
 }
