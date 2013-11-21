@@ -10,6 +10,7 @@ package org.concordiainternational.competition.utils;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.SessionData;
 import org.slf4j.Logger;
@@ -51,7 +52,8 @@ public class LoggerUtils {
     }
     
     public static void buttonSetup(final SessionData groupData) {
-        LoggerUtils.mdcPut(LoggingKeys.currentGroup, groupData.getCurrentSession().getName());
+        CompetitionSession currentSession = groupData.getCurrentSession();
+        LoggerUtils.mdcPut(LoggingKeys.currentGroup, currentSession != null ? currentSession.getName() : "");
         LoggerUtils.mdcPut(LoggingKeys.view, CompetitionApplication.getCurrent().getMainLayoutContent().getLoggingId());
     }
 

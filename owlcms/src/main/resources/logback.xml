@@ -26,8 +26,8 @@
 	<logger name="org.apache.commons.jexl2.Interpreter" level="ERROR" />
 
 	<logger name="org.concordiainternational" level="INFO" />
-
-
+	<logger name="listeners.AttemptBoard" level="DEBUG" />
+	<logger name="org.concordiainternational.competition.ui.CompetitionApplication" level="DEBUG" />
 
     <!--   
 		<logger name="listeners" level="DEBUG" />

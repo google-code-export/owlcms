@@ -60,6 +60,7 @@ public class MobileMenu extends VerticalLayout {
         this.setStyleName("mobileMenu"); //$NON-NLS-1$
         this.setSpacing(true);
         this.setMargin(true);
+        this.setSizeFull();
         app.getMainWindow().executeJavaScript("scrollTo(0,1)"); //$NON-NLS-1$
     }
 

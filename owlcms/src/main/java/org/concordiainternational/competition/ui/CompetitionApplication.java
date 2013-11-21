@@ -70,7 +70,8 @@ import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.themes.Reindeer;
 
 public class CompetitionApplication extends Application implements HbnSessionManager, UserActions, Serializable {
-    private static final String DEFAULT_VIEW = "competitionEditor";
+    private static final String DEFAULT_APP_VIEW = "competitionEditor";
+    private static final String DEFAULT_M_VIEW = "";
 
     private static final long serialVersionUID = -1774806616519381075L;
 
@@ -737,9 +738,14 @@ public class CompetitionApplication extends Application implements HbnSessionMan
                             if (!refreshing) {
                                 logger.debug("wait for fragment - start");
                                 Thread.sleep(2000);
-                                logger.debug("wait for fragment - stop; displaying default view = {}.", DEFAULT_VIEW);
+                                String defaultView = DEFAULT_APP_VIEW;
+                                if (externalForm.endsWith("/m/")) {
+                                    defaultView = DEFAULT_M_VIEW;
+                                }
+                                
+                                logger.debug("wait for fragment - stop; displaying default view = {}.", defaultView);
                                 synchronized (CompetitionApplication.this) {
-                                    doDisplay(DEFAULT_VIEW);
+                                    doDisplay(defaultView);
                                 }
                                 CompetitionApplication.this.push();
                             } else {
@@ -779,17 +785,16 @@ public class CompetitionApplication extends Application implements HbnSessionMan
             // LoggerUtils.logException(logger, new Exception("creating mobile layout !"+externalForm+" "+contextURI));
             if (isLayoutCreated()) {
                 logger.debug("mobile layout exists, skipping layout creation");
-                if (frag != null) {
-                    displayView(frag);
-                }
+                refreshing = true;
             } else {
                 logger.debug("creating mobile layout");
+                refreshing = false;
                 createMobileLayout(mainLayout);
             }
-            if (frag == null || frag.isEmpty()) {
-                logger.debug("empty because fragment='{}'", frag);
-                setMainLayoutContent(components.getViewByName("", false));
-            }
+//            if (frag == null || frag.isEmpty()) {
+//                logger.debug("empty because fragment='{}'", frag);
+//                setMainLayoutContent(components.getViewByName("", false));
+//            }
         } else {
             throw new RuntimeException(Messages.getString("CompetitionApplication.invalidURL", getLocale()));
         }
