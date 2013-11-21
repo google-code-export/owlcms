@@ -68,28 +68,28 @@ public class AttemptBoardView extends WeeLayout implements
     private SessionData masterData;
     final private transient CompetitionApplication app;
 
-    private WeeLayout attemptBoardBox = new WeeLayout(Direction.VERTICAL);
-    private WeeLayout topRowBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout bottomRowBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout topRightBox = new WeeLayout(Direction.VERTICAL);
-    private WeeLayout bottomLeftBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout bottomRightBox = new WeeLayout(Direction.VERTICAL);
+    private WeeLayout attemptBoardBox ;
+    private WeeLayout topRowBox ;
+    private WeeLayout bottomRowBox ;
+    private WeeLayout topRightBox ;
+    private WeeLayout bottomLeftBox ;
+    private WeeLayout bottomRightBox ;
 
-    private WeeLayout nameVBox = new WeeLayout(Direction.VERTICAL);
-    private WeeLayout startVBox = new WeeLayout(Direction.VERTICAL);
-    private WeeLayout teamVBox = new WeeLayout(Direction.VERTICAL);
-    private WeeLayout timeVBox = new WeeLayout(Direction.VERTICAL);
-    private WeeLayout weightVBox = new WeeLayout(Direction.VERTICAL);
-    private WeeLayout attemptVBox = new WeeLayout(Direction.VERTICAL);
-    private WeeLayout platesVBox = new WeeLayout(Direction.VERTICAL);
+    private WeeLayout nameVBox ;
+    private WeeLayout startVBox ;
+    private WeeLayout teamVBox ;
+    private WeeLayout timeVBox ;
+    private WeeLayout weightVBox ;
+    private WeeLayout attemptVBox ;
+    private WeeLayout platesVBox ;
 
-    private WeeLayout nameHBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout startHBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout teamHBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout timeHBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout weightHBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout attemptHBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout platesHBox = new WeeLayout(Direction.HORIZONTAL);
+    private WeeLayout nameHBox ;
+    private WeeLayout startHBox ;
+    private WeeLayout teamHBox ;
+    private WeeLayout timeHBox ;
+    private WeeLayout weightHBox ;
+    private WeeLayout attemptHBox ;
+    private WeeLayout platesHBox ;
 
     private Label nameLabel = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
     private Label clubLabel = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
@@ -129,7 +129,7 @@ public class AttemptBoardView extends WeeLayout implements
                 app.setPlatformByName(platformName);
             }
 
-            doCreate(false);
+            doCreate(true);
             registerAsListener();
         } finally {
             app.setPusherDisabled(prevDisabledPush);
@@ -227,6 +227,30 @@ public class AttemptBoardView extends WeeLayout implements
         logger.trace("entry");
         this.setSizeFull();
         this.setMargin(true);
+        this.removeAllComponents();
+        
+        attemptBoardBox = new WeeLayout(Direction.VERTICAL);
+        topRowBox = new WeeLayout(Direction.HORIZONTAL);
+        bottomRowBox = new WeeLayout(Direction.HORIZONTAL);
+        topRightBox = new WeeLayout(Direction.VERTICAL);
+        bottomLeftBox = new WeeLayout(Direction.HORIZONTAL);
+        bottomRightBox = new WeeLayout(Direction.VERTICAL);
+
+        nameVBox = new WeeLayout(Direction.VERTICAL);
+        startVBox = new WeeLayout(Direction.VERTICAL);
+        teamVBox = new WeeLayout(Direction.VERTICAL);
+        timeVBox = new WeeLayout(Direction.VERTICAL);
+        weightVBox = new WeeLayout(Direction.VERTICAL);
+        attemptVBox = new WeeLayout(Direction.VERTICAL);
+        platesVBox = new WeeLayout(Direction.VERTICAL);
+
+        nameHBox = new WeeLayout(Direction.HORIZONTAL);
+        startHBox = new WeeLayout(Direction.HORIZONTAL);
+        teamHBox = new WeeLayout(Direction.HORIZONTAL);
+        timeHBox = new WeeLayout(Direction.HORIZONTAL);
+        weightHBox = new WeeLayout(Direction.HORIZONTAL);
+        attemptHBox = new WeeLayout(Direction.HORIZONTAL);
+        platesHBox = new WeeLayout(Direction.HORIZONTAL);
 
         createAlignedLabel(nameLabel, nameHBox, nameVBox, Alignment.MIDDLE_LEFT, Alignment.MIDDLE_CENTER, "100%", "80%", "name");
         nameLabel.addStyleName("bolded");
@@ -805,7 +829,7 @@ public class AttemptBoardView extends WeeLayout implements
         app.getMainWindow().removeListener((CloseListener) this);
         
         
-        // URI handler can go, we recreate a board on refresh.
+        // URI handler not needed as we recreate a new board on refresh.
         app.getMainWindow().removeURIHandler(this);
         
         registered = false;
