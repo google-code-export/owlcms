@@ -27,7 +27,6 @@ import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.DecisionLightsWindow;
-import org.concordiainternational.competition.ui.components.ResultFrame;
 import org.concordiainternational.competition.ui.components.Stylable;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.concordiainternational.competition.utils.LoggerUtils;
