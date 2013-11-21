@@ -269,8 +269,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
         boolean needToAnnounce = currentLifter != priorLifter || priorRequest != currentRequest
                 || priorRequestNum != currentRequestNum;
-        setAnnounced(!needToAnnounce);
-        if (!isAnnounced()) {
+//        setAnnounced(!needToAnnounce);
+        if (!needToAnnounce) {
             // stop the timer if it was running, as if the "Change Weight"
             // button had been used
             final CountdownTimer timer2 = getTimer();
@@ -1032,7 +1032,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
     public void setAnnounced(boolean b) {
         announced = b;
-        timerStarted = false;
+        timerStarted = startTimeAutomatically;
     }
 
     public boolean isAnnounced() {
