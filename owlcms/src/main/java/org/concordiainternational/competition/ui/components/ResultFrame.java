@@ -679,7 +679,7 @@ public class ResultFrame extends VerticalLayout implements
             listenerLogger.debug("{} listening to decision events.", this);
         }
 
-        // listen to clock
+        // refresh timer status
         timer = masterData.getTimer();
         timer.addListener(this);
         listenerLogger.debug("{} listening to clock events.", this);
@@ -718,10 +718,6 @@ public class ResultFrame extends VerticalLayout implements
             decisionController.removeListener(this);
             listenerLogger.debug("{} listening to decision events.", this);
         }
-
-        // stop listening to clock
-        timer.removeListener(this);
-        listenerLogger.debug("{} stopped listening to clock events.", this);
 
         // stop listening to close events
         app.getMainWindow().removeListener((CloseListener) this);

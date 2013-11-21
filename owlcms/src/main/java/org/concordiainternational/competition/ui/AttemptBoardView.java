@@ -27,6 +27,7 @@ import org.concordiainternational.competition.ui.SessionData.UpdateEvent;
 import org.concordiainternational.competition.ui.SessionData.UpdateEventListener;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.DecisionLightsWindow;
+import org.concordiainternational.competition.ui.components.ResultFrame;
 import org.concordiainternational.competition.ui.components.Stylable;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
 import org.concordiainternational.competition.utils.LoggerUtils;
@@ -61,6 +62,7 @@ public class AttemptBoardView extends WeeLayout implements
 {
 
     public final static Logger logger = LoggerFactory.getLogger(AttemptBoardView.class);
+    private static Logger listenerLogger = LoggerFactory.getLogger("listeners." + AttemptBoardView.class.getSimpleName()); //$NON-NLS-1$
     private static final long serialVersionUID = 1437157542240297372L;
 
     public String urlString;
@@ -772,28 +774,33 @@ public class AttemptBoardView extends WeeLayout implements
 
         // listen to changes in the competition data
         updateListener = registerAsListener(platformName, masterData);
-        logger.debug("{} listening to session data updates.", updateListener);
+        listenerLogger.debug("{} listening to session data updates.", updateListener);
 
         // listen to intermission timer events
         masterData.addBlackBoardListener(this);
-        logger.debug("{} listening to intermission timer events.", this);
+        listenerLogger.debug("{} listening to intermission timer events.", this);
 
         // listen to decisions
         IDecisionController decisionController = masterData.getRefereeDecisionController();
         if (decisionController != null) {
-            if (decisionLights != null)
+            if (decisionLights != null) {
                 decisionController.addListener(decisionLights);
+                listenerLogger.debug("{} listening to decision events.", decisionLights);
+            }
             decisionController.addListener(this);
+            listenerLogger.debug("{} listening to decision events.", this);
         }
-
-        // listen to close events
-        app.getMainWindow().addListener((CloseListener) this);
 
         // update whether timer is shown
         refreshShowTimer();
         
-        // URI handler
-        app.getMainWindow().addURIHandler(this);
+        // listen to close events
+        app.getMainWindow().addListener((CloseListener) this);
+        listenerLogger.debug("{} listening to window close events.", this);
+
+        // // listen to URI changes
+        // app.getMainWindow().addURIHandler(this);
+        // listenerLogger.debug("{} listening to URI events.", this);
 
         registered = true;
         logger.trace("exit");
@@ -807,30 +814,39 @@ public class AttemptBoardView extends WeeLayout implements
         logger.trace("entry");
         if (!registered)
             return;
+        
         // stop listening to changes in the competition data
         if (updateListener != null) {
             masterData.removeListener(updateListener);
-            logger.debug("stopped listening to UpdateEvents");
+            listenerLogger.debug("{} stopped listening to session data updates.", updateListener);
         }
 
         // stop listening to intermission timer events
         intermissionTimerShown = false;
         masterData.removeBlackBoardListener(this);
-        logger.debug("stopped listening to intermission timer events");
+        listenerLogger.debug("{} listening to intermission timer events.", this);
 
         // stop listening to decisions
         IDecisionController decisionController = masterData.getRefereeDecisionController();
         if (decisionController != null) {
-            decisionController.removeListener(decisionLights);
+            if (decisionLights != null) {
+                decisionController.removeListener(decisionLights);
+                listenerLogger.debug("{} stopped listening to decision events.", decisionLights);
+            }
             decisionController.removeListener(this);
+            listenerLogger.debug("{} listening to decision events.", this);
         }
 
         // stop listening to close events
         app.getMainWindow().removeListener((CloseListener) this);
-        
-        
-        // URI handler not needed as we recreate a new board on refresh.
-        app.getMainWindow().removeURIHandler(this);
+
+        // stop listening to close events
+        app.getMainWindow().removeListener((CloseListener) this);
+        listenerLogger.debug("{} stopped listening to window close events..", this);
+
+        // stop listening to URI changes
+        // app.getMainWindow().removeURIHandler(this);
+        // listenerLogger.debug("{} stopped listening to URI events.", this);
         
         registered = false;
         logger.trace("exit");
