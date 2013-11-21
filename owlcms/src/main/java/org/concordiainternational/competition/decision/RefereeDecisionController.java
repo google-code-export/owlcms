@@ -202,7 +202,6 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
                 // in 3 seconds
                 allDecisionsMadeTime = System.currentTimeMillis();
                 logger.info("all decisions made {}", allDecisionsMadeTime);
-                groupData.setAnnounced(false);
                 scheduleDisplay(currentTimeMillis);
                 scheduleBlock();
                 scheduleReset();
