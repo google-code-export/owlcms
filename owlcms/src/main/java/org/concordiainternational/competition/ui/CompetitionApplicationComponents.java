@@ -481,6 +481,7 @@ public class CompetitionApplicationComponents {
         @Override
 		public EmptyView get(boolean initFromFragment, String viewName, String stylesheetName) {
             emptyView = (new EmptyView());
+            emptyView.setSizeFull();
             return emptyView;
         }
     }
@@ -490,6 +491,10 @@ public class CompetitionApplicationComponents {
     }
 
     public ApplicationView getViewByName(String fragment, boolean initFromFragment, String stylesheet) {
+        if (fragment == null || fragment.trim().isEmpty()) {
+            return new EmptyView();
+        }
+        
         int where = fragment.indexOf("/");
         String viewName = fragment;
         if (where != -1) {
@@ -497,9 +502,7 @@ public class CompetitionApplicationComponents {
         }
         final CompetitionApplicationComponent component = urlFragmentToView.get(viewName);
         if (component != null) {
-            final ApplicationView applicationView = component.get(initFromFragment,viewName, stylesheet);
-//            LoggerUtils.logException(logger, new Exception("fragment "+fragment));
-//            logger.debug("getViewByName returning {}",applicationView);
+            final ApplicationView applicationView = component.get(initFromFragment, viewName, stylesheet);
             return applicationView;
         } else {
             throw new RuntimeException(Messages.getString(

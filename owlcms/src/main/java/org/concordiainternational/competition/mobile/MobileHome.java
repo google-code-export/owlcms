@@ -8,15 +8,21 @@
 package org.concordiainternational.competition.mobile;
 
 
+import java.net.URL;
 import java.util.List;
 
 import org.concordiainternational.competition.data.Platform;
+import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
+import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
 import org.concordiainternational.competition.ui.SessionData;
+import org.concordiainternational.competition.ui.components.ApplicationView;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.terminal.DownloadStream;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -24,9 +30,10 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window.CloseEvent;
 
 @SuppressWarnings("serial")
-public class MobileMenu extends VerticalLayout {
+public class MobileHome extends VerticalLayout implements ApplicationView {
 
     public static final String BUTTON_WIDTH = "6em"; //$NON-NLS-1$
     public static final String BUTTON_NARROW_WIDTH = "4em"; //$NON-NLS-1$
@@ -35,10 +42,22 @@ public class MobileMenu extends VerticalLayout {
     private CompetitionApplication app;
 
     private List<Platform> platforms;
+    
+    private String platformName;
 
-    private static Logger logger = LoggerFactory.getLogger(MobileMenu.class);
+    private String viewName;
 
-    public MobileMenu() {
+    private static Logger logger = LoggerFactory.getLogger(MobileHome.class);
+
+    public MobileHome(boolean initFromFragment, String viewName) {
+        
+        if (initFromFragment) {
+            setParametersFromFragment();
+        } else {
+            this.viewName = viewName;
+        }
+        
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
         app = CompetitionApplication.getCurrent();
         platforms = Platform.getAll();
         if (platforms.size() > 1) {
@@ -151,13 +170,13 @@ public class MobileMenu extends VerticalLayout {
             this.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
 
             for (Platform platform: platforms) {
-                final String platformName = platform.getName();
-                final NativeButton button = new NativeButton(platformName, new Button.ClickListener() {			
+                final String platformName1 = platform.getName();
+                final NativeButton button = new NativeButton(platformName1, new Button.ClickListener() {			
                     @Override
                     public void buttonClick(ClickEvent event) {
-                        app.setPlatformByName(platformName);
-                        SessionData masterData = app.getMasterData(platformName);
-                        logger.debug("new platform={}, new group = {}", platformName, masterData.getCurrentSession()); //$NON-NLS-1$
+                        app.setPlatformByName(platformName1);
+                        SessionData masterData = app.getMasterData(platformName1);
+                        logger.debug("new platform={}, new group = {}", platformName1, masterData.getCurrentSession()); //$NON-NLS-1$
                         app.setCurrentCompetitionSession(masterData.getCurrentSession());
                     }
                 });
@@ -272,6 +291,86 @@ public class MobileMenu extends VerticalLayout {
         RefereeDecisions decisionLights = new RefereeDecisions(false, "DecisionLights", false, true); //$NON-NLS-1$
         return decisionLights;
     }
+
+
+    @Override
+    public DownloadStream handleURI(URL context, String relativeUri) {
+        return null;
+    }
+
+    @Override
+    public void refresh() {
+    }
+
+    @Override
+    public boolean needsMenu() {
+        return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.ui.IRefereeConsole#getFragment()
+     */
+    @Override
+    public String getFragment() {
+        return viewName + "/" + (platformName == null ? "" : platformName);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.ui.IRefereeConsole#setParametersFromFragment()
+     */
+    @Override
+    public void setParametersFromFragment() {
+        String frag = CompetitionApplication.getCurrent().getUriFragmentUtility().getFragment();
+        String[] params = frag.split("/");
+        if (params.length >= 1) {
+            viewName = params[0];
+        } else {
+            throw new RuleViolationException("Error.ViewNameIsMissing");
+        }
+
+        if (params.length >= 2) {
+            platformName = params[1];
+        } else {
+            platformName = CompetitionApplicationComponents.initPlatformName();
+        }
+
+    }
+
+    @Override
+    public void windowClose(CloseEvent e) {
+        unregisterAsListener();
+    }
+
+    @Override
+    public boolean needsBlack() {
+        return false;
+    }
+
+    @Override
+    public void registerAsListener() {
+    }
+
+    @Override
+    public void unregisterAsListener() {
+    }
+    
+    private static int classCounter = 0; // per class
+    private final int instanceId = classCounter++; // per instance
+
+    @Override
+    public String getInstanceId() {
+        return Long.toString(instanceId);
+    }
+
+    @Override
+    public String getLoggingId() {
+        return viewName + getInstanceId();
+    }
+
 
 
 }

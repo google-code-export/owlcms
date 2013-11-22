@@ -126,7 +126,7 @@ public class Menu extends MenuBar implements Serializable {
 
                     @Override
                     public void menuSelected(MenuItem selectedItem) {
-                        CompetitionApplication.getCurrent().doDisplay(CompetitionApplicationComponents.ANNOUNCER_VIEW);
+                        CompetitionApplication.getCurrent().display(CompetitionApplicationComponents.ANNOUNCER_VIEW);
                     }
                 });
     }
@@ -143,7 +143,7 @@ public class Menu extends MenuBar implements Serializable {
 
                     @Override
                     public void menuSelected(MenuItem selectedItem) {
-                        CompetitionApplication.getCurrent().doDisplay(CompetitionApplicationComponents.CHANGES_VIEW);
+                        CompetitionApplication.getCurrent().display(CompetitionApplicationComponents.CHANGES_VIEW);
                     }
                 });
     }
@@ -160,7 +160,7 @@ public class Menu extends MenuBar implements Serializable {
 
                     @Override
                     public void menuSelected(MenuItem selectedItem) {
-                        CompetitionApplication.getCurrent().doDisplay(CompetitionApplicationComponents.TIMEKEEPER_VIEW);
+                        CompetitionApplication.getCurrent().display(CompetitionApplicationComponents.TIMEKEEPER_VIEW);
                     }
                 });
     }
@@ -177,7 +177,7 @@ public class Menu extends MenuBar implements Serializable {
 
                     @Override
                     public void menuSelected(MenuItem selectedItem) {
-                        competitionApplication.doDisplay(CompetitionApplicationComponents.RESULT_VIEW);
+                        competitionApplication.display(CompetitionApplicationComponents.RESULT_VIEW);
                     }
                 });
     }
@@ -216,7 +216,7 @@ public class Menu extends MenuBar implements Serializable {
 
                     @Override
                     public void menuSelected(MenuItem selectedItem) {
-                        competitionApplication.doDisplay(CompetitionApplicationComponents.WEIGH_IN_LIST);
+                        competitionApplication.display(CompetitionApplicationComponents.WEIGH_IN_LIST);
                     }
                 });
     }
@@ -262,7 +262,7 @@ public class Menu extends MenuBar implements Serializable {
 
                     @Override
                     public void menuSelected(MenuItem selectedItem) {
-                        competitionApplication.doDisplay(CompetitionApplicationComponents.SUMMARY_LIFT_ORDER_VIEW);
+                        competitionApplication.display(CompetitionApplicationComponents.SUMMARY_LIFT_ORDER_VIEW);
                     }
                 });
     }
@@ -338,7 +338,7 @@ public class Menu extends MenuBar implements Serializable {
 
                     @Override
                     public void menuSelected(MenuItem selectedItem) {
-                        competitionApplication.doDisplay(CompetitionApplicationComponents.PLATFORM_LIST);
+                        competitionApplication.display(CompetitionApplicationComponents.PLATFORM_LIST);
                     }
                 });
     }
@@ -356,7 +356,7 @@ public class Menu extends MenuBar implements Serializable {
 
                     @Override
                     public void menuSelected(MenuItem selectedItem) {
-                        competitionApplication.doDisplay(CompetitionApplicationComponents.COMPETITION_EDITOR);
+                        competitionApplication.display(CompetitionApplicationComponents.COMPETITION_EDITOR);
                     }
                 });
     }
@@ -374,7 +374,7 @@ public class Menu extends MenuBar implements Serializable {
 
                     @Override
                     public void menuSelected(MenuItem selectedItem) {
-                        competitionApplication.doDisplay(CompetitionApplicationComponents.CATEGORY_LIST);
+                        competitionApplication.display(CompetitionApplicationComponents.CATEGORY_LIST);
                     }
                 });
     }
@@ -392,7 +392,7 @@ public class Menu extends MenuBar implements Serializable {
 
                     @Override
                     public void menuSelected(MenuItem selectedItem) {
-                        competitionApplication.doDisplay(CompetitionApplicationComponents.GROUP_LIST);
+                        competitionApplication.display(CompetitionApplicationComponents.GROUP_LIST);
                     }
                 });
     }
@@ -406,7 +406,7 @@ public class Menu extends MenuBar implements Serializable {
 
                     @Override
                     public void menuSelected(MenuItem selectedItem) {
-                        competitionApplication.doDisplay(CompetitionApplicationComponents.REGISTRATION_LIST);
+                        competitionApplication.display(CompetitionApplicationComponents.REGISTRATION_LIST);
                     }
                 });
     }
@@ -442,7 +442,7 @@ public class Menu extends MenuBar implements Serializable {
 
                     @Override
                     public void menuSelected(MenuItem selectedItem) {
-                        competitionApplication.doDisplay(CompetitionApplicationComponents.UPLOAD_VIEW);
+                        competitionApplication.display(CompetitionApplicationComponents.UPLOAD_VIEW);
                     }
                 });
 
@@ -486,7 +486,7 @@ public class Menu extends MenuBar implements Serializable {
 
                     @Override
                     public void menuSelected(MenuItem selectedItem) {
-                        competitionApplication.doDisplay(CompetitionApplicationComponents.REFEREE_TESTING);
+                        competitionApplication.display(CompetitionApplicationComponents.REFEREE_TESTING);
                     }
                 });
     }
@@ -500,7 +500,7 @@ public class Menu extends MenuBar implements Serializable {
 
                     @Override
                     public void menuSelected(MenuItem selectedItem) {
-                        competitionApplication.doDisplay(CompetitionApplicationComponents.JURY_LIGHTS);
+                        competitionApplication.display(CompetitionApplicationComponents.JURY_LIGHTS);
                     }
                 });
     }
@@ -514,7 +514,7 @@ public class Menu extends MenuBar implements Serializable {
 
                     @Override
                     public void menuSelected(MenuItem selectedItem) {
-                        competitionApplication.doDisplay(CompetitionApplicationComponents.COUNTDOWN_DISPLAY);
+                        competitionApplication.display(CompetitionApplicationComponents.COUNTDOWN_DISPLAY);
                     }
                 });
     }
