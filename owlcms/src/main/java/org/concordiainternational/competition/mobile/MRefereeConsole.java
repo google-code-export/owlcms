@@ -7,8 +7,6 @@
  */
 package org.concordiainternational.competition.mobile;
 
-import java.net.URL;
-
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.Decision;
 import org.concordiainternational.competition.decision.DecisionEvent;
@@ -26,8 +24,6 @@ import org.vaadin.touchdiv.TouchDiv;
 import org.vaadin.touchdiv.TouchDiv.TouchEvent;
 import org.vaadin.touchdiv.TouchDiv.TouchListener;
 
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -46,7 +42,7 @@ import com.vaadin.ui.Window.CloseListener;
  * 
  */
 @SuppressWarnings("serial")
-public class MRefereeConsole extends VerticalLayout implements DecisionEventListener, ApplicationView, CloseListener, URIHandler,
+public class MRefereeConsole extends VerticalLayout implements DecisionEventListener, ApplicationView, CloseListener,
         IRefereeConsole {
 
     private static final long serialVersionUID = 1L;
@@ -79,7 +75,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
         } else {
             this.viewName = viewName;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         if (app == null)
             this.app = CompetitionApplication.getCurrent();
@@ -97,7 +93,6 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
         if (decisionController == null)
             decisionController = getDecisionController();
 
-        app.getMainWindow().addURIHandler(this);
         registerAsListener();
 
         init();
@@ -416,7 +411,10 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
      */
     @Override
     public String getFragment() {
-        return viewName + "/" + (platformName == null ? "" : platformName) + "/" + ((int) this.refereeIndex + 1);
+        String refIndex = (refereeIndex != null ? "/" + ((int) this.refereeIndex + 1) : "unknown");
+        String fragment = viewName + "/" + (platformName == null ? "" : platformName) + refIndex;
+        logger.debug("getFragment = {}", fragment);
+        return fragment;
     }
 
     /*
@@ -448,13 +446,14 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
     }
 
     /**
-     * Register all listeners for this app. Exception: do not register the URIHandler here.
+     * Register all listeners for this app.
      */
     @Override
     public void registerAsListener() {
-        logger.debug("registering as listener");
+        logger.debug("{} listening to window close events", this);
         app.getMainWindow().addListener((CloseListener) this);
         if (refereeIndex != null) {
+            // setIndex registers us as listener with decisionController.
             setIndex(refereeIndex);
         }
     }
@@ -464,35 +463,13 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
      */
     @Override
     public void unregisterAsListener() {
-        logger.debug("unregistering as listener");
+        logger.debug("{} stopped listening to window close events", this);
         app.getMainWindow().removeListener((CloseListener) this);
         decisionController.removeListener(this);
     }
 
     /*
-     * Will be called when page is loaded.
-     * 
-     * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
-     */
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.concordiainternational.competition.ui.IRefereeConsole#handleURI(java.net.URL, java.lang.String)
-     */
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        registerAsListener();
-        app.getMainWindow().executeJavaScript("scrollTo(0,1)");
-        return null;
-    }
-
-    /*
      * Will be called when page is unloaded (including on refresh).
-     * 
-     * @see com.vaadin.ui.Window.CloseListener#windowClose(com.vaadin.ui.Window.CloseEvent)
-     */
-    /*
-     * (non-Javadoc)
      * 
      * @see org.concordiainternational.competition.ui.IRefereeConsole#windowClose(com.vaadin.ui.Window.CloseEvent)
      */
@@ -516,7 +493,7 @@ public class MRefereeConsole extends VerticalLayout implements DecisionEventList
 
     @Override
     public String getLoggingId() {
-        return viewName + getInstanceId();
+        return viewName + (refereeIndex != null ? "[" + refereeIndex + "]" : "") + getInstanceId();
     }
 
 }

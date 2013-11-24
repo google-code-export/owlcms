@@ -29,7 +29,7 @@ public class Messages {
             return '«' + key + '»';
         }
     }
-    
+
     public static String getStringNullIfMissing(String key, Locale locale) {
         try {
             // ResourceBundle caches the bundles, so this is not as inefficient
@@ -39,8 +39,8 @@ public class Messages {
             return null;
         }
     }
-    
+
     public static String getStringWithException(String key, Locale locale) throws MissingResourceException {
-    	return ResourceBundle.getBundle(BUNDLE_NAME, locale).getString(key);
+        return ResourceBundle.getBundle(BUNDLE_NAME, locale).getString(key);
     }
 }

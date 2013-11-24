@@ -37,10 +37,10 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
      */
     private static final int DECISION_REVERSAL_DELAY = 4000;
 
-	/**
-	 * Time before displaying decision once all referees have pressed.
-	 */
-	//private static final int DECISION_DISPLAY_DELAY = 1000;
+    /**
+     * Time before displaying decision once all referees have pressed.
+     */
+    // private static final int DECISION_DISPLAY_DELAY = 1000;
 
     Logger logger = LoggerFactory.getLogger(JuryDecisionController.class);
 
@@ -57,14 +57,14 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
     int decisionsMade = 0;
     private EventRouter eventRouter;
 
-	@SuppressWarnings("unused")
-	private boolean blocked = true;
-    
+    @SuppressWarnings("unused")
+    private boolean blocked = true;
+
     /**
      * Enable jury devices.
      */
     @Override
-	public void reset() {
+    public void reset() {
         for (int i = 0; i < juryDecisions.length; i++) {
             juryDecisions[i].accepted = null;
             juryDecisions[i].time = 0L;
@@ -74,14 +74,16 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
         fireEvent(new DecisionEvent(this, DecisionEvent.Type.RESET, System.currentTimeMillis(), juryDecisions));
     }
 
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.decision.IDecisionController#decisionMade(int, boolean)
      */
     @Override
-	public synchronized void decisionMade(int refereeNo, boolean accepted) {
-    	if (isBlocked()) return;
-    	
+    public synchronized void decisionMade(int refereeNo, boolean accepted) {
+        if (isBlocked())
+            return;
+
         final long currentTimeMillis = System.currentTimeMillis();
         long deltaTime = currentTimeMillis - allDecisionsMadeTime;
         if (decisionsMade == 3 && deltaTime > DECISION_REVERSAL_DELAY) {
@@ -104,7 +106,7 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
         }
 
         if (decisionsMade == 2) {
-                fireEvent(new DecisionEvent(this, DecisionEvent.Type.WAITING, currentTimeMillis, juryDecisions));
+            fireEvent(new DecisionEvent(this, DecisionEvent.Type.WAITING, currentTimeMillis, juryDecisions));
         } else if (decisionsMade == 3) {
             // broadcast the decision
             if (allDecisionsMadeTime == 0L) {
@@ -120,25 +122,24 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
         }
     }
 
-
     /**
      * @param currentTimeMillis
      * @param goodLift
      */
     private void scheduleDisplay(final long currentTimeMillis) {
-    	// display right away
-    	fireEvent(new DecisionEvent(JuryDecisionController.this, DecisionEvent.Type.SHOW, currentTimeMillis,
-              juryDecisions));
-//       Timer timer = new Timer();
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                fireEvent(new DecisionEvent(JuryDecisionController.this, DecisionEvent.Type.SHOW, currentTimeMillis,
-//                        juryDecisions));
-//            }
-//        }, DECISION_DISPLAY_DELAY);
+        // display right away
+        fireEvent(new DecisionEvent(JuryDecisionController.this, DecisionEvent.Type.SHOW, currentTimeMillis,
+                juryDecisions));
+        // Timer timer = new Timer();
+        // timer.schedule(new TimerTask() {
+        // @Override
+        // public void run() {
+        // fireEvent(new DecisionEvent(JuryDecisionController.this, DecisionEvent.Type.SHOW, currentTimeMillis,
+        // juryDecisions));
+        // }
+        // }, DECISION_DISPLAY_DELAY);
     }
-    
+
     /**
      * 
      */
@@ -147,14 +148,14 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-            	fireEvent(new DecisionEvent(JuryDecisionController.this, DecisionEvent.Type.BLOCK, System.currentTimeMillis(), juryDecisions));
-            	setBlocked(true);
+                fireEvent(new DecisionEvent(JuryDecisionController.this, DecisionEvent.Type.BLOCK, System.currentTimeMillis(),
+                        juryDecisions));
+                setBlocked(true);
             }
         }, DECISION_REVERSAL_DELAY);
     }
 
-
-	/**
+    /**
      * 
      */
     private void scheduleReset() {
@@ -168,20 +169,19 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
     }
 
     /**
-     * This method is the Java object for the method in the Listener interface.
-     * It allows the framework to know how to pass the event information.
+     * This method is the Java object for the method in the Listener interface. It allows the framework to know how to pass the event
+     * information.
      */
-    private static final Method DECISION_EVENT_METHOD = EventHelper.findMethod(DecisionEvent.class, 
-    		// when receiving this type of event
-        DecisionEventListener.class, // an object implementing this interface...
-        "updateEvent"); // ... will be called with this method. //$NON-NLS-1$;
+    private static final Method DECISION_EVENT_METHOD = EventHelper.findMethod(DecisionEvent.class,
+            // when receiving this type of event
+            DecisionEventListener.class, // an object implementing this interface...
+            "updateEvent"); // ... will be called with this method. //$NON-NLS-1$;
 
     /**
      * Broadcast a SessionData.event to all registered listeners
      * 
      * @param updateEvent
-     *            contains the source (ourself) and the list of properties to be
-     *            refreshed.
+     *            contains the source (ourself) and the list of properties to be refreshed.
      */
     protected void fireEvent(DecisionEvent updateEvent) {
         // logger.trace("SessionData: firing event from groupData"+System.identityHashCode(this)+" first="+updateEvent.getCurrentLifter()+" eventRouter="+System.identityHashCode(eventRouter));
@@ -193,13 +193,12 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
     }
 
     /**
-     * Register a new SessionData.Listener object with a SessionData in order to be
-     * informed of updates.
+     * Register a new SessionData.Listener object with a SessionData in order to be informed of updates.
      * 
      * @param listener
      */
     @Override
-	public void addListener(DecisionEventListener listener) {
+    public void addListener(DecisionEventListener listener) {
         logger.debug("add listener {}", listener); //$NON-NLS-1$
         getEventRouter().addListener(DecisionEvent.class, listener, DECISION_EVENT_METHOD);
     }
@@ -210,7 +209,7 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
      * @param listener
      */
     @Override
-	public void removeListener(DecisionEventListener listener) {
+    public void removeListener(DecisionEventListener listener) {
         if (eventRouter != null) {
             logger.debug("hide listener {}", listener); //$NON-NLS-1$
             eventRouter.removeListener(DecisionEvent.class, listener, DECISION_EVENT_METHOD);
@@ -218,10 +217,8 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
     }
 
     /*
-     * General event framework: we implement the
-     * com.vaadin.event.MethodEventSource interface which defines how a notifier
-     * can call a method on a listener to signal an event an event occurs, and
-     * how the listener can register/unregister itself.
+     * General event framework: we implement the com.vaadin.event.MethodEventSource interface which defines how a notifier can call a method
+     * on a listener to signal an event an event occurs, and how the listener can register/unregister itself.
      */
 
     /**
@@ -268,38 +265,36 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
     public void stop(int timeRemaining, CompetitionApplication app, InteractionNotificationReason reason) {
     }
 
-	@Override
-	public void addListener(IRefereeConsole refereeConsole, int refereeIndex) {
-		if (listeners[refereeIndex] != null) {
-			logger.trace("removing previous JuryConsole listener {}",listeners[refereeIndex]);
-			removeListener(listeners[refereeIndex]);
-		}
-		addListener(refereeConsole);
-		listeners[refereeIndex] = refereeConsole;
-		logger.trace("adding new JuryConsole listener {}",listeners[refereeIndex]);
-	}
-
-	@Override
-	public void setBlocked(boolean blocked) {
-		this.blocked = blocked;
-	}
-
-	@Override
-	public boolean isBlocked() {
-		//return blocked &&  (groupData.getCurrentSession() != null);
-		return false; // does not matter for jury
-	}
-
-
-	@Override
-	public Lifter getLifter() {
-		return null;
-	}
-
+    @Override
+    public void addListener(IRefereeConsole refereeConsole, int refereeIndex) {
+        if (listeners[refereeIndex] != null) {
+            logger.trace("removing previous JuryConsole listener {}", listeners[refereeIndex]);
+            removeListener(listeners[refereeIndex]);
+        }
+        addListener(refereeConsole);
+        listeners[refereeIndex] = refereeConsole;
+        logger.trace("adding new JuryConsole listener {}", listeners[refereeIndex]);
+    }
 
     @Override
-    public void showInteractionNotification(CompetitionApplication originatingApp,InteractionNotificationReason reason) {
-        // ignored. 
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    @Override
+    public boolean isBlocked() {
+        // return blocked && (groupData.getCurrentSession() != null);
+        return false; // does not matter for jury
+    }
+
+    @Override
+    public Lifter getLifter() {
+        return null;
+    }
+
+    @Override
+    public void showInteractionNotification(CompetitionApplication originatingApp, InteractionNotificationReason reason) {
+        // ignored.
     }
 
 }

@@ -31,62 +31,59 @@ import com.vaadin.ui.Window;
  * @author jflamy
  */
 @SuppressWarnings({ "serial" })
-public class SessionForm extends Form  {
-	
-	final private static Logger logger = LoggerFactory.getLogger(SessionForm.class);
-	
-	Window window = null;
-	GenericList<?> parentList = null;
-	private Item item;
+public class SessionForm extends Form {
 
-	public SessionForm() {
-		super();
-		this.setFormFieldFactory(new CommonFieldFactory(CompetitionApplication.getCurrent()));
-		
+    final private static Logger logger = LoggerFactory.getLogger(SessionForm.class);
+
+    Window window = null;
+    GenericList<?> parentList = null;
+    private Item item;
+
+    public SessionForm() {
+        super();
+        this.setFormFieldFactory(new CommonFieldFactory(CompetitionApplication.getCurrent()));
+
         setWriteThrough(true);
-        
+
         HorizontalLayout footer = new HorizontalLayout();
         footer.setSpacing(true);
         footer.addComponent(ok);
         footer.addComponent(cancel);
         footer.setVisible(true);
-        
+
         setFooter(footer);
-	}
-	
-	Button ok = new Button(Messages.getString("Common.OK", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	
-		@Override
-		public void buttonClick(ClickEvent event) {
-			commit();
-			Object object = ItemAdapter.getObject(item);
-			Session hbnSession = CompetitionApplication.getCurrent().getHbnSession();
-			hbnSession.merge(object);
-			hbnSession.flush();
-			closeWindow();
-		}
-	});
-	
-	Button cancel = new Button(Messages.getString("Common.cancel", CompetitionApplication.getCurrentLocale()),new Button.ClickListener() {	
-		@Override
-		public void buttonClick(ClickEvent event) {
-			discard();
-			closeWindow();
-		}
-	});
+    }
 
+    Button ok = new Button(Messages.getString("Common.OK", CompetitionApplication.getCurrentLocale()), new Button.ClickListener() {
+        @Override
+        public void buttonClick(ClickEvent event) {
+            commit();
+            Object object = ItemAdapter.getObject(item);
+            Session hbnSession = CompetitionApplication.getCurrent().getHbnSession();
+            hbnSession.merge(object);
+            hbnSession.flush();
+            closeWindow();
+        }
+    });
 
+    Button cancel = new Button(Messages.getString("Common.cancel", CompetitionApplication.getCurrentLocale()), new Button.ClickListener() {
+        @Override
+        public void buttonClick(ClickEvent event) {
+            discard();
+            closeWindow();
+        }
+    });
 
-	
     @Override
     public void setItemDataSource(Item newDataSource) {
-    	item = newDataSource;
+        item = newDataSource;
         if (newDataSource != null) {
             List<Object> orderedProperties = new ArrayList<Object>();
             orderedProperties.add("name");
             orderedProperties.add("weighInTime");
             orderedProperties.add("competitionTime");
             orderedProperties.add("platform");
-            //orderedProperties.add("categories");
+            // orderedProperties.add("categories");
             orderedProperties.add("announcer");
             orderedProperties.add("marshall");
             orderedProperties.add("timeKeeper");
@@ -103,48 +100,44 @@ public class SessionForm extends Form  {
         }
     }
 
+    @Override
+    public Window getWindow() {
+        return window;
+    }
 
-	@Override
-	public Window getWindow() {
-		return window;
-	}
+    public void setWindow(Window window) {
+        this.window = window;
+    }
 
-	public void setWindow(Window window) {
-		this.window = window;
-	}
+    public GenericList<?> getParentList() {
+        return parentList;
+    }
 
+    public void setParentList(GenericList<?> parentList) {
+        this.parentList = parentList;
+    }
 
-	public GenericList<?> getParentList() {
-		return parentList;
-	}
-
-
-	public void setParentList(GenericList<?> parentList) {
-		this.parentList = parentList;
-	}
-
-
-	/**
+    /**
 	 * 
 	 */
-	private void closeWindow() {
-		logger.debug("closeWindow {}",parentList);
+    private void closeWindow() {
+        logger.debug("closeWindow {}", parentList);
 
-		if (window != null) {
-			Window parent = window.getParent();
-			parent.removeWindow(window);
-		}
-		if (parentList != null) {
-			// this could be improved, but little gain as this function is called once per competition session only.
-			if (parentList instanceof SessionList) {
-				// kludge to force update of editable table;
-				// need to investigate why this is happening even though we are passing the table item.
-				parentList.toggleEditable();
-				parentList.toggleEditable();
-			} else {
-				parentList.refresh();
-			}
-		}
-	}
+        if (window != null) {
+            Window parent = window.getParent();
+            parent.removeWindow(window);
+        }
+        if (parentList != null) {
+            // this could be improved, but little gain as this function is called once per competition session only.
+            if (parentList instanceof SessionList) {
+                // kludge to force update of editable table;
+                // need to investigate why this is happening even though we are passing the table item.
+                parentList.toggleEditable();
+                parentList.toggleEditable();
+            } else {
+                parentList.refresh();
+            }
+        }
+    }
 
 }

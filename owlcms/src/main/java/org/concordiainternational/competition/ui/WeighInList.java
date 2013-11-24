@@ -7,7 +7,6 @@
  */
 package org.concordiainternational.competition.ui;
 
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -37,7 +36,6 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.SystemError;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -61,7 +59,7 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
         } else {
             this.viewName = viewName;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         this.registration = registration;
         init();
@@ -73,6 +71,8 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
             table.removeGeneratedColumn("actions"); //$NON-NLS-1$
         }
         CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
+
+        registerAsListener();
     }
 
     @Override
@@ -746,11 +746,11 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
         unregisterAsListener();
     }
 
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        registerAsListener();
-        return null;
-    }
+    // @Override
+    // public DownloadStream handleURI(URL context, String relativeUri) {
+    // registerAsListener();
+    // return null;
+    // }
 
     public void fullReload() {
         CategoryLookup.getSharedInstance().reload();

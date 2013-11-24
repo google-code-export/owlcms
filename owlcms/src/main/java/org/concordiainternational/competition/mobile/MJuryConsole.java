@@ -79,7 +79,7 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
         } else {
             this.viewName = viewName;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         if (app == null)
             this.app = CompetitionApplication.getCurrent();
@@ -140,6 +140,7 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
                         decisionController.decisionMade(juryIndex, false);
                     }
                 }).start();
@@ -158,8 +159,8 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        decisionController
-                                .decisionMade(juryIndex, true);
+                        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
+                        decisionController.decisionMade(juryIndex, true);
                     }
                 }).start();
                 whiteSelected();
@@ -380,7 +381,10 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
      */
     @Override
     public String getFragment() {
-        return viewName + "/" + (platformName == null ? "" : platformName) + "/" + ((int) this.juryIndex + 1);
+        String refIndex = (juryIndex != null ? "/" + ((int) this.juryIndex + 1) : "unknown");
+        String fragment = viewName + "/" + (platformName == null ? "" : platformName) + refIndex;
+        logger.debug("getFragment = {}", fragment);
+        return fragment;
     }
 
     /*
@@ -434,14 +438,9 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
     }
 
     /*
-     * Will be called when page is loaded.
+     * Will be called just prior loading page.
      * 
      * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
-     */
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.concordiainternational.competition.ui.IRefereeConsole#handleURI(java.net.URL, java.lang.String)
      */
     @Override
     public DownloadStream handleURI(URL context, String relativeUri) {
@@ -480,7 +479,7 @@ public class MJuryConsole extends VerticalLayout implements DecisionEventListene
 
     @Override
     public String getLoggingId() {
-        return viewName + getInstanceId();
+        return viewName + (juryIndex != null ? "[" + juryIndex + "]" : "") + getInstanceId();
     }
 
 }

@@ -8,7 +8,6 @@
 package org.concordiainternational.competition.ui;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.RuleViolationException;
@@ -31,8 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.event.Action;
 import com.vaadin.event.ShortcutAction;
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
@@ -45,8 +42,7 @@ public class CountdownDisplay extends VerticalLayout implements
         CountdownTimerListener,
         DecisionEventListener,
         IntermissionTimerListener,
-        CloseListener,
-        URIHandler
+        CloseListener
 {
     public final static Logger logger = LoggerFactory.getLogger(CountdownDisplay.class);
     private static final long serialVersionUID = 1437157542240297372L;
@@ -83,7 +79,7 @@ public class CountdownDisplay extends VerticalLayout implements
         } else {
             this.viewName = viewName;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         this.app = CompetitionApplication.getCurrent();
 
@@ -101,7 +97,7 @@ public class CountdownDisplay extends VerticalLayout implements
                 create(app, platformName);
                 masterData = app.getMasterData(platformName);
 
-                app.getMainWindow().addURIHandler(this);
+                // app.getMainWindow().addURIHandler(this);
 
                 registerAsListener();
                 display(platformName, masterData);
@@ -466,11 +462,12 @@ public class CountdownDisplay extends VerticalLayout implements
         removeActions(mainWindow);
     }
 
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        registerAsListener();
-        return null;
-    }
+    //
+    // @Override
+    // public DownloadStream handleURI(URL context, String relativeUri) {
+    // registerAsListener();
+    // return null;
+    // }
 
     @Override
     public void windowClose(CloseEvent e) {

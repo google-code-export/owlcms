@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.hbnutil.HbnContainer;
 import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
-import com.vaadin.ui.Panel;
 
 public class TwoMinutesRuleTest {
     final static Logger logger = LoggerFactory.getLogger(TwoMinutesRuleTest.class);
@@ -48,7 +47,7 @@ public class TwoMinutesRuleTest {
         // mock the application
         final CompetitionApplication application = new CompetitionApplication();
         CompetitionApplication.setCurrent(application);
-        application.components = new CompetitionApplicationComponents(new Panel(), null, null);
+        application.components = new CompetitionApplicationComponents(null, null);
         String platformName = CompetitionApplicationComponents.firstPlatformName();
         application.setPlatformByName(platformName);
 

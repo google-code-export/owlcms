@@ -14,39 +14,37 @@ import java.io.PipedOutputStream;
 import com.vaadin.terminal.StreamResource;
 
 /**
- * Encapsulate a PDF as a StreamSource so that it can be used as a source of
- * data when the user clicks on a link. This class converts the output stream
- * produced by the writePDF method to an input stream that the Vaadin framework
- * can consume.
+ * Encapsulate a PDF as a StreamSource so that it can be used as a source of data when the user clicks on a link. This class converts the
+ * output stream produced by the writePDF method to an input stream that the Vaadin framework can consume.
  */
 @SuppressWarnings("serial")
 public class PDFStreamSource implements StreamResource.StreamSource {
 
-	@Override
-	public InputStream getStream() {
-		try {
-			PipedInputStream in = new PipedInputStream();
-			final PipedOutputStream out = new PipedOutputStream(in);
+    @Override
+    public InputStream getStream() {
+        try {
+            PipedInputStream in = new PipedInputStream();
+            final PipedOutputStream out = new PipedOutputStream(in);
 
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						writePdf(out);
-					} catch (Throwable e) {
-						throw new RuntimeException(e);
-					}
-				}
-			}).start();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        writePdf(out);
+                    } catch (Throwable e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }).start();
 
-			return in;
-		} catch (Throwable e) {
-			throw new RuntimeException(e);
-		}
-	}
+            return in;
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	protected void writePdf(PipedOutputStream out) {
-		// call PDF library to write on "out"
-	}
+    protected void writePdf(PipedOutputStream out) {
+        // call PDF library to write on "out"
+    }
 
 }

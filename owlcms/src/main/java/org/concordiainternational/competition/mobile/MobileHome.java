@@ -7,8 +7,6 @@
  */
 package org.concordiainternational.competition.mobile;
 
-
-import java.net.URL;
 import java.util.List;
 
 import org.concordiainternational.competition.data.Platform;
@@ -22,15 +20,16 @@ import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeButton;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
 
 @SuppressWarnings("serial")
 public class MobileHome extends VerticalLayout implements ApplicationView {
@@ -42,7 +41,7 @@ public class MobileHome extends VerticalLayout implements ApplicationView {
     private CompetitionApplication app;
 
     private List<Platform> platforms;
-    
+
     private String platformName;
 
     private String viewName;
@@ -50,14 +49,14 @@ public class MobileHome extends VerticalLayout implements ApplicationView {
     private static Logger logger = LoggerFactory.getLogger(MobileHome.class);
 
     public MobileHome(boolean initFromFragment, String viewName) {
-        
+
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
             this.viewName = viewName;
         }
-        
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
         app = CompetitionApplication.getCurrent();
         platforms = Platform.getAll();
         if (platforms.size() > 1) {
@@ -77,25 +76,32 @@ public class MobileHome extends VerticalLayout implements ApplicationView {
         final MPlatesInfo platesInfo = new MPlatesInfo();
         this.addComponent(platesInfo);
         this.setStyleName("mobileMenu"); //$NON-NLS-1$
+
+        Component filler = new VerticalLayout();
+        this.addComponent(filler);
+        this.setExpandRatio(filler, 1.0F);
+
         this.setSpacing(true);
         this.setMargin(true);
         this.setSizeFull();
+
         app.getMainWindow().executeJavaScript("scrollTo(0,1)"); //$NON-NLS-1$
     }
 
     public class MRefereeDecisions extends HorizontalLayout {
         public MRefereeDecisions() {
             this.setSpacing(true);
-            final Label label = new Label(Messages.getString("MobileMenu.RefDecisions",app.getLocale())); //$NON-NLS-1$
+            final Label label = new Label(Messages.getString("MobileMenu.RefDecisions", app.getLocale())); //$NON-NLS-1$
             this.addComponent(label);
             this.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
-            final NativeButton button = new NativeButton(Messages.getString("MobileMenu.Display",app.getLocale()), new Button.ClickListener() {			 //$NON-NLS-1$
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    RefereeDecisions refereeDecisions = createRefereeDecisions();
-                    app.setMainLayoutContent(refereeDecisions);
-                }
-            });
+            final NativeButton button = new NativeButton(
+                    Messages.getString("MobileMenu.Display", app.getLocale()), new Button.ClickListener() { //$NON-NLS-1$
+                        @Override
+                        public void buttonClick(ClickEvent event) {
+                            RefereeDecisions refereeDecisions = createRefereeDecisions();
+                            app.setMainPanelContent(refereeDecisions);
+                        }
+                    });
             button.setWidth(BUTTON_WIDTH);
             button.setHeight(BUTTON_HEIGHT);
             this.addComponent(button);
@@ -105,16 +111,17 @@ public class MobileHome extends VerticalLayout implements ApplicationView {
     public class MTimeKeeper extends HorizontalLayout {
         public MTimeKeeper() {
             this.setSpacing(true);
-            final Label label = new Label(Messages.getString("MobileMenu.Timekeeper",app.getLocale())); //$NON-NLS-1$
+            final Label label = new Label(Messages.getString("MobileMenu.Timekeeper", app.getLocale())); //$NON-NLS-1$
             this.addComponent(label);
             this.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
-            final NativeButton button = new NativeButton(Messages.getString("MobileMenu.Display",app.getLocale()), new Button.ClickListener() {          //$NON-NLS-1$
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    MTimekeeperConsole timekeeperConsole = new MTimekeeperConsole(false,"Timekeeper");
-                    app.setMainLayoutContent(timekeeperConsole);
-                }
-            });
+            final NativeButton button = new NativeButton(
+                    Messages.getString("MobileMenu.Display", app.getLocale()), new Button.ClickListener() { //$NON-NLS-1$
+                        @Override
+                        public void buttonClick(ClickEvent event) {
+                            MTimekeeperConsole timekeeperConsole = new MTimekeeperConsole(false, "Timekeeper");
+                            app.setMainPanelContent(timekeeperConsole);
+                        }
+                    });
             button.setWidth(BUTTON_WIDTH);
             button.setHeight(BUTTON_HEIGHT);
             this.addComponent(button);
@@ -124,16 +131,17 @@ public class MobileHome extends VerticalLayout implements ApplicationView {
     public class MJuryDecisions extends HorizontalLayout {
         public MJuryDecisions() {
             this.setSpacing(true);
-            final Label label = new Label(Messages.getString("MobileMenu.JuryDecisions",app.getLocale())); //$NON-NLS-1$
+            final Label label = new Label(Messages.getString("MobileMenu.JuryDecisions", app.getLocale())); //$NON-NLS-1$
             this.addComponent(label);
             this.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
-            final NativeButton button = new NativeButton(Messages.getString("MobileMenu.Display",app.getLocale()), new Button.ClickListener() {			 //$NON-NLS-1$
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    RefereeDecisions refereeDecisions = createJuryDecisions();
-                    app.setMainLayoutContent(refereeDecisions);
-                }
-            });
+            final NativeButton button = new NativeButton(
+                    Messages.getString("MobileMenu.Display", app.getLocale()), new Button.ClickListener() { //$NON-NLS-1$
+                        @Override
+                        public void buttonClick(ClickEvent event) {
+                            RefereeDecisions refereeDecisions = createJuryDecisions();
+                            app.setMainPanelContent(refereeDecisions);
+                        }
+                    });
             button.setWidth(BUTTON_WIDTH);
             button.setHeight(BUTTON_HEIGHT);
             this.addComponent(button);
@@ -143,16 +151,18 @@ public class MobileHome extends VerticalLayout implements ApplicationView {
     public class MPlatesInfo extends HorizontalLayout {
         public MPlatesInfo() {
             this.setSpacing(true);
-            final Label label = new Label(Messages.getString("MobileMenu.Plates",app.getLocale())); //$NON-NLS-1$
+            final Label label = new Label(Messages.getString("MobileMenu.Plates", app.getLocale())); //$NON-NLS-1$
             this.addComponent(label);
             this.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
-            final NativeButton button = new NativeButton(Messages.getString("MobileMenu.Display",app.getLocale()), new Button.ClickListener() {			 //$NON-NLS-1$
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    MPlatesInfoView plates = new MPlatesInfoView(false, Messages.getString("MobileMenu.PlatesTitle",app.getLocale())); //$NON-NLS-1$
-                    app.setMainLayoutContent(plates);
-                }
-            });
+            final NativeButton button = new NativeButton(
+                    Messages.getString("MobileMenu.Display", app.getLocale()), new Button.ClickListener() { //$NON-NLS-1$
+                        @Override
+                        public void buttonClick(ClickEvent event) {
+                            MPlatesInfoView plates = new MPlatesInfoView(false, Messages.getString(
+                                    "MobileMenu.PlatesTitle", app.getLocale())); //$NON-NLS-1$
+                            app.setMainPanelContent(plates);
+                        }
+                    });
             button.setWidth(BUTTON_WIDTH);
             button.setHeight(BUTTON_HEIGHT);
             this.addComponent(button);
@@ -165,13 +175,13 @@ public class MobileHome extends VerticalLayout implements ApplicationView {
 
     public class MPlatformSelect extends HorizontalLayout {
         public MPlatformSelect() {
-            final Label label = new Label(Messages.getString("MobileMenu.Platforms",app.getLocale())); //$NON-NLS-1$
+            final Label label = new Label(Messages.getString("MobileMenu.Platforms", app.getLocale())); //$NON-NLS-1$
             this.addComponent(label);
             this.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
 
-            for (Platform platform: platforms) {
+            for (Platform platform : platforms) {
                 final String platformName1 = platform.getName();
-                final NativeButton button = new NativeButton(platformName1, new Button.ClickListener() {			
+                final NativeButton button = new NativeButton(platformName1, new Button.ClickListener() {
                     @Override
                     public void buttonClick(ClickEvent event) {
                         app.setPlatformByName(platformName1);
@@ -191,35 +201,35 @@ public class MobileHome extends VerticalLayout implements ApplicationView {
 
         MRefereeSelect() {
             this.setSpacing(true);
-            final Label label = new Label(Messages.getString("MobileMenu.Referee",app.getLocale())); //$NON-NLS-1$
+            final Label label = new Label(Messages.getString("MobileMenu.Referee", app.getLocale())); //$NON-NLS-1$
             this.addComponent(label);
             this.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
-            final NativeButton button1 = new NativeButton("1", new Button.ClickListener() {			 //$NON-NLS-1$
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    CompetitionApplication.getCurrent().displayMRefereeConsole(0);
-                }
-            });
+            final NativeButton button1 = new NativeButton("1", new Button.ClickListener() { //$NON-NLS-1$
+                        @Override
+                        public void buttonClick(ClickEvent event) {
+                            CompetitionApplication.getCurrent().displayMRefereeConsole(0);
+                        }
+                    });
             button1.setWidth(BUTTON_NARROW_WIDTH);
             button1.setHeight(BUTTON_HEIGHT);
             this.addComponent(button1);
 
-            final NativeButton button2 = new NativeButton("2", new Button.ClickListener() {			 //$NON-NLS-1$
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    CompetitionApplication.getCurrent().displayMRefereeConsole(1);
-                }
-            });
+            final NativeButton button2 = new NativeButton("2", new Button.ClickListener() { //$NON-NLS-1$
+                        @Override
+                        public void buttonClick(ClickEvent event) {
+                            CompetitionApplication.getCurrent().displayMRefereeConsole(1);
+                        }
+                    });
             button2.setWidth(BUTTON_NARROW_WIDTH);
             button2.setHeight(BUTTON_HEIGHT);
             this.addComponent(button2);
 
-            final NativeButton button3 = new NativeButton("3", new Button.ClickListener() {			 //$NON-NLS-1$
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    CompetitionApplication.getCurrent().displayMRefereeConsole(2);
-                }
-            });
+            final NativeButton button3 = new NativeButton("3", new Button.ClickListener() { //$NON-NLS-1$
+                        @Override
+                        public void buttonClick(ClickEvent event) {
+                            CompetitionApplication.getCurrent().displayMRefereeConsole(2);
+                        }
+                    });
             button3.setWidth(BUTTON_NARROW_WIDTH);
             button3.setHeight(BUTTON_HEIGHT);
             this.addComponent(button3);
@@ -230,49 +240,48 @@ public class MobileHome extends VerticalLayout implements ApplicationView {
 
         MJurySelect() {
             this.setSpacing(true);
-            final Label label = new Label(Messages.getString("MobileMenu.Jury",app.getLocale())); //$NON-NLS-1$
+            final Label label = new Label(Messages.getString("MobileMenu.Jury", app.getLocale())); //$NON-NLS-1$
             this.addComponent(label);
             this.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
-            final NativeButton button1 = new NativeButton("1", new Button.ClickListener() {			 //$NON-NLS-1$
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    CompetitionApplication.getCurrent().displayMJuryConsole(0);
-                }
-            });
+            final NativeButton button1 = new NativeButton("1", new Button.ClickListener() { //$NON-NLS-1$
+                        @Override
+                        public void buttonClick(ClickEvent event) {
+                            CompetitionApplication.getCurrent().displayMJuryConsole(0);
+                        }
+                    });
             button1.setWidth(BUTTON_NARROW_WIDTH);
             button1.setHeight(BUTTON_HEIGHT);
             this.addComponent(button1);
 
-            final NativeButton button2 = new NativeButton("2", new Button.ClickListener() {			 //$NON-NLS-1$
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    CompetitionApplication.getCurrent().displayMJuryConsole(1);
-                }
-            });
+            final NativeButton button2 = new NativeButton("2", new Button.ClickListener() { //$NON-NLS-1$
+                        @Override
+                        public void buttonClick(ClickEvent event) {
+                            CompetitionApplication.getCurrent().displayMJuryConsole(1);
+                        }
+                    });
             button2.setWidth(BUTTON_NARROW_WIDTH);
             button2.setHeight(BUTTON_HEIGHT);
             this.addComponent(button2);
 
-            final NativeButton button3 = new NativeButton("3", new Button.ClickListener() {			 //$NON-NLS-1$
-                @Override
-                public void buttonClick(ClickEvent event) {
-                    CompetitionApplication.getCurrent().displayMJuryConsole(2);
-                }
-            });
+            final NativeButton button3 = new NativeButton("3", new Button.ClickListener() { //$NON-NLS-1$
+                        @Override
+                        public void buttonClick(ClickEvent event) {
+                            CompetitionApplication.getCurrent().displayMJuryConsole(2);
+                        }
+                    });
             button3.setWidth(BUTTON_NARROW_WIDTH);
             button3.setHeight(BUTTON_HEIGHT);
             this.addComponent(button3);
         }
     }
 
-
-    //	/**
-    //	 * @return
-    //	 */
-    //	private ORefereeConsole createRefConsole() {
-    //		ORefereeConsole refConsole = new ORefereeConsole(false, "Refereeing");
-    //		return refConsole;
-    //	}
+    // /**
+    // * @return
+    // */
+    // private ORefereeConsole createRefConsole() {
+    // ORefereeConsole refConsole = new ORefereeConsole(false, "Refereeing");
+    // return refConsole;
+    // }
 
     /**
      * @param refIndex
@@ -292,12 +301,6 @@ public class MobileHome extends VerticalLayout implements ApplicationView {
         return decisionLights;
     }
 
-
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        return null;
-    }
-
     @Override
     public void refresh() {
     }
@@ -314,7 +317,7 @@ public class MobileHome extends VerticalLayout implements ApplicationView {
      */
     @Override
     public String getFragment() {
-        return viewName + "/" + (platformName == null ? "" : platformName);
+        return viewName + (platformName == null ? "" : "/" + platformName);
     }
 
     /*
@@ -350,14 +353,24 @@ public class MobileHome extends VerticalLayout implements ApplicationView {
         return false;
     }
 
+    /**
+     * Register all listeners for this app.
+     */
     @Override
     public void registerAsListener() {
+        logger.debug("{} listening to window close events", this);
+        app.getMainWindow().addListener((CloseListener) this);
     }
 
+    /**
+     * Undo all registrations in {@link #registerAsListener()}.
+     */
     @Override
     public void unregisterAsListener() {
+        logger.debug("{} stopped to window close events", this);
+        app.getMainWindow().removeListener((CloseListener) this);
     }
-    
+
     private static int classCounter = 0; // per class
     private final int instanceId = classCounter++; // per instance
 
@@ -370,7 +383,5 @@ public class MobileHome extends VerticalLayout implements ApplicationView {
     public String getLoggingId() {
         return viewName + getInstanceId();
     }
-
-
 
 }

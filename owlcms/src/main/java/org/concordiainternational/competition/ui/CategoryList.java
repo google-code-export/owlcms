@@ -7,7 +7,6 @@
  */
 package org.concordiainternational.competition.ui;
 
-import java.net.URL;
 import java.util.Locale;
 
 import org.concordiainternational.competition.data.Category;
@@ -18,7 +17,6 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.list.GenericHbnList;
 import org.concordiainternational.competition.utils.LoggerUtils;
 
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
@@ -35,8 +33,9 @@ public class CategoryList extends GenericHbnList<Category> implements Applicatio
         } else {
             this.viewName = viewName;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
         init();
+        registerAsListener();
     }
 
     private static String[] NATURAL_COL_ORDER = null;
@@ -135,12 +134,6 @@ public class CategoryList extends GenericHbnList<Category> implements Applicatio
     @Override
     public void windowClose(CloseEvent e) {
         unregisterAsListener();
-    }
-
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        registerAsListener();
-        return null;
     }
 
     private static int classCounter = 0; // per class

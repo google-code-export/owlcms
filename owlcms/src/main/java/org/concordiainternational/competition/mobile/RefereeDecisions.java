@@ -7,8 +7,6 @@
  */
 package org.concordiainternational.competition.mobile;
 
-import java.net.URL;
-
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.Decision;
 import org.concordiainternational.competition.decision.DecisionEvent;
@@ -23,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.incubator.dashlayout.ui.HorDashLayout;
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -59,7 +56,7 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
         } else {
             this.viewName = viewName;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         this.juryMode = juryMode;
         this.setStyleName("decisionPad");
@@ -87,7 +84,7 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
         this.setMargin(false);
 
         resetLights();
-
+        registerAsListener();
     }
 
     /**
@@ -230,7 +227,9 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
      */
     @Override
     public String getFragment() {
-        return viewName + "/" + (platformName == null ? "" : platformName);
+        String fragment = viewName + (platformName == null ? "/" : "/" + platformName) + (juryMode == true ? "/jury" : "/referee");
+        logger.debug("getFragment = {}", fragment);
+        return fragment;
     }
 
     /*
@@ -252,6 +251,11 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
         } else {
             platformName = CompetitionApplicationComponents.initPlatformName();
         }
+        if (params.length >= 3) {
+            juryMode = "jury".equalsIgnoreCase(params[2]);
+        } else {
+            juryMode = false;
+        }
     }
 
     @Override
@@ -267,17 +271,6 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
     @Override
     public void windowClose(CloseEvent e) {
         unregisterAsListener();
-    }
-
-    /*
-     * Called on refresh.
-     * 
-     * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
-     */
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        registerAsListener();
-        return null;
     }
 
     @Override

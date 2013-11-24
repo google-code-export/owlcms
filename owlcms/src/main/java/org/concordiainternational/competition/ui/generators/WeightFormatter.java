@@ -24,7 +24,8 @@ public class WeightFormatter {
 
     public static String formatWeight(String value) {
         value = value.trim();
-        if (value.isEmpty()) return value;
+        if (value.isEmpty())
+            return value;
         try {
             int intValue = parseInt(value);
             return formatWeight(intValue);
@@ -39,9 +40,12 @@ public class WeightFormatter {
      * @return
      */
     public static String formatWeight(Integer intValue) {
-        if (intValue == 0) return "-"; //$NON-NLS-1$
-        else if (intValue > 0) return Integer.toString(intValue);
-        else return "(" + (-intValue) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+        if (intValue == 0)
+            return "-"; //$NON-NLS-1$
+        else if (intValue > 0)
+            return Integer.toString(intValue);
+        else
+            return "(" + (-intValue) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -52,20 +56,24 @@ public class WeightFormatter {
      */
     public static String htmlFormatWeight(String value) {
         value = value.trim();
-        if (value == null) return "<td class='empty'></td>"; //$NON-NLS-1$
-        if (value.isEmpty()) return "<td class='empty'></td>"; //$NON-NLS-1$
+        if (value == null)
+            return "<td class='empty'></td>"; //$NON-NLS-1$
+        if (value.isEmpty())
+            return "<td class='empty'></td>"; //$NON-NLS-1$
         try {
             int intValue = parseInt(value);
-            if (intValue == 0) return "<td class='fail'>&ndash;</td>"; //$NON-NLS-1$
-            else if (intValue > 0) return "<td class='success'>" + value + "</td>"; //$NON-NLS-1$ //$NON-NLS-2$
-            else return "<td class='fail'>(" + (-intValue) + ")</td>"; //$NON-NLS-1$ //$NON-NLS-2$
+            if (intValue == 0)
+                return "<td class='fail'>&ndash;</td>"; //$NON-NLS-1$
+            else if (intValue > 0)
+                return "<td class='success'>" + value + "</td>"; //$NON-NLS-1$ //$NON-NLS-2$
+            else
+                return "<td class='fail'>(" + (-intValue) + ")</td>"; //$NON-NLS-1$ //$NON-NLS-2$
         } catch (NumberFormatException e) {
             return "<td class='other'>" + value + "</td>"; //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
-    static String weightFormat = Messages.getString(
-        "WeightFormatter.WeightFormat", CompetitionApplication.getDefaultLocale()); //$NON-NLS-1$
+    static String weightFormat = Messages.getString("WeightFormatter.WeightFormat", CompetitionApplication.getDefaultLocale()); //$NON-NLS-1$
     static DecimalFormat weightFormatter = new DecimalFormat(weightFormat, new DecimalFormatSymbols(Locale.US));
 
     /**
@@ -76,7 +84,8 @@ public class WeightFormatter {
      */
     public static String htmlFormatBodyWeight(Double value) {
         ;
-        if (value == null) return "<td class='narrow'></td>"; //$NON-NLS-1$
+        if (value == null)
+            return "<td class='narrow'></td>"; //$NON-NLS-1$
         try {
             String stringValue = formatBodyWeight(value);
             return "<td class='narrow'>" + stringValue + "</td>"; //$NON-NLS-1$ //$NON-NLS-2$
@@ -100,7 +109,8 @@ public class WeightFormatter {
             // accounting style number
             return Integer.parseInt(value.substring(1, value.length() - 2));
         } else {
-            if (value.trim().isEmpty()) return 0;
+            if (value.trim().isEmpty())
+                return 0;
             return Integer.parseInt(value);
         }
     }
@@ -110,7 +120,8 @@ public class WeightFormatter {
             // accounting style number
             return Float.parseFloat(value.substring(1, value.length() - 2));
         } else {
-            if (value.trim().isEmpty()) return 0;
+            if (value.trim().isEmpty())
+                return 0;
             return Float.parseFloat(value);
         }
     }
@@ -121,7 +132,8 @@ public class WeightFormatter {
                 // accounting style number
                 Integer.parseInt(value.substring(1, value.length() - 2));
             } else {
-                if (value.trim().isEmpty()) return true;
+                if (value.trim().isEmpty())
+                    return true;
                 Integer.parseInt(value);
             }
             return true;
@@ -136,7 +148,8 @@ public class WeightFormatter {
                 // accounting style number
                 return Integer.parseInt(value.substring(1, value.length() - 2));
             } else {
-                if (value.trim().isEmpty()) return 0;
+                if (value.trim().isEmpty())
+                    return 0;
                 return Integer.parseInt(value);
             }
         } catch (NumberFormatException nfe) {

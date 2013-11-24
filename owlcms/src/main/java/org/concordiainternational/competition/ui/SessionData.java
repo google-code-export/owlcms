@@ -269,7 +269,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
         boolean needToAnnounce = currentLifter != priorLifter || priorRequest != currentRequest
                 || priorRequestNum != currentRequestNum;
-//        setAnnounced(!needToAnnounce);
+        // setAnnounced(!needToAnnounce);
         if (!needToAnnounce) {
             // stop the timer if it was running, as if the "Change Weight"
             // button had been used
@@ -434,7 +434,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         final int timeRemaining = timer2.getTimeRemaining();
         Long runningTimeRemaining = timer2.getRunningTimeRemaining();
 
-        if (timeExpiredForCurrentLifter(lifter, timer2, timeRemaining, runningTimeRemaining)) return;
+        if (timeExpiredForCurrentLifter(lifter, timer2, timeRemaining, runningTimeRemaining))
+            return;
 
         if (timer2.isRunning()) {
             logger.info("TIMER RUNNING! call of lifter {} :  - {}ms remaining", lifter, runningTimeRemaining); //$NON-NLS-1$
@@ -470,7 +471,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     }
 
     public boolean timeExpiredForCurrentLifter(Lifter lifter, CountdownTimer timer2, final int timeRemaining, Long runningTimeRemaining) {
-        // time expired for lifter 
+        // time expired for lifter
         boolean timeExpiredForCurrentLifter = false;
         if (lifter == timer2.getOwner()) {
             if (timeRemaining <= 0 || (runningTimeRemaining != null && runningTimeRemaining <= 0)) {
@@ -1198,7 +1199,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         final int timeRemaining = timer2.getTimeRemaining();
         Long runningTimeRemaining = timer2.getRunningTimeRemaining();
 
-        if (timeExpiredForCurrentLifter(lifter, timer2, timeRemaining, runningTimeRemaining)) return;
+        if (timeExpiredForCurrentLifter(lifter, timer2, timeRemaining, runningTimeRemaining))
+            return;
 
         manageTimerOwner(lifter, this, timer1);
         final boolean running = timer1.isRunning();

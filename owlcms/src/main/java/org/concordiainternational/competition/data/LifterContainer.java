@@ -17,8 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.data.hbnutil.HbnContainer;
 
 /**
- * Standard container for Lifters that respects the currently applicable group
- * for the application.
+ * Standard container for Lifters that respects the currently applicable group for the application.
  * 
  * @author jflamy
  * 
@@ -53,12 +52,9 @@ public class LifterContainer extends HbnContainer<Lifter> {
     }
 
     /*
-     * This class adds filtering criteria other than simple textual filtering as
-     * implemented by the Filterable interface. (non-Javadoc)
+     * This class adds filtering criteria other than simple textual filtering as implemented by the Filterable interface. (non-Javadoc)
      * 
-     * @see
-     * com.vaadin.data.hbnutil.HbnContainer#addSearchCriteria(org.hibernate.
-     * Criteria)
+     * @see com.vaadin.data.hbnutil.HbnContainer#addSearchCriteria(org.hibernate. Criteria)
      */
     @Override
     public Criteria addSearchCriteria(Criteria criteria) {
@@ -69,8 +65,8 @@ public class LifterContainer extends HbnContainer<Lifter> {
             String simpleName = CompetitionSession.class.getSimpleName();
             char firstChar = simpleName.charAt(0);
             char nFirstChar = Character.toLowerCase(firstChar);
-            criteria.createCriteria(simpleName.replace(firstChar,nFirstChar)).add(
-                Restrictions.eq("name", name)); //$NON-NLS-1$
+            criteria.createCriteria(simpleName.replace(firstChar, nFirstChar)).add(
+                    Restrictions.eq("name", name)); //$NON-NLS-1$
         }
         if (excludeNotWeighed) {
             criteria.add(Restrictions.gt("bodyWeight", 0.0D)); //$NON-NLS-1$

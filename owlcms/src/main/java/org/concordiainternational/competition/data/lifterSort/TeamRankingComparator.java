@@ -34,13 +34,16 @@ public class TeamRankingComparator extends AbstractLifterComparator implements C
         int compare = 0;
 
         compare = compareClub(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareGender(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = comparePointsOrder(lifter1, lifter2);
-        if (compare != 0) return -compare;
+        if (compare != 0)
+            return -compare;
 
         return compare;
     }
@@ -69,7 +72,7 @@ public class TeamRankingComparator extends AbstractLifterComparator implements C
             logger.trace(lifter1 + " " + combinedPoints1 + " [" + compareCombined + "]" + lifter2 + " " + combinedPoints2);
             return compareCombined;
         }
-        
+
         return 0;
     }
 

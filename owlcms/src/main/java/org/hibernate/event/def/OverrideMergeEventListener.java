@@ -33,7 +33,6 @@ import org.hibernate.persister.entity.EntityPersister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author jflamy
  * 
@@ -70,7 +69,7 @@ public class OverrideMergeEventListener extends DefaultMergeEventListener {
         // we must clone embedded composite identifiers, or
         // we will get back the same instance that we pass in
         final Serializable clonedIdentifier = (Serializable) persister.getIdentifierType().deepCopy(id,
-            source.getEntityMode(), source.getFactory());
+                source.getEntityMode(), source.getFactory());
         final Object result = source.get(entityName, clonedIdentifier);
         source.setFetchProfile(previousFetchProfile);
 
@@ -141,7 +140,7 @@ public class OverrideMergeEventListener extends DefaultMergeEventListener {
         // (though during a seperate operation) in which it was
         // originally persisted/saved
         boolean changed = !persister.getVersionType().isSame(persister.getVersion(target, source.getEntityMode()),
-            persister.getVersion(entity, source.getEntityMode()), source.getEntityMode());
+                persister.getVersion(entity, source.getEntityMode()), source.getEntityMode());
 
         // perhaps we should additionally require that the incoming
         // entity version be equivalent to the defined unsaved-value?

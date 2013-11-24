@@ -60,25 +60,25 @@ public abstract class GenericHbnList<T> extends GenericList<T> {
     protected void addDefaultActions() {
         table.removeGeneratedColumn("actions"); //$NON-NLS-1$
         table.addGeneratedColumn("actions", new ColumnGenerator() { //$NON-NLS-1$
-                private static final long serialVersionUID = 7397136740353981832L;
+                    private static final long serialVersionUID = 7397136740353981832L;
 
-                @Override
-				public Component generateCell(Table source, final Object itemId, Object columnId) {
-                    // HorizontalLayout actions = new HorizontalLayout();
-                    Button del = new Button(Messages.getString("Common.delete", app.getLocale())); //$NON-NLS-1$
-                    del.addListener(new ClickListener() {
-                        private static final long serialVersionUID = 5204920602544644705L;
+                    @Override
+                    public Component generateCell(Table source, final Object itemId, Object columnId) {
+                        // HorizontalLayout actions = new HorizontalLayout();
+                        Button del = new Button(Messages.getString("Common.delete", app.getLocale())); //$NON-NLS-1$
+                        del.addListener(new ClickListener() {
+                            private static final long serialVersionUID = 5204920602544644705L;
 
-                        @Override
-						public void buttonClick(ClickEvent event) {
-                            deleteItem(itemId);
-                        }
-                    });
-                    // actions.addComponent(del);
-                    // return actions;
-                    return del;
-                }
-            });
+                            @Override
+                            public void buttonClick(ClickEvent event) {
+                                deleteItem(itemId);
+                            }
+                        });
+                        // actions.addComponent(del);
+                        // return actions;
+                        return del;
+                    }
+                });
     }
 
     /**
@@ -150,6 +150,5 @@ public abstract class GenericHbnList<T> extends GenericList<T> {
         super.positionTable();
         table.setSelectable(false);
     }
-    
 
 }

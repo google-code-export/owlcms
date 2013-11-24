@@ -93,7 +93,7 @@ public class ResultFrame extends VerticalLayout implements
     public ResultFrame(boolean initFromFragment, String viewName, String urlString, String stylesheetName) throws MalformedURLException {
         this.viewName = viewName;
         LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
- 
+
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
@@ -118,8 +118,8 @@ public class ResultFrame extends VerticalLayout implements
             create(app);
             masterData = app.getMasterData(platformName);
             Platform platform = masterData.getPlatform();
-            LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.currentGroup, masterData.getCurrentSession().getName());
-            
+            LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.currentGroup, getLoggingId());
+
             showDecisions = Boolean.TRUE.equals(platform.getShowDecisionLights());
             showTimer = Boolean.TRUE.equals(platform.getShowTimer());
 
@@ -657,6 +657,7 @@ public class ResultFrame extends VerticalLayout implements
 
     @Override
     public void registerAsListener() {
+        LoggerUtils.traceBack(listenerLogger);
         // listen to changes in the competition data
         if (updateListener == null) {
             updateListener = createUpdateSessionUpdateListener(platformName, masterData);

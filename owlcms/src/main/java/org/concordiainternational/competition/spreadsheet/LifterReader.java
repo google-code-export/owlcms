@@ -12,5 +12,5 @@ import org.concordiainternational.competition.data.Lifter;
 public interface LifterReader {
 
     public Lifter readLifter(int lifterNumber);
-	
+
 }

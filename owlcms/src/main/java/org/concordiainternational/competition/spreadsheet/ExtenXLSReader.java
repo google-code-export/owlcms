@@ -46,9 +46,9 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
     private CompetitionSessionLookup competitionSessionLookup;
     private CategoryLookupByName categoryLookupByName;
 
-	private WorkBookHandle workBookHandle;
+    private WorkBookHandle workBookHandle;
 
-	private WorkSheetHandle workSheet;
+    private WorkSheetHandle workSheet;
 
     public ExtenXLSReader(HbnSessionManager hbnSessionManager) {
         categoryLookup = CategoryLookup.getSharedInstance(hbnSessionManager);
@@ -56,11 +56,14 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
         competitionSessionLookup = new CompetitionSessionLookup(hbnSessionManager);
     }
 
-    /* (non-Javadoc)
-     * @see org.concordiainternational.competition.spreadsheet.InputSheet#getAllLifters(java.io.InputStream, com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.spreadsheet.InputSheet#getAllLifters(java.io.InputStream,
+     * com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager)
      */
     @Override
-	public synchronized List<Lifter> getAllLifters(InputStream is, Session session) throws IOException,
+    public synchronized List<Lifter> getAllLifters(InputStream is, Session session) throws IOException,
             CellNotFoundException, WorkSheetNotFoundException {
 
         LinkedList<Lifter> allLifters;
@@ -83,51 +86,53 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
 
         } finally {
             // close workbook file and hide lock
-            if (workBookHandle != null) workBookHandle.close();
-            if (is != null) is.close();
+            if (workBookHandle != null)
+                workBookHandle.close();
+            if (is != null)
+                is.close();
 
         }
-        
-        //System.err.println("allLifters "+allLifters.size());
+
+        // System.err.println("allLifters "+allLifters.size());
         return allLifters;
     }
 
-	/**
-	 * @param is
-	 * @throws WorkSheetNotFoundException
-	 */
-	protected void getWorkSheet(InputStream is)
-			throws WorkSheetNotFoundException {
-		// get the data sheet
-		if (workSheet == null) {
-		    workBookHandle = new WorkBookHandle(is);
-		    workSheet = workBookHandle.getWorkSheet(0);
-		}
-	}
-    
-	@Override
-    public void readHeader(InputStream is, Session session) 
-	throws CellNotFoundException, WorkSheetNotFoundException, IOException {
-		try {
-			getWorkSheet(is);
+    /**
+     * @param is
+     * @throws WorkSheetNotFoundException
+     */
+    protected void getWorkSheet(InputStream is)
+            throws WorkSheetNotFoundException {
+        // get the data sheet
+        if (workSheet == null) {
+            workBookHandle = new WorkBookHandle(is);
+            workSheet = workBookHandle.getWorkSheet(0);
+        }
+    }
+
+    @Override
+    public void readHeader(InputStream is, Session session)
+            throws CellNotFoundException, WorkSheetNotFoundException, IOException {
+        try {
+            getWorkSheet(is);
             readHeader(session);
         } finally {
             // close workbook file and hide lock
-            if (workBookHandle != null) workBookHandle.close();
-            if (is != null) is.close();
+            if (workBookHandle != null)
+                workBookHandle.close();
+            if (is != null)
+                is.close();
 
         }
-	}
+    }
 
-    
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.concordia_international.reader.ResultSheet#getGroup(java.lang.String)
+     * @see org.concordia_international.reader.ResultSheet#getGroup(java.lang.String)
      */
     @Override
-	public List<Lifter> getGroupLifters(InputStream is, String aGroup, Session session) throws IOException,
+    public List<Lifter> getGroupLifters(InputStream is, String aGroup, Session session) throws IOException,
             CellNotFoundException, WorkSheetNotFoundException {
         List<Lifter> groupLifters = new ArrayList<Lifter>();
         for (Lifter curLifter : getAllLifters(is, session)) {
@@ -137,7 +142,6 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
         }
         return groupLifters;
     }
-    
 
     // use the old birthDate method for regression tests
     @SuppressWarnings("deprecation")
@@ -165,7 +169,7 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
                 .append(" cleanJerk2=" + lifter.getCleanJerk2ActualLift()) //$NON-NLS-1$
                 .append(" cleanJerk3=" + lifter.getCleanJerk3ActualLift()) //$NON-NLS-1$
                 .append(
-                    includeTimeStamp ? (" lastLiftTime=" + (lastLiftTime != null ? lastLiftTime.getTime() : null)) : "") //$NON-NLS-1$ //$NON-NLS-2$
+                        includeTimeStamp ? (" lastLiftTime=" + (lastLiftTime != null ? lastLiftTime.getTime() : null)) : "") //$NON-NLS-1$ //$NON-NLS-2$
                 .append(" total=" + lifter.getTotal()) //$NON-NLS-1$
                 .append(" totalRank=" + lifter.getRank()) //$NON-NLS-1$
                 .toString();
@@ -195,13 +199,13 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
             if (doubleVal > 9999) {
                 val = DateConverter.getDateFromNumber(doubleVal);
             } else {
-                val = DateConverter.getDateFromCell(cell);                
+                val = DateConverter.getDateFromCell(cell);
             }
-            logger.info("date = {}",val);
+            logger.info("date = {}", val);
         }
         return val;
     }
-    
+
     public String getString(WorkSheetHandle sheet, int row, int column) throws CellNotFoundException {
         CellHandle cell = sheet.getCell(row, column);
         return cell.getStringVal().trim();
@@ -236,11 +240,11 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
             lifter.setRegistrationCategory(getCategory(workSheet, row, 5));
             lifter.setBodyWeight(getDouble(workSheet, row, BODY_WEIGHT_COLUMN));
             lifter.setClub(getString(workSheet, row, 7));
-            
+
             CellHandle birthDate = workSheet.getCell(row, 8);
             boolean date = birthDate.isDate();
-            logger.info("{} {}",lastName, date);
-            if (date){
+            logger.info("{} {}", lastName, date);
+            if (date) {
                 lifter.setFullBirthDate(getDate(workSheet, row, 8));
             } else {
                 Integer int1 = getInt(workSheet, row, 8);
@@ -249,13 +253,14 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
                 } else {
                     lifter.setYearOfBirth(int1);
                 }
-                
-            };
-            lifter.setSnatch1Declaration(getString(workSheet, row, 9)); 
+
+            }
+            ;
+            lifter.setSnatch1Declaration(getString(workSheet, row, 9));
             lifter.setSnatch1ActualLift(getString(workSheet, row, 10));
             lifter.setSnatch2ActualLift(getString(workSheet, row, 11));
             lifter.setSnatch3ActualLift(getString(workSheet, row, 12));
-            lifter.setCleanJerk1Declaration(getString(workSheet, row, 14)); 
+            lifter.setCleanJerk1Declaration(getString(workSheet, row, 14));
             lifter.setCleanJerk1ActualLift(getString(workSheet, row, 15));
             lifter.setCleanJerk2ActualLift(getString(workSheet, row, 16));
             lifter.setCleanJerk3ActualLift(getString(workSheet, row, 17));
@@ -269,7 +274,7 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
                 lifter.setQualifyingTotal(getInt(workSheet, row, 23));
             } catch (CellNotFoundException e) {
                 logger.error(e.getLocalizedMessage());
-            }           
+            }
             logger.debug(toString(lifter, false));
             return lifter;
         } catch (CellNotFoundException c) {
@@ -277,8 +282,8 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
             return null;
         }
     }
-    
-    @SuppressWarnings( { "unchecked" })
+
+    @SuppressWarnings({ "unchecked" })
     public void readHeader(Session hbnSession) throws CellNotFoundException {
         List<Competition> competitions = hbnSession.createCriteria(Competition.class).list();
         if (competitions.size() > 0) {
@@ -290,9 +295,9 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
 
             competition.setCompetitionName(workSheet.getCell("I1").getStringVal()); //$NON-NLS-1$
             competition.setCompetitionSite(workSheet.getCell("I2").getStringVal()); //$NON-NLS-1$
-            
+
             final CellHandle dateCell = workSheet.getCell("X1");
-            Date nDate = DateConverter.getDateFromCell(dateCell) ;
+            Date nDate = DateConverter.getDateFromCell(dateCell);
             competition.setCompetitionDate(nDate);
 
             competition.setCompetitionCity(workSheet.getCell("X2").getStringVal()); //$NON-NLS-1$
@@ -305,18 +310,21 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
         // first try category as written
         String catString = getString(sheet, row, column);
         Category lookup = categoryLookupByName.lookup(catString);
-        if (lookup != null) return lookup;
+        if (lookup != null)
+            return lookup;
 
         // else try category made up from sex and category.
         String genderString = getString(sheet, row, GENDER_COLUMN);
         lookup = categoryLookupByName.lookup(genderString + catString);
-        if (lookup != null) return lookup;
+        if (lookup != null)
+            return lookup;
 
         // else try bodyWeight and sex
         final String gender = getGender(sheet, row, GENDER_COLUMN);
         final Double bodyweight = getDouble(sheet, row, BODY_WEIGHT_COLUMN);
         lookup = categoryLookup.lookup(gender, bodyweight);
-        if (lookup != null) return lookup;
+        if (lookup != null)
+            return lookup;
 
         return null;
     }
@@ -341,7 +349,8 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
         // try group as written
         String catString = getString(sheet, row, column);
         CompetitionSession lookup = competitionSessionLookup.lookup(catString);
-        if (lookup != null) return lookup;
+        if (lookup != null)
+            return lookup;
         return null;
     }
 
@@ -355,6 +364,5 @@ public class ExtenXLSReader implements InputSheet, LifterReader {
         // Nothing to do in this helper class.
         return null;
     }
-
 
 }

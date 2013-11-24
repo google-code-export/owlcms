@@ -41,13 +41,12 @@ import org.slf4j.LoggerFactory;
 public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
 
     private static final long serialVersionUID = 1L;
-    //final private static int TEAMSHEET_FIRST_ROW = 5;
+    // final private static int TEAMSHEET_FIRST_ROW = 5;
 
     @SuppressWarnings("unused")
     private Logger logger = LoggerFactory.getLogger(JXLSCompetitionBook.class);
 
-
-    public JXLSCompetitionBook(){
+    public JXLSCompetitionBook() {
         // by default, we exclude athletes who did not weigh in.
         super(true);
     }
@@ -76,26 +75,24 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         final Session hbnSession = CompetitionApplication.getCurrent().getHbnSession();
         List<Competition> competitionList = hbnSession.createCriteria(Competition.class).list();
         Competition competition = competitionList.get(0);
-        getReportingBeans().put("competition",competition);
+        getReportingBeans().put("competition", competition);
     }
-
 
     @Override
     protected void getSortedLifters() {
         HashMap<String, Object> reportingBeans = getReportingBeans();
 
-        this.lifters = new LifterContainer(CompetitionApplication.getCurrent(),isExcludeNotWeighed()).getAllPojos();
+        this.lifters = new LifterContainer(CompetitionApplication.getCurrent(), isExcludeNotWeighed()).getAllPojos();
         if (lifters.isEmpty()) {
             // prevent outputting silliness.
-            throw new RuntimeException(Messages.getString(
-                    "OutputSheet.EmptySpreadsheet", CompetitionApplication.getCurrentLocale())); //$NON-NLS-1$
+            throw new RuntimeException(Messages.getString("OutputSheet.EmptySpreadsheet", CompetitionApplication.getCurrentLocale())); //$NON-NLS-1$
         }
         // extract club lists
         TreeSet<String> clubs = new TreeSet<String>();
         for (Lifter curLifter : lifters) {
             clubs.add(curLifter.getClub());
         }
-        reportingBeans.put("clubs",clubs);
+        reportingBeans.put("clubs", clubs);
 
         final LifterSorter lifterSorter = new LifterSorter();
         List<Lifter> sortedLifters;
@@ -107,57 +104,56 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());
         sortedWomen = new ArrayList<Lifter>(sortedLifters.size());
         splitByGender(sortedLifters, sortedMen, sortedWomen);
-        reportingBeans.put("mSn",sortedMen);
-        reportingBeans.put("wSn",sortedWomen);
-        
-        //only needed once
-        reportingBeans.put("nbMen",sortedMen.size());
+        reportingBeans.put("mSn", sortedMen);
+        reportingBeans.put("wSn", sortedWomen);
+
+        // only needed once
+        reportingBeans.put("nbMen", sortedMen.size());
         reportingBeans.put("nbWomen", sortedWomen.size());
         reportingBeans.put("nbLifters", sortedLifters.size());
         reportingBeans.put("nbClubs", clubs.size());
         if (sortedMen.size() > 0) {
-            reportingBeans.put("mClubs",clubs);
+            reportingBeans.put("mClubs", clubs);
         } else {
-            reportingBeans.put("mClubs", new ArrayList<String>() );
+            reportingBeans.put("mClubs", new ArrayList<String>());
         }
         if (sortedWomen.size() > 0) {
-            reportingBeans.put("wClubs",clubs);
+            reportingBeans.put("wClubs", clubs);
         } else {
-            reportingBeans.put("wClubs", new ArrayList<String>() );
+            reportingBeans.put("wClubs", new ArrayList<String>());
         }
-        
-        
+
         sortedLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.CLEANJERK);
         LifterSorter.assignCategoryRanks(sortedLifters, Ranking.CLEANJERK);
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());
         sortedWomen = new ArrayList<Lifter>(sortedLifters.size());
         splitByGender(sortedLifters, sortedMen, sortedWomen);
-        reportingBeans.put("mCJ",sortedMen);
-        reportingBeans.put("wCJ",sortedWomen);
+        reportingBeans.put("mCJ", sortedMen);
+        reportingBeans.put("wCJ", sortedWomen);
 
         sortedLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.TOTAL);
         LifterSorter.assignCategoryRanks(sortedLifters, Ranking.TOTAL);
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());
         sortedWomen = new ArrayList<Lifter>(sortedLifters.size());
         splitByGender(sortedLifters, sortedMen, sortedWomen);
-        reportingBeans.put("mTot",sortedMen);
-        reportingBeans.put("wTot",sortedWomen);
+        reportingBeans.put("mTot", sortedMen);
+        reportingBeans.put("wTot", sortedWomen);
 
         sortedLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.SINCLAIR);
         lifterSorter.assignSinclairRanksAndPoints(sortedLifters, Ranking.SINCLAIR);
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());
         sortedWomen = new ArrayList<Lifter>(sortedLifters.size());
         splitByGender(sortedLifters, sortedMen, sortedWomen);
-        reportingBeans.put("mSinclair",sortedMen);
-        reportingBeans.put("wSinclair",sortedWomen);
-        
+        reportingBeans.put("mSinclair", sortedMen);
+        reportingBeans.put("wSinclair", sortedWomen);
+
         sortedLifters = LifterSorter.resultsOrderCopy(lifters, Ranking.CUSTOM);
         LifterSorter.assignCategoryRanks(sortedLifters, Ranking.CUSTOM);
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());
         sortedWomen = new ArrayList<Lifter>(sortedLifters.size());
         splitByGender(sortedLifters, sortedMen, sortedWomen);
-        reportingBeans.put("mCus",sortedMen);
-        reportingBeans.put("wCus",sortedWomen);
+        reportingBeans.put("mCus", sortedMen);
+        reportingBeans.put("wCus", sortedWomen);
 
         // team-oriented rankings. These put all the lifters from the same team together,
         // sorted from best to worst, so that the top "n" can be given points
@@ -165,27 +161,25 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());
         sortedWomen = new ArrayList<Lifter>(sortedLifters.size());
         splitByGender(sortedLifters, sortedMen, sortedWomen);
-        reportingBeans.put("mCustom",sortedMen);
-        reportingBeans.put("wCustom",sortedWomen);
+        reportingBeans.put("mCustom", sortedMen);
+        reportingBeans.put("wCustom", sortedWomen);
 
         sortedLifters = LifterSorter.teamRankingOrderCopy(lifters, Ranking.COMBINED);
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());
         sortedWomen = new ArrayList<Lifter>(sortedLifters.size());
         splitByGender(sortedLifters, sortedMen, sortedWomen);
-        reportingBeans.put("mCombined",sortedMen);
-        reportingBeans.put("wCombined",sortedWomen);
-        reportingBeans.put("mwCombined",sortedLifters);
+        reportingBeans.put("mCombined", sortedMen);
+        reportingBeans.put("wCombined", sortedWomen);
+        reportingBeans.put("mwCombined", sortedLifters);
 
         LifterSorter.teamRankingOrder(sortedLifters, Ranking.TOTAL);
         sortedMen = new ArrayList<Lifter>(sortedLifters.size());
         sortedWomen = new ArrayList<Lifter>(sortedLifters.size());
         splitByGender(sortedLifters, sortedMen, sortedWomen);
-        reportingBeans.put("mTeam",sortedMen);
-        reportingBeans.put("wTeam",sortedWomen);
-        reportingBeans.put("mwTeam",sortedLifters);
+        reportingBeans.put("mTeam", sortedMen);
+        reportingBeans.put("wTeam", sortedWomen);
+        reportingBeans.put("mwTeam", sortedLifters);
     }
-
-
 
     @Override
     protected void configureTransformer(XLSTransformer transformer) {
@@ -200,9 +194,9 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         transformer.markAsFixedSizeCollection("wCustom");
     }
 
-
-
-    /* team result sheets need columns hidden, print area fixed
+    /*
+     * team result sheets need columns hidden, print area fixed
+     * 
      * @see org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource#postProcess(org.apache.poi.ss.usermodel.Workbook)
      */
     @Override
@@ -219,7 +213,7 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         setTeamSheetPrintArea(workbook, "WXT", nbClubs);
 
         setTeamSheetPrintArea(workbook, "MCT", nbClubs);
-        setTeamSheetPrintArea(workbook, "WCT", nbClubs);   
+        setTeamSheetPrintArea(workbook, "WCT", nbClubs);
         setTeamSheetPrintArea(workbook, "MWCT", nbClubs);
 
         translateSheets(workbook);
@@ -228,10 +222,10 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
     }
 
     private void setTeamSheetPrintArea(Workbook workbook, String sheetName, int nbClubs) {
-//        int sheetIndex = workbook.getSheetIndex(sheetName);
-//        if (sheetIndex >= 0) {
-//            workbook.setPrintArea(sheetIndex, 0, 4, TEAMSHEET_FIRST_ROW, TEAMSHEET_FIRST_ROW+nbClubs);
-//        }
+        // int sheetIndex = workbook.getSheetIndex(sheetName);
+        // if (sheetIndex >= 0) {
+        // workbook.setPrintArea(sheetIndex, 0, 4, TEAMSHEET_FIRST_ROW, TEAMSHEET_FIRST_ROW+nbClubs);
+        // }
     }
 
     private void translateSheets(Workbook workbook) {
@@ -239,27 +233,39 @@ public class JXLSCompetitionBook extends JXLSWorkbookStreamSource {
         for (int sheetIndex = 0; sheetIndex < nbSheets; sheetIndex++) {
             Sheet curSheet = workbook.getSheetAt(sheetIndex);
             String sheetName = curSheet.getSheetName();
-            workbook.setSheetName(sheetIndex,Messages.getString("CompetitionBook."+sheetName, CompetitionApplication.getCurrentLocale()));
+            workbook.setSheetName(sheetIndex, Messages.getString("CompetitionBook." + sheetName, CompetitionApplication.getCurrentLocale()));
 
-            String leftHeader = Messages.getStringNullIfMissing("CompetitionBook."+sheetName+"_LeftHeader", CompetitionApplication.getCurrentLocale());
-            if (leftHeader != null) curSheet.getHeader().setLeft(leftHeader);
-            String centerHeader = Messages.getStringNullIfMissing("CompetitionBook."+sheetName+"_CenterHeader", CompetitionApplication.getCurrentLocale());
-            if (centerHeader != null) curSheet.getHeader().setCenter(centerHeader);
-            String rightHeader = Messages.getStringNullIfMissing("CompetitionBook."+sheetName+"_RightHeader", CompetitionApplication.getCurrentLocale());
-            if (rightHeader != null) curSheet.getHeader().setRight(rightHeader);
+            String leftHeader = Messages.getStringNullIfMissing("CompetitionBook." + sheetName + "_LeftHeader",
+                    CompetitionApplication.getCurrentLocale());
+            if (leftHeader != null)
+                curSheet.getHeader().setLeft(leftHeader);
+            String centerHeader = Messages.getStringNullIfMissing("CompetitionBook." + sheetName + "_CenterHeader",
+                    CompetitionApplication.getCurrentLocale());
+            if (centerHeader != null)
+                curSheet.getHeader().setCenter(centerHeader);
+            String rightHeader = Messages.getStringNullIfMissing("CompetitionBook." + sheetName + "_RightHeader",
+                    CompetitionApplication.getCurrentLocale());
+            if (rightHeader != null)
+                curSheet.getHeader().setRight(rightHeader);
 
-            String leftFooter = Messages.getStringNullIfMissing("CompetitionBook."+sheetName+"_LeftFooter", CompetitionApplication.getCurrentLocale());
-            if (leftFooter != null) curSheet.getFooter().setLeft(leftFooter);
-            String centerFooter = Messages.getStringNullIfMissing("CompetitionBook."+sheetName+"_CenterFooter", CompetitionApplication.getCurrentLocale());
-            if (centerFooter != null) curSheet.getFooter().setCenter(centerFooter);	
-            String rightFooter = Messages.getStringNullIfMissing("CompetitionBook."+sheetName+"_RightFooter", CompetitionApplication.getCurrentLocale());
-            if (rightFooter != null) curSheet.getFooter().setRight(rightFooter);
+            String leftFooter = Messages.getStringNullIfMissing("CompetitionBook." + sheetName + "_LeftFooter",
+                    CompetitionApplication.getCurrentLocale());
+            if (leftFooter != null)
+                curSheet.getFooter().setLeft(leftFooter);
+            String centerFooter = Messages.getStringNullIfMissing("CompetitionBook." + sheetName + "_CenterFooter",
+                    CompetitionApplication.getCurrentLocale());
+            if (centerFooter != null)
+                curSheet.getFooter().setCenter(centerFooter);
+            String rightFooter = Messages.getStringNullIfMissing("CompetitionBook." + sheetName + "_RightFooter",
+                    CompetitionApplication.getCurrentLocale());
+            if (rightFooter != null)
+                curSheet.getFooter().setRight(rightFooter);
         }
     }
 
     private void splitByGender(List<Lifter> sortedLifters,
             List<Lifter> sortedMen, List<Lifter> sortedWomen) {
-        for (Lifter l: sortedLifters) {
+        for (Lifter l : sortedLifters) {
             if ("m".equalsIgnoreCase(l.getGender())) {
                 sortedMen.add(l);
             } else {

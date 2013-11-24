@@ -32,11 +32,11 @@ public class TimerControls extends GridLayout {
     private static final String ANNOUNCER_BUTTON_WIDTH = "9em";
     private static final String ANNOUNCER_SMALL_BUTTON_WIDTH = "4em";
     private static final long serialVersionUID = 4075226732120553473L;
-    
+
     private static final Logger logger = LoggerFactory.getLogger(TimerControls.class);
-    private static final Logger timingLogger = LoggerFactory.getLogger("timing."+SessionData.class.getSimpleName()); //$NON-NLS-1$
-    private static final Logger buttonLogger = LoggerFactory.getLogger("buttons."+SessionData.class.getSimpleName()); //$NON-NLS-1$
-//    private static Logger listenerLogger = LoggerFactory.getLogger("listeners."+SessionData.class.getSimpleName()); //$NON-NLS-1$
+    private static final Logger timingLogger = LoggerFactory.getLogger("timing." + SessionData.class.getSimpleName()); //$NON-NLS-1$
+    private static final Logger buttonLogger = LoggerFactory.getLogger("buttons." + SessionData.class.getSimpleName()); //$NON-NLS-1$
+    //    private static Logger listenerLogger = LoggerFactory.getLogger("listeners."+SessionData.class.getSimpleName()); //$NON-NLS-1$
 
     /**
      * a click that take place less than MIN_CLICK_DELAY milliseconds after an initial click on the Ok or Failed button is ignored. This
@@ -148,7 +148,7 @@ public class TimerControls extends GridLayout {
 
         if (!running) {
             if (announced) {
-                buttonLogger.debug(System.identityHashCode(this)+" {}: not running, announced", whereFrom);
+                buttonLogger.debug(System.identityHashCode(this) + " {}: not running, announced", whereFrom);
                 start.setEnabled(true);
                 start.addStyleName("primary");
                 stop.setEnabled(false);
@@ -159,7 +159,7 @@ public class TimerControls extends GridLayout {
                 noLift.setEnabled(true);
                 noLift.addStyleName("primary");
             } else {
-                buttonLogger.debug(System.identityHashCode(this)+" {}: not running, not announced", whereFrom);
+                buttonLogger.debug(System.identityHashCode(this) + " {}: not running, not announced", whereFrom);
                 start.setEnabled(false);
                 start.removeStyleName("primary");
                 stop.setEnabled(false);
@@ -172,7 +172,7 @@ public class TimerControls extends GridLayout {
             }
 
         } else {
-            buttonLogger.debug(System.identityHashCode(this)+" {}: running, {}", whereFrom, (announced ? "announced" : "not announced"));
+            buttonLogger.debug(System.identityHashCode(this) + " {}: running, {}", whereFrom, (announced ? "announced" : "not announced"));
             start.setEnabled(false);
             start.removeStyleName("primary");
             // timer is running, must be able to stop
@@ -373,10 +373,10 @@ public class TimerControls extends GridLayout {
                 timingLogger.debug("announce"); //$NON-NLS-1$
                 checkDecisionHasBeenDisplayed(groupData, locale);
                 groupData.callLifter(lifter); // will call start which will cause the timer buttons to do their thing.
-                
-                //LifterInfo does the enableButtons because it also receives external events.
-                //enableButtons(groupData, "announce buttonClick");
-                
+
+                // LifterInfo does the enableButtons because it also receives external events.
+                // enableButtons(groupData, "announce buttonClick");
+
                 groupData.getRefereeDecisionController().setBlocked(false);
             }
         };
@@ -420,7 +420,7 @@ public class TimerControls extends GridLayout {
         start.setVisible(true);
         oneMinute.setVisible(true);
         twoMinutes.setVisible(true);
-        enableButtons(groupData,"showTimerControls");
+        enableButtons(groupData, "showTimerControls");
     }
 
     public void hideTimerControls() {
@@ -447,7 +447,6 @@ public class TimerControls extends GridLayout {
             lifterInfo.setBlocked(true);
             lifterInfo.doDisplayDecision(true, lifter.getNextAttemptRequestedWeight(), lifter);
             groupData.okLiftUpdateModel();
-            
 
         } else {
             logger.debug("Ok: délai Inacceptable: {}", currentTimeMillis - lifterInfo.getLastOkButtonClick());
@@ -487,7 +486,7 @@ public class TimerControls extends GridLayout {
             lifterInfo.setBlocked(false); // !!!!
             groupData.getRefereeDecisionController().setBlocked(false);
             groupData.startUpdateModel();
-//            enableButtons(groupData,"start onClick");
+            // enableButtons(groupData,"start onClick");
         }
     }
 
@@ -498,7 +497,7 @@ public class TimerControls extends GridLayout {
             timingLogger.debug("stop timer.isRunning()={}", true); //$NON-NLS-1$
             lifterInfo.setBlocked(true);
             groupData.stopUpdateModel();
-//            enableButtons(groupData, "stop onClick");
+            // enableButtons(groupData, "stop onClick");
         } else {
             timingLogger.debug("stop timer.isRunning()={}", false); //$NON-NLS-1$
             // do nothing.
@@ -509,16 +508,15 @@ public class TimerControls extends GridLayout {
         timingLogger.debug("oneMinute"); //$NON-NLS-1$
         logger.info("resetting to one minute for {}", lifter); //$NON-NLS-1$
         groupData.oneMinuteUpdateModel();
-//        enableButtons(groupData, "oneMinute onClick");
+        // enableButtons(groupData, "oneMinute onClick");
     }
 
     private void twoMinutesDoIt(final Lifter lifter, final SessionData groupData) {
         timingLogger.debug("twoMinutes"); //$NON-NLS-1$
         logger.info("resetting to two minutes for {}", lifter); //$NON-NLS-1$
         groupData.twoMinuteUpdateModel();
-//        enableButtons(groupData,"twoMinute onClick");
+        // enableButtons(groupData,"twoMinute onClick");
     }
-
 
     public void unregisterListeners() {
     }

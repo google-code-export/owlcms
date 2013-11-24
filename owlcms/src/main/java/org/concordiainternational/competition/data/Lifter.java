@@ -55,32 +55,26 @@ import com.vaadin.ui.Window.Notification;
 /**
  * This class stores all the information related to a particular participant.
  * <p>
- * This class is an example of what not to do. This was designed prior reaching a proper
- * understanding of Hibernate/JPA and of proper separation between Vaadin Containers and
- * persistence frameworks.  Live and Learn.
+ * This class is an example of what not to do. This was designed prior reaching a proper understanding of Hibernate/JPA and of proper
+ * separation between Vaadin Containers and persistence frameworks. Live and Learn.
  * <p>
- * All persistent properties are managed by Java Persistance annotations.
- * "Field" access mode is used, meaning that it is the values of the fields that
- * are stored, and not the values returned by the getters. Note that it is often
- * necessary to know when a value has been captured or not -- this is why values
- * are stored as Integers or Doubles, so that we can use null to indicate that a
- * value has not been captured.
+ * All persistent properties are managed by Java Persistance annotations. "Field" access mode is used, meaning that it is the values of the
+ * fields that are stored, and not the values returned by the getters. Note that it is often necessary to know when a value has been
+ * captured or not -- this is why values are stored as Integers or Doubles, so that we can use null to indicate that a value has not been
+ * captured.
  * </p>
  * <p>
- * This allows us to use the getters to return the values as they will be
- * displayed by the application
+ * This allows us to use the getters to return the values as they will be displayed by the application
  * </p>
  * <p>
  * Computed fields are defined as final transient properties and marked as
- * @Transient; the only reason for this is so the JavaBeans introspection
- *             mechanisms find them.
+ * 
+ * @Transient; the only reason for this is so the JavaBeans introspection mechanisms find them.
  *             </p>
  *             <p>
- *             This class uses events to notify interested user interface
- *             components that fields or computed values have changed. In this
- *             way the user interface does not have to know that the category
- *             field on the screen is dependent on the bodyweight and the gender
- *             -- all the dependency logic is kept at the business object level.
+ *             This class uses events to notify interested user interface components that fields or computed values have changed. In this
+ *             way the user interface does not have to know that the category field on the screen is dependent on the bodyweight and the
+ *             gender -- all the dependency logic is kept at the business object level.
  *             </p>
  * 
  * @author jflamy
@@ -151,13 +145,14 @@ public class Lifter implements MethodEventSource, Notifier {
 
     String gender = ""; //$NON-NLS-1$
     Integer ageGroup = 0;
-    
+
     // the actual birth instant is a Joda date, but we use Java dates for JPA and for Vaadin
     // we don't care for time zones, i.e. we assume everyone is
-    @Transient transient LocalDate birthDateAsLocalDate = null;
+    @Transient
+    transient LocalDate birthDateAsLocalDate = null;
     private Integer birthDate = null; // = birthDateTime.getYear();
-    private Date fullBirthDate = null;  //= birthDateTime.toDate();
-    
+    private Date fullBirthDate = null; // = birthDateTime.toDate();
+
     Double bodyWeight = null;
 
     String membership = ""; //$NON-NLS-1$
@@ -230,19 +225,16 @@ public class Lifter implements MethodEventSource, Notifier {
 
     Integer teamTotalRank;
     Integer teamCombinedRank;
-    
+
     Boolean teamMember = true; // false if substitute; note that we consider null to be true.;
     Integer qualifyingTotal = 0;
-    
+
     /*
-     * Computed properties. We create them here because we want the
-     * corresponding accessors to be discovered by introspection. Setters are
-     * not defined (the fields are final). Getters perform the required
-     * computation.
+     * Computed properties. We create them here because we want the corresponding accessors to be discovered by introspection. Setters are
+     * not defined (the fields are final). Getters perform the required computation.
      * 
-     * BEWARE: the variables defined here must NOT be used -- you must be able
-     * to comment them out and get no compilation errors. All the code should
-     * use the getters only.
+     * BEWARE: the variables defined here must NOT be used -- you must be able to comment them out and get no compilation errors. All the
+     * code should use the getters only.
      */
     @Transient
     final transient String snatch1AutomaticProgression = ""; //$NON-NLS-1$
@@ -265,7 +257,7 @@ public class Lifter implements MethodEventSource, Notifier {
     final transient Integer bestCleanJerk = 0;
     @Transient
     final transient Integer medalRank = 0;
-    
+
     @Transient
     final transient Integer total = 0;
     @Transient
@@ -280,8 +272,7 @@ public class Lifter implements MethodEventSource, Notifier {
     @Transient
     final transient Integer nextAttemptRequestedWeight = 0;
     /*
-     * Non-persistent properties. These properties are used during computations,
-     * but need not be stored in the database
+     * Non-persistent properties. These properties are used during computations, but need not be stored in the database
      */
     @Transient
     Integer liftOrderRank = 0;
@@ -292,33 +283,32 @@ public class Lifter implements MethodEventSource, Notifier {
     @Transient
     boolean forcedAsCurrent = false;
     /*
-     * Transient fields that have no relevance to the persistent state of a
-     * lifter All framework-related and pattern-related constructs go here.
+     * Transient fields that have no relevance to the persistent state of a lifter All framework-related and pattern-related constructs go
+     * here.
      */
     @Transient
     private EventRouter eventRouter;
 
-	private Double customScore;
+    private Double customScore;
 
     /**
-     * This method is the Java object for the method in the Listener interface.
-     * It allows the framework to know how to pass the event information.
+     * This method is the Java object for the method in the Listener interface. It allows the framework to know how to pass the event
+     * information.
      */
     private static final Method LIFTER_EVENT_METHOD = EventHelper.findMethod(UpdateEvent.class, // when
-        // receiving
-        // this
-        // type
-        // of
-        // event
-        UpdateEventListener.class, // an object implementing this interface...
-        "updateEvent"); // ... will be called with this method. //$NON-NLS-1$;
+            // receiving
+            // this
+            // type
+            // of
+            // event
+            UpdateEventListener.class, // an object implementing this interface...
+            "updateEvent"); // ... will be called with this method. //$NON-NLS-1$;
 
-    
     static public List<Lifter> getAll() {
         Session hbnSession = CompetitionApplication.getCurrent().getHbnSession();
         return getAll(hbnSession, false);
     }
-    
+
     @SuppressWarnings("unchecked")
     static public List<Lifter> getAll(Session hbnSession, boolean excludeNotWeighed) {
         Criteria criteria = hbnSession.createCriteria(Lifter.class);
@@ -347,11 +337,10 @@ public class Lifter implements MethodEventSource, Notifier {
     /*
      * (non-Javadoc)
      * 
-     * @see com.vaadin.event.MethodEventSource#addListener(java.lang.Class,
-     * java.lang.Object, java.lang.reflect.Method)
+     * @see com.vaadin.event.MethodEventSource#addListener(java.lang.Class, java.lang.Object, java.lang.reflect.Method)
      */
     @Override
-	@SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings({ "rawtypes" })
     public void addListener(Class eventType, Object object, Method method) {
         getEventRouter().addListener(eventType, object, method);
     }
@@ -359,27 +348,23 @@ public class Lifter implements MethodEventSource, Notifier {
     /*
      * (non-Javadoc)
      * 
-     * @see com.vaadin.event.MethodEventSource#addListener(java.lang.Class,
-     * java.lang.Object, java.lang.String)
+     * @see com.vaadin.event.MethodEventSource#addListener(java.lang.Class, java.lang.Object, java.lang.String)
      */
     @Override
-	@SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings({ "rawtypes" })
     public void addListener(Class eventType, Object object, String methodName) {
         getEventRouter().addListener(eventType, object, methodName);
     }
 
     /**
-     * Register a new Lifter.Listener object with a Lifter in order to be
-     * informed of updates.
+     * Register a new Lifter.Listener object with a Lifter in order to be informed of updates.
      * 
      * @param listener
      */
     @Override
-	public void addListener(EventListener listener) {
+    public void addListener(EventListener listener) {
         getEventRouter().addListener(UpdateEvent.class, listener, LIFTER_EVENT_METHOD);
     }
-
- 
 
     public void failedLift() {
         logger.debug("{}", this); //$NON-NLS-1$
@@ -456,9 +441,12 @@ public class Lifter implements MethodEventSource, Notifier {
     public int getBestCleanJerkAttemptNumber() {
         int referenceValue = getBestCleanJerk();
         if (referenceValue > 0) {
-            if (zeroIfInvalid(cleanJerk3ActualLift) == referenceValue) return 6;
-            if (zeroIfInvalid(cleanJerk2ActualLift) == referenceValue) return 5;
-            if (zeroIfInvalid(cleanJerk1ActualLift) == referenceValue) return 4;
+            if (zeroIfInvalid(cleanJerk3ActualLift) == referenceValue)
+                return 6;
+            if (zeroIfInvalid(cleanJerk2ActualLift) == referenceValue)
+                return 5;
+            if (zeroIfInvalid(cleanJerk1ActualLift) == referenceValue)
+                return 4;
         }
         return 0; // no match - bomb-out.
     }
@@ -466,15 +454,21 @@ public class Lifter implements MethodEventSource, Notifier {
     public int getBestResultAttemptNumber() {
         int referenceValue = getBestCleanJerk();
         if (referenceValue > 0) {
-            if (zeroIfInvalid(cleanJerk3ActualLift) == referenceValue) return 6;
-            if (zeroIfInvalid(cleanJerk2ActualLift) == referenceValue) return 5;
-            if (zeroIfInvalid(cleanJerk1ActualLift) == referenceValue) return 4;
+            if (zeroIfInvalid(cleanJerk3ActualLift) == referenceValue)
+                return 6;
+            if (zeroIfInvalid(cleanJerk2ActualLift) == referenceValue)
+                return 5;
+            if (zeroIfInvalid(cleanJerk1ActualLift) == referenceValue)
+                return 4;
         } else {
             if (referenceValue > 0) {
                 referenceValue = getBestSnatch();
-                if (zeroIfInvalid(snatch3ActualLift) == referenceValue) return 3;
-                if (zeroIfInvalid(snatch2ActualLift) == referenceValue) return 2;
-                if (zeroIfInvalid(snatch1ActualLift) == referenceValue) return 1;
+                if (zeroIfInvalid(snatch3ActualLift) == referenceValue)
+                    return 3;
+                if (zeroIfInvalid(snatch2ActualLift) == referenceValue)
+                    return 2;
+                if (zeroIfInvalid(snatch1ActualLift) == referenceValue)
+                    return 1;
             }
         }
         return 0; // no match - bomb-out.
@@ -493,17 +487,20 @@ public class Lifter implements MethodEventSource, Notifier {
     public int getBestSnatchAttemptNumber() {
         int referenceValue = getBestSnatch();
         if (referenceValue > 0) {
-            if (zeroIfInvalid(snatch3ActualLift) == referenceValue) return 3;
-            if (zeroIfInvalid(snatch2ActualLift) == referenceValue) return 2;
-            if (zeroIfInvalid(snatch1ActualLift) == referenceValue) return 1;
+            if (zeroIfInvalid(snatch3ActualLift) == referenceValue)
+                return 3;
+            if (zeroIfInvalid(snatch2ActualLift) == referenceValue)
+                return 2;
+            if (zeroIfInvalid(snatch1ActualLift) == referenceValue)
+                return 1;
         }
         return 0; // no match - bomb-out.
-        
-    }
 
+    }
 
     /**
      * Set all date fields consistently.
+     * 
      * @param newBirthDateAsDate
      */
     private void setAllBirthDates(Date newBirthDateAsDate) {
@@ -511,17 +508,17 @@ public class Lifter implements MethodEventSource, Notifier {
         this.fullBirthDate = birthDateAsLocalDate.toDate();
         this.birthDate = birthDateAsLocalDate.getYear();
     }
-    
+
     @SuppressWarnings("unused")
     private void setAllBirthDates(LocalDate newBirthDateAsLocalDate) {
         this.birthDateAsLocalDate = newBirthDateAsLocalDate;
         this.fullBirthDate = birthDateAsLocalDate.toDate();
         this.birthDate = birthDateAsLocalDate.getYear();
     }
-    
+
     private void setAllBirthDates(Integer yearOfBirth) {
         if (yearOfBirth != null) {
-            this.birthDateAsLocalDate = new LocalDate(yearOfBirth, 1, 1); 
+            this.birthDateAsLocalDate = new LocalDate(yearOfBirth, 1, 1);
             this.fullBirthDate = birthDateAsLocalDate.toDate();
             this.birthDate = birthDateAsLocalDate.getYear();
         } else {
@@ -530,12 +527,11 @@ public class Lifter implements MethodEventSource, Notifier {
             this.birthDate = null;
         }
     }
-    
+
     /* *****************************************************************************************
      * Actual persisted properties.
      */
-    
-    
+
     /**
      * @return the birthDate
      */
@@ -547,7 +543,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return this.getYearOfBirth();
         }
     };
-    
+
     /**
      * @param birthDate
      *            the birthDate to set
@@ -560,24 +556,24 @@ public class Lifter implements MethodEventSource, Notifier {
             setAllBirthDates(birthYear);
         }
     }
-    
+
     /**
      * @return the full birthDate
      */
     public Date getFullBirthDate() {
-        if (fullBirthDate != null) { 
+        if (fullBirthDate != null) {
             if (birthDateAsLocalDate == null) {
                 setAllBirthDates(fullBirthDate);
             }
             return fullBirthDate;
         } else if (birthDate != null) {
             // do not store the faked full birth date.
-            return new DateTime(birthDate,1,1,0,0).toDate();
+            return new DateTime(birthDate, 1, 1, 0, 0).toDate();
         } else {
             return null;
         }
     };
-    
+
     /**
      * @param fullBirthDate
      *            the full birthDate to set
@@ -585,13 +581,13 @@ public class Lifter implements MethodEventSource, Notifier {
     public void setFullBirthDate(Date fullBirthDate) {
         setAllBirthDates(fullBirthDate);
     }
-    
+
     /**
      * @return the year of birth (null if both birthDate and fullBirthDate are null)
      */
     public Integer getYearOfBirth() {
         if (fullBirthDate == null) {
-            return birthDate ;
+            return birthDate;
         } else if (birthDateAsLocalDate != null) {
             return birthDateAsLocalDate.getYear();
         } else {
@@ -599,7 +595,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return birthDate;
         }
     };
-    
+
     /**
      * @param birthDate
      *            the birthDate to set
@@ -611,7 +607,6 @@ public class Lifter implements MethodEventSource, Notifier {
             setAllBirthDates(birthYear);
         }
     }
-    
 
     /**
      * @return the bodyWeight
@@ -626,24 +621,24 @@ public class Lifter implements MethodEventSource, Notifier {
     public Category getCategory() {
         final CategoryLookup categoryLookup1 = CategoryLookup.getSharedInstance();
         final Category lookup = categoryLookup1.lookup(this.gender, this.bodyWeight);
-        //System.err.println("getCategory: "+this.gender+","+this.bodyWeight+" = "+(lookup == null? null: lookup.getName()));
+        // System.err.println("getCategory: "+this.gender+","+this.bodyWeight+" = "+(lookup == null? null: lookup.getName()));
         return lookup;
     };
 
     /**
-     * Compute the body weight at the maximum weight of the lifter's category.
-     * Note: for the purpose of this computation, only "official" categories are
-     * used as the purpose is to totalRank athletes according to their
-     * competition potential.
+     * Compute the body weight at the maximum weight of the lifter's category. Note: for the purpose of this computation, only "official"
+     * categories are used as the purpose is to totalRank athletes according to their competition potential.
      * 
      * @return
      */
     public Double getCategorySinclair() {
         Category category = getCategory();
-        if (category == null) return 0.0;
+        if (category == null)
+            return 0.0;
         Double categoryWeight = category.getMaximumWeight();
         final Integer total1 = getTotal();
-        if (total1 == null || total1 < 0.1) return 0.0;
+        if (total1 == null || total1 < 0.1)
+            return 0.0;
         if (getGender().equalsIgnoreCase("M")) { //$NON-NLS-1$
             if (categoryWeight < 56.0) {
                 categoryWeight = 56.0;
@@ -663,22 +658,23 @@ public class Lifter implements MethodEventSource, Notifier {
     public String getCleanJerk1ActualLift() {
         return emptyIfNull(cleanJerk1ActualLift);
     };
-    
+
     public Integer getCleanJerk1AsInteger() {
-    	return asInteger(cleanJerk1ActualLift);
+        return asInteger(cleanJerk1ActualLift);
     }
 
-	/**
-	 * @return
-	 */
-	protected Integer asInteger(String stringValue) {
-		if (stringValue == null) return null;
+    /**
+     * @return
+     */
+    protected Integer asInteger(String stringValue) {
+        if (stringValue == null)
+            return null;
         try {
-        	return Integer.parseInt(stringValue);
+            return Integer.parseInt(stringValue);
         } catch (NumberFormatException nfe) {
-        	return null;
+            return null;
         }
-	};
+    };
 
     public String getCleanJerk1AutomaticProgression() {
         return "-"; // there is no such thing. //$NON-NLS-1$
@@ -703,9 +699,9 @@ public class Lifter implements MethodEventSource, Notifier {
     public String getCleanJerk2ActualLift() {
         return emptyIfNull(cleanJerk2ActualLift);
     }
-    
+
     public Integer getCleanJerk2AsInteger() {
-    	return asInteger(cleanJerk2ActualLift);
+        return asInteger(cleanJerk2ActualLift);
     }
 
     public String getCleanJerk2AutomaticProgression() {
@@ -732,9 +728,9 @@ public class Lifter implements MethodEventSource, Notifier {
     public String getCleanJerk3ActualLift() {
         return emptyIfNull(cleanJerk3ActualLift);
     }
-    
+
     public Integer getCleanJerk3AsInteger() {
-    	return asInteger(cleanJerk3ActualLift);
+        return asInteger(cleanJerk3ActualLift);
     }
 
     public String getCleanJerk3AutomaticProgression() {
@@ -784,7 +780,8 @@ public class Lifter implements MethodEventSource, Notifier {
     }
 
     public Float getCleanJerkPoints() {
-        if (cleanJerkPoints == null) return 0.0F;
+        if (cleanJerkPoints == null)
+            return 0.0F;
         return cleanJerkPoints;
     }
 
@@ -797,7 +794,7 @@ public class Lifter implements MethodEventSource, Notifier {
      */
     public int getCleanJerkTotal() {
         final int cleanJerkTotal = max(0, zeroIfInvalid(cleanJerk1ActualLift), zeroIfInvalid(cleanJerk2ActualLift),
-            zeroIfInvalid(cleanJerk3ActualLift));
+                zeroIfInvalid(cleanJerk3ActualLift));
         return cleanJerkTotal;
     }
 
@@ -841,8 +838,6 @@ public class Lifter implements MethodEventSource, Notifier {
         return competitionSession;
     }
 
-
-
     /**
      * @return the id
      */
@@ -851,9 +846,8 @@ public class Lifter implements MethodEventSource, Notifier {
     }
 
     /**
-     * Compute the time of last lift for lifter. Times are only compared within
-     * the same lift type (if a lifter is at the first attempt of clean and
-     * jerk, then the last lift occurred forever ago.)
+     * Compute the time of last lift for lifter. Times are only compared within the same lift type (if a lifter is at the first attempt of
+     * clean and jerk, then the last lift occurred forever ago.)
      * 
      * @param lifter1
      * @return null if lifter has not lifted
@@ -912,12 +906,18 @@ public class Lifter implements MethodEventSource, Notifier {
     }
 
     public Date getLastSuccessfulLiftTime() {
-        if (zeroIfInvalid(cleanJerk3ActualLift) > 0) return getCleanJerk3LiftTime();
-        if (zeroIfInvalid(cleanJerk2ActualLift) > 0) return getCleanJerk2LiftTime();
-        if (zeroIfInvalid(cleanJerk1ActualLift) > 0) return getCleanJerk1LiftTime();
-        if (zeroIfInvalid(snatch3ActualLift) > 0) return getCleanJerk3LiftTime();
-        if (zeroIfInvalid(snatch2ActualLift) > 0) return getCleanJerk2LiftTime();
-        if (zeroIfInvalid(snatch1ActualLift) > 0) return getCleanJerk1LiftTime();
+        if (zeroIfInvalid(cleanJerk3ActualLift) > 0)
+            return getCleanJerk3LiftTime();
+        if (zeroIfInvalid(cleanJerk2ActualLift) > 0)
+            return getCleanJerk2LiftTime();
+        if (zeroIfInvalid(cleanJerk1ActualLift) > 0)
+            return getCleanJerk1LiftTime();
+        if (zeroIfInvalid(snatch3ActualLift) > 0)
+            return getCleanJerk3LiftTime();
+        if (zeroIfInvalid(snatch2ActualLift) > 0)
+            return getCleanJerk2LiftTime();
+        if (zeroIfInvalid(snatch1ActualLift) > 0)
+            return getCleanJerk1LiftTime();
         return new Date(0L); // long ago
     }
 
@@ -948,31 +948,32 @@ public class Lifter implements MethodEventSource, Notifier {
         switch (attempt) {
         case 1:
             return (Integer) last(zeroIfInvalid(getSnatch1AutomaticProgression()), zeroIfInvalid(snatch1Declaration),
-                zeroIfInvalid(snatch1Change1), zeroIfInvalid(snatch1Change2));
+                    zeroIfInvalid(snatch1Change1), zeroIfInvalid(snatch1Change2));
         case 2:
             return (Integer) last(zeroIfInvalid(getSnatch2AutomaticProgression()), zeroIfInvalid(snatch2Declaration),
-                zeroIfInvalid(snatch2Change1), zeroIfInvalid(snatch2Change2));
+                    zeroIfInvalid(snatch2Change1), zeroIfInvalid(snatch2Change2));
         case 3:
             return (Integer) last(zeroIfInvalid(getSnatch3AutomaticProgression()), zeroIfInvalid(snatch3Declaration),
-                zeroIfInvalid(snatch3Change1), zeroIfInvalid(snatch3Change2));
+                    zeroIfInvalid(snatch3Change1), zeroIfInvalid(snatch3Change2));
         case 4:
             return (Integer) last(zeroIfInvalid(getCleanJerk1AutomaticProgression()),
-                zeroIfInvalid(cleanJerk1Declaration), zeroIfInvalid(cleanJerk1Change1),
-                zeroIfInvalid(cleanJerk1Change2));
+                    zeroIfInvalid(cleanJerk1Declaration), zeroIfInvalid(cleanJerk1Change1),
+                    zeroIfInvalid(cleanJerk1Change2));
         case 5:
             return (Integer) last(zeroIfInvalid(getCleanJerk2AutomaticProgression()),
-                zeroIfInvalid(cleanJerk2Declaration), zeroIfInvalid(cleanJerk2Change1),
-                zeroIfInvalid(cleanJerk2Change2));
+                    zeroIfInvalid(cleanJerk2Declaration), zeroIfInvalid(cleanJerk2Change1),
+                    zeroIfInvalid(cleanJerk2Change2));
         case 6:
             return (Integer) last(zeroIfInvalid(getCleanJerk3AutomaticProgression()),
-                zeroIfInvalid(cleanJerk3Declaration), zeroIfInvalid(cleanJerk3Change1),
-                zeroIfInvalid(cleanJerk3Change2));
+                    zeroIfInvalid(cleanJerk3Declaration), zeroIfInvalid(cleanJerk3Change1),
+                    zeroIfInvalid(cleanJerk3Change2));
         }
         return 0;
     }
 
     public Integer getQualifyingTotal() {
-        if (qualifyingTotal == null) return 0;
+        if (qualifyingTotal == null)
+            return 0;
         return qualifyingTotal;
     }
 
@@ -989,23 +990,24 @@ public class Lifter implements MethodEventSource, Notifier {
     }
 
     /**
-     * Compute the Sinclair total for the lifter, that is, the total multiplied
-     * by a value that depends on the lifter's body weight. This value
-     * extrapolates what the lifter would have lifted if he/she had the bodymass
-     * of a maximum-weight lifter.
+     * Compute the Sinclair total for the lifter, that is, the total multiplied by a value that depends on the lifter's body weight. This
+     * value extrapolates what the lifter would have lifted if he/she had the bodymass of a maximum-weight lifter.
      * 
      * @return the sinclair-adjusted value for the lifter
      */
     public Double getSinclair() {
         final Double bodyWeight1 = getBodyWeight();
-        if (bodyWeight1 == null) return 0.0;
+        if (bodyWeight1 == null)
+            return 0.0;
         return getSinclair(bodyWeight1);
     }
 
     public Double getSinclair(Double bodyWeight1) {
         Integer total1 = getTotal();
-        if (total1 == null || total1 < 0.1) return 0.0;
-        if (gender == null) return 0.0;
+        if (total1 == null || total1 < 0.1)
+            return 0.0;
+        if (gender == null)
+            return 0.0;
         if (gender.equalsIgnoreCase("M")) { //$NON-NLS-1$
             return total1 * sinclairFactor(bodyWeight1, Coefficients.menCoefficient(), Coefficients.menMaxWeight());
         } else {
@@ -1022,7 +1024,8 @@ public class Lifter implements MethodEventSource, Notifier {
     public Double getSMM() {
         try {
             final Integer birthDate1 = getBirthDate();
-            if (birthDate1 == null) return 0.0;
+            if (birthDate1 == null)
+                return 0.0;
             return getSinclair() * Coefficients.getSMMCoefficient(year - birthDate1);
         } catch (IOException e) {
             LoggerUtils.logException(logger, e);
@@ -1033,7 +1036,7 @@ public class Lifter implements MethodEventSource, Notifier {
     public String getSnatch1ActualLift() {
         return emptyIfNull(snatch1ActualLift);
     }
-    
+
     public Integer getSnatch1AsInteger() {
         return asInteger(snatch1ActualLift);
     }
@@ -1061,7 +1064,7 @@ public class Lifter implements MethodEventSource, Notifier {
     public String getSnatch2ActualLift() {
         return emptyIfNull(snatch2ActualLift);
     }
-    
+
     public Integer getSnatch2AsInteger() {
         return asInteger(snatch2ActualLift);
     }
@@ -1090,11 +1093,11 @@ public class Lifter implements MethodEventSource, Notifier {
     public String getSnatch3ActualLift() {
         return emptyIfNull(snatch3ActualLift);
     }
-    
+
     public Integer getSnatch3AsInteger() {
         return asInteger(snatch3ActualLift);
     }
-    
+
     public String getSnatch3AutomaticProgression() {
         final int prevVal = zeroIfInvalid(snatch2ActualLift);
         return doAutomaticProgression(prevVal);
@@ -1142,7 +1145,8 @@ public class Lifter implements MethodEventSource, Notifier {
     }
 
     public Float getSnatchPoints() {
-        if (snatchPoints == null) return 0.0F;
+        if (snatchPoints == null)
+            return 0.0F;
         return snatchPoints;
     }
 
@@ -1155,7 +1159,7 @@ public class Lifter implements MethodEventSource, Notifier {
      */
     public int getSnatchTotal() {
         final int snatchTotal = max(0, zeroIfInvalid(snatch1ActualLift), zeroIfInvalid(snatch2ActualLift),
-            zeroIfInvalid(snatch3ActualLift));
+                zeroIfInvalid(snatch3ActualLift));
         return snatchTotal;
     }
 
@@ -1164,7 +1168,8 @@ public class Lifter implements MethodEventSource, Notifier {
     }
 
     public Boolean getTeamMember() {
-        if (teamMember == null) return true;
+        if (teamMember == null)
+            return true;
         return teamMember;
     }
 
@@ -1177,30 +1182,30 @@ public class Lifter implements MethodEventSource, Notifier {
     }
 
     /**
-     * Total is zero if all three snatches or all three clean&jerks are failed.
-     * Failed lifts are indicated as negative amounts. Total is the sum of all
-     * good lifts otherwise. Null entries indicate that no data has been
-     * captured, and are counted as zero.
+     * Total is zero if all three snatches or all three clean&jerks are failed. Failed lifts are indicated as negative amounts. Total is the
+     * sum of all good lifts otherwise. Null entries indicate that no data has been captured, and are counted as zero.
      * 
      * @return the total
      */
     public Integer getTotal() {
         final int snatchTotal = getSnatchTotal();
-        if (snatchTotal == 0) return 0;
+        if (snatchTotal == 0)
+            return 0;
         final int cleanJerkTotal = getCleanJerkTotal();
-        if (cleanJerkTotal == 0) return 0;
+        if (cleanJerkTotal == 0)
+            return 0;
         return snatchTotal + cleanJerkTotal;
     }
-    
+
     public Float getTotalPoints() {
-        if (totalPoints == null) return 0.0F;
+        if (totalPoints == null)
+            return 0.0F;
         return totalPoints;
     }
 
     public Integer getTotalRank() {
         return totalRank;
     }
-
 
     public boolean isCurrentLifter() {
         return currentLifter;
@@ -1213,15 +1218,14 @@ public class Lifter implements MethodEventSource, Notifier {
     public boolean isInvited() {
         final Locale locale = CompetitionApplication.getCurrentLocale();
         int threshold = Competition.invitedIfBornBefore();
-        
+
         Integer birthDate2 = getYearOfBirth();
-        
-        return
-                birthDate2 == null
+
+        return birthDate2 == null
                 || (birthDate2 < threshold)
                 || membership.equalsIgnoreCase(Messages.getString("Lifter.InvitedAbbreviated", locale)) //$NON-NLS-1$
-                // || !getTeamMember()
-                ;
+        // || !getTeamMember()
+        ;
     }
 
     public void removeAllListeners() {
@@ -1233,11 +1237,10 @@ public class Lifter implements MethodEventSource, Notifier {
     /*
      * (non-Javadoc)
      * 
-     * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class,
-     * java.lang.Object)
+     * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class, java.lang.Object)
      */
     @Override
-	@SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings({ "rawtypes" })
     public void removeListener(Class eventType, Object target) {
         if (eventRouter != null) {
             eventRouter.removeListener(eventType, target);
@@ -1247,11 +1250,10 @@ public class Lifter implements MethodEventSource, Notifier {
     /*
      * (non-Javadoc)
      * 
-     * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class,
-     * java.lang.Object, java.lang.reflect.Method)
+     * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class, java.lang.Object, java.lang.reflect.Method)
      */
     @Override
-	@SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings({ "rawtypes" })
     public void removeListener(Class eventType, Object target, Method method) {
         if (eventRouter != null) {
             eventRouter.removeListener(eventType, target, method);
@@ -1261,11 +1263,10 @@ public class Lifter implements MethodEventSource, Notifier {
     /*
      * (non-Javadoc)
      * 
-     * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class,
-     * java.lang.Object, java.lang.String)
+     * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class, java.lang.Object, java.lang.String)
      */
     @Override
-	@SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings({ "rawtypes" })
     public void removeListener(Class eventType, Object target, String methodName) {
         if (eventRouter != null) {
             eventRouter.removeListener(eventType, target, methodName);
@@ -1278,7 +1279,7 @@ public class Lifter implements MethodEventSource, Notifier {
      * @param listener
      */
     @Override
-	public void removeListener(EventListener listener) {
+    public void removeListener(EventListener listener) {
         if (eventRouter != null) {
             eventRouter.removeListener(UpdateEvent.class, listener, LIFTER_EVENT_METHOD);
         }
@@ -1310,8 +1311,6 @@ public class Lifter implements MethodEventSource, Notifier {
     public void setBestSnatch(Integer i) {
     }
 
-
-
     /**
      * @param bodyWeight
      *            the bodyWeight to set
@@ -1331,10 +1330,12 @@ public class Lifter implements MethodEventSource, Notifier {
 
     public void setCleanJerk1ActualLift(String cleanJerk1ActualLift) {
         validateActualLift(1, getCleanJerk1AutomaticProgression(), cleanJerk1Declaration, cleanJerk1Change1,
-            cleanJerk1Change2, cleanJerk1ActualLift);
+                cleanJerk1Change2, cleanJerk1ActualLift);
         this.cleanJerk1ActualLift = cleanJerk1ActualLift;
-        if (zeroIfInvalid(cleanJerk1ActualLift) == 0) this.cleanJerk1LiftTime = (null);
-        else this.cleanJerk1LiftTime = (Calendar.getInstance().getTime());
+        if (zeroIfInvalid(cleanJerk1ActualLift) == 0)
+            this.cleanJerk1LiftTime = (null);
+        else
+            this.cleanJerk1LiftTime = (Calendar.getInstance().getTime());
         logger.info("{} cleanJerk1ActualLift={}", this, cleanJerk1ActualLift);
         fireEvent(new UpdateEvent(this, "cleanJerk1ActualLift", "cleanJerk1LiftTime", "total")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
@@ -1350,15 +1351,13 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange1(1, getCleanJerk1AutomaticProgression(), cleanJerk1Declaration, cleanJerk1Change1,
-            cleanJerk1Change2, cleanJerk1ActualLift, false);
+                cleanJerk1Change2, cleanJerk1ActualLift, false);
         this.cleanJerk1Change1 = cleanJerk1Change1;
         check15_20kiloRule(true);
-        
+
         logger.info("{} cleanJerk1Change1={}", this, cleanJerk1Change1);
         fireEvent(new UpdateEvent(this, "cleanJerk1Change1")); //$NON-NLS-1$
     }
-
-
 
     public void setCleanJerk1Change2(String cleanJerk1Change2) {
         if ("0".equals(cleanJerk1Change2)) {
@@ -1368,10 +1367,10 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange2(1, getCleanJerk1AutomaticProgression(), cleanJerk1Declaration, cleanJerk1Change1,
-            cleanJerk1Change2, cleanJerk1ActualLift, false);
+                cleanJerk1Change2, cleanJerk1ActualLift, false);
         this.cleanJerk1Change2 = cleanJerk1Change2;
         check15_20kiloRule(true);
-        
+
         logger.info("{} cleanJerk1Change2={}", this, cleanJerk1Change2);
         fireEvent(new UpdateEvent(this, "cleanJerk1Change2")); //$NON-NLS-1$
     }
@@ -1383,12 +1382,13 @@ public class Lifter implements MethodEventSource, Notifier {
             setCleanJerk1ActualLift("0");
             return;
         }
-        
+
         validateDeclaration(1, getCleanJerk1AutomaticProgression(), cleanJerk1Declaration, cleanJerk1Change1,
-            cleanJerk1Change2, cleanJerk1ActualLift, false);
+                cleanJerk1Change2, cleanJerk1ActualLift, false);
         this.cleanJerk1Declaration = cleanJerk1Declaration;
-        if (zeroIfInvalid(getSnatch1Declaration()) > 0)  check15_20kiloRule(true);
-        
+        if (zeroIfInvalid(getSnatch1Declaration()) > 0)
+            check15_20kiloRule(true);
+
         logger.info("{} cleanJerk1Declaration={}", this, cleanJerk1Declaration);
         fireEvent(new UpdateEvent(this, "cleanJerk1Declaration")); //$NON-NLS-1$
     }
@@ -1398,10 +1398,12 @@ public class Lifter implements MethodEventSource, Notifier {
 
     public void setCleanJerk2ActualLift(String cleanJerk2ActualLift) {
         validateActualLift(2, getCleanJerk2AutomaticProgression(), cleanJerk2Declaration, cleanJerk2Change1,
-            cleanJerk2Change2, cleanJerk2ActualLift);
+                cleanJerk2Change2, cleanJerk2ActualLift);
         this.cleanJerk2ActualLift = cleanJerk2ActualLift;
-        if (zeroIfInvalid(cleanJerk2ActualLift) == 0) this.cleanJerk2LiftTime = (null);
-        else this.cleanJerk2LiftTime = (Calendar.getInstance().getTime());
+        if (zeroIfInvalid(cleanJerk2ActualLift) == 0)
+            this.cleanJerk2LiftTime = (null);
+        else
+            this.cleanJerk2LiftTime = (Calendar.getInstance().getTime());
         logger.info("{} cleanJerk2ActualLift={}", this, cleanJerk2ActualLift);
         fireEvent(new UpdateEvent(this, "cleanJerk2ActualLift", "cleanJerk2LiftTime", "total")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
@@ -1417,7 +1419,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange1(2, getCleanJerk2AutomaticProgression(), cleanJerk2Declaration, cleanJerk2Change1,
-            cleanJerk2Change2, cleanJerk2ActualLift, false);
+                cleanJerk2Change2, cleanJerk2ActualLift, false);
         this.cleanJerk2Change1 = cleanJerk2Change1;
         logger.info("{} cleanJerk2Change1={}", this, cleanJerk2Change1);
         fireEvent(new UpdateEvent(this, "cleanJerk2Change1")); //$NON-NLS-1$
@@ -1431,7 +1433,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange2(2, getCleanJerk2AutomaticProgression(), cleanJerk2Declaration, cleanJerk2Change1,
-            cleanJerk2Change2, cleanJerk2ActualLift, false);
+                cleanJerk2Change2, cleanJerk2ActualLift, false);
         this.cleanJerk2Change2 = cleanJerk2Change2;
         logger.info("{} cleanJerk2Change2={}", this, cleanJerk2Change2);
         fireEvent(new UpdateEvent(this, "cleanJerk2Change2")); //$NON-NLS-1$
@@ -1445,7 +1447,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateDeclaration(2, getCleanJerk2AutomaticProgression(), cleanJerk2Declaration, cleanJerk2Change1,
-            cleanJerk2Change2, cleanJerk2ActualLift, false);
+                cleanJerk2Change2, cleanJerk2ActualLift, false);
         this.cleanJerk2Declaration = cleanJerk2Declaration;
         logger.info("{} cleanJerk2Declaration={}", this, cleanJerk2Declaration);
         fireEvent(new UpdateEvent(this, "cleanJerk2Declaration")); //$NON-NLS-1$
@@ -1456,10 +1458,12 @@ public class Lifter implements MethodEventSource, Notifier {
 
     public void setCleanJerk3ActualLift(String cleanJerk3ActualLift) {
         validateActualLift(3, getCleanJerk3AutomaticProgression(), cleanJerk3Declaration, cleanJerk3Change1,
-            cleanJerk3Change2, cleanJerk3ActualLift);
+                cleanJerk3Change2, cleanJerk3ActualLift);
         this.cleanJerk3ActualLift = cleanJerk3ActualLift;
-        if (zeroIfInvalid(cleanJerk3ActualLift) == 0) this.cleanJerk3LiftTime = (null);
-        else this.cleanJerk3LiftTime = (Calendar.getInstance().getTime());
+        if (zeroIfInvalid(cleanJerk3ActualLift) == 0)
+            this.cleanJerk3LiftTime = (null);
+        else
+            this.cleanJerk3LiftTime = (Calendar.getInstance().getTime());
         logger.info("{} cleanJerk3ActualLift={}", this, cleanJerk3ActualLift);
         fireEvent(new UpdateEvent(this, "cleanJerk3ActualLift", "cleanJerk3LiftTime", "total")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
@@ -1475,7 +1479,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange1(3, getCleanJerk3AutomaticProgression(), cleanJerk3Declaration, cleanJerk3Change1,
-            cleanJerk3Change2, cleanJerk3ActualLift, false);
+                cleanJerk3Change2, cleanJerk3ActualLift, false);
         this.cleanJerk3Change1 = cleanJerk3Change1;
         logger.info("{} cleanJerk3Change1={}", this, cleanJerk3Change1);
         fireEvent(new UpdateEvent(this, "cleanJerk3Change1")); //$NON-NLS-1$
@@ -1488,9 +1492,9 @@ public class Lifter implements MethodEventSource, Notifier {
             setCleanJerk3ActualLift("0");
             return;
         }
-        
+
         validateChange2(3, getCleanJerk3AutomaticProgression(), cleanJerk3Declaration, cleanJerk3Change1,
-            cleanJerk3Change2, cleanJerk3ActualLift, false);
+                cleanJerk3Change2, cleanJerk3ActualLift, false);
         this.cleanJerk3Change2 = cleanJerk3Change2;
         logger.info("{} cleanJerk3Change2={}", this, cleanJerk3Change2);
         fireEvent(new UpdateEvent(this, "cleanJerk3Change2")); //$NON-NLS-1$
@@ -1504,7 +1508,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateDeclaration(3, getCleanJerk3AutomaticProgression(), cleanJerk3Declaration, cleanJerk3Change1,
-            cleanJerk3Change2, cleanJerk3ActualLift, false);
+                cleanJerk3Change2, cleanJerk3ActualLift, false);
         this.cleanJerk3Declaration = cleanJerk3Declaration;
         logger.info("{} cleanJerk3Declaration={}", this, cleanJerk3Declaration);
         fireEvent(new UpdateEvent(this, "cleanJerk3Declaration")); //$NON-NLS-1$
@@ -1638,10 +1642,12 @@ public class Lifter implements MethodEventSource, Notifier {
 
     public void setSnatch1ActualLift(String snatch1ActualLift) {
         validateActualLift(1, getSnatch1AutomaticProgression(), snatch1Declaration, snatch1Change1, snatch1Change2,
-            snatch1ActualLift);
+                snatch1ActualLift);
         this.snatch1ActualLift = snatch1ActualLift;
-        if (zeroIfInvalid(snatch1ActualLift) == 0) this.snatch1LiftTime = null;
-        else this.snatch1LiftTime = (Calendar.getInstance().getTime());
+        if (zeroIfInvalid(snatch1ActualLift) == 0)
+            this.snatch1LiftTime = null;
+        else
+            this.snatch1LiftTime = (Calendar.getInstance().getTime());
         logger.info("{} snatch1ActualLift={}", this, snatch1ActualLift);
         fireEvent(new UpdateEvent(this, "snatch1ActualLift", "snatch1LiftTime", "total")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
@@ -1657,10 +1663,10 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange1(1, getSnatch1AutomaticProgression(), snatch1Declaration, snatch1Change1, snatch1Change2,
-            snatch1ActualLift, true);
+                snatch1ActualLift, true);
         this.snatch1Change1 = snatch1Change1;
         check15_20kiloRule(true);
-        
+
         logger.info("{} snatch1Change1={}", this, snatch1Change1);
         fireEvent(new UpdateEvent(this, "snatch1Change1")); //$NON-NLS-1$
     }
@@ -1673,10 +1679,10 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange2(1, getSnatch1AutomaticProgression(), snatch1Declaration, snatch1Change1, snatch1Change2,
-            snatch1ActualLift, true);
+                snatch1ActualLift, true);
         this.snatch1Change2 = snatch1Change2;
         check15_20kiloRule(true);
-        
+
         logger.info("{} snatch1Change2={}", this, snatch1Change2);
         fireEvent(new UpdateEvent(this, "snatch1Change2")); //$NON-NLS-1$
     }
@@ -1689,10 +1695,11 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateDeclaration(1, getSnatch1AutomaticProgression(), snatch1Declaration, snatch1Change1, snatch1Change2,
-            snatch1ActualLift, true);
+                snatch1ActualLift, true);
         this.snatch1Declaration = snatch1Declaration;
-        if (zeroIfInvalid(getCleanJerk1Declaration()) > 0)  check15_20kiloRule(true);
-        
+        if (zeroIfInvalid(getCleanJerk1Declaration()) > 0)
+            check15_20kiloRule(true);
+
         logger.info("{} snatch1Declaration={}", this, snatch1Declaration);
         fireEvent(new UpdateEvent(this, "snatch1Declaration")); //$NON-NLS-1$
     }
@@ -1702,10 +1709,12 @@ public class Lifter implements MethodEventSource, Notifier {
 
     public void setSnatch2ActualLift(String snatch2ActualLift) {
         validateActualLift(2, getSnatch2AutomaticProgression(), snatch2Declaration, snatch2Change1, snatch2Change2,
-            snatch2ActualLift);
+                snatch2ActualLift);
         this.snatch2ActualLift = snatch2ActualLift;
-        if (zeroIfInvalid(snatch2ActualLift) == 0) this.snatch2LiftTime = (null);
-        else this.snatch2LiftTime = (Calendar.getInstance().getTime());
+        if (zeroIfInvalid(snatch2ActualLift) == 0)
+            this.snatch2LiftTime = (null);
+        else
+            this.snatch2LiftTime = (Calendar.getInstance().getTime());
         logger.info("{} snatch2ActualLift={}", this, snatch2ActualLift);
         fireEvent(new UpdateEvent(this, "snatch2ActualLift", "snatch2LiftTime", "total")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
@@ -1721,7 +1730,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange1(2, getSnatch2AutomaticProgression(), snatch2Declaration, snatch2Change1, snatch2Change2,
-            snatch2ActualLift, true);
+                snatch2ActualLift, true);
         this.snatch2Change1 = snatch2Change1;
         logger.info("{} snatch2Change1={}", this, snatch2Change1);
         fireEvent(new UpdateEvent(this, "snatch2Change1")); //$NON-NLS-1$
@@ -1739,7 +1748,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange2(2, getSnatch2AutomaticProgression(), snatch2Declaration, snatch2Change1, snatch2Change2,
-            snatch2ActualLift, true);
+                snatch2ActualLift, true);
         this.snatch2Change2 = snatch2Change2;
         logger.info("{} snatch2Change2={}", this, snatch2Change2);
         fireEvent(new UpdateEvent(this, "snatch2Change2")); //$NON-NLS-1$
@@ -1753,7 +1762,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateDeclaration(2, getSnatch2AutomaticProgression(), snatch2Declaration, snatch2Change1, snatch2Change2,
-            snatch2ActualLift, true);
+                snatch2ActualLift, true);
         this.snatch2Declaration = snatch2Declaration;
         logger.info("{} snatch2Declaration={}", this, snatch2Declaration);
         fireEvent(new UpdateEvent(this, "snatch2Declaration")); //$NON-NLS-1$
@@ -1764,10 +1773,12 @@ public class Lifter implements MethodEventSource, Notifier {
 
     public void setSnatch3ActualLift(String snatch3ActualLift) {
         validateActualLift(3, getSnatch3AutomaticProgression(), snatch3Declaration, snatch3Change1, snatch3Change2,
-            snatch3ActualLift);
+                snatch3ActualLift);
         this.snatch3ActualLift = snatch3ActualLift;
-        if (zeroIfInvalid(snatch3ActualLift) == 0) this.snatch3LiftTime = (null);
-        else this.snatch3LiftTime = (Calendar.getInstance().getTime());
+        if (zeroIfInvalid(snatch3ActualLift) == 0)
+            this.snatch3LiftTime = (null);
+        else
+            this.snatch3LiftTime = (Calendar.getInstance().getTime());
         logger.info("{} snatch3ActualLift={}", this, snatch3ActualLift);
         fireEvent(new UpdateEvent(this, "snatch2ActualLift", "snatch2LiftTime", "total")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
@@ -1783,17 +1794,15 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange1(3, getSnatch3AutomaticProgression(), snatch3Declaration, snatch3Change1, snatch3Change2,
-            snatch3ActualLift, true);
+                snatch3ActualLift, true);
         this.snatch3Change1 = snatch3Change1;
         logger.info("{} snatch3Change1={}", this, snatch3Change1);
         fireEvent(new UpdateEvent(this, "snatch3Change1")); //$NON-NLS-1$
     }
 
     /*
-     * General event framework: we implement the
-     * com.vaadin.event.MethodEventSource interface which defines how a notifier
-     * can call a method on a listener to signal that an event has occurred, and
-     * how the listener can register/unregister itself.
+     * General event framework: we implement the com.vaadin.event.MethodEventSource interface which defines how a notifier can call a method
+     * on a listener to signal that an event has occurred, and how the listener can register/unregister itself.
      */
 
     public void setSnatch3Change2(String snatch3Change2) {
@@ -1804,7 +1813,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateChange2(3, getSnatch3AutomaticProgression(), snatch3Declaration, snatch3Change1, snatch3Change2,
-            snatch3ActualLift, true);
+                snatch3ActualLift, true);
         this.snatch3Change2 = snatch3Change2;
         logger.info("{} snatch3Change2={}", this, snatch3Change2);
         fireEvent(new UpdateEvent(this, "snatch3Change2")); //$NON-NLS-1$
@@ -1818,7 +1827,7 @@ public class Lifter implements MethodEventSource, Notifier {
             return;
         }
         validateDeclaration(3, getSnatch3AutomaticProgression(), snatch3Declaration, snatch3Change1, snatch3Change2,
-            snatch3ActualLift, true);
+                snatch3ActualLift, true);
         this.snatch3Declaration = snatch3Declaration;
         logger.info("{} snatch3Declaration={}", this, snatch3Declaration);
         fireEvent(new UpdateEvent(this, "snatch3Declaration")); //$NON-NLS-1$
@@ -1872,33 +1881,34 @@ public class Lifter implements MethodEventSource, Notifier {
     public void setTotalRank(Integer totalRank) {
         this.totalRank = totalRank;
     }
-    
-	public Double getCustomScore() {
-		if (customScore == null || customScore < 0.01) return new Double(getTotal());
-		return customScore;
-	}
-    
-	public void setCustomScore(Double customScore) {
-		this.customScore = customScore;
-	}
 
-	public void setCustomRank(Integer customRank) {
+    public Double getCustomScore() {
+        if (customScore == null || customScore < 0.01)
+            return new Double(getTotal());
+        return customScore;
+    }
+
+    public void setCustomScore(Double customScore) {
+        this.customScore = customScore;
+    }
+
+    public void setCustomRank(Integer customRank) {
         this.customRank = customRank;
     }
-    
-	public Integer getCustomRank() {
-		return this.customRank;
-	}
 
-	public void setCustomPoints(float customPoints) {
+    public Integer getCustomRank() {
+        return this.customRank;
+    }
+
+    public void setCustomPoints(float customPoints) {
         this.customPoints = customPoints;
     }
 
-	public Integer getMedalRank() {
-	    int i = getRank();
-	    return (i < 3 ? i : 0);
-	}
-	
+    public Integer getMedalRank() {
+        int i = getRank();
+        return (i < 3 ? i : 0);
+    }
+
     public void successfulLift() {
         logger.debug("good lift for {}, listeners={}", this); //, getEventRouter().dumpListeners(this)); //$NON-NLS-1$
         final String weight = Integer.toString(getNextAttemptRequestedWeight());
@@ -1930,8 +1940,6 @@ public class Lifter implements MethodEventSource, Notifier {
             setCleanJerk3ActualLift("0");
         }
     }
-
-
 
     /**
      * @param prevVal
@@ -1999,7 +2007,7 @@ public class Lifter implements MethodEventSource, Notifier {
         }
         return 0;
     }
-    
+
     @SuppressWarnings("unused")
     private Integer getDeclaredAndActuallyAttempted(Integer... items) {
         int lastIndex = items.length - 1;
@@ -2009,7 +2017,7 @@ public class Lifter implements MethodEventSource, Notifier {
         while (lastIndex >= 0) {
             if (items[lastIndex] > 0) {
                 // if went down from declared weight, then return lower weight
-                return (items[lastIndex] < items[0] ? items[lastIndex] : items[0]) ;
+                return (items[lastIndex] < items[0] ? items[lastIndex] : items[0]);
             }
             lastIndex--;
         }
@@ -2040,7 +2048,8 @@ public class Lifter implements MethodEventSource, Notifier {
      * @param maxWeight
      */
     private Double sinclairFactor(Double bodyWeight1, Double coefficient, Double maxWeight) {
-        if (bodyWeight1 == null) return 0.0;
+        if (bodyWeight1 == null)
+            return 0.0;
         if (bodyWeight1 >= maxWeight) {
             return 1.0;
         } else {
@@ -2054,12 +2063,13 @@ public class Lifter implements MethodEventSource, Notifier {
      */
     private void validateActualLift(int curLift, String automaticProgression, String declaration, String change1,
             String change2, String actualLift) {
-        if (actualLift == null || actualLift.trim().length() == 0) return; // allow reset of field.
+        if (actualLift == null || actualLift.trim().length() == 0)
+            return; // allow reset of field.
         final int declaredChanges = last(zeroIfInvalid(declaration), zeroIfInvalid(change1), zeroIfInvalid(change2));
         final int iAutomaticProgression = zeroIfInvalid(automaticProgression);
         final int liftedWeight = zeroIfInvalid(actualLift);
         logger.debug("declaredChanges={} automaticProgression={} liftedWeight={}", //$NON-NLS-1$
-            new Object[] { declaredChanges, automaticProgression, liftedWeight });
+                new Object[] { declaredChanges, automaticProgression, liftedWeight });
         if (liftedWeight == 0) {
             // lifter is not taking try; always ok no matter what was declared.
             return;
@@ -2080,11 +2090,11 @@ public class Lifter implements MethodEventSource, Notifier {
             if (liftedWeightOk && declaredChangesOk) {
                 return;
             } else {
-            	if (declaredChanges == 0)
-            		return;
+                if (declaredChanges == 0)
+                    return;
                 if (!declaredChangesOk)
                     throw RuleViolation.declaredChangesNotOk(curLift, declaredChanges, iAutomaticProgression,
-                        iAutomaticProgression + 1);
+                            iAutomaticProgression + 1);
                 if (!liftedWeightOk)
                     throw RuleViolation
                             .liftValueNotWhatWasRequested(curLift, actualLift, declaredChanges, liftedWeight);
@@ -2098,10 +2108,12 @@ public class Lifter implements MethodEventSource, Notifier {
      */
     private void validateChange1(int curLift, String automaticProgression, String declaration, String change1,
             String change2, String actualLift, boolean isSnatch) {
-        if (change1 == null || change1.trim().length() == 0) return; // allow reset of field.
+        if (change1 == null || change1.trim().length() == 0)
+            return; // allow reset of field.
         int newVal = zeroIfInvalid(change1);
         int prevVal = zeroIfInvalid(automaticProgression);
-        if (newVal < prevVal) throw RuleViolation.declaredChangesNotOk(curLift, newVal, prevVal);
+        if (newVal < prevVal)
+            throw RuleViolation.declaredChangesNotOk(curLift, newVal, prevVal);
 
     }
 
@@ -2111,10 +2123,12 @@ public class Lifter implements MethodEventSource, Notifier {
      */
     private void validateChange2(int curLift, String automaticProgression, String declaration, String change1,
             String change2, String actualLift, boolean isSnatch) {
-        if (change2 == null || change2.trim().length() == 0) return; // allow reset of field.
+        if (change2 == null || change2.trim().length() == 0)
+            return; // allow reset of field.
         int newVal = zeroIfInvalid(change2);
         int prevVal = zeroIfInvalid(automaticProgression);
-        if (newVal < prevVal) throw RuleViolation.declaredChangesNotOk(curLift, newVal, prevVal);
+        if (newVal < prevVal)
+            throw RuleViolation.declaredChangesNotOk(curLift, newVal, prevVal);
 
     }
 
@@ -2124,11 +2138,13 @@ public class Lifter implements MethodEventSource, Notifier {
      */
     private void validateDeclaration(int curLift, String automaticProgression, String declaration, String change1,
             String change2, String actualLift, boolean isSnatch) {
-        if (declaration == null || declaration.trim().length() == 0) return; // allow reset of field.
+        if (declaration == null || declaration.trim().length() == 0)
+            return; // allow reset of field.
         int newVal = zeroIfInvalid(declaration);
         int iAutomaticProgression = zeroIfInvalid(automaticProgression);
         // allow null declaration for reloading old results.
-        if (iAutomaticProgression > 0 && newVal < iAutomaticProgression) throw RuleViolation.declarationValueTooSmall(curLift, newVal, iAutomaticProgression);
+        if (iAutomaticProgression > 0 && newVal < iAutomaticProgression)
+            throw RuleViolation.declarationValueTooSmall(curLift, newVal, iAutomaticProgression);
 
     }
 
@@ -2136,65 +2152,64 @@ public class Lifter implements MethodEventSource, Notifier {
         // make sure this does not crash during unit tests.
         CompetitionApplication current = CompetitionApplication.getCurrent();
         if (current != null) {
-            ApplicationView mainLayoutContent = current.getMainLayoutContent();
+            ApplicationView mainLayoutContent = current.getCurrentView();
             if (mainLayoutContent != null && mainLayoutContent instanceof Notifyable) {
-                check15_20kiloRule(unlessCurrent, (Notifyable)mainLayoutContent);
-            }            
+                check15_20kiloRule(unlessCurrent, (Notifyable) mainLayoutContent);
+            }
         }
 
     }
-    
+
     public void check15_20kiloRule(boolean unlessCurrent, Notifyable parentView) throws RuleViolationException {
         int qualTotal = getQualifyingTotal();
         boolean enforce15_20rule = Competition.isEnforce15_20rule();
-        if (qualTotal == 0  || !enforce15_20rule) {
+        if (qualTotal == 0 || !enforce15_20rule) {
             return;
         }
-
 
         int curStartingTotal = 0;
         int snatchRequest = 0;
         int cleanJerkRequest = 0;
-        
+
         snatchRequest = last(
                 zeroIfInvalid(snatch1Declaration),
                 zeroIfInvalid(snatch1Change1),
                 zeroIfInvalid(snatch1Change2));
         cleanJerkRequest = last(
-                zeroIfInvalid(cleanJerk1Declaration), 
+                zeroIfInvalid(cleanJerk1Declaration),
                 zeroIfInvalid(cleanJerk1Change1),
                 zeroIfInvalid(cleanJerk1Change2));
-        
-        curStartingTotal  = snatchRequest + cleanJerkRequest;
+
+        curStartingTotal = snatchRequest + cleanJerkRequest;
         int delta = qualTotal - curStartingTotal;
         String message = null;
         Locale locale = CompetitionApplication.getCurrentLocale();
         if (getGender().equals("M") && (delta > 20)) {
-            message = RuleViolation.rule15_20Violated(this.getLastName(),this.getFirstName(),this.getStartNumber(),snatchRequest,cleanJerkRequest, delta-20, qualTotal).getLocalizedMessage(locale);
+            message = RuleViolation.rule15_20Violated(this.getLastName(), this.getFirstName(), this.getStartNumber(), snatchRequest,
+                    cleanJerkRequest, delta - 20, qualTotal).getLocalizedMessage(locale);
         } else if (getGender().equals("F") && (delta > 15)) {
-            message = RuleViolation.rule15_20Violated(this.getLastName(),this.getFirstName(),this.getStartNumber(),snatchRequest, cleanJerkRequest, delta-15, qualTotal).getLocalizedMessage(locale);
-        } 
+            message = RuleViolation.rule15_20Violated(this.getLastName(), this.getFirstName(), this.getStartNumber(), snatchRequest,
+                    cleanJerkRequest, delta - 15, qualTotal).getLocalizedMessage(locale);
+        }
         if (message != null) {
-            //LoggerUtils.logException(logger, new Exception("check15_20kiloRule traceback "+ message));
+            // LoggerUtils.logException(logger, new Exception("check15_20kiloRule traceback "+ message));
             logger.info(message);
             showMustClickNotification(parentView, message, unlessCurrent);
         }
     }
-    
 
     public void showMustClickNotification(Notifyable parentView, String message, boolean unlessCurrent) {
-        logger.trace("parentView mode = {}",((AnnouncerView) parentView).getMode());
+        logger.trace("parentView mode = {}", ((AnnouncerView) parentView).getMode());
         Notification notification = new Notification(message, Notification.TYPE_ERROR_MESSAGE);
         notification.setDelayMsec(-1);
-        parentView.showNotificationForLifter(this,notification, unlessCurrent);
+        parentView.showNotificationForLifter(this, notification, unlessCurrent);
     }
-    
+
     /**
      * Broadcast a Lifter.event to all registered listeners
      * 
      * @param updateEvent
-     *            contains the source (ourself) and the list of properties to be
-     *            refreshed.
+     *            contains the source (ourself) and the list of properties to be refreshed.
      */
     protected void fireEvent(UpdateEvent updateEvent) {
         logger
@@ -2253,24 +2268,25 @@ public class Lifter implements MethodEventSource, Notifier {
      * @return
      */
     public String getShortCategory(String gender1) {
-//        final Double catMin = getCategory().getMinimumWeight();
-//        Double catMax = getCategory().getMaximumWeight();
-//        final String weightPlus = (("M".equals(gender1) && catMin > 104.999) || ("F".equals(gender1) && catMin > 74.999) ? ">"
-//                : "");
-//        if (catMax > 125) {
-//            catMax = catMin;
-//        }
-//        final String shortCategory = weightPlus + catMax.intValue();
-//        return shortCategory;
+        // final Double catMin = getCategory().getMinimumWeight();
+        // Double catMax = getCategory().getMaximumWeight();
+        // final String weightPlus = (("M".equals(gender1) && catMin > 104.999) || ("F".equals(gender1) && catMin > 74.999) ? ">"
+        // : "");
+        // if (catMax > 125) {
+        // catMax = catMin;
+        // }
+        // final String shortCategory = weightPlus + catMax.intValue();
+        // return shortCategory;
         final Category category = getCategory();
-        if (category == null) return "";
-        
+        if (category == null)
+            return "";
+
         String shortCategory = category.getName();
         int gtPos = shortCategory.indexOf(">");
         if (gtPos > 0) {
-        	return shortCategory.substring(gtPos);
+            return shortCategory.substring(gtPos);
         } else {
-        	return shortCategory.substring(1);
+            return shortCategory.substring(1);
         }
     }
 
@@ -2297,68 +2313,72 @@ public class Lifter implements MethodEventSource, Notifier {
             return getDisplayCategory();
         }
     }
-    
+
     @Version
     public Long getVersion() {
         return version;
     }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((club == null) ? 0 : club.hashCode());
-		result = prime * result
-				+ ((firstName == null) ? 0 : firstName.hashCode());
-		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
-		result = prime * result
-				+ ((lastName == null) ? 0 : lastName.hashCode());
-		return result;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((club == null) ? 0 : club.hashCode());
+        result = prime * result
+                + ((firstName == null) ? 0 : firstName.hashCode());
+        result = prime * result + ((gender == null) ? 0 : gender.hashCode());
+        result = prime * result
+                + ((lastName == null) ? 0 : lastName.hashCode());
+        return result;
+    }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Lifter other = (Lifter) obj;
-		if (club == null) {
-			if (other.club != null)
-				return false;
-		} else if (!club.equals(other.club))
-			return false;
-		if (firstName == null) {
-			if (other.firstName != null)
-				return false;
-		} else if (!firstName.equals(other.firstName))
-			return false;
-		if (gender == null) {
-			if (other.gender != null)
-				return false;
-		} else if (!gender.equals(other.gender))
-			return false;
-		if (lastName == null) {
-			if (other.lastName != null)
-				return false;
-		} else if (!lastName.equals(other.lastName))
-			return false;
-		return true;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Lifter other = (Lifter) obj;
+        if (club == null) {
+            if (other.club != null)
+                return false;
+        } else if (!club.equals(other.club))
+            return false;
+        if (firstName == null) {
+            if (other.firstName != null)
+                return false;
+        } else if (!firstName.equals(other.firstName))
+            return false;
+        if (gender == null) {
+            if (other.gender != null)
+                return false;
+        } else if (!gender.equals(other.gender))
+            return false;
+        if (lastName == null) {
+            if (other.lastName != null)
+                return false;
+        } else if (!lastName.equals(other.lastName))
+            return false;
+        return true;
+    }
 
     public boolean isCurrentDeclarationDone() {
         Integer currentAttemptDeclaration = getCurrentAttemptDeclaration();
         return (currentAttemptDeclaration != null && currentAttemptDeclaration > 0);
     }
-    
+
     /**
      * @return the nextAttemptRequestedWeight
      */
@@ -2384,6 +2404,5 @@ public class Lifter implements MethodEventSource, Notifier {
         }
         return 0;
     }
-
 
 }

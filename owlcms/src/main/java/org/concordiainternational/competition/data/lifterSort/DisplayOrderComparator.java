@@ -13,8 +13,7 @@ import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.Lifter;
 
 /**
- * This comparator is used for the standard display board. It returns the same
- * order throughout the competition.
+ * This comparator is used for the standard display board. It returns the same order throughout the competition.
  * 
  * @author jflamy
  * 
@@ -27,7 +26,8 @@ public class DisplayOrderComparator extends AbstractLifterComparator implements 
 
         if (Competition.isMasters()) {
             compare = compareAgeGroup(lifter1, lifter2);
-            if (compare != 0) return -compare;
+            if (compare != 0)
+                return -compare;
         }
 
         if (WinningOrderComparator.useRegistrationCategory) {
@@ -35,16 +35,20 @@ public class DisplayOrderComparator extends AbstractLifterComparator implements 
         } else {
             compare = compareCategory(lifter1, lifter2);
         }
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareLotNumber(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareLastName(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareFirstName(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         return compare;
     }

@@ -20,27 +20,34 @@ public class LiftOrderComparator extends AbstractLifterComparator implements Com
         // a lifter that has the boolean flag "forceAsFirst" collates smallest
         // by definition
         compare = compareForcedAsFirst(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         // lifters who are done lifting are shown at bottom, in reverse total
         // number
         compare = compareFinalResults(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareLiftType(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareRequestedWeight(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareAttemptsDone(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareProgression(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareStartNumber(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         return compare;
     }

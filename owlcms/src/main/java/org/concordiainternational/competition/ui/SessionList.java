@@ -7,7 +7,6 @@
  */
 package org.concordiainternational.competition.ui;
 
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Set;
@@ -26,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -53,9 +51,10 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
         } else {
             this.viewName = viewName;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         init();
+        registerAsListener();
     }
 
     private static String[] NATURAL_COL_ORDER = null;
@@ -259,16 +258,17 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
         unregisterAsListener();
     }
 
-    /*
-     * Called on refresh.
-     * 
-     * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
-     */
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        registerAsListener();
-        return null;
-    }
+    //
+    // /*
+    // * Called on refresh.
+    // *
+    // * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
+    // */
+    // @Override
+    // public DownloadStream handleURI(URL context, String relativeUri) {
+    // registerAsListener();
+    // return null;
+    // }
 
     private static int classCounter = 0; // per class
     private final int instanceId = classCounter++; // per instance

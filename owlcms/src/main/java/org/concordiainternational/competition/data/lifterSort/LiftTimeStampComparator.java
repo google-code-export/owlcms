@@ -12,9 +12,8 @@ import java.util.Comparator;
 import org.concordiainternational.competition.data.Lifter;
 
 /**
- * This comparator is used to highlight the lifters that have lifted recently,
- * and are likely to request changes to the automatic progression. It simply
- * sorts according to time stamp, if available. Else lot number is used.
+ * This comparator is used to highlight the lifters that have lifted recently, and are likely to request changes to the automatic
+ * progression. It simply sorts according to time stamp, if available. Else lot number is used.
  * 
  * @author jflamy
  * 
@@ -29,10 +28,12 @@ public class LiftTimeStampComparator extends AbstractLifterComparator implements
         int compare = 0;
 
         compare = comparePreviousLiftOrder(lifter1, lifter2);
-        if (compare != 0) return -compare;
+        if (compare != 0)
+            return -compare;
 
         compare = compareLotNumber(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         return compare;
     }

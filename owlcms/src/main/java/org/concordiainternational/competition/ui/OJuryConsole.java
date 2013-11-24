@@ -7,8 +7,6 @@
  */
 package org.concordiainternational.competition.ui;
 
-import java.net.URL;
-
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.Decision;
 import org.concordiainternational.competition.decision.DecisionEvent;
@@ -23,8 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -43,7 +39,7 @@ import com.vaadin.ui.Window.CloseListener;
  * 
  */
 @SuppressWarnings("serial")
-public class OJuryConsole extends VerticalLayout implements DecisionEventListener, ApplicationView, CloseListener, URIHandler,
+public class OJuryConsole extends VerticalLayout implements DecisionEventListener, ApplicationView, CloseListener,
         IRefereeConsole {
 
     private static final long serialVersionUID = 1L;
@@ -76,7 +72,7 @@ public class OJuryConsole extends VerticalLayout implements DecisionEventListene
         } else {
             this.viewName = viewName;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         if (app == null)
             this.app = CompetitionApplication.getCurrent();
@@ -93,7 +89,7 @@ public class OJuryConsole extends VerticalLayout implements DecisionEventListene
         if (decisionController == null)
             decisionController = getDecisionController();
 
-        app.getMainWindow().addURIHandler(this);
+        // app.getMainWindow().addURIHandler(this);
         registerAsListener();
 
         this.setSizeFull();
@@ -385,17 +381,17 @@ public class OJuryConsole extends VerticalLayout implements DecisionEventListene
         decisionController.removeListener(this);
     }
 
-    /*
-     * Will be called when page is loaded.
-     * 
-     * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
-     */
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        registerAsListener();
-        app.getMainWindow().executeJavaScript("scrollTo(0,1)");
-        return null;
-    }
+    // /*
+    // * Will be called when page is loaded.
+    // *
+    // * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
+    // */
+    // @Override
+    // public DownloadStream handleURI(URL context, String relativeUri) {
+    // registerAsListener();
+    // app.getMainWindow().executeJavaScript("scrollTo(0,1)");
+    // return null;
+    // }
 
     /*
      * Will be called when page is unloaded (including on refresh).

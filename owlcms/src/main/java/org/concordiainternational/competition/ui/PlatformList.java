@@ -7,7 +7,6 @@
  */
 package org.concordiainternational.competition.ui;
 
-import java.net.URL;
 import java.util.Locale;
 
 import org.concordiainternational.competition.data.Platform;
@@ -25,7 +24,6 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.hbnutil.HbnContainer.EntityItem;
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -52,9 +50,10 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
         } else {
             this.viewName = viewName;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         init();
+        registerAsListener();
     }
 
     private static String[] NATURAL_COL_ORDER = null;
@@ -219,17 +218,6 @@ public class PlatformList extends GenericHbnList<Platform> implements Applicatio
     @Override
     public void windowClose(CloseEvent e) {
         unregisterAsListener();
-    }
-
-    /*
-     * Called on refresh.
-     * 
-     * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
-     */
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        registerAsListener();
-        return null;
     }
 
     private static int classCounter = 0; // per class

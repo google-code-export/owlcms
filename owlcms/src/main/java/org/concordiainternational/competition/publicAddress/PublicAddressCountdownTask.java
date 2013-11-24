@@ -16,16 +16,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Simple countdown task for Public Address screen.
- * Runnable task for counting down. run() is invoked every "decrement"
- * milliseconds. For convenience we count down in milliseconds.
+ * Simple countdown task for Public Address screen. Runnable task for counting down. run() is invoked every "decrement" milliseconds. For
+ * convenience we count down in milliseconds.
  * 
  */
 @SuppressWarnings("serial")
 class PublicAddressCountdownTask extends TimerTask implements Serializable {
 
-
-	final private static Logger logger = LoggerFactory.getLogger(PublicAddressCountdownTask.class);
+    final private static Logger logger = LoggerFactory.getLogger(PublicAddressCountdownTask.class);
 
     private final Timer countdownTimer;
     int ticks;
@@ -36,18 +34,18 @@ class PublicAddressCountdownTask extends TimerTask implements Serializable {
     private boolean noTimeLeftSignaled = false;
     private int noTimeLeftTicks;
 
-	private int startTime;
+    private int startTime;
 
-	private SessionData masterData;
+    private SessionData masterData;
 
-	private IntermissionTimerEvent timerEvent;
+    private IntermissionTimerEvent timerEvent;
 
     PublicAddressCountdownTask(Timer countdownTimer, int countdownFrom, int decrement, SessionData masterData) {
-    	this.masterData = masterData;
-    	this.startTime = countdownFrom;
+        this.masterData = masterData;
+        this.startTime = countdownFrom;
         this.countdownTimer = countdownTimer;
         this.timerEvent = new IntermissionTimerEvent();
-        
+
         // round up to decrement interval (1000ms)
         this.ticks = roundUpCountdown(countdownFrom, decrement);
         this.decrement = decrement;
@@ -61,23 +59,24 @@ class PublicAddressCountdownTask extends TimerTask implements Serializable {
         }
     }
 
-	/**
-	 * Round up to decrement interval (1000ms)
-	 * @param countdownFrom
-	 * @param decrement1
-	 * @return
-	 */
-	private int roundUpCountdown(int countdownFrom, int decrement1) {
-		if (countdownFrom <= 0) {
-			return 0;
-		} else if (countdownFrom % decrement1 == 0) {
-			return countdownFrom;
-		} else {
-			return ((countdownFrom / decrement1) * decrement1) + decrement1;
-		}
-		
-	}
-    
+    /**
+     * Round up to decrement interval (1000ms)
+     * 
+     * @param countdownFrom
+     * @param decrement1
+     * @return
+     */
+    private int roundUpCountdown(int countdownFrom, int decrement1) {
+        if (countdownFrom <= 0) {
+            return 0;
+        } else if (countdownFrom % decrement1 == 0) {
+            return countdownFrom;
+        } else {
+            return ((countdownFrom / decrement1) * decrement1) + decrement1;
+        }
+
+    }
+
     /**
      * @return best available estimation of the time elapsed.
      */
@@ -92,13 +91,15 @@ class PublicAddressCountdownTask extends TimerTask implements Serializable {
         return ticks;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.util.TimerTask#run()
      */
     @Override
     public void run() {
-    	if (ticks <= noTimeLeftTicks && !getNoTimeLeftSignaled()) {
-    		normalTick();
+        if (ticks <= noTimeLeftTicks && !getNoTimeLeftSignaled()) {
+            normalTick();
             noTimeLeft();
             setNoTimeLeftSignaled(true);
         } else {
@@ -112,19 +113,17 @@ class PublicAddressCountdownTask extends TimerTask implements Serializable {
         }
     }
 
-    
     private void normalTick() {
         logger.trace("normalTick: " + ticks / 1000 + " " + (System.currentTimeMillis() - startMillis)); //$NON-NLS-1$ //$NON-NLS-2$
         timerEvent.setRemainingMilliseconds(ticks);
-		masterData.fireBlackBoardEvent(timerEvent);
+        masterData.fireBlackBoardEvent(timerEvent);
     }
 
     private void noTimeLeft() {
         logger.trace("time over: " + ticks / 1000 + " " + (System.currentTimeMillis() - startMillis)); //$NON-NLS-1$ //$NON-NLS-2$
         timerEvent.setNoTimeLeft(true);
-		masterData.fireBlackBoardEvent(timerEvent);
+        masterData.fireBlackBoardEvent(timerEvent);
     }
-
 
     /**
      * @param noTimeLeftSignaled

@@ -14,9 +14,8 @@ import org.concordiainternational.competition.ui.CompetitionApplication;
 import com.vaadin.Application;
 
 /**
- * This class specializes the List component to use the LifterContainer class.
- * LifterContainer takes into account the currently active filters set in the
- * application.
+ * This class specializes the List component to use the LifterContainer class. LifterContainer takes into account the currently active
+ * filters set in the application.
  * 
  * @author jflamy
  * 
