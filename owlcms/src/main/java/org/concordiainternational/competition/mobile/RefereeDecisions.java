@@ -265,7 +265,7 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 
     @Override
     public void unregisterAsListener() {
-        app.getMainWindow().addListener((CloseListener) this);
+        app.getMainWindow().removeListener((CloseListener) this);
     }
 
     @Override

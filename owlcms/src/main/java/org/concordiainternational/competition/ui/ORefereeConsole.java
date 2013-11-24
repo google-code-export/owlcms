@@ -89,7 +89,6 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
         if (decisionController == null)
             decisionController = getDecisionController();
 
-        // app.getMainWindow().addURIHandler(this);
         registerAsListener();
 
         this.setSizeFull();
@@ -360,7 +359,7 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
     }
 
     /**
-     * Register all listeners for this app. Exception: do not register the URIHandler here.
+     * Register all listeners for this app.
      */
     @Override
     public void registerAsListener() {
@@ -380,18 +379,6 @@ public class ORefereeConsole extends VerticalLayout implements DecisionEventList
         app.getMainWindow().removeListener((CloseListener) this);
         decisionController.removeListener(this);
     }
-
-    // /*
-    // * Will be called when page is loaded.
-    // *
-    // * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
-    // */
-    // @Override
-    // public DownloadStream handleURI(URL context, String relativeUri) {
-    // registerAsListener();
-    // app.getMainWindow().executeJavaScript("scrollTo(0,1)");
-    // return null;
-    // }
 
     /*
      * Will be called when page is unloaded (including on refresh).

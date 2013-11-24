@@ -415,7 +415,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
 
     @Override
     public void unregisterAsListener() {
-        CompetitionApplication.getCurrent().getMainWindow().addListener((CloseListener) this);
+        CompetitionApplication.getCurrent().getMainWindow().removeListener((CloseListener) this);
     }
 
     @Override

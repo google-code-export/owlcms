@@ -181,8 +181,6 @@ public class AnnouncerView extends VerticalSplitPanel implements
             // we are now fully initialized
             masterData.setAllowAll(false);
 
-            // URI handler must remain, so is not part of the register/unRegister pair
-            // app.getMainWindow().addURIHandler(this);
             registerAsListener();
 
             if (masterData.lifters.isEmpty()) {

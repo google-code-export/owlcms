@@ -40,9 +40,7 @@ import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.ExternalResource;
-import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Label;
@@ -63,7 +61,6 @@ public class ResultFrame extends VerticalLayout implements
         CountdownTimerListener,
         MessageDisplayListener,
         Window.CloseListener,
-        URIHandler,
         DecisionEventListener,
         Stylable
 {
@@ -574,12 +571,12 @@ public class ResultFrame extends VerticalLayout implements
         unregisterAsListener();
     }
 
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        listenerLogger.debug("re-registering handlers for {} {}", this, relativeUri);
-        registerAsListener();
-        return null;
-    }
+//    @Override
+//    public DownloadStream handleURI(URL context, String relativeUri) {
+//        listenerLogger.debug("re-registering handlers for {} {}", this, relativeUri);
+//        registerAsListener();
+//        return null;
+//    }
 
     /**
      * Process a decision regarding the current lifter. Make sure that the name of the lifter does not change until after the decision has
@@ -688,10 +685,6 @@ public class ResultFrame extends VerticalLayout implements
         // listen to close events
         app.getMainWindow().addListener((CloseListener) this);
         listenerLogger.debug("{} listening to window close events.", this);
-
-        // // listen to URI changes
-        // app.getMainWindow().addURIHandler(this);
-        // listenerLogger.debug("{} listening to URI events.", this);
     }
 
     @Override
@@ -723,10 +716,6 @@ public class ResultFrame extends VerticalLayout implements
         // stop listening to close events
         app.getMainWindow().removeListener((CloseListener) this);
         listenerLogger.debug("{} stopped listening to window close events..", this);
-
-        // stop listening to URI changes
-        // app.getMainWindow().removeURIHandler(this);
-        // listenerLogger.debug("{} stopped listening to URI events.", this);
     }
 
     @Override

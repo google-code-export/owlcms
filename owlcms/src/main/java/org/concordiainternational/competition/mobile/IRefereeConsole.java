@@ -43,11 +43,6 @@ public interface IRefereeConsole extends DecisionEventListener {
      */
     public abstract void setParametersFromFragment();
 
-    // /* Will be called when page is loaded.
-    // * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
-    // */
-    // public abstract DownloadStream handleURI(URL context, String relativeUri);
-
     /*
      * Will be called when page is unloaded (including on refresh).
      * 
