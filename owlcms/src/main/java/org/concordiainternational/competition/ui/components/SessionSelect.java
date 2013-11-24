@@ -31,15 +31,14 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
 
     private static final long serialVersionUID = -5471881649385421098L;
     private static final Logger logger = LoggerFactory.getLogger(SessionSelect.class);
-    
+
     CompetitionSession value = null;
     Item selectedItem = null;
     Serializable selectedId = null;
-	private Select sessionSelect;
-	private ValueChangeListener listener;
+    private Select sessionSelect;
+    private ValueChangeListener listener;
 
-
-	/**
+    /**
      * @param competitionApplication
      * @param locale
      * @return
@@ -53,38 +52,37 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
         sessionSelect.setImmediate(true);
         sessionSelect.setNullSelectionAllowed(true);
         sessionSelect.setNullSelectionItemId(null);
-        
+
         final CompetitionSession currentGroup = competitionApplication.getCurrentCompetitionSession();
-        logger.trace("constructor currentGroup: {}",(currentGroup != null ? currentGroup.getName() : null));
+        logger.trace("constructor currentGroup: {}", (currentGroup != null ? currentGroup.getName() : null));
         selectedId = currentGroup != null ? currentGroup.getId() : null;
         if (selectedId != null) {
             selectedItem = sessionSelect.getContainerDataSource().getItem(selectedId);
             value = (CompetitionSession) ItemAdapter.getObject(selectedItem);
 
         } else {
-        	selectedItem = null;
-        	value = null;
+            selectedItem = null;
+            value = null;
         }
-
 
         listener = new ValueChangeListener() {
             private static final long serialVersionUID = -4650521592205383913L;
-
 
             @Override
             public void valueChange(ValueChangeEvent event) {
                 final Serializable selectedValue = (Serializable) event.getProperty().getValue();
 
                 if (selectedValue != null) {
-                	selectedId = selectedValue;
+                    selectedId = selectedValue;
                     selectedItem = sessionSelect.getContainerDataSource().getItem(selectedValue);
                     value = (CompetitionSession) ItemAdapter.getObject(selectedItem);
                 } else {
-                	selectedId = null;
-                	selectedItem = null;
-                	value = null;
+                    selectedId = null;
+                    selectedItem = null;
+                    value = null;
                 }
-                if (value != null) logger.trace("listener selected group : {}",value.getName());
+                if (value != null)
+                    logger.trace("listener selected group : {}", value.getName());
                 CompetitionApplication.getCurrent().setCurrentCompetitionSession(value);
                 CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(view.getFragment(), false);
 
@@ -92,7 +90,7 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
 
         };
         sessionSelect.addListener(listener);
-		sessionSelect.select(selectedId);
+        sessionSelect.select(selectedId);
 
         this.addComponent(groupLabel);
         this.setComponentAlignment(groupLabel, Alignment.MIDDLE_LEFT);
@@ -101,39 +99,41 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
         this.setSpacing(true);
     }
 
-	/**
-	 * Force a reload of the names in the dropdown.
-	 * @param competitionApplication
-	 * @param sessionSelect1
-	 * @return
-	 */
-	private HbnContainer<CompetitionSession> loadData(
-			final CompetitionApplication competitionApplication,
-			final Select sessionSelect1) {
-		final HbnContainer<CompetitionSession> sessionDataSource = new HbnContainer<CompetitionSession>(CompetitionSession.class, competitionApplication);
+    /**
+     * Force a reload of the names in the dropdown.
+     * 
+     * @param competitionApplication
+     * @param sessionSelect1
+     * @return
+     */
+    private HbnContainer<CompetitionSession> loadData(
+            final CompetitionApplication competitionApplication,
+            final Select sessionSelect1) {
+        final HbnContainer<CompetitionSession> sessionDataSource = new HbnContainer<CompetitionSession>(CompetitionSession.class,
+                competitionApplication);
         sessionSelect1.setContainerDataSource(sessionDataSource);
         sessionSelect1.setItemCaptionPropertyId("name"); //$NON-NLS-1$
-		return sessionDataSource;
-	}
-	
-	public void refresh() {
-		sessionSelect.removeListener(listener);
-		loadData(CompetitionApplication.getCurrent(), sessionSelect);
-		sessionSelect.setValue(selectedId);
-		logger.info("selected {}",selectedId);
-		sessionSelect.addListener(listener);
-		CompetitionApplication.getCurrent().push();
-	}
-    
+        return sessionDataSource;
+    }
+
+    public void refresh() {
+        sessionSelect.removeListener(listener);
+        loadData(CompetitionApplication.getCurrent(), sessionSelect);
+        sessionSelect.setValue(selectedId);
+        logger.info("selected {}", selectedId);
+        sessionSelect.addListener(listener);
+        CompetitionApplication.getCurrent().push();
+    }
+
     public Item getSelectedItem() {
-		return selectedItem;
-	}
+        return selectedItem;
+    }
 
-	public CompetitionSession getValue() {
-		return value;
-	}
+    public CompetitionSession getValue() {
+        return value;
+    }
 
-	public Serializable getSelectedId() {
-		return selectedId;
-	}
+    public Serializable getSelectedId() {
+        return selectedId;
+    }
 }

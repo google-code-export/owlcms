@@ -24,36 +24,35 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author jflamy
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class JXLSResultSheet extends JXLSWorkbookStreamSource {
-	
-	public JXLSResultSheet(){
-		super(true);
-	}
-	
-	public JXLSResultSheet(boolean excludeNotWeighed) {
-		super(excludeNotWeighed);
-	}
 
-	Logger logger = LoggerFactory.getLogger(JXLSResultSheet.class);
-	
+    public JXLSResultSheet() {
+        super(true);
+    }
 
-	private Competition competition;
+    public JXLSResultSheet(boolean excludeNotWeighed) {
+        super(excludeNotWeighed);
+    }
 
-	@Override
-	protected void init() {
-		super.init();
-		competition = Competition.getAll().get(0);
-		getReportingBeans().put("competition",competition);
-		getReportingBeans().put("session",app.getCurrentCompetitionSession());
-	}
+    Logger logger = LoggerFactory.getLogger(JXLSResultSheet.class);
+
+    private Competition competition;
+
+    @Override
+    protected void init() {
+        super.init();
+        competition = Competition.getAll().get(0);
+        getReportingBeans().put("competition", competition);
+        getReportingBeans().put("session", app.getCurrentCompetitionSession());
+    }
 
     @Override
     public InputStream getTemplate() throws IOException {
         String protocolTemplateFileName = competition.getProtocolFileName();
-        //logger.info("protocol sheet: {}",protocolTemplateFileName);
+        // logger.info("protocol sheet: {}",protocolTemplateFileName);
         if (protocolTemplateFileName != null) {
             File templateFile = new File(protocolTemplateFileName);
             if (templateFile.exists()) {
@@ -67,26 +66,28 @@ public class JXLSResultSheet extends JXLSWorkbookStreamSource {
         }
     }
 
-	@Override
-	protected void getSortedLifters()  {
-		this.lifters = LifterSorter.resultsOrderCopy(new LifterContainer(CompetitionApplication.getCurrent(),isExcludeNotWeighed()).getAllPojos(),
-	            Ranking.TOTAL);
-	    LifterSorter.assignCategoryRanks(lifters, Ranking.TOTAL);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource#postProcess(org.apache.poi.ss.usermodel.Workbook)
-	 */
-	@Override
-	protected void postProcess(Workbook workbook) {
-		if (Competition.invitedIfBornBefore() <= 0) {
-			zapCellPair(workbook,3,17);
-		}
-		final CompetitionSession currentCompetitionSession = app.getCurrentCompetitionSession();
-		if (currentCompetitionSession == null) {
-			zapCellPair(workbook,3,9);
-		}
-	}
+    @Override
+    protected void getSortedLifters() {
+        this.lifters = LifterSorter.resultsOrderCopy(
+                new LifterContainer(CompetitionApplication.getCurrent(), isExcludeNotWeighed()).getAllPojos(),
+                Ranking.TOTAL);
+        LifterSorter.assignCategoryRanks(lifters, Ranking.TOTAL);
+    }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource#postProcess(org.apache.poi.ss.usermodel.Workbook)
+     */
+    @Override
+    protected void postProcess(Workbook workbook) {
+        if (Competition.invitedIfBornBefore() <= 0) {
+            zapCellPair(workbook, 3, 17);
+        }
+        final CompetitionSession currentCompetitionSession = app.getCurrentCompetitionSession();
+        if (currentCompetitionSession == null) {
+            zapCellPair(workbook, 3, 9);
+        }
+    }
 
 }

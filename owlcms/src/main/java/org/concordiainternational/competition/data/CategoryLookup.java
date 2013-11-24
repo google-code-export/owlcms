@@ -19,9 +19,8 @@ import com.vaadin.data.hbnutil.HbnContainer;
 import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 
 /**
- * Utility class to compute a lifter's category. Category definitions are
- * retrieved from the database. Only categories marked as active are considered
- * (this allows the same list to be used in different types of championships).
+ * Utility class to compute a lifter's category. Category definitions are retrieved from the database. Only categories marked as active are
+ * considered (this allows the same list to be used in different types of championships).
  * 
  * @author jflamy
  * 
@@ -48,7 +47,7 @@ public class CategoryLookup {
         }
         return sharedCategoryLookup;
     }
-    
+
     public static synchronized CategoryLookup getSharedInstance(HbnSessionManager hbnSessionManager) {
         if (sharedCategoryLookup == null) {
             sharedCategoryLookup = new CategoryLookup(hbnSessionManager);
@@ -57,28 +56,25 @@ public class CategoryLookup {
     }
 
     /**
-     * compare categories (assumed to be properly defined and non-overlapping).
-     * Female categories come first, categories are sorted according to minimum
-     * weight.
+     * compare categories (assumed to be properly defined and non-overlapping). Female categories come first, categories are sorted
+     * according to minimum weight.
      * 
-     * @return -1 if first category should come first, 0 if same, 1 if first
-     *         category should come second
+     * @return -1 if first category should come first, 0 if same, 1 if first category should come second
      */
     final Comparator<Category> sortComparator = new Comparator<Category>() {
         @Override
         public int compare(Category o1, Category o2) {
             int compareTo = o1.getGender().compareTo(o2.getGender());
-            if (compareTo != 0) return compareTo; // F < M
+            if (compareTo != 0)
+                return compareTo; // F < M
             return (o1.minimumWeight.compareTo(o2.minimumWeight));
         }
     };
 
     /**
-     * Compare the current category (presumed to be in a list) with a the
-     * category being searched.
+     * Compare the current category (presumed to be in a list) with a the category being searched.
      * 
-     * @return -1 if the current category is too light, 0 if it is a match, 1 if
-     *         the current category is too heavy
+     * @return -1 if the current category is too light, 0 if it is a match, 1 if the current category is too heavy
      */
     final Comparator<Category> searchComparator = new Comparator<Category>() {
         @Override
@@ -90,8 +86,9 @@ public class CategoryLookup {
             // determine if we have the same gender.
             final String gender1 = comparisonCategory.getGender();
             final String gender2 = lifterData.getGender();
-            if (gender1 == null || gender2 == null) return -1; // there won't be
-                                                               // a match
+            if (gender1 == null || gender2 == null)
+                return -1; // there won't be
+                           // a match
             int compareTo = gender1.compareTo(gender2);
             if (compareTo != 0) {
                 return compareTo; // F < M
@@ -135,24 +132,26 @@ public class CategoryLookup {
         if (sessMgr == null) {
             sessMgr = CompetitionApplication.getCurrent();
             // patch for junit.
-//            if (sessMgr == null) {
-//            	sessMgr = AllTests.getSessionManager();
-//            }
+            // if (sessMgr == null) {
+            // sessMgr = AllTests.getSessionManager();
+            // }
         }
-        activeCategoriesFromDb = new CategoryContainer(sessMgr,true); // only active categories
+        activeCategoriesFromDb = new CategoryContainer(sessMgr, true); // only active categories
         categories = activeCategoriesFromDb.getAllPojos();
         Collections.sort(categories, sortComparator);
-        //logger.debug("categories={}",categories);
+        // logger.debug("categories={}",categories);
     }
 
     public Category lookup(String gender, Double bodyWeight) {
         // in order to use the predefined Java sorting routine, we place the
         // data from our lifter
         // inside a fake Category, and search for it.
-        if (bodyWeight == null || gender == null || bodyWeight < 0.1 || gender.trim().isEmpty()) return null;
+        if (bodyWeight == null || gender == null || bodyWeight < 0.1 || gender.trim().isEmpty())
+            return null;
         int index = Collections.binarySearch(categories,
-            new Category("lifter", bodyWeight, bodyWeight, gender, false), searchComparator); //$NON-NLS-1$
-        if (index >= 0) return categories.get(index);
+                new Category("lifter", bodyWeight, bodyWeight, gender, false), searchComparator); //$NON-NLS-1$
+        if (index >= 0)
+            return categories.get(index);
         return null;
     }
 

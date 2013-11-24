@@ -20,9 +20,8 @@ public class CustomTextField extends TextField {
     private static final long serialVersionUID = 7340431723259557435L;
 
     /**
-     * Error messages shown by the fields are composites of the error message
-     * thrown by the superclasses (that is the component error message),
-     * validation errors and buffered source errors.
+     * Error messages shown by the fields are composites of the error message thrown by the superclasses (that is the component error
+     * message), validation errors and buffered source errors.
      * 
      * @see com.vaadin.ui.AbstractComponent#getErrorMessage()
      */
@@ -30,10 +29,9 @@ public class CustomTextField extends TextField {
     public ErrorMessage getErrorMessage() {
 
         /*
-         * Check validation errors only if automatic validation is enabled.
-         * Empty, required fields will generate a validation error containing
-         * the requiredError string. For these fields the exclamation mark will
-         * be hidden but the error must still be sent to the client.
+         * Check validation errors only if automatic validation is enabled. Empty, required fields will generate a validation error
+         * containing the requiredError string. For these fields the exclamation mark will be hidden but the error must still be sent to the
+         * client.
          */
         ErrorMessage validationError = null;
         if (isValidationVisible()) {
@@ -75,7 +73,8 @@ public class CustomTextField extends TextField {
             if (newErrors.size() >= 1) {
                 error = new CompositeErrorMessage(newErrors);
             } else {
-                if (superError instanceof Throwable) ((Throwable) superError).printStackTrace();
+                if (superError instanceof Throwable)
+                    ((Throwable) superError).printStackTrace();
                 error = superError;
             }
 

@@ -10,7 +10,6 @@ package org.concordiainternational.competition.spreadsheet;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
@@ -65,7 +64,7 @@ public class SpreadsheetUploader extends CustomComponent implements Upload.Succe
         } else {
             this.viewName = viewName;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         this.app = CompetitionApplication.getCurrent();
         this.locale = app.getLocale();
@@ -93,6 +92,8 @@ public class SpreadsheetUploader extends CustomComponent implements Upload.Succe
         status = new Label(Messages.getString("SpreadsheetUploader.NoSpreadsheetUploadedYet", locale)); //$NON-NLS-1$
         resultPanel.addComponent(status);
         root.addComponent(resultPanel);
+
+        registerAsListener();
     }
 
     // Callback method to begin receiving the upload.
@@ -245,16 +246,16 @@ public class SpreadsheetUploader extends CustomComponent implements Upload.Succe
         unregisterAsListener();
     }
 
-    /*
-     * Called on refresh.
-     * 
-     * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
-     */
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        registerAsListener();
-        return null;
-    }
+    // /*
+    // * Called on refresh.
+    // *
+    // * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
+    // */
+    // @Override
+    // public DownloadStream handleURI(URL context, String relativeUri) {
+    // registerAsListener();
+    // return null;
+    // }
 
     @Override
     public boolean needsBlack() {

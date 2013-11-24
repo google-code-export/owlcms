@@ -38,21 +38,21 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
      */
     private static final int DECISION_REVERSAL_DELAY = 3000;
 
-	/**
-	 * Time before displaying decision once all referees have pressed.
-	 */
-	private static final int DECISION_DISPLAY_DELAY = 1000;
+    /**
+     * Time before displaying decision once all referees have pressed.
+     */
+    private static final int DECISION_DISPLAY_DELAY = 1000;
 
     private static final Logger logger = LoggerFactory.getLogger(RefereeDecisionController.class);
-//    private static final Logger timingLogger = LoggerFactory.getLogger("timing."+SessionData.class.getSimpleName()); //$NON-NLS-1$
-//    private static final Logger buttonLogger = LoggerFactory.getLogger("buttons."+SessionData.class.getSimpleName()); //$NON-NLS-1$
-    private static Logger listenerLogger = LoggerFactory.getLogger("listeners."+SessionData.class.getSimpleName()); //$NON-NLS-1$
+    //    private static final Logger timingLogger = LoggerFactory.getLogger("timing."+SessionData.class.getSimpleName()); //$NON-NLS-1$
+    //    private static final Logger buttonLogger = LoggerFactory.getLogger("buttons."+SessionData.class.getSimpleName()); //$NON-NLS-1$
+    private static Logger listenerLogger = LoggerFactory.getLogger("listeners." + SessionData.class.getSimpleName()); //$NON-NLS-1$
 
     Decision[] refereeDecisions = new Decision[3];
     DecisionEventListener[] listeners = new DecisionEventListener[3];
 
     private SessionData groupData;
-	private Tone downSignal = null;
+    private Tone downSignal = null;
 
     public RefereeDecisionController(SessionData groupData) {
         this.groupData = groupData;
@@ -60,32 +60,30 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
             refereeDecisions[i] = new Decision();
         }
         final Platform platform = groupData.getPlatform();
-		try {
-			if (platform != null) {
-				downSignal = new Tone(platform.getMixer(), 1100, 1200, 1.0);
-			}
-		} catch (Exception e) {
-			logger.warn("no sound for platform {}",platform.getName());
-		}
+        try {
+            if (platform != null) {
+                downSignal = new Tone(platform.getMixer(), 1100, 1200, 1.0);
+            }
+        } catch (Exception e) {
+            logger.warn("no sound for platform {}", platform.getName());
+        }
     }
-
-
 
     long allDecisionsMadeTime = 0L; // all 3 referees have pressed
     int decisionsMade = 0;
     private EventRouter eventRouter;
 
-	private Boolean downSignaled = false;
-	
+    private Boolean downSignaled = false;
 
+    private boolean blocked = true;
 
-	private boolean blocked = true;
-
-    /* (non-Javadoc)
-	 * @see org.concordiainternational.competition.decision.IDecisionController#reset()
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.decision.IDecisionController#reset()
+     */
     @Override
-	public void reset() {
+    public void reset() {
         for (int i = 0; i < refereeDecisions.length; i++) {
             refereeDecisions[i].accepted = null;
             refereeDecisions[i].time = 0L;
@@ -97,37 +95,39 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
         fireEvent(new DecisionEvent(this, DecisionEvent.Type.RESET, System.currentTimeMillis(), refereeDecisions));
     }
 
-    /* (non-Javadoc)
-	 * @see org.concordiainternational.competition.decision.IDecisionController#decisionMade(int, boolean)
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.decision.IDecisionController#decisionMade(int, boolean)
+     */
     @Override
-	public synchronized void decisionMade(int refereeNo, boolean accepted) {
-//    	if (isBlocked() 
-//    	        || !groupData.isAnnounced()
-//    	        ) {
-//            logger.warn("decision IGNORED from referee {}: {} (not announced)", 
-//                    refereeNo + 1,
-//                    (accepted ? "lift" : "no lift"));
-//            return;
-//        }
+    public synchronized void decisionMade(int refereeNo, boolean accepted) {
+        // if (isBlocked()
+        // || !groupData.isAnnounced()
+        // ) {
+        // logger.warn("decision IGNORED from referee {}: {} (not announced)",
+        // refereeNo + 1,
+        // (accepted ? "lift" : "no lift"));
+        // return;
+        // }
 
-    	if (refereeDecisions[refereeNo] == null) {
-    		logger.warn("decision IGNORED from referee {}: {} (not in a session)", 
-        			refereeNo + 1,
+        if (refereeDecisions[refereeNo] == null) {
+            logger.warn("decision IGNORED from referee {}: {} (not in a session)",
+                    refereeNo + 1,
                     (accepted ? "lift" : "no lift"));
-        	return;
-    	}
-
-    	// prevent reversal from red to white.
-        if ((refereeDecisions[refereeNo].accepted != null) && !(refereeDecisions[refereeNo].accepted)) {
-        	// cannot reverse from red to white.
-        	logger.warn("decision IGNORED from referee {}: {} (prior decision was {})", 
-        			new Object[] { refereeNo + 1,
-                    (accepted ? "lift" : "no lift"), 
-                    refereeDecisions[refereeNo].accepted});
-        	return;
+            return;
         }
-        
+
+        // prevent reversal from red to white.
+        if ((refereeDecisions[refereeNo].accepted != null) && !(refereeDecisions[refereeNo].accepted)) {
+            // cannot reverse from red to white.
+            logger.warn("decision IGNORED from referee {}: {} (prior decision was {})",
+                    new Object[] { refereeNo + 1,
+                            (accepted ? "lift" : "no lift"),
+                            refereeDecisions[refereeNo].accepted });
+            return;
+        }
+
         final long currentTimeMillis = System.currentTimeMillis();
         long deltaTime = currentTimeMillis - allDecisionsMadeTime;
         if (decisionsMade == 3 && deltaTime > DECISION_REVERSAL_DELAY) {
@@ -137,8 +137,6 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
             return;
         }
 
-
-        
         refereeDecisions[refereeNo].accepted = accepted;
         refereeDecisions[refereeNo].time = currentTimeMillis;
         logger.info("decision by referee {}: {}", refereeNo + 1, (accepted ? "lift" : "no lift"));
@@ -150,52 +148,53 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
             final Boolean accepted2 = refereeDecisions[i].accepted;
             if (accepted2 != null) {
                 decisionsMade++;
-                if (accepted2) pros++;
-                else cons++;
+                if (accepted2)
+                    pros++;
+                else
+                    cons++;
             }
         }
 
-        
         if (decisionsMade >= 2) {
-        	// audible down signal is emitted right away by the main computer.
+            // audible down signal is emitted right away by the main computer.
             // request lifter-facing display should display the "down" signal.
-        	// also, downSignal() signals timeKeeper that time has been stopped if they
-        	// had not stopped it manually.
+            // also, downSignal() signals timeKeeper that time has been stopped if they
+            // had not stopped it manually.
             if (pros >= 2 || cons >= 2) {
-            	synchronized (groupData.getTimer()) {
-            		if (!downSignaled) {
-            			new Thread(new Runnable() {
-							@Override
-							public void run() {
-								if (downSignal != null) {
-									downSignal.emit();
-								}
-								groupData.downSignal();
-							}
-						}).start();
-						downSignaled = true;
-            			fireEvent(new DecisionEvent(this,
-            					DecisionEvent.Type.DOWN, currentTimeMillis,
-            					refereeDecisions));
-            			logger.info("*** down signal");
-            		}
-            	}
+                synchronized (groupData.getTimer()) {
+                    if (!downSignaled) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (downSignal != null) {
+                                    downSignal.emit();
+                                }
+                                groupData.downSignal();
+                            }
+                        }).start();
+                        downSignaled = true;
+                        fireEvent(new DecisionEvent(this,
+                                DecisionEvent.Type.DOWN, currentTimeMillis,
+                                refereeDecisions));
+                        logger.info("*** down signal");
+                    }
+                }
             } else {
-            	logger.debug("no majority");
+                logger.debug("no majority");
                 fireEvent(new DecisionEvent(this, DecisionEvent.Type.WAITING, currentTimeMillis, refereeDecisions));
             }
         } else {
             // Jury sees all changes, other displays will ignore this.
             synchronized (groupData.getTimer()) {
-            	logger.debug("broadcasting");
-            	fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
+                logger.debug("broadcasting");
+                fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
             }
         }
 
         if (decisionsMade == 3) {
-        	// NOTE: we wait for referee keypads to be blocked (see scheduleBlock)
-        	// before sending the decision to groupData.
-            
+            // NOTE: we wait for referee keypads to be blocked (see scheduleBlock)
+            // before sending the decision to groupData.
+
             // broadcast the decision
             if (allDecisionsMadeTime == 0L) {
                 // all 3 referees have just made a choice; schedule the display
@@ -207,12 +206,10 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
                 scheduleReset();
             } else {
                 // referees have changed their mind
-            	logger.debug("three + change");
+                logger.debug("three + change");
                 fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, refereeDecisions));
             }
         }
-
-
 
     }
 
@@ -230,7 +227,7 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
             }
         }, DECISION_DISPLAY_DELAY);
     }
-    
+
     /**
      * 
      */
@@ -239,17 +236,17 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-            	// save the decision
+                // save the decision
                 groupData.majorityDecision(refereeDecisions);
-                
-            	fireEvent(new DecisionEvent(RefereeDecisionController.this, DecisionEvent.Type.BLOCK, System.currentTimeMillis(), refereeDecisions));
-            	setBlocked(true);
+
+                fireEvent(new DecisionEvent(RefereeDecisionController.this, DecisionEvent.Type.BLOCK, System.currentTimeMillis(),
+                        refereeDecisions));
+                setBlocked(true);
             }
         }, DECISION_REVERSAL_DELAY);
     }
 
-
-	/**
+    /**
      * 
      */
     private void scheduleReset() {
@@ -263,45 +260,51 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
     }
 
     /**
-     * This method is the Java object for the method in the Listener interface.
-     * It allows the framework to know how to pass the event information.
+     * This method is the Java object for the method in the Listener interface. It allows the framework to know how to pass the event
+     * information.
      */
-    private static final Method DECISION_EVENT_METHOD = EventHelper.findMethod(DecisionEvent.class, 
-    		// when receiving this type of event
-        DecisionEventListener.class, // an object implementing this interface...
-        "updateEvent"); // ... will be called with this method. //$NON-NLS-1$;
+    private static final Method DECISION_EVENT_METHOD = EventHelper.findMethod(DecisionEvent.class,
+            // when receiving this type of event
+            DecisionEventListener.class, // an object implementing this interface...
+            "updateEvent"); // ... will be called with this method. //$NON-NLS-1$;
 
     /**
      * Broadcast a DecisionEvent to all registered listeners
      * 
      * @param updateEvent
-     *            contains the source (ourself) and the list of properties to be
-     *            refreshed.
+     *            contains the source (ourself) and the list of properties to be refreshed.
      */
     protected void fireEvent(DecisionEvent updateEvent) {
-         logger.debug("firing event from RDC "+System.identityHashCode(this)
-                 +" event="+updateEvent.toString());
-         //logger.trace("                        listeners"+eventRouter.dumpListeners(this));
+        logger.debug("firing event from RDC " + System.identityHashCode(this)
+                + " event=" + updateEvent.toString());
+        // logger.trace("                        listeners"+eventRouter.dumpListeners(this));
         if (eventRouter != null) {
             eventRouter.fireEvent(updateEvent);
         }
 
     }
 
-    /* (non-Javadoc)
-	 * @see org.concordiainternational.competition.decision.IDecisionController#addListener(org.concordiainternational.competition.decision.DecisionEventListener)
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.decision.IDecisionController#addListener(org.concordiainternational.competition.decision.
+     * DecisionEventListener)
+     */
     @Override
-	public void addListener(DecisionEventListener listener) {
+    public void addListener(DecisionEventListener listener) {
         listenerLogger.debug("add listener {}", listener); //$NON-NLS-1$
         getEventRouter().addListener(DecisionEvent.class, listener, DECISION_EVENT_METHOD);
     }
 
-    /* (non-Javadoc)
-	 * @see org.concordiainternational.competition.decision.IDecisionController#removeListener(org.concordiainternational.competition.decision.DecisionEventListener)
-	 */
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.concordiainternational.competition.decision.IDecisionController#removeListener(org.concordiainternational.competition.decision
+     * .DecisionEventListener)
+     */
     @Override
-	public void removeListener(DecisionEventListener listener) {
+    public void removeListener(DecisionEventListener listener) {
         if (eventRouter != null) {
             listenerLogger.debug("remove listener {}", listener); //$NON-NLS-1$
             eventRouter.removeListener(DecisionEvent.class, listener, DECISION_EVENT_METHOD);
@@ -309,10 +312,8 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
     }
 
     /*
-     * General event framework: we implement the
-     * com.vaadin.event.MethodEventSource interface which defines how a notifier
-     * can call a method on a listener to signal an event an event occurs, and
-     * how the listener can register/unregister itself.
+     * General event framework: we implement the com.vaadin.event.MethodEventSource interface which defines how a notifier can call a method
+     * on a listener to signal an event an event occurs, and how the listener can register/unregister itself.
      */
 
     /**
@@ -327,93 +328,119 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
     }
 
     // timer events
-    /* (non-Javadoc)
-	 * @see org.concordiainternational.competition.decision.IDecisionController#finalWarning(int)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.decision.IDecisionController#finalWarning(int)
+     */
+    @Override
     public void finalWarning(int timeRemaining) {
     }
 
-    /* (non-Javadoc)
-	 * @see org.concordiainternational.competition.decision.IDecisionController#forceTimeRemaining(int, org.concordiainternational.competition.ui.CompetitionApplication, org.concordiainternational.competition.ui.TimeStoppedNotificationReason)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.decision.IDecisionController#forceTimeRemaining(int,
+     * org.concordiainternational.competition.ui.CompetitionApplication,
+     * org.concordiainternational.competition.ui.TimeStoppedNotificationReason)
+     */
+    @Override
     public void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
     }
 
-    /* (non-Javadoc)
-	 * @see org.concordiainternational.competition.decision.IDecisionController#initialWarning(int)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.decision.IDecisionController#initialWarning(int)
+     */
+    @Override
     public void initialWarning(int timeRemaining) {
     }
 
-    /* (non-Javadoc)
-	 * @see org.concordiainternational.competition.decision.IDecisionController#noTimeLeft(int)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.decision.IDecisionController#noTimeLeft(int)
+     */
+    @Override
     public void noTimeLeft(int timeRemaining) {
     }
 
-    /* (non-Javadoc)
-	 * @see org.concordiainternational.competition.decision.IDecisionController#normalTick(int)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.decision.IDecisionController#normalTick(int)
+     */
+    @Override
     public void normalTick(int timeRemaining) {
     }
 
-    /* (non-Javadoc)
-	 * @see org.concordiainternational.competition.decision.IDecisionController#pause(int, org.concordiainternational.competition.ui.CompetitionApplication, org.concordiainternational.competition.ui.TimeStoppedNotificationReason)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.decision.IDecisionController#pause(int,
+     * org.concordiainternational.competition.ui.CompetitionApplication,
+     * org.concordiainternational.competition.ui.TimeStoppedNotificationReason)
+     */
+    @Override
     public void pause(int timeRemaining, CompetitionApplication app, InteractionNotificationReason reason) {
     }
 
-    /* (non-Javadoc)
-	 * @see org.concordiainternational.competition.decision.IDecisionController#start(int)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.decision.IDecisionController#start(int)
+     */
+    @Override
     public void start(int timeRemaining) {
     }
 
-    /* (non-Javadoc)
-	 * @see org.concordiainternational.competition.decision.IDecisionController#stop(int, org.concordiainternational.competition.ui.CompetitionApplication, org.concordiainternational.competition.ui.TimeStoppedNotificationReason)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.decision.IDecisionController#stop(int,
+     * org.concordiainternational.competition.ui.CompetitionApplication,
+     * org.concordiainternational.competition.ui.TimeStoppedNotificationReason)
+     */
+    @Override
     public void stop(int timeRemaining, CompetitionApplication app, InteractionNotificationReason reason) {
     }
 
-	/* (non-Javadoc)
-	 * @see org.concordiainternational.competition.decision.IDecisionController#addListener(org.concordiainternational.competition.ui.IRefereeConsole, int)
-	 */
-	@Override
-	public void addListener(IRefereeConsole refereeConsole, int refereeIndex) {
-		if (listeners[refereeIndex] != null) {
-			listenerLogger.debug("removing previous ORefereeConsole listener {}",listeners[refereeIndex]);
-			removeListener(listeners[refereeIndex]);
-		}
-		addListener(refereeConsole);
-		listeners[refereeIndex] = refereeConsole;
-		listenerLogger.debug("adding new ORefereeConsole listener {}",listeners[refereeIndex]);
-	}
-
-	@Override
-	public void setBlocked(boolean blocked) {
-		this.blocked = blocked;
-	}
-
-	@Override
-	public boolean isBlocked() {
-		return blocked &&  (groupData.getCurrentSession() != null);
-	}
-
-	@Override
-	public Lifter getLifter() {
-		return groupData.getCurrentLifter();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.concordiainternational.competition.decision.IDecisionController#addListener(org.concordiainternational.competition.ui.IRefereeConsole
+     * , int)
+     */
+    @Override
+    public void addListener(IRefereeConsole refereeConsole, int refereeIndex) {
+        if (listeners[refereeIndex] != null) {
+            listenerLogger.debug("removing previous ORefereeConsole listener {}", listeners[refereeIndex]);
+            removeListener(listeners[refereeIndex]);
+        }
+        addListener(refereeConsole);
+        listeners[refereeIndex] = refereeConsole;
+        listenerLogger.debug("adding new ORefereeConsole listener {}", listeners[refereeIndex]);
+    }
 
     @Override
-    public void showInteractionNotification(CompetitionApplication originatingApp,InteractionNotificationReason reason) {
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
+    @Override
+    public boolean isBlocked() {
+        return blocked && (groupData.getCurrentSession() != null);
+    }
+
+    @Override
+    public Lifter getLifter() {
+        return groupData.getCurrentLifter();
+    }
+
+    @Override
+    public void showInteractionNotification(CompetitionApplication originatingApp, InteractionNotificationReason reason) {
         // ignored.
     }
 }

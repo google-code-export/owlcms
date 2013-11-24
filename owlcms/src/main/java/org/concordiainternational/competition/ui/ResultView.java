@@ -7,8 +7,6 @@
  */
 package org.concordiainternational.competition.ui;
 
-import java.net.URL;
-
 import org.concordiainternational.competition.data.CategoryLookup;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.CompetitionSessionLookup;
@@ -21,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.Item;
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalSplitPanel;
@@ -69,7 +66,7 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
         } else {
             this.viewName = viewName;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         this.app = CompetitionApplication.getCurrent();
 
@@ -126,7 +123,7 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
             app.setPusherDisabled(prevDisabled);
         }
         app.push();
-
+        registerAsListener();
     }
 
     /**
@@ -390,17 +387,6 @@ public class ResultView extends VerticalSplitPanel implements ApplicationView, S
     @Override
     public void windowClose(CloseEvent e) {
         unregisterAsListener();
-    }
-
-    /*
-     * Called on refresh.
-     * 
-     * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
-     */
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        registerAsListener();
-        return null;
     }
 
     /**

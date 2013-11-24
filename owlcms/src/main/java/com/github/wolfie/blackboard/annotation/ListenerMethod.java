@@ -10,13 +10,11 @@ import com.github.wolfie.blackboard.Listener;
 
 /**
  * <p>
- * The annotation that marks that this is the method to call in a
- * {@link Listener}, when a matching {@link Event} has been fired.
+ * The annotation that marks that this is the method to call in a {@link Listener}, when a matching {@link Event} has been fired.
  * </p>
  * 
  * <p>
- * One, and only one public method must be annotated per {@link Listener}.
- * Non-public methods are ignored.
+ * One, and only one public method must be annotated per {@link Listener}. Non-public methods are ignored.
  * </p>
  * 
  * @author Henrik Paul

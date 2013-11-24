@@ -7,7 +7,6 @@
  */
 package org.concordiainternational.competition.ui;
 
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Timer;
@@ -29,9 +28,7 @@ import org.vaadin.notifique.Notifique.Message;
 import org.vaadin.overlay.CustomOverlay;
 
 import com.vaadin.data.Item;
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.Resource;
-import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -65,8 +62,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
         SessionData.UpdateEventListener,
         EditingView,
         Notifyable,
-        Window.CloseListener,
-        URIHandler
+        Window.CloseListener
 {
     private static final long serialVersionUID = 7881028819569705161L;
     private static final Logger logger = LoggerFactory.getLogger(AnnouncerView.class);
@@ -107,7 +103,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
         } else {
             this.viewName = viewName;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         this.app = CompetitionApplication.getCurrent();
         this.mode = mode;
@@ -186,7 +182,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
             masterData.setAllowAll(false);
 
             // URI handler must remain, so is not part of the register/unRegister pair
-            app.getMainWindow().addURIHandler(this);
+            // app.getMainWindow().addURIHandler(this);
             registerAsListener();
 
             if (masterData.lifters.isEmpty()) {
@@ -608,12 +604,12 @@ public class AnnouncerView extends VerticalSplitPanel implements
         unregisterAsListener();
     }
 
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        logger.debug("registering URI listeners");
-        registerAsListener();
-        return null;
-    }
+    // @Override
+    // public DownloadStream handleURI(URL context, String relativeUri) {
+    // logger.debug("registering URI listeners");
+    // registerAsListener();
+    // return null;
+    // }
 
     /**
      * @return the notifications

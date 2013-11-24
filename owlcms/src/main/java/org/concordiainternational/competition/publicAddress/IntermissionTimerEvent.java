@@ -13,31 +13,34 @@ import com.github.wolfie.blackboard.annotation.ListenerMethod;
 
 /**
  * Events received by the screens that display public messages.
+ * 
  * @author jflamy
- *
+ * 
  */
 public class IntermissionTimerEvent implements Event {
-	
-	public interface IntermissionTimerListener extends Listener {
-		@ListenerMethod
-		public void intermissionTimerUpdate(final IntermissionTimerEvent event);
-	}
-	
-	Integer remainingMilliseconds = null;
-	Boolean noTimeLeft = false;
-	
-	public Integer getRemainingMilliseconds() {
-		return remainingMilliseconds;
-	}
-	public void setRemainingMilliseconds(Integer remainingMilliseconds) {
-		this.remainingMilliseconds = remainingMilliseconds;
-	}
-	public Boolean getNoTimeLeft() {
-		return noTimeLeft;
-	}
-	public void setNoTimeLeft(Boolean noTimeLeft) {
-		this.noTimeLeft = noTimeLeft;
-	}
-	
+
+    public interface IntermissionTimerListener extends Listener {
+        @ListenerMethod
+        public void intermissionTimerUpdate(final IntermissionTimerEvent event);
+    }
+
+    Integer remainingMilliseconds = null;
+    Boolean noTimeLeft = false;
+
+    public Integer getRemainingMilliseconds() {
+        return remainingMilliseconds;
+    }
+
+    public void setRemainingMilliseconds(Integer remainingMilliseconds) {
+        this.remainingMilliseconds = remainingMilliseconds;
+    }
+
+    public Boolean getNoTimeLeft() {
+        return noTimeLeft;
+    }
+
+    public void setNoTimeLeft(Boolean noTimeLeft) {
+        this.noTimeLeft = noTimeLeft;
+    }
 
 }

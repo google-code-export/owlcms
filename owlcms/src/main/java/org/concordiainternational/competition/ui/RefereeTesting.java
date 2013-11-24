@@ -7,8 +7,6 @@
  */
 package org.concordiainternational.competition.ui;
 
-import java.net.URL;
-
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
@@ -17,8 +15,6 @@ import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.GridLayout;
@@ -29,7 +25,7 @@ import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
-public class RefereeTesting extends VerticalSplitPanel implements ApplicationView, CloseListener, URIHandler {
+public class RefereeTesting extends VerticalSplitPanel implements ApplicationView, CloseListener {
 
     private static final String CELL_WIDTH = "8em";
 
@@ -53,7 +49,7 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
         } else {
             this.viewName = viewName;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         this.app = CompetitionApplication.getCurrent();
 
@@ -77,7 +73,7 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
 
         resetBottom();
         // URI handler must remain, so is not part of the register/unRegister paire
-        app.getMainWindow().addURIHandler(this);
+        // app.getMainWindow().addURIHandler(this);
         registerAsListener();
     }
 
@@ -233,12 +229,12 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
         unregisterAsListener();
     }
 
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        // logger.debug("re-registering handlers for {} {}",this,relativeUri);
-        registerAsListener();
-        return null;
-    }
+    // @Override
+    // public DownloadStream handleURI(URL context, String relativeUri) {
+    // // logger.debug("re-registering handlers for {} {}",this,relativeUri);
+    // registerAsListener();
+    // return null;
+    // }
 
     @Override
     public boolean needsBlack() {

@@ -13,8 +13,7 @@ import org.concordiainternational.competition.data.Competition;
 import org.concordiainternational.competition.data.Lifter;
 
 /**
- * This comparator is used for the technical meeting sheet. It is based on the
- * registration category
+ * This comparator is used for the technical meeting sheet. It is based on the registration category
  * 
  * @author jflamy
  * 
@@ -26,24 +25,30 @@ public class RegistrationOrderComparator extends AbstractLifterComparator implem
         int compare = 0;
 
         compare = compareGroupWeighInTime(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         if (Competition.isMasters()) {
             compare = compareAgeGroup(lifter1, lifter2);
-            if (compare != 0) return -compare;
+            if (compare != 0)
+                return -compare;
         }
 
         compare = compareRegistrationCategory(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareLotNumber(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareLastName(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareFirstName(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         return compare;
     }

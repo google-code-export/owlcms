@@ -7,8 +7,6 @@
  */
 package org.concordiainternational.competition.mobile;
 
-import java.net.URL;
-
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
@@ -29,8 +27,6 @@ import org.vaadin.touchdiv.TouchDiv;
 import org.vaadin.touchdiv.TouchDiv.TouchEvent;
 import org.vaadin.touchdiv.TouchDiv.TouchListener;
 
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.URIHandler;
 import com.vaadin.terminal.gwt.server.WebBrowser;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
@@ -47,8 +43,7 @@ import com.vaadin.ui.Window.CloseListener;
 public class MTimekeeperConsole extends VerticalLayout implements
         ApplicationView,
         CountdownTimerListener,
-        CloseListener,
-        URIHandler {
+        CloseListener {
 
     private static final long serialVersionUID = 1L;
     static final Logger timingLogger = LoggerFactory
@@ -84,7 +79,7 @@ public class MTimekeeperConsole extends VerticalLayout implements
         } else {
             this.viewName = CompetitionApplicationComponents.MTIMEKEEPER_CONSOLE;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         this.app = CompetitionApplication.getCurrent();
 
@@ -101,7 +96,7 @@ public class MTimekeeperConsole extends VerticalLayout implements
                 app.setPusherDisabled(true);
                 groupData = app.getMasterData(platformName);
 
-                app.getMainWindow().addURIHandler(this);
+                // app.getMainWindow().addURIHandler(this);
                 registerAsListener();
                 CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
                 init();
@@ -454,22 +449,22 @@ public class MTimekeeperConsole extends VerticalLayout implements
             groupData.removeListener(updateEventListener);
     }
 
-    /*
-     * Will be called when page is loaded.
-     * 
-     * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
-     */
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.concordiainternational.competition.ui.IRefereeConsole#handleURI(java.net.URL, java.lang.String)
-     */
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        registerAsListener();
-        app.getMainWindow().executeJavaScript("scrollTo(0,1)");
-        return null;
-    }
+    // /*
+    // * Will be called when page is loaded.
+    // *
+    // * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
+    // */
+    // /*
+    // * (non-Javadoc)
+    // *
+    // * @see org.concordiainternational.competition.ui.IRefereeConsole#handleURI(java.net.URL, java.lang.String)
+    // */
+    // @Override
+    // public DownloadStream handleURI(URL context, String relativeUri) {
+    // registerAsListener();
+    // app.getMainWindow().executeJavaScript("scrollTo(0,1)");
+    // return null;
+    // }
 
     /*
      * Will be called when page is unloaded (including on refresh).

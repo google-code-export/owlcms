@@ -17,12 +17,12 @@ public class RuleViolation {
     // {
     //		return new RuleViolationException(("RuleViolation.change1ValueTooSmall"), objs);   //$NON-NLS-1$
     // }
-    //	
+    //
     // public static RuleViolationException change2ValueTooSmall(Object... objs)
     // {
     //		return new RuleViolationException(("RuleViolation.change2ValueTooSmall"), objs);   //$NON-NLS-1$
     // }
-    //	
+    //
     public static RuleViolationException declarationValueTooSmall(Object... objs) {
         return new RuleViolationException(("RuleViolation.declarationValueTooSmall"), objs); //$NON-NLS-1$
     }
@@ -47,7 +47,7 @@ public class RuleViolation {
     }
 
     public static RuleViolationException rule15_20Violated(Object... objs) {
-        return new RuleViolationException("RuleViolation.rule15_20Violated",objs); //$NON-NLS-1$
+        return new RuleViolationException("RuleViolation.rule15_20Violated", objs); //$NON-NLS-1$
     }
 
 }

@@ -19,7 +19,7 @@ import org.slf4j.MDC;
 
 public class LoggerUtils {
     static Logger thisLogger = LoggerFactory.getLogger(LoggerUtils.class);
-    
+
     public enum LoggingKeys {
         view,
         currentGroup
@@ -31,30 +31,29 @@ public class LoggerUtils {
         logger.info(sw.toString());
     }
 
-    
     public static void logErrorException(Logger logger, Throwable t) {
         StringWriter sw = new StringWriter();
         t.printStackTrace(new PrintWriter(sw));
         logger.error(sw.toString());
     }
-    
+
     public static void mdcPut(LoggingKeys key, String value) {
         String view = MDC.get(LoggingKeys.view.name());
         String group = MDC.get(LoggingKeys.currentGroup.name());
         if (group != null && view == null) {
-            thisLogger.debug("traceback {}", (Object[])Thread.currentThread().getStackTrace());
-        } 
+            thisLogger.debug("traceback {}", (Object[]) Thread.currentThread().getStackTrace());
+        }
         MDC.put(key.toString(), value);
     }
-    
+
     public static String mdcGet(String key) {
         return MDC.get(key);
     }
-    
+
     public static void buttonSetup(final SessionData groupData) {
         CompetitionSession currentSession = groupData.getCurrentSession();
         LoggerUtils.mdcPut(LoggingKeys.currentGroup, currentSession != null ? currentSession.getName() : "");
-        LoggerUtils.mdcPut(LoggingKeys.view, CompetitionApplication.getCurrent().getMainLayoutContent().getLoggingId());
+        LoggerUtils.mdcPut(LoggingKeys.view, CompetitionApplication.getCurrent().getCurrentView().getLoggingId());
     }
 
     @SuppressWarnings("restriction")
@@ -63,21 +62,17 @@ public class LoggerUtils {
         return callerClass.getSimpleName();
     }
 
-
     public static void buttonSetup() {
         LoggerUtils.mdcPut(LoggingKeys.currentGroup, "*");
-        LoggerUtils.mdcPut(LoggingKeys.view, CompetitionApplication.getCurrent().getMainLayoutContent().getLoggingId());
+        LoggerUtils.mdcPut(LoggingKeys.view, CompetitionApplication.getCurrent().getCurrentView().getLoggingId());
     }
-
 
     public static void traceBack(Logger logger) {
-        logException(logger, new Exception("traceBack")); 
+        logException(logger, new Exception("traceBack"));
     }
-    
+
     public static void traceBack(Logger logger, String whereFrom) {
-        logException(logger, new Exception(whereFrom)); 
+        logException(logger, new Exception(whereFrom));
     }
-    
-    
-    
+
 }

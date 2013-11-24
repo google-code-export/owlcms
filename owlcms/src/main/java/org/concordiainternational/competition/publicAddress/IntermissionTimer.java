@@ -16,9 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Manage the count-down task used for the PublicAddress screen.
- * This class is independent from the count-down timer used for managing lifters,
- * and is much simpler.
+ * Manage the count-down task used for the PublicAddress screen. This class is independent from the count-down timer used for managing
+ * lifters, and is much simpler.
  * 
  * @author jflamy
  * 
@@ -34,14 +33,14 @@ public class IntermissionTimer implements Serializable {
     Timer timer = null;
     private PublicAddressCountdownTask countdownTask;
 
-	private SessionData masterData;
+    private SessionData masterData;
 
-	private Date endTime = new Date();
+    private Date endTime = new Date();
 
-	private boolean paused = false;
+    private boolean paused = false;
 
     public IntermissionTimer(SessionData masterData) {
-    	this.masterData = masterData;
+        this.masterData = masterData;
         logger.debug("new"); //$NON-NLS-1$
     }
 
@@ -62,9 +61,9 @@ public class IntermissionTimer implements Serializable {
         }
         remainingSeconds = requestedSeconds;
         timer = new Timer();
-        countdownTask = new PublicAddressCountdownTask(timer, requestedSeconds*1000, DECREMENT, masterData);
+        countdownTask = new PublicAddressCountdownTask(timer, requestedSeconds * 1000, DECREMENT, masterData);
         timer.scheduleAtFixedRate(countdownTask, 0, // start right away
-            DECREMENT);
+                DECREMENT);
     }
 
     /**
@@ -73,36 +72,35 @@ public class IntermissionTimer implements Serializable {
     public void restart() {
         logger.debug("enter restart paused={}", paused); //$NON-NLS-1$
         if (paused) {
-        	unPause();
+            unPause();
         } else {
-        	start();
+            start();
         }
     }
 
-	/**
-	 * restart after pause.
-	 */
-	private void unPause() {
-		logger.debug("enter unPause remainingSeconds={}", remainingSeconds); //$NON-NLS-1$
+    /**
+     * restart after pause.
+     */
+    private void unPause() {
+        logger.debug("enter unPause remainingSeconds={}", remainingSeconds); //$NON-NLS-1$
         paused = false;
-		if (timer != null) {
+        if (timer != null) {
             timer.cancel();
         }
         if (countdownTask != null) {
             countdownTask.cancel();
         }
         if (remainingSeconds <= 0) {
-        	remainingSeconds = 0;
+            remainingSeconds = 0;
             return;
         }
 
         timer = new Timer();
-        countdownTask = new PublicAddressCountdownTask(timer, remainingSeconds*1000, DECREMENT, masterData);
+        countdownTask = new PublicAddressCountdownTask(timer, remainingSeconds * 1000, DECREMENT, masterData);
         timer.scheduleAtFixedRate(countdownTask, 0, // start right away
-            DECREMENT);
-        
+                DECREMENT);
 
-	}
+    }
 
     /**
      * Stop the timer such that it can be restarted.
@@ -110,27 +108,27 @@ public class IntermissionTimer implements Serializable {
     public void pause() {
         logger.debug("enter pause remainingMillis={}", getRemainingMilliseconds()); //$NON-NLS-1$
         paused = true;
-        if (timer != null) timer.cancel();
+        if (timer != null)
+            timer.cancel();
         timer = null;
         if (countdownTask != null) {
             countdownTask.cancel();
-            remainingSeconds = (int) Math.round(countdownTask.getBestTimeRemaining()/1000D);
+            remainingSeconds = (int) Math.round(countdownTask.getBestTimeRemaining() / 1000D);
             countdownTask = null;
         }
     }
 
-	/**
+    /**
 	 * 
 	 */
-	private void fireTimerEvent(int remainingSeconds1) {
-		IntermissionTimerEvent timerEvent = new IntermissionTimerEvent();
-        timerEvent.setRemainingMilliseconds(remainingSeconds1*1000);
+    private void fireTimerEvent(int remainingSeconds1) {
+        IntermissionTimerEvent timerEvent = new IntermissionTimerEvent();
+        timerEvent.setRemainingMilliseconds(remainingSeconds1 * 1000);
         masterData.fireBlackBoardEvent(timerEvent);
-	}
+    }
 
     /**
-     * Stop the timer.
-     * Same as Pause, in this case.
+     * Stop the timer. Same as Pause, in this case.
      */
     public void stop() {
         logger.debug("enter stop remainingMillis={}", getRemainingMilliseconds()); //$NON-NLS-1$
@@ -150,11 +148,11 @@ public class IntermissionTimer implements Serializable {
      * @param i
      */
     public void setRequestedSeconds(int i) {
-        logger.debug("setRequestedSeconds {}",i);
+        logger.debug("setRequestedSeconds {}", i);
         stop();
         paused = false;
         this.requestedSeconds = i;
-        this.endTime = new Date(System.currentTimeMillis()+(i*1000));
+        this.endTime = new Date(System.currentTimeMillis() + (i * 1000));
         fireTimerEvent(requestedSeconds);
     }
 
@@ -163,31 +161,31 @@ public class IntermissionTimer implements Serializable {
     }
 
     public void setEndTime(Date endTime) {
-    	logger.debug("setEndTime {}",endTime);
-    	stop();
-    	paused = false;
-    	this.endTime = endTime;
-    	if (endTime == null) return;
-    	long deltaMillis = endTime.getTime() - System.currentTimeMillis();
-    	if (deltaMillis > 0) {
-    		requestedSeconds = (int) Math.round(deltaMillis / 1000D);
-    	} else {
-    		requestedSeconds = 0;
-    	}
+        logger.debug("setEndTime {}", endTime);
+        stop();
+        paused = false;
+        this.endTime = endTime;
+        if (endTime == null)
+            return;
+        long deltaMillis = endTime.getTime() - System.currentTimeMillis();
+        if (deltaMillis > 0) {
+            requestedSeconds = (int) Math.round(deltaMillis / 1000D);
+        } else {
+            requestedSeconds = 0;
+        }
         fireTimerEvent(requestedSeconds);
     }
-    
+
     public Date getEndTime() {
-    	return endTime;
-    }
-    
-    public int getRemainingMilliseconds() {
-    	if (isRunning()) {
-    		return (int) countdownTask.getBestTimeRemaining();
-    	} else {
-    		return remainingSeconds*1000;
-    	}
+        return endTime;
     }
 
+    public int getRemainingMilliseconds() {
+        if (isRunning()) {
+            return (int) countdownTask.getBestTimeRemaining();
+        } else {
+            return remainingSeconds * 1000;
+        }
+    }
 
 }

@@ -13,8 +13,7 @@ import com.vaadin.Application;
 import com.vaadin.service.ApplicationContext.TransactionListener;
 
 /**
- * Example application for using localized SystemMessages configured from a
- * properties file.
+ * Example application for using localized SystemMessages configured from a properties file.
  * 
  * @author jflamy
  */
@@ -43,29 +42,26 @@ public class LocalizedApplication extends Application {
      * Get localized SystemMessages for this application.
      * 
      * <p>
-     * This method is static; we need to call
-     * {@link LocalizedSystemMessages#setThreadLocale(Locale)} to change the
-     * language that will be used for this thread. This is typically done in a
-     * {@link TransactionListener#transactionStart(Application, Object)} method
-     * in order to associate the Locale with the thread processing the HTTP
-     * request.
+     * This method is static; we need to call {@link LocalizedSystemMessages#setThreadLocale(Locale)} to change the language that will be
+     * used for this thread. This is typically done in a {@link TransactionListener#transactionStart(Application, Object)} method in order
+     * to associate the Locale with the thread processing the HTTP request.
      * </p>
      * 
      * @return the LocalizedSystemMessages for this application
      */
     public static SystemMessages getSystemMessages() {
-        if (localizedMessages == null) localizedMessages = new LocalizedSystemMessages() {
-            @Override
-            protected Locale getDefaultSystemMessageLocale() {
-                return Locale.CANADA_FRENCH;
-            }
-        };
+        if (localizedMessages == null)
+            localizedMessages = new LocalizedSystemMessages() {
+                @Override
+                protected Locale getDefaultSystemMessageLocale() {
+                    return Locale.CANADA_FRENCH;
+                }
+            };
         return localizedMessages;
     }
 
     /**
-     * Attach a listener for the begin and end of every HTTP request in the
-     * session. (Vaadin "transaction" equals "http request".)
+     * Attach a listener for the begin and end of every HTTP request in the session. (Vaadin "transaction" equals "http request".)
      */
     private void attachHttpRequestListener() {
         getContext().addTransactionListener(new TransactionListener() {

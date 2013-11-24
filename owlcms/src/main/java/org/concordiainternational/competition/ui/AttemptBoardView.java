@@ -8,7 +8,6 @@
 package org.concordiainternational.competition.ui;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Locale;
 
@@ -34,8 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.weelayout.WeeLayout;
 
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -55,7 +52,6 @@ public class AttemptBoardView extends WeeLayout implements
         CountdownTimerListener,
         IntermissionTimerListener,
         Window.CloseListener,
-        URIHandler,
         DecisionEventListener,
         Stylable
 {
@@ -69,28 +65,28 @@ public class AttemptBoardView extends WeeLayout implements
     private SessionData masterData;
     final private transient CompetitionApplication app;
 
-    private WeeLayout attemptBoardBox ;
-    private WeeLayout topRowBox ;
-    private WeeLayout bottomRowBox ;
-    private WeeLayout topRightBox ;
-    private WeeLayout bottomLeftBox ;
-    private WeeLayout bottomRightBox ;
+    private WeeLayout attemptBoardBox;
+    private WeeLayout topRowBox;
+    private WeeLayout bottomRowBox;
+    private WeeLayout topRightBox;
+    private WeeLayout bottomLeftBox;
+    private WeeLayout bottomRightBox;
 
-    private WeeLayout nameVBox ;
-    private WeeLayout startVBox ;
-    private WeeLayout teamVBox ;
-    private WeeLayout timeVBox ;
-    private WeeLayout weightVBox ;
-    private WeeLayout attemptVBox ;
-    private WeeLayout platesVBox ;
+    private WeeLayout nameVBox;
+    private WeeLayout startVBox;
+    private WeeLayout teamVBox;
+    private WeeLayout timeVBox;
+    private WeeLayout weightVBox;
+    private WeeLayout attemptVBox;
+    private WeeLayout platesVBox;
 
-    private WeeLayout nameHBox ;
-    private WeeLayout startHBox ;
-    private WeeLayout teamHBox ;
-    private WeeLayout timeHBox ;
-    private WeeLayout weightHBox ;
-    private WeeLayout attemptHBox ;
-    private WeeLayout platesHBox ;
+    private WeeLayout nameHBox;
+    private WeeLayout startHBox;
+    private WeeLayout teamHBox;
+    private WeeLayout timeHBox;
+    private WeeLayout weightHBox;
+    private WeeLayout attemptHBox;
+    private WeeLayout platesHBox;
 
     private Label nameLabel = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
     private Label clubLabel = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
@@ -117,7 +113,7 @@ public class AttemptBoardView extends WeeLayout implements
             this.publicFacing = publicFacing;
             this.stylesheetName = stylesheetName;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
         this.app = CompetitionApplication.getCurrent();
 
         boolean prevDisabledPush = app.getPusherDisabled();
@@ -229,7 +225,7 @@ public class AttemptBoardView extends WeeLayout implements
         this.setSizeFull();
         this.setMargin(true);
         this.removeAllComponents();
-        
+
         attemptBoardBox = new WeeLayout(Direction.VERTICAL);
         topRowBox = new WeeLayout(Direction.HORIZONTAL);
         bottomRowBox = new WeeLayout(Direction.HORIZONTAL);
@@ -697,12 +693,12 @@ public class AttemptBoardView extends WeeLayout implements
         unregisterAsListener();
     }
 
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        logger.debug("re-registering handlers for {} {}", this, relativeUri);
-        registerAsListener();
-        return null;
-    }
+    // @Override
+    // public DownloadStream handleURI(URL context, String relativeUri) {
+    // logger.debug("re-registering handlers for {} {}", this, relativeUri);
+    // registerAsListener();
+    // return null;
+    // }
 
     /**
      * Process a decision regarding the current lifter. Make sure that the nameLabel of the lifter does not change until after the decision
@@ -792,7 +788,7 @@ public class AttemptBoardView extends WeeLayout implements
 
         // update whether timer is shown
         refreshShowTimer();
-        
+
         // listen to close events
         app.getMainWindow().addListener((CloseListener) this);
         listenerLogger.debug("{} listening to window close events.", this);
@@ -813,7 +809,7 @@ public class AttemptBoardView extends WeeLayout implements
         logger.trace("entry");
         if (!registered)
             return;
-        
+
         // stop listening to changes in the competition data
         if (updateListener != null) {
             masterData.removeListener(updateListener);
@@ -846,7 +842,7 @@ public class AttemptBoardView extends WeeLayout implements
         // stop listening to URI changes
         // app.getMainWindow().removeURIHandler(this);
         // listenerLogger.debug("{} stopped listening to URI events.", this);
-        
+
         registered = false;
         logger.trace("exit");
     }

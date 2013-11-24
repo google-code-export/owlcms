@@ -54,8 +54,7 @@ public class LifterSorter implements Serializable {
      * <li>Lowest weight goes first</li>
      * <li>At same weight, lower attempt goes first</li>
      * <li>At same weight and same attempt, whoever lifted first goes first</li>
-     * <li>At first attempt of each lift, lowest lot number goes first if same
-     * weight is requested</li>
+     * <li>At first attempt of each lift, lowest lot number goes first if same weight is requested</li>
      * </p>
      */
     static public void liftingOrder(List<Lifter> toBeSorted) {
@@ -67,8 +66,7 @@ public class LifterSorter implements Serializable {
     }
 
     /**
-     * Sort lifters according to official rules (in place) <tableToolbar> <li>by
-     * category</li> <li>by lot number</li> </tableToolbar>
+     * Sort lifters according to official rules (in place) <tableToolbar> <li>by category</li> <li>by lot number</li> </tableToolbar>
      */
     static public void displayOrder(List<Lifter> toBeSorted) {
         Collections.sort(toBeSorted, new DisplayOrderComparator());
@@ -87,9 +85,8 @@ public class LifterSorter implements Serializable {
     }
 
     /**
-     * Sort lifters according to official rules (in place) for the technical
-     * meeting <tableToolbar> <li>by registration category</li> <li>by lot
-     * number</li> </tableToolbar>
+     * Sort lifters according to official rules (in place) for the technical meeting <tableToolbar> <li>by registration category</li> <li>by
+     * lot number</li> </tableToolbar>
      */
     static public void registrationOrder(List<Lifter> toBeSorted) {
         Collections.sort(toBeSorted, new RegistrationOrderComparator());
@@ -99,8 +96,7 @@ public class LifterSorter implements Serializable {
      * Sort lifters according to official rules, creating a new list.
      * 
      * @see #liftingOrder(List)
-     * @return lifters, ordered according to their standard order for the
-     *         technical meeting
+     * @return lifters, ordered according to their standard order for the technical meeting
      */
     static public List<Lifter> registrationOrderCopy(List<Lifter> toBeSorted) {
         List<Lifter> sorted = new ArrayList<Lifter>(toBeSorted);
@@ -108,31 +104,30 @@ public class LifterSorter implements Serializable {
         return sorted;
     }
 
-//    /**
-//     * Sort lifters according to official rules (in place) for the technical
-//     * meeting <tableToolbar> <li>by registration category</li> <li>by lot
-//     * number</li> </tableToolbar>
-//     */
-//    static public void weighInOrder(List<Lifter> toBeSorted) {
-//        Collections.sort(toBeSorted, new WeighInOrderComparator());
-//    }
-//
-//    /**
-//     * Sort lifters according to official rules, creating a new list.
-//     * 
-//     * @see #liftingOrder(List)
-//     * @return lifters, ordered according to their standard order for the
-//     *         technical meeting
-//     */
-//    static public List<Lifter> weighInOrderCopy(List<Lifter> toBeSorted) {
-//        List<Lifter> sorted = new ArrayList<Lifter>(toBeSorted);
-//        weighInOrder(sorted);
-//        return sorted;
-//    }
-    
+    // /**
+    // * Sort lifters according to official rules (in place) for the technical
+    // * meeting <tableToolbar> <li>by registration category</li> <li>by lot
+    // * number</li> </tableToolbar>
+    // */
+    // static public void weighInOrder(List<Lifter> toBeSorted) {
+    // Collections.sort(toBeSorted, new WeighInOrderComparator());
+    // }
+    //
+    // /**
+    // * Sort lifters according to official rules, creating a new list.
+    // *
+    // * @see #liftingOrder(List)
+    // * @return lifters, ordered according to their standard order for the
+    // * technical meeting
+    // */
+    // static public List<Lifter> weighInOrderCopy(List<Lifter> toBeSorted) {
+    // List<Lifter> sorted = new ArrayList<Lifter>(toBeSorted);
+    // weighInOrder(sorted);
+    // return sorted;
+    // }
+
     /**
-     * Sort lifters according to official rules (in place) for the start number
-     * <tableToolbar> <li>by registration category</li> <li>by lot
+     * Sort lifters according to official rules (in place) for the start number <tableToolbar> <li>by registration category</li> <li>by lot
      * number</li> </tableToolbar>
      */
     static public void startNumberOrder(List<Lifter> toBeSorted) {
@@ -150,7 +145,6 @@ public class LifterSorter implements Serializable {
         startNumberOrder(sorted);
         return sorted;
     }
-
 
     /**
      * Sort lifters according to winning order, creating a new list.
@@ -180,7 +174,7 @@ public class LifterSorter implements Serializable {
      * @param sinclair
      */
     @SuppressWarnings("unused")
-	private void teamPointsOrder(List<Lifter> toBeSorted, Ranking rankingType) {
+    private void teamPointsOrder(List<Lifter> toBeSorted, Ranking rankingType) {
         Collections.sort(toBeSorted, new TeamPointsOrderComparator(rankingType));
     }
 
@@ -189,7 +183,7 @@ public class LifterSorter implements Serializable {
      * @param combined
      */
     @SuppressWarnings("unused")
-	private void combinedPointsOrder(List<Lifter> toBeSorted, Ranking rankingType) {
+    private void combinedPointsOrder(List<Lifter> toBeSorted, Ranking rankingType) {
         Collections.sort(toBeSorted, new CombinedPointsOrderComparator(rankingType));
     }
 
@@ -206,8 +200,7 @@ public class LifterSorter implements Serializable {
     }
 
     /**
-     * Assign lot numbers, sequentially. Normally called by
-     * {@link #drawLots(List)}.
+     * Assign lot numbers, sequentially. Normally called by {@link #drawLots(List)}.
      * 
      * @param shuffledList
      */
@@ -220,8 +213,7 @@ public class LifterSorter implements Serializable {
     }
 
     /**
-     * Sets the current lifter as such (setCurrentLifter(true)), the others to
-     * false
+     * Sets the current lifter as such (setCurrentLifter(true)), the others to false
      * 
      * @param lifters
      *            Assumed to be already sorted in lifting order.
@@ -316,8 +308,8 @@ public class LifterSorter implements Serializable {
     }
 
     /**
-     * Check that lifter is one of the howMany previous lifters. The list of
-     * lifters is assumed to have been sorted with {@link #liftTimeOrderCopy}
+     * Check that lifter is one of the howMany previous lifters. The list of lifters is assumed to have been sorted with
+     * {@link #liftTimeOrderCopy}
      * 
      * @see #liftingOrder(List)
      * @return true if lifter is found and meets criterion.
@@ -325,13 +317,14 @@ public class LifterSorter implements Serializable {
      */
     static public boolean isRecentLifter(Lifter lifter, List<Lifter> sortedLifters, int howMany) {
         int rank = sortedLifters.indexOf(lifter);
-        if (rank >= 0 && rank <= howMany - 1) return true;
+        if (rank >= 0 && rank <= howMany - 1)
+            return true;
         return false;
     }
 
-    
     /**
      * Assign start numbers to lifters
+     * 
      * @param lifters
      */
     public static void assignStartNumbers(List<Lifter> sortedList) {
@@ -347,54 +340,53 @@ public class LifterSorter implements Serializable {
 
         }
     }
-    
-    
-//    /**
-//     * Assign medals, sequentially.
-//     * 
-//     * @param sortedList
-//     */
-//    static public void assignMedals(List<Lifter> sortedList) {
-//        Category prevCategory = null;
-//        Integer prevAgeGroup = null;
-//        Integer curAgeGroup = null;
-//
-//        int rank = 1;
-//        for (Lifter curLifter : sortedList) {
-//            Category curCategory = null;
-//            if (WinningOrderComparator.useRegistrationCategory) {
-//                curCategory = curLifter.getRegistrationCategory();
-//            } else {
-//                curCategory = curLifter.getCategory();
-//            }
-//            if (Competition.isMasters()) {
-//                curAgeGroup = curLifter.getAgeGroup();
-//            }
-//
-//            if (!equals(curCategory, prevCategory) || !equals(curAgeGroup, prevAgeGroup)) {
-//                // category boundary has been crossed
-//                rank = 1;
-//            }
-//
-//            if (curLifter.isInvited()) {
-//                logger.trace("lifter {}  totalRank={} total={}",
-//                		new Object[] { curLifter, -1, curLifter.getTotal() }); //$NON-NLS-1$
-//                curLifter.setRank(-1);
-//            } else if (rank <= 3 && curLifter.getTotal() > 0) {
-//                logger.trace("lifter {}  totalRank={} total={}",
-//                		new Object[] { curLifter, rank, curLifter.getTotal() }); //$NON-NLS-1$
-//                curLifter.setRank(rank);
-//                rank++;
-//            } else {
-//                logger.trace("lifter {}  totalRank={} total={}",
-//                		new Object[] { curLifter, 0, curLifter.getTotal() }); //$NON-NLS-1$
-//                curLifter.setRank(0);
-//                rank++;
-//            }
-//            prevCategory = curCategory;
-//            prevAgeGroup = curAgeGroup;
-//        }
-//    }
+
+    // /**
+    // * Assign medals, sequentially.
+    // *
+    // * @param sortedList
+    // */
+    // static public void assignMedals(List<Lifter> sortedList) {
+    // Category prevCategory = null;
+    // Integer prevAgeGroup = null;
+    // Integer curAgeGroup = null;
+    //
+    // int rank = 1;
+    // for (Lifter curLifter : sortedList) {
+    // Category curCategory = null;
+    // if (WinningOrderComparator.useRegistrationCategory) {
+    // curCategory = curLifter.getRegistrationCategory();
+    // } else {
+    // curCategory = curLifter.getCategory();
+    // }
+    // if (Competition.isMasters()) {
+    // curAgeGroup = curLifter.getAgeGroup();
+    // }
+    //
+    // if (!equals(curCategory, prevCategory) || !equals(curAgeGroup, prevAgeGroup)) {
+    // // category boundary has been crossed
+    // rank = 1;
+    // }
+    //
+    // if (curLifter.isInvited()) {
+    // logger.trace("lifter {}  totalRank={} total={}",
+    //                		new Object[] { curLifter, -1, curLifter.getTotal() }); //$NON-NLS-1$
+    // curLifter.setRank(-1);
+    // } else if (rank <= 3 && curLifter.getTotal() > 0) {
+    // logger.trace("lifter {}  totalRank={} total={}",
+    //                		new Object[] { curLifter, rank, curLifter.getTotal() }); //$NON-NLS-1$
+    // curLifter.setRank(rank);
+    // rank++;
+    // } else {
+    // logger.trace("lifter {}  totalRank={} total={}",
+    //                		new Object[] { curLifter, 0, curLifter.getTotal() }); //$NON-NLS-1$
+    // curLifter.setRank(0);
+    // rank++;
+    // }
+    // prevCategory = curCategory;
+    // prevAgeGroup = curAgeGroup;
+    // }
+    // }
 
     /**
      * Assign ranks, sequentially.
@@ -414,7 +406,8 @@ public class LifterSorter implements Serializable {
                 if (curCategory == null && rankingType == Ranking.CUSTOM) {
                     curCategory = curLifter.getCategory();
                 }
-                logger.trace("lifter {}, category {}, regcategory {}", new Object[]{curLifter,curLifter.getCategory(),curLifter.getRegistrationCategory()});
+                logger.trace("lifter {}, category {}, regcategory {}",
+                        new Object[] { curLifter, curLifter.getCategory(), curLifter.getRegistrationCategory() });
             } else {
                 curCategory = curLifter.getCategory();
             }
@@ -428,15 +421,14 @@ public class LifterSorter implements Serializable {
                 // not masters, only consider category boundary
                 if (!equals(curCategory, prevCategory)) {
                     // category boundary has been crossed
-                    logger.trace("category boundary crossed {}",curCategory);
+                    logger.trace("category boundary crossed {}", curCategory);
                     rank = 1;
                 }
             }
 
-
             if (curLifter.isInvited() || !curLifter.getTeamMember()) {
                 logger.trace("not counted {}  {}Rank={} total={} {}",
-                		new Object[] { curLifter, rankingType, -1, curLifter.getTotal(), curLifter.isInvited() }); //$NON-NLS-1$
+                        new Object[] { curLifter, rankingType, -1, curLifter.getTotal(), curLifter.isInvited() }); //$NON-NLS-1$
                 setRank(curLifter, -1, rankingType);
                 setPoints(curLifter, 0, rankingType);
             } else {
@@ -447,16 +439,16 @@ public class LifterSorter implements Serializable {
                 if (rankingTotal > 0) {
                     setRank(curLifter, rank, rankingType);
                     logger.trace("lifter {}  {}rank={} total={}",
-                    		new Object[] { curLifter, rankingType, getRank(curLifter, rankingType), rankingTotal }); //$NON-NLS-1$
+                            new Object[] { curLifter, rankingType, getRank(curLifter, rankingType), rankingTotal }); //$NON-NLS-1$
                     rank++;
                 } else {
                     logger.trace("lifter {}  {}rank={} total={}",
-                    		new Object[] { curLifter, rankingType, 0, rankingTotal }); //$NON-NLS-1$
+                            new Object[] { curLifter, rankingType, 0, rankingTotal }); //$NON-NLS-1$
                     setRank(curLifter, 0, rankingType);
                     rank++;
                 }
-                final float points = computePoints(curLifter,rankingType);
-                setPoints(curLifter,points,rankingType);
+                final float points = computePoints(curLifter, rankingType);
+                setPoints(curLifter, points, rankingType);
 
             }
             prevCategory = curCategory;
@@ -485,20 +477,20 @@ public class LifterSorter implements Serializable {
 
             if (curLifter.isInvited() || !curLifter.getTeamMember()) {
                 logger.trace("invited {}  {}rank={} total={} {}",
-                		new Object[] { curLifter, rankingType, -1, curLifter.getTotal(), curLifter.isInvited() }); //$NON-NLS-1$
+                        new Object[] { curLifter, rankingType, -1, curLifter.getTotal(), curLifter.isInvited() }); //$NON-NLS-1$
                 setRank(curLifter, -1, rankingType);
                 setPoints(curLifter, 0, rankingType);
             } else {
                 setTeamRank(curLifter, 0, rankingType);
                 final double rankingTotal = getRankingTotal(curLifter, rankingType);
                 if (rankingTotal > 0) {
-                	setRank(curLifter, rank, rankingType);
+                    setRank(curLifter, rank, rankingType);
                     logger.trace("lifter {}  {}rank={} {}={} total={}",
-                    		new Object[] { curLifter, rankingType, rank, rankingTotal }); //$NON-NLS-1$
+                            new Object[] { curLifter, rankingType, rank, rankingTotal }); //$NON-NLS-1$
                     rank++;
                 } else {
                     logger.trace("lifter {}  {}rank={} total={}",
-                    		new Object[] { curLifter, rankingType, 0, rankingTotal }); //$NON-NLS-1$
+                            new Object[] { curLifter, rankingType, 0, rankingTotal }); //$NON-NLS-1$
                     setRank(curLifter, 0, rankingType);
                     rank++;
                 }
@@ -577,19 +569,19 @@ public class LifterSorter implements Serializable {
         logger.trace(curLifter + " " + rankingType + " points=" + points);
         switch (rankingType) {
         case SNATCH:
-        	curLifter.setSnatchPoints(points);
-        	break;
+            curLifter.setSnatchPoints(points);
+            break;
         case CLEANJERK:
-        	curLifter.setCleanJerkPoints(points);
-        	break;
+            curLifter.setCleanJerkPoints(points);
+            break;
         case TOTAL:
-        	curLifter.setTotalPoints(points);
-        	break;
+            curLifter.setTotalPoints(points);
+            break;
         case CUSTOM:
-        	curLifter.setCustomPoints(points); 
-        	break;
+            curLifter.setCustomPoints(points);
+            break;
         case COMBINED:
-        	return; // computed
+            return; // computed
         }
     }
 
@@ -607,11 +599,11 @@ public class LifterSorter implements Serializable {
         case TOTAL:
             return pointsFormula(curLifter.getTotalRank(), curLifter);
         case CUSTOM:
-            return pointsFormula(curLifter.getCustomRank(), curLifter);            
+            return pointsFormula(curLifter.getCustomRank(), curLifter);
         case COMBINED:
             return pointsFormula(curLifter.getSnatchRank(), curLifter)
-                + pointsFormula(curLifter.getCleanJerkRank(), curLifter)
-                + pointsFormula(curLifter.getTotalRank(), curLifter);
+                    + pointsFormula(curLifter.getCleanJerkRank(), curLifter)
+                    + pointsFormula(curLifter.getTotalRank(), curLifter);
         }
         return 0;
     }
@@ -622,9 +614,12 @@ public class LifterSorter implements Serializable {
      * @return
      */
     private static float pointsFormula(Integer rank, Lifter curLifter) {
-        if (rank == null || rank <= 0) return 0;
-        if (rank == 1) return 28;
-        if (rank == 2) return 25;
+        if (rank == null || rank <= 0)
+            return 0;
+        if (rank == 1)
+            return 28;
+        if (rank == 2)
+            return 25;
         return 26 - rank;
     }
 
@@ -668,7 +663,7 @@ public class LifterSorter implements Serializable {
         case TOTAL:
             return curLifter.getRank();
         case CUSTOM:
-            return curLifter.getCustomRank();            
+            return curLifter.getCustomRank();
         }
         return 0;
     }
@@ -697,41 +692,41 @@ public class LifterSorter implements Serializable {
     }
 
     static private boolean equals(Object o1, Object o2) {
-        if (o1 == null && o2 == null) return true;
-        if (o1 != null) return o1.equals(o2);
+        if (o1 == null && o2 == null)
+            return true;
+        if (o1 != null)
+            return o1.equals(o2);
         return false; // o1 is null but not o2
     }
 
-
-
-//    public Collection<Team> fullResults(List<Lifter> lifters) {
-//        resultsOrder(lifters, Ranking.SNATCH);
-//        assignCategoryRanksAndPoints(lifters, Ranking.SNATCH);
-//        teamPointsOrder(lifters, Ranking.SNATCH);
-//        assignRanksWithinTeam(lifters, Ranking.SNATCH);
-//
-//        resultsOrder(lifters, Ranking.CLEANJERK);
-//        assignCategoryRanksAndPoints(lifters, Ranking.CLEANJERK);
-//        teamPointsOrder(lifters, Ranking.CLEANJERK);
-//        assignRanksWithinTeam(lifters, Ranking.CLEANJERK);
-//
-//        resultsOrder(lifters, Ranking.TOTAL);
-//        assignCategoryRanksAndPoints(lifters, Ranking.TOTAL);
-//        teamPointsOrder(lifters, Ranking.TOTAL);
-//        assignRanksWithinTeam(lifters, Ranking.TOTAL);
-//
-//        combinedPointsOrder(lifters, Ranking.COMBINED);
-//        assignCategoryRanksAndPoints(lifters, Ranking.COMBINED);
-//        teamPointsOrder(lifters, Ranking.COMBINED);
-//        assignRanksWithinTeam(lifters, Ranking.COMBINED);
-//
-//        resultsOrder(lifters, Ranking.SINCLAIR);
-//        assignCategoryRanksAndPoints(lifters, Ranking.SINCLAIR);
-//        teamPointsOrder(lifters, Ranking.SINCLAIR);
-//        assignRanksWithinTeam(lifters, Ranking.SINCLAIR);
-//
-//        HashSet<Team> teams = new HashSet<Team>();
-//        return new TreeSet<Team>(teams);
-//    }
+    // public Collection<Team> fullResults(List<Lifter> lifters) {
+    // resultsOrder(lifters, Ranking.SNATCH);
+    // assignCategoryRanksAndPoints(lifters, Ranking.SNATCH);
+    // teamPointsOrder(lifters, Ranking.SNATCH);
+    // assignRanksWithinTeam(lifters, Ranking.SNATCH);
+    //
+    // resultsOrder(lifters, Ranking.CLEANJERK);
+    // assignCategoryRanksAndPoints(lifters, Ranking.CLEANJERK);
+    // teamPointsOrder(lifters, Ranking.CLEANJERK);
+    // assignRanksWithinTeam(lifters, Ranking.CLEANJERK);
+    //
+    // resultsOrder(lifters, Ranking.TOTAL);
+    // assignCategoryRanksAndPoints(lifters, Ranking.TOTAL);
+    // teamPointsOrder(lifters, Ranking.TOTAL);
+    // assignRanksWithinTeam(lifters, Ranking.TOTAL);
+    //
+    // combinedPointsOrder(lifters, Ranking.COMBINED);
+    // assignCategoryRanksAndPoints(lifters, Ranking.COMBINED);
+    // teamPointsOrder(lifters, Ranking.COMBINED);
+    // assignRanksWithinTeam(lifters, Ranking.COMBINED);
+    //
+    // resultsOrder(lifters, Ranking.SINCLAIR);
+    // assignCategoryRanksAndPoints(lifters, Ranking.SINCLAIR);
+    // teamPointsOrder(lifters, Ranking.SINCLAIR);
+    // assignRanksWithinTeam(lifters, Ranking.SINCLAIR);
+    //
+    // HashSet<Team> teams = new HashSet<Team>();
+    // return new TreeSet<Team>(teams);
+    // }
 
 }

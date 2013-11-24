@@ -7,7 +7,6 @@
  */
 package org.concordiainternational.competition.ui;
 
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Locale;
 
@@ -35,7 +34,6 @@ import org.vaadin.notifique.Notifique.Message;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.MethodProperty;
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
@@ -63,9 +61,9 @@ public class LifterInfo extends VerticalLayout implements
         Notifyable, UpdateEventListener
 {
     private static final Logger logger = LoggerFactory.getLogger(LifterInfo.class);
-//    private static final Logger timingLogger = LoggerFactory.getLogger("timing."+SessionData.class.getSimpleName()); //$NON-NLS-1$
-    private static final Logger buttonLogger = LoggerFactory.getLogger("buttons."+SessionData.class.getSimpleName()); //$NON-NLS-1$
-    private static Logger listenerLogger = LoggerFactory.getLogger("listeners."+SessionData.class.getSimpleName()); //$NON-NLS-1$
+    //    private static final Logger timingLogger = LoggerFactory.getLogger("timing."+SessionData.class.getSimpleName()); //$NON-NLS-1$
+    private static final Logger buttonLogger = LoggerFactory.getLogger("buttons." + SessionData.class.getSimpleName()); //$NON-NLS-1$
+    private static Logger listenerLogger = LoggerFactory.getLogger("listeners." + SessionData.class.getSimpleName()); //$NON-NLS-1$
 
     private static final long serialVersionUID = -3687013148334708795L;
     public Locale locale;
@@ -109,8 +107,6 @@ public class LifterInfo extends VerticalLayout implements
         notAnnounced = Messages.getString("LifterInfo.NotAnnounced", locale);
         announced = Messages.getString("LifterInfo.Announced", locale);
 
-        // URI handler must remain, so is not part of the register/unRegister pair
-        app.getMainWindow().addURIHandler(this);
         registerAsListener();
     }
 
@@ -523,7 +519,7 @@ public class LifterInfo extends VerticalLayout implements
         synchronized (app) {
             timerDisplay.setEnabled(false); // show that timer has stopped.
             setTimerDisplay(remaining);
-            timerControls.enableButtons(groupData,"LifterInfo forceTimeRemaining");
+            timerControls.enableButtons(groupData, "LifterInfo forceTimeRemaining");
             setBlocked(false);
         }
         showInteractionNotification(originatingApp, reason);
@@ -537,7 +533,7 @@ public class LifterInfo extends VerticalLayout implements
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {
             if (timerControls != null) {
-                timerControls.enableButtons(groupData,"LifterInfo pause");
+                timerControls.enableButtons(groupData, "LifterInfo pause");
             }
             if (timerDisplay != null) {
                 timerDisplay.setEnabled(false);
@@ -560,8 +556,8 @@ public class LifterInfo extends VerticalLayout implements
         // display notifications from other apps, except for no_timer and not_announced, which
         // are mistakes that should always be shown.
         boolean announcerShouldSee = (reason == InteractionNotificationReason.NO_TIMER
-                                || reason == InteractionNotificationReason.NOT_ANNOUNCED
-                                || reason == InteractionNotificationReason.CLOCK_EXPIRED);
+                || reason == InteractionNotificationReason.NOT_ANNOUNCED
+                || reason == InteractionNotificationReason.CLOCK_EXPIRED);
         if (isTop() && (app != originatingApp || announcerShouldSee)) {
             CompetitionApplication receivingApp = app;
 
@@ -608,9 +604,9 @@ public class LifterInfo extends VerticalLayout implements
         setBlocked(false);
         synchronized (app) {
             if (timerControls != null) {
-                timerControls.enableButtons(groupData,"LifterInfo start");
+                timerControls.enableButtons(groupData, "LifterInfo start");
                 LoggerUtils.traceBack(buttonLogger);
-            } 
+            }
             if (timerDisplay != null) {
                 timerDisplay.setEnabled(true);
             }
@@ -727,7 +723,7 @@ public class LifterInfo extends VerticalLayout implements
                 }
                 synchronized (app) {
                     if (timerControls != null) {
-                        timerControls.enableButtons(groupData,"LifterInfo.updateEvent");
+                        timerControls.enableButtons(groupData, "LifterInfo.updateEvent");
                     }
                 }
                 app.push();
@@ -744,7 +740,7 @@ public class LifterInfo extends VerticalLayout implements
                 logger.trace("B YES notification for {} accepted={}", newEvent, accepted);
                 doDisplayDecision(accepted, attemptedWeight, lifter2);
             }
-            
+
             /**
              * @param curEvent
              * @param prevEvent1
@@ -799,8 +795,6 @@ public class LifterInfo extends VerticalLayout implements
         }).start();
     }
 
-
-
     public void doDisplayDecision(final Boolean accepted, Integer attemptedWeight, final Lifter lifter2) {
         synchronized (app) {
             final ApplicationView currentView = app.components.currentView;
@@ -812,7 +806,7 @@ public class LifterInfo extends VerticalLayout implements
                 String message;
 
                 if (accepted != null) {
-                    
+
                     final String name = (lifter2 != null ? lifter2.getLastName().toUpperCase() + " " + lifter2.getFirstName()
                             : " «?» ");
                     if (accepted) {
@@ -829,7 +823,7 @@ public class LifterInfo extends VerticalLayout implements
         }
         app.push();
     }
-    
+
     /**
      * @return
      */
@@ -913,13 +907,13 @@ public class LifterInfo extends VerticalLayout implements
         unregisterAsListener();
     }
 
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        logger.debug("registering listeners");
-        // called on refresh
-        registerAsListener();
-        return null;
-    }
+    // @Override
+    // public DownloadStream handleURI(URL context, String relativeUri) {
+    // logger.debug("registering listeners");
+    // // called on refresh
+    // registerAsListener();
+    // return null;
+    // }
 
     @Override
     public void refresh() {

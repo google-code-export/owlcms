@@ -68,7 +68,7 @@ public class MPlatesInfoView extends VerticalLayout implements
         } else {
             this.viewName = viewName;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         app = CompetitionApplication.getCurrent();
         this.addStyleName("loadChart");

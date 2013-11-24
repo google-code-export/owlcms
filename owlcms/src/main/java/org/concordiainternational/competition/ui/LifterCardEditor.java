@@ -7,7 +7,6 @@
  */
 package org.concordiainternational.competition.ui;
 
-import java.net.URL;
 import java.util.Locale;
 
 import org.concordiainternational.competition.data.Lifter;
@@ -28,7 +27,6 @@ import com.vaadin.data.validator.IntegerValidator;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.event.ShortcutAction;
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.Sizeable;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -95,6 +93,7 @@ public class LifterCardEditor extends Panel implements
         root.addComponent(rightHandSide);
 
         addActionHandler(this);
+        registerAsListener();
     }
 
     private Boolean sticky = false;
@@ -141,11 +140,11 @@ public class LifterCardEditor extends Panel implements
                     @Override
                     public void buttonClick(ClickEvent event) {
                         LoggerUtils.buttonSetup(liftList.getGroupData());
-                        
+
                         // next statement no longer needed as we are currently listening to the lifter
-                        // and once setForceAsCurrent fires, the various new editors will register themselves                      
+                        // and once setForceAsCurrent fires, the various new editors will register themselves
                         // liftList.getGroupData().trackEditors(lifter,previousLifter, editor);
-                        
+
                         logger.info("FORCE AS CURRENT button pushed.");
                         final CountdownTimer timer = liftList.getGroupData().getTimer();
                         if (timer != null)
@@ -633,13 +632,13 @@ public class LifterCardEditor extends Panel implements
         unregisterAsListener();
     }
 
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        logger.trace("registering listeners");
-        // called on refresh
-        registerAsListener();
-        return null;
-    }
+    // @Override
+    // public DownloadStream handleURI(URL context, String relativeUri) {
+    // logger.trace("registering listeners");
+    // // called on refresh
+    // registerAsListener();
+    // return null;
+    // }
 
     @Override
     public void refresh() {

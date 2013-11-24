@@ -60,6 +60,7 @@ import com.vaadin.terminal.gwt.server.ChangeVariablesErrorEvent;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.AbstractComponentContainer;
+import com.vaadin.ui.ComponentContainer;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UriFragmentUtility;
 import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
@@ -92,12 +93,12 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         logger.debug("new application {} {}", this, this.getLocale());
     }
 
-    public CompetitionApplication(String suffix) {
-        super();
-        current.set(this);
-        setAppSuffix(suffix);
-        logger.debug("new application {} {}", this);
-    }
+    // public CompetitionApplication(String suffix) {
+    // super();
+    // current.set(this);
+    // setAppSuffix(suffix);
+    // logger.debug("new application {} {}", this);
+    // }
 
     /**
      * @return the current application.
@@ -221,8 +222,6 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
     private String appSuffix = "/app/";
 
-    private Panel mobilePanel;
-
     private boolean layoutCreated;
 
     private MobileHome mobileMenu;
@@ -231,8 +230,6 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
     private VerticalLayout mainLayout;
 
-    private ApplicationView mainLayoutContent;
-
     private Thread waitingForFragment;
 
     private boolean refreshing;
@@ -240,7 +237,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     private String frag;
 
     public void displayRefereeConsole(int refereeIndex) {
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,"ref" + refereeIndex);
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, "ref" + refereeIndex);
 
         // remove all listeners on current view.
         removeAllListeners();
@@ -248,12 +245,12 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         final ORefereeConsole view = (ORefereeConsole) components
                 .getViewByName(CompetitionApplicationComponents.OREFEREE_CONSOLE, false);
         view.setIndex(refereeIndex);
-        setMainLayoutContent(view);
-        uriFragmentUtility.setFragment(view.getFragment(), false);
+        setMainPanelContent(view);
+
     }
 
     public void displayOJuryConsole(int refereeIndex) {
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,"oJury" + refereeIndex);
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, "oJury" + refereeIndex);
 
         // remove all listeners on current view.
         removeAllListeners();
@@ -261,25 +258,23 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         final ORefereeConsole view = (ORefereeConsole) components
                 .getViewByName(CompetitionApplicationComponents.OJURY_CONSOLE, false);
         view.setIndex(refereeIndex);
-        setMainLayoutContent(view);
-        uriFragmentUtility.setFragment(view.getFragment(), false);
+        setMainPanelContent(view);
     }
 
     public void displayMRefereeConsole(int refereeIndex) {
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,"mRef" + refereeIndex);
-        
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, "mRef" + refereeIndex);
+
         // remove all listeners on current view.
         removeAllListeners();
 
         final MRefereeConsole view = (MRefereeConsole) components
                 .getViewByName(CompetitionApplicationComponents.MREFEREE_CONSOLE, false);
         view.setIndex(refereeIndex);
-        setMainLayoutContent(view);
-        uriFragmentUtility.setFragment(view.getFragment(), false);
+        setMainPanelContent(view);
     }
 
     public void displayMJuryConsole(int refereeIndex) {
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,"mJury" + refereeIndex);
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, "mJury" + refereeIndex);
 
         // remove all listeners on current view.
         removeAllListeners();
@@ -287,47 +282,43 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         final MJuryConsole view = (MJuryConsole) components
                 .getViewByName(CompetitionApplicationComponents.MJURY_CONSOLE, false);
         view.setIndex(refereeIndex);
-        setMainLayoutContent(view);
-        uriFragmentUtility.setFragment(view.getFragment(), false);
+        setMainPanelContent(view);
     }
 
     /**
      * @param viewName
      */
     public void display(String viewName) {
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,viewName);
-        
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, viewName);
+
         // remove all listeners on current view.
         removeAllListeners();
 
         ApplicationView view = components.getViewByName(viewName, false);
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,viewName + view.getInstanceId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, viewName + view.getInstanceId());
         view.setSizeFull();
-        setMainLayoutContent(view);
-        uriFragmentUtility.setFragment(view.getFragment(), false);
+        setMainPanelContent(view);
     }
 
     /**
      * @param viewName
      */
     public void displayWithStyle(String viewName, String stylesheet) {
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,viewName+"_"+stylesheet);
-    
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, viewName + "_" + stylesheet);
+
         // remove all listeners on current view.
         removeAllListeners();
-    
+
         ApplicationView view = components.getViewByName(viewName, false, stylesheet);
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,viewName+"_"+stylesheet + view.getInstanceId());
-        setMainLayoutContent(view);
-    
-        uriFragmentUtility.setFragment(view.getFragment(), false);
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, viewName + "_" + stylesheet + view.getInstanceId());
+        setMainPanelContent(view);
     }
 
     public void removeAllListeners() {
         // remove all listeners on current view.
-        ApplicationView mainLayoutContent2 = getMainLayoutContent();
-        if (mainLayoutContent2 != null) {
-            mainLayoutContent2.unregisterAsListener();
+        ApplicationView currentView = components.getCurrentView();
+        if (currentView != null) {
+            currentView.unregisterAsListener();
         }
     }
 
@@ -343,12 +334,12 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
 
     synchronized public void push() {
-//        if (logger.isDebugEnabled()) {
-//            String string = LoggerUtils.mdcGet("view");
-//            if (string!= null && string.startsWith(DEFAULT_VIEW)) {
-//                LoggerUtils.logException(logger, new Exception("pushing from competitionEditor traceback"));
-//            }            
-//        }
+        // if (logger.isDebugEnabled()) {
+        // String string = LoggerUtils.mdcGet("view");
+        // if (string!= null && string.startsWith(DEFAULT_VIEW)) {
+        // LoggerUtils.logException(logger, new Exception("pushing from competitionEditor traceback"));
+        // }
+        // }
 
         pusher = this.ensurePusher();
         if (!pusherDisabled) {
@@ -373,12 +364,12 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     // }
 
     public CompetitionSession getCurrentCompetitionSession() {
-//        if (getCurrentGroup() != null) {
-//            final String name = getCurrentGroup().getName();
-//            LoggerUtils.mdcPut("currentGroup", name);
-//        } else {
-//            LoggerUtils.mdcPut("currentGroup", "noSession");
-//        }
+        // if (getCurrentGroup() != null) {
+        // final String name = getCurrentGroup().getName();
+        // LoggerUtils.mdcPut("currentGroup", name);
+        // } else {
+        // LoggerUtils.mdcPut("currentGroup", "noSession");
+        // }
         return getCurrentGroup();
     }
 
@@ -486,7 +477,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
         // create the empty page.
         buildEmptyLayout();
-        
+
         logger.debug("end of init");
     }
 
@@ -499,7 +490,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
             this.setLocale(getDefaultLocale());
 
         if (components == null) {
-            components = new CompetitionApplicationComponents(new Panel(), null, null);
+            components = new CompetitionApplicationComponents(null, null);
         }
 
         // set system message language if any are shown while "init" is running.
@@ -554,7 +545,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
             } else {
                 currentView.refresh();
             }
-            setMainLayoutContent(currentView);
+            setMainPanelContent(currentView);
         }
 
     }
@@ -683,7 +674,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
                 ((LocalizedSystemMessages) getSystemMessages()).setThreadLocale(getLocale());
                 current.set(CompetitionApplication.this); // make the application available via ThreadLocal
                 HttpServletRequest request = (HttpServletRequest) transactionData;
-                
+
                 final String requestURI = request.getRequestURI();
                 checkURI(requestURI);
                 if (requestURI.contains("juryDisplay")) {
@@ -692,7 +683,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
                     request.getSession(true).setMaxInactiveInterval(3600);
                 }
                 getCurrentCompetitionSession(); // sets up the MDC
-                
+
             }
         };
         getContext().addTransactionListener(listener);
@@ -718,87 +709,59 @@ public class CompetitionApplication extends Application implements HbnSessionMan
             @Override
             public void fragmentChanged(FragmentChangedEvent source) {
                 String fragment = source.getUriFragmentUtility().getFragment();
-                logger.debug("fragmentChanged {}", fragment);  
-                if (waitingForFragment != null) {
-                    waitingForFragment.interrupt();
-                    waitingForFragment = null;
-                }              
+                logger.debug("fragmentChanged {}", fragment);
+                interruptWaitForFragment();
                 displayView(fragment);
             }
         });
 
-        
         components.mainWindow.addURIHandler(new URIHandler() {
             @Override
             public DownloadStream handleURI(URL url, String relativeUri) {
                 final String externalForm = url.toExternalForm();
                 contextURI = externalForm;
                 logger.debug("url/frag {} {}", externalForm, relativeUri);
-                
-                // if there is no fragment on the URL, or if we are refreshing, we won't get a fragment changed.
-                waitingForFragment = new Thread(new Runnable(){
 
-                    @Override
-                    public void run() {
-                        try {
-                            if (!refreshing) {
-                                logger.debug("wait for fragment - start");
-                                Thread.sleep(2000);
-                                String defaultView = DEFAULT_APP_VIEW;
-                                if (externalForm.endsWith("/m/")) {
-                                    defaultView = DEFAULT_M_VIEW;
-                                }
-                                
-                                logger.debug("wait for fragment - stop; displaying default view = {}.", defaultView);
-                                synchronized (CompetitionApplication.this) {
-                                    display(defaultView);
-                                }
-                                CompetitionApplication.this.push();
-                            } else {
-                                logger.debug("refreshing, fragment={}");
-                                displayView(frag);
-                            }
-                        } catch (InterruptedException e) {
-                            // do nothing
-                            logger.debug("wait for fragment - fragment changed");
-                        }
-                        
-                    }});
-                
+                // if there is no fragment on the URL, or if we are refreshing, we won't get a fragment changed.
+                waitForFragment(externalForm);
+
                 createMainLayout(contextURI);
                 waitingForFragment.start();
                 return null;
             }
+
         });
     }
-    
+
     public void createMainLayout(final String externalForm) {
         logger.debug("uris: {}", externalForm);
         frag = CompetitionApplication.getCurrent().getUriFragmentUtility().getFragment();
         logger.debug("fragment='{}'", frag);
 
-        if (contextURI.endsWith("/app/")) {
-            // LoggerUtils.logException(logger, new Exception("creating app layout !"+externalForm+" "+relativeUri));
-            if (isLayoutCreated()) {
-                logger.debug("app layout exists, skipping layout creation");
-                refreshing = true;
+        synchronized (this) {
+            if (contextURI.endsWith("/app/")) {
+                // LoggerUtils.logException(logger, new Exception("creating app layout !"+externalForm+" "+relativeUri));
+                if (isLayoutCreated()) {
+                    logger.debug("app layout exists, skipping layout creation");
+                    refreshing = true;
+                } else {
+                    logger.debug("creating app layout");
+                    refreshing = false;
+                    createAppLayout(mainLayout);
+                }
+            } else if (contextURI.endsWith("/m/")) {
+                // LoggerUtils.logException(logger, new Exception("creating mobile layout !"+externalForm+" "+contextURI));
+                if (isLayoutCreated()) {
+                    logger.debug("mobile layout exists, skipping layout creation");
+                    refreshing = true;
+                } else {
+                    logger.debug("creating mobile layout");
+                    refreshing = false;
+                    createMobileLayout(mainLayout);
+                }
             } else {
-                logger.debug("creating app layout");
-                refreshing = false;
-                createAppLayout(mainLayout);
+                throw new RuntimeException(Messages.getString("CompetitionApplication.invalidURL", getLocale()));
             }
-        } else if (contextURI.endsWith("/m/")) {
-            // LoggerUtils.logException(logger, new Exception("creating mobile layout !"+externalForm+" "+contextURI));
-            if (isLayoutCreated()) {
-                logger.debug("mobile layout exists, skipping layout creation");
-                refreshing = true;
-            } else {
-                logger.debug("creating mobile layout");
-                refreshing = false;
-                createMobileLayout(mainLayout);
-            }
-        } else {
-            throw new RuntimeException(Messages.getString("CompetitionApplication.invalidURL", getLocale()));
         }
         push();
         setLayoutCreated(true);
@@ -808,20 +771,21 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @param mainLayout1
      */
     private void createAppLayout(VerticalLayout mainLayout1) {
-        mobilePanel = null;
         setTheme("competition"); //$NON-NLS-1$
+        components.setMainPanel(new Panel());
+        Panel mainPanel = components.getMainPanel();
+        mainPanel.setSizeFull();
+        mainLayout1.setSizeFull();
 
         // // include a sound player
         // mainLayout1.addComponent(buzzer);
 
-        mainLayout1.setSizeFull();
-
         components.menu = new Menu();
         mainLayout1.addComponent(components.menu);
         components.menu.setVisible(false);
-        mainLayout1.addComponent(components.mainPanel);
-        mainLayout1.setExpandRatio(components.mainPanel, 1);
-        components.mainPanel.setSizeFull();
+
+        mainLayout1.addComponent(mainPanel);
+        mainLayout1.setExpandRatio(mainPanel, 1.0F);
 
         getMainWindow().setContent(mainLayout1);
     }
@@ -830,52 +794,45 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * @param mainLayout1
      */
     protected void createMobileLayout(VerticalLayout mainLayout1) {
-        components.mainPanel = null;
         setTheme("m");
-        
-        mobilePanel = new Panel();
-        mainLayout1.removeAllComponents();
-        mainLayout1.setMargin(false, false, false, false);
+        components.setMainPanel(new Panel());
+        Panel mainPanel = components.getMainPanel();
+        mainPanel.setSizeFull();
         mainLayout1.setSizeFull();
-        mainLayout1.addComponent(mobilePanel);
-        mobilePanel.setSizeFull();
-        mobilePanel.setVisible(false);
+
+        mainLayout1.setMargin(false, false, false, false);
+        mainLayout1.addComponent(mainPanel);
+        mainLayout1.setExpandRatio(mainPanel, 1.0F);
 
         getMainWindow().setContent(mainLayout1);
     }
 
-    public void setMainLayoutContent(ApplicationView c) {
-        logger.debug(">>>>> setting content for {} -- view {}", this, c);
-//        logger.debug("setMainLayoutContent {} {}", c.getClass().getSimpleName(), c.needsBlack());
-//        LoggerUtils.logException(logger, new Exception("traceback"));
+    public void setMainPanelContent(ApplicationView view) {
+        logger.debug(">>>>> setting content for {} -- view {}", this, view);
+        // logger.debug("setMainLayoutContent {} {}", c.getClass().getSimpleName(), c.needsBlack());
+        // LoggerUtils.logException(logger, new Exception("traceback"));
 
-        if (c.needsBlack()) {
+        if (view.needsBlack()) {
             this.getMainWindow().setStyleName(Reindeer.LAYOUT_BLACK);
         } else {
             this.getMainWindow().setStyleName(Reindeer.LAYOUT_WHITE);
         }
-        mainLayoutContent = c;
-        boolean needsMenu = c.needsMenu();
 
-        if (this.mobilePanel == null) {
-            logger.debug("app panel");
-            this.components.currentView = c;
-            final Menu menu = this.components.menu;
-            if (menu != null) {
-                menu.setVisible(needsMenu);                
-            }
-            this.components.mainPanel.setContent(c);
-        } else {
-            logger.debug("mobile panel");
-            mobilePanel.setVisible(true);
-            mobilePanel.setContent(c);
-            mainLayout.setExpandRatio(mobilePanel, 100);
+        boolean needsMenu = view.needsMenu();
+
+        this.components.setCurrentView(view);
+        final Menu menu = this.components.menu;
+        if (menu != null) {
+            menu.setVisible(needsMenu);
         }
+        this.components.getMainPanel().setContent(view);
 
+        logger.debug("setting fragment={}", view.getFragment());
+        uriFragmentUtility.setFragment(view.getFragment(), false);
     }
 
-    public ApplicationView getMainLayoutContent() {
-        return mainLayoutContent;
+    public ComponentContainer getMainPanelContent() {
+        return this.components.getMainPanel().getContent();
     }
 
     /**
@@ -917,13 +874,16 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
     protected void displayView(String fragment) {
         // remove all listeners on current view.
+        ApplicationView mainLayoutContent = components.getCurrentView();
         if (mainLayoutContent != null) {
             mainLayoutContent.unregisterAsListener();
         }
 
         logger.debug("request to display view {}", fragment); //$NON-NLS-1$
         ApplicationView view = components.getViewByName(fragment, true); // initialize from URI fragment
-        setMainLayoutContent(view);
+
+        setMainPanelContent(view);
+
     }
 
     public String getAppSuffix() {
@@ -968,8 +928,51 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
 
     private void setLayoutCreated(boolean layoutCreated) {
-        logger.debug("layoutCreated {}",layoutCreated);
+        logger.debug("layoutCreated {}", layoutCreated);
         this.layoutCreated = layoutCreated;
+    }
+
+    public ApplicationView getCurrentView() {
+        return components.getCurrentView();
+    }
+
+    private synchronized void interruptWaitForFragment() {
+        if (waitingForFragment != null) {
+            waitingForFragment.interrupt();
+            waitingForFragment = null;
+        }
+    }
+
+    private synchronized void waitForFragment(final String externalForm) {
+        waitingForFragment = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    if (!refreshing) {
+                        logger.debug("wait for fragment - start");
+                        Thread.sleep(2000);
+                        String defaultView = DEFAULT_APP_VIEW;
+                        if (externalForm.endsWith("/m/")) {
+                            defaultView = DEFAULT_M_VIEW;
+                        }
+
+                        logger.debug("wait for fragment - stop; displaying default view = {}.", defaultView);
+                        synchronized (CompetitionApplication.this) {
+                            display(defaultView);
+                        }
+                        CompetitionApplication.this.push();
+                    } else {
+                        logger.debug("refreshing, fragment={}", frag);
+                        displayView(frag);
+                    }
+                } catch (InterruptedException e) {
+                    // do nothing
+                    logger.debug("wait for fragment - fragment changed");
+                }
+
+            }
+        });
     }
 
 }

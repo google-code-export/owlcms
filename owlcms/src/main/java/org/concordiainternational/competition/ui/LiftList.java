@@ -35,14 +35,13 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Table;
 
 /**
- * This class displays the lifting order for lifters for the announcer,
- * timekeeper and marshal consoles.
+ * This class displays the lifting order for lifters for the announcer, timekeeper and marshal consoles.
  * 
  * @author jflamy
  * 
  */
-public class LiftList extends GenericBeanList<Lifter> implements 
-		Property.ValueChangeListener, // change in table value = change in selected row
+public class LiftList extends GenericBeanList<Lifter> implements
+        Property.ValueChangeListener, // change in table value = change in selected row
         EditableList {
 
     static final Logger logger = LoggerFactory.getLogger(LiftList.class);
@@ -70,35 +69,35 @@ public class LiftList extends GenericBeanList<Lifter> implements
      */
     private static String buildCaption(AnnouncerView.Mode mode, SessionData groupData) {
         CompetitionApplication current = CompetitionApplication.getCurrent();
-		final String role = Messages.getString(
-            "LiftList." + mode.toString(), current.getLocale()); //$NON-NLS-1$
-		if (Platform.getSize() == 1) {
-			return role;
-		} else {
-	        final String currentPlatformName = " " + current.getPlatformName(); //$NON-NLS-1$
-	        return role + currentPlatformName;
-		}
+        final String role = Messages.getString(
+                "LiftList." + mode.toString(), current.getLocale()); //$NON-NLS-1$
+        if (Platform.getSize() == 1) {
+            return role;
+        } else {
+            final String currentPlatformName = " " + current.getPlatformName(); //$NON-NLS-1$
+            return role + currentPlatformName;
+        }
     }
 
     /**
-     * Clear the current selection from the table. This is done by the lift card
-     * editor once it has loaded the right lifter.
+     * Clear the current selection from the table. This is done by the lift card editor once it has loaded the right lifter.
      */
     @Override
-	public void clearSelection() {
+    public void clearSelection() {
         table.select(null); // hide selection from table.
     }
 
     @Override
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public Lifter getFirstLifter() {
         BeanItem<Lifter> item = (BeanItem<Lifter>) table.getItem(table.firstItemId());
-        if (item != null) return (Lifter) item.getBean();
+        if (item != null)
+            return (Lifter) item.getBean();
         return null;
     }
 
     @Override
-	public Item getFirstLifterItem() {
+    public Item getFirstLifterItem() {
         return table.getItem(table.firstItemId());
     }
 
@@ -131,13 +130,10 @@ public class LiftList extends GenericBeanList<Lifter> implements
     }
 
     /*
-     * Value change, for a table, indicates that the currently selected row has
-     * changed. This method is only called when the user explicitly clicks on a
-     * lifter.
+     * Value change, for a table, indicates that the currently selected row has changed. This method is only called when the user explicitly
+     * clicks on a lifter.
      * 
-     * @see
-     * com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data
-     * .Property.ValueChangeEvent)
+     * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data .Property.ValueChangeEvent)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -145,7 +141,8 @@ public class LiftList extends GenericBeanList<Lifter> implements
         Property property = event.getProperty();
         if (property == table) {
             Item item = table.getItem(table.getValue());
-            if (item == null) return;
+            if (item == null)
+                return;
             if (parentView != null) {
                 Lifter lifter = (Lifter) ((BeanItem<Lifter>) item).getBean();
 
@@ -175,7 +172,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
         table.addGeneratedColumn("cleanJerk3ActualLift", columnGenerator); //$NON-NLS-1$
         table.addGeneratedColumn("category", columnGenerator); //$NON-NLS-1$
         table.addGeneratedColumn("total", columnGenerator); //$NON-NLS-1$
-        
+
         setExpandRatios();
     }
 
@@ -183,7 +180,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
     protected void createToolbarButtons(HorizontalLayout tableToolbar1) {
         // we do not call super() because the default buttons are inappropriate.
         if (mode == AnnouncerView.Mode.ANNOUNCER) {
-            SessionSelect groupSelect = new SessionSelect((CompetitionApplication) app, app.getLocale(),parentView);
+            SessionSelect groupSelect = new SessionSelect((CompetitionApplication) app, app.getLocale(), parentView);
             tableToolbar1.addComponent(groupSelect);
 
             final Button refreshButton = new Button(Messages.getString("ResultList.Refresh", app.getLocale())); //$NON-NLS-1$
@@ -191,7 +188,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
                 private static final long serialVersionUID = 7744958942977063130L;
 
                 @Override
-				public void buttonClick(ClickEvent event) {
+                public void buttonClick(ClickEvent event) {
                     LoggerUtils.buttonSetup(getGroupData());
                     logger.debug("reloading"); //$NON-NLS-1$
                     masterDataForCurrentPlatform.refresh(true);
@@ -199,32 +196,32 @@ public class LiftList extends GenericBeanList<Lifter> implements
             };
             refreshButton.addListener(refreshClickListener);
             tableToolbar1.addComponent(refreshButton);
-            
+
         }
         final Button publicAddressButton = new Button(Messages.getString("LiftList.publicAddress", app.getLocale())); //$NON-NLS-1$
         final Button.ClickListener publicAddressClickListener = new Button.ClickListener() { //$NON-NLS-1$
             private static final long serialVersionUID = 7744958942977063130L;
 
             @Override
-			public void buttonClick(ClickEvent event) {
+            public void buttonClick(ClickEvent event) {
                 LoggerUtils.buttonSetup(getGroupData());
-            	CompetitionApplication current = CompetitionApplication.getCurrent();
-            	SessionData masterData = current.getMasterData(current.getPlatformName());
-				PublicAddressForm.editPublicAddress(LiftList.this, masterData);
+                CompetitionApplication current = CompetitionApplication.getCurrent();
+                SessionData masterData = current.getMasterData(current.getPlatformName());
+                PublicAddressForm.editPublicAddress(LiftList.this, masterData);
             }
         };
         publicAddressButton.addListener(publicAddressClickListener);
         tableToolbar1.addComponent(publicAddressButton);
     }
 
-	/**
-     * @return Localized captions for properties in same order as in
-     *         {@link #getColOrder()}
+    /**
+     * @return Localized captions for properties in same order as in {@link #getColOrder()}
      */
     @Override
     protected String[] getColHeaders() {
         Locale locale = app.getLocale();
-        if (COL_HEADERS != null) return COL_HEADERS;
+        if (COL_HEADERS != null)
+            return COL_HEADERS;
         COL_HEADERS = new String[] { Messages.getString("Lifter.startNumber", locale), //$NON-NLS-1$
                 Messages.getString("Lifter.lastName", locale), //$NON-NLS-1$
                 Messages.getString("Lifter.firstName", locale), //$NON-NLS-1$
@@ -250,7 +247,8 @@ public class LiftList extends GenericBeanList<Lifter> implements
      */
     @Override
     protected String[] getColOrder() {
-        if (NATURAL_COL_ORDER != null) return NATURAL_COL_ORDER;
+        if (NATURAL_COL_ORDER != null)
+            return NATURAL_COL_ORDER;
         NATURAL_COL_ORDER = new String[] { "startNumber", //$NON-NLS-1$
                 "lastName", //$NON-NLS-1$
                 "firstName", //$NON-NLS-1$
@@ -281,8 +279,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
     }
 
     /**
-     * Load container content to Table. We create a wrapper around the
-     * HbnContainer so we can sort on transient properties and suchlike.
+     * Load container content to Table. We create a wrapper around the HbnContainer so we can sort on transient properties and suchlike.
      */
     @Override
     protected void loadData() {
@@ -290,7 +287,7 @@ public class LiftList extends GenericBeanList<Lifter> implements
         logger.debug("masterDataForCurrentPlatform={}", masterDataForCurrentPlatform); //$NON-NLS-1$
         List<Lifter> lifters = masterDataForCurrentPlatform.getAttemptOrder();
         if (lifters != null && !lifters.isEmpty()) {
-            final BeanItemContainer<Lifter> cont = new BeanItemContainer<Lifter>(Lifter.class,lifters);
+            final BeanItemContainer<Lifter> cont = new BeanItemContainer<Lifter>(Lifter.class, lifters);
             table.setContainerDataSource(cont);
         }
     }
@@ -302,18 +299,18 @@ public class LiftList extends GenericBeanList<Lifter> implements
     protected void populateAndConfigureTable() {
         super.populateAndConfigureTable(); // this creates a new table and calls
                                            // loadData (below)
-        
-        table.setColumnWidth("lastName",100);
-        table.setColumnWidth("firstName",100); 
-        table.setColumnExpandRatio("lastName",100F);
-        table.setColumnExpandRatio("firstName",100F);
-            
-        table.setColumnWidth("birthDate",30);
-        table.setColumnWidth("category",30);
-        table.setColumnWidth("bodyWeight",45);
-        table.setColumnWidth("nextAttemptRequestedWeight",30);
-        table.setColumnWidth("startNumber",30);
-        
+
+        table.setColumnWidth("lastName", 100);
+        table.setColumnWidth("firstName", 100);
+        table.setColumnExpandRatio("lastName", 100F);
+        table.setColumnExpandRatio("firstName", 100F);
+
+        table.setColumnWidth("birthDate", 30);
+        table.setColumnWidth("category", 30);
+        table.setColumnWidth("bodyWeight", 45);
+        table.setColumnWidth("nextAttemptRequestedWeight", 30);
+        table.setColumnWidth("startNumber", 30);
+
         if (table.size() > 0) {
             table.setEditable(false);
             table.addListener(this); // listen to selection events
@@ -336,8 +333,8 @@ public class LiftList extends GenericBeanList<Lifter> implements
     }
 
     /**
-     * Sorts the lifters in the correct order in response to a change in the
-     * masterDataForCurrentPlatform. Informs listeners that the order has been updated.
+     * Sorts the lifters in the correct order in response to a change in the masterDataForCurrentPlatform. Informs listeners that the order
+     * has been updated.
      */
     void updateTable() {
         // update our own user interface
@@ -347,6 +344,5 @@ public class LiftList extends GenericBeanList<Lifter> implements
         table.select(firstLifterItem); // so we change it.
         this.clearSelection();
     }
-
 
 }

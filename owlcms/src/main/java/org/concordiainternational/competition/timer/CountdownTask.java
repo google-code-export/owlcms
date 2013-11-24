@@ -14,8 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Runnable task for counting down. run() is invoked every "decrement"
- * milliseconds. For convenience we count down in milliseconds.
+ * Runnable task for counting down. run() is invoked every "decrement" milliseconds. For convenience we count down in milliseconds.
  * 
  */
 class CountdownTask extends TimerTask implements Serializable {
@@ -48,7 +47,6 @@ class CountdownTask extends TimerTask implements Serializable {
         this.ticks = roundUpCountdown(countdownFrom, decrement);
         this.decrement = decrement;
 
-
         this.firstWarningTick = firstWarning * 1000;
         this.finalWarningTick = lastWarning * 1000;
         this.noTimeLeftTicks = 0;
@@ -67,23 +65,24 @@ class CountdownTask extends TimerTask implements Serializable {
             setNoTimeLeftSignaled(true);
         }
     }
-    
-	/**
-	 * Round up to decrement interval (100ms)
-	 * @param countdownFrom
-	 * @param decrement1
-	 * @return
-	 */
-	private int roundUpCountdown(int countdownFrom, int decrement1) {
-		if (countdownFrom <= 0) {
-			return 0;
-		} else if (countdownFrom % decrement1 == 0) {
-			return countdownFrom;
-		} else {
-			return ((countdownFrom / decrement1) * decrement1) + decrement1;
-		}
-		
-	}
+
+    /**
+     * Round up to decrement interval (100ms)
+     * 
+     * @param countdownFrom
+     * @param decrement1
+     * @return
+     */
+    private int roundUpCountdown(int countdownFrom, int decrement1) {
+        if (countdownFrom <= 0) {
+            return 0;
+        } else if (countdownFrom % decrement1 == 0) {
+            return countdownFrom;
+        } else {
+            return ((countdownFrom / decrement1) * decrement1) + decrement1;
+        }
+
+    }
 
     /**
      * @return best available estimation of the time elapsed.
@@ -117,7 +116,7 @@ class CountdownTask extends TimerTask implements Serializable {
         // leave the timer running for one second extra
         // Under linux, cancelling the timer also cancel the sounds
         if (ticks <= -1000) {
-        	logger.info("end: " + ticks / 1000 + " " + (System.currentTimeMillis() - startMillis)); //$NON-NLS-1$ //$NON-NLS-2$
+            logger.info("end: " + ticks / 1000 + " " + (System.currentTimeMillis() - startMillis)); //$NON-NLS-1$ //$NON-NLS-2$
             this.countdownTimer.cancel();
         } else {
             ticks = ticks - decrement;

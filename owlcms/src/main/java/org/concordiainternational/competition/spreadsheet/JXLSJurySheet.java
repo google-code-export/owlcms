@@ -21,54 +21,55 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author jflamy
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class JXLSJurySheet extends JXLSWorkbookStreamSource {
-	
 
-	private JXLSJurySheet(){
-		super(true);
-	}
-	
-	public JXLSJurySheet(boolean excludeNotWeighed) {
-		super(excludeNotWeighed);
-	}
+    private JXLSJurySheet() {
+        super(true);
+    }
 
-	Logger logger = LoggerFactory.getLogger(JXLSJurySheet.class);
-	
+    public JXLSJurySheet(boolean excludeNotWeighed) {
+        super(excludeNotWeighed);
+    }
 
-	private Competition competition;
+    Logger logger = LoggerFactory.getLogger(JXLSJurySheet.class);
 
-	@Override
-	protected void init() {
-		super.init();
-		competition = Competition.getAll().get(0);
-		getReportingBeans().put("competition",competition);
-		getReportingBeans().put("session",app.getCurrentCompetitionSession());
-	}
+    private Competition competition;
 
-	@Override
-	public InputStream getTemplate() throws IOException {
-    	String templateName = "/JurySheetTemplate_"+CompetitionApplication.getCurrentSupportedLocale().getLanguage()+".xls";
+    @Override
+    protected void init() {
+        super.init();
+        competition = Competition.getAll().get(0);
+        getReportingBeans().put("competition", competition);
+        getReportingBeans().put("session", app.getCurrentCompetitionSession());
+    }
+
+    @Override
+    public InputStream getTemplate() throws IOException {
+        String templateName = "/JurySheetTemplate_" + CompetitionApplication.getCurrentSupportedLocale().getLanguage() + ".xls";
         final InputStream resourceAsStream = app.getResourceAsStream(templateName);
         if (resourceAsStream == null) {
             throw new IOException("resource not found: " + templateName);} //$NON-NLS-1$
         return resourceAsStream;
     }
 
-	@Override
-	protected void getSortedLifters()  {
-		this.lifters = LifterSorter.displayOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAllPojos());
-	}
+    @Override
+    protected void getSortedLifters() {
+        this.lifters = LifterSorter.displayOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAllPojos());
+    }
 
-	/* (non-Javadoc)
-	 * @see org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource#configureTransformer(net.sf.jxls.transformer.XLSTransformer)
-	 */
-	@Override
-	protected void configureTransformer(XLSTransformer transformer) {
-		transformer.markAsFixedSizeCollection("lifters");
-	}
-
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource#configureTransformer(net.sf.jxls.transformer.XLSTransformer
+     * )
+     */
+    @Override
+    protected void configureTransformer(XLSTransformer transformer) {
+        transformer.markAsFixedSizeCollection("lifters");
+    }
 
 }

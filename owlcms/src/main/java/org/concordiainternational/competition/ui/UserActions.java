@@ -12,9 +12,8 @@ import org.concordiainternational.competition.data.CompetitionSession;
 import com.vaadin.terminal.StreamResource;
 
 /**
- * This interface defines the actions that are managed by the application
- * controller. In principle, all actions that affect more than a single
- * application pane should be registered here
+ * This interface defines the actions that are managed by the application controller. In principle, all actions that affect more than a
+ * single application pane should be registered here
  * 
  * @author jflamy
  * 

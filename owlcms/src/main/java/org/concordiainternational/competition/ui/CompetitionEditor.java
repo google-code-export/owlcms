@@ -9,7 +9,6 @@ package org.concordiainternational.competition.ui;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URL;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
@@ -33,7 +32,6 @@ import com.vaadin.data.hbnutil.HbnContainer;
 import com.vaadin.data.util.FilesystemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.service.ApplicationContext;
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -76,7 +74,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         } else {
             this.viewName = viewName;
         }
-        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,getLoggingId());
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         app = CompetitionApplication.getCurrent();
         final Locale locale = app.getLocale();
@@ -95,6 +93,8 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         this.addComponent(createFormLayout(formLayout, locale, cmp, competitionItem));
         this.setSpacing(true);
         this.setMargin(true);
+
+        registerAsListener();
     }
 
     /**
@@ -421,12 +421,6 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
     @Override
     public void windowClose(CloseEvent e) {
         unregisterAsListener();
-    }
-
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        registerAsListener();
-        return null;
     }
 
     @Override
