@@ -793,10 +793,6 @@ public class AttemptBoardView extends WeeLayout implements
         app.getMainWindow().addListener((CloseListener) this);
         listenerLogger.debug("{} listening to window close events.", this);
 
-        // // listen to URI changes
-        // app.getMainWindow().addURIHandler(this);
-        // listenerLogger.debug("{} listening to URI events.", this);
-
         registered = true;
         logger.trace("exit");
     }
@@ -834,14 +830,7 @@ public class AttemptBoardView extends WeeLayout implements
 
         // stop listening to close events
         app.getMainWindow().removeListener((CloseListener) this);
-
-        // stop listening to close events
-        app.getMainWindow().removeListener((CloseListener) this);
         listenerLogger.debug("{} stopped listening to window close events..", this);
-
-        // stop listening to URI changes
-        // app.getMainWindow().removeURIHandler(this);
-        // listenerLogger.debug("{} stopped listening to URI events.", this);
 
         registered = false;
         logger.trace("exit");

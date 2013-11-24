@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.URIHandler;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
@@ -44,8 +43,7 @@ public class MPlatesInfoView extends VerticalLayout implements
         ApplicationView,
         CloseListener,
         PlatesInfoListener,
-        SessionData.UpdateEventListener,
-        URIHandler {
+        SessionData.UpdateEventListener {
 
     Logger logger = LoggerFactory.getLogger(MPlatesInfoView.class);
 
@@ -111,8 +109,6 @@ public class MPlatesInfoView extends VerticalLayout implements
             this.addComponent(plates);
             this.setComponentAlignment(plates, Alignment.MIDDLE_CENTER);
 
-            // URI handler must remain, so is not part of the register/unRegister pair
-            app.getMainWindow().addURIHandler(this);
             registerAsListener();
             doDisplay();
         } finally {
@@ -212,19 +208,16 @@ public class MPlatesInfoView extends VerticalLayout implements
     public void registerAsListener() {
         masterData.addListener(this); // weight changes
         masterData.addBlackBoardListener(this); // changes in available plates
+        logger.debug("{} listening to window close events", this);
+        app.getMainWindow().addListener((CloseListener) this);
     }
 
     @Override
     public void unregisterAsListener() {
         masterData.removeListener(this); // weight changes
         masterData.removeBlackBoardListener(this); // changes in available plates
-    }
-
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        // logger.debug("re-registering handlers for {} {}",this,relativeUri);
-        registerAsListener();
-        return null;
+        logger.debug("{} stopped to window close events", this);
+        app.getMainWindow().removeListener((CloseListener) this);
     }
 
     @Override

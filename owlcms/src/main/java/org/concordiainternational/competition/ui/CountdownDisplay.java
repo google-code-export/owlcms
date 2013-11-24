@@ -96,9 +96,7 @@ public class CountdownDisplay extends VerticalLayout implements
                 app.setPusherDisabled(true);
                 create(app, platformName);
                 masterData = app.getMasterData(platformName);
-
-                // app.getMainWindow().addURIHandler(this);
-
+                
                 registerAsListener();
                 display(platformName, masterData);
             } finally {

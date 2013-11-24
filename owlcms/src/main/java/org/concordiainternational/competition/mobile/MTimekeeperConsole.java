@@ -96,7 +96,6 @@ public class MTimekeeperConsole extends VerticalLayout implements
                 app.setPusherDisabled(true);
                 groupData = app.getMasterData(platformName);
 
-                // app.getMainWindow().addURIHandler(this);
                 registerAsListener();
                 CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(getFragment(), false);
                 init();
@@ -391,7 +390,7 @@ public class MTimekeeperConsole extends VerticalLayout implements
     }
 
     /**
-     * Register all listeners for this app. Exception: do not register the URIHandler here.
+     * Register all listeners for this app.
      */
     @Override
     public void registerAsListener() {
@@ -448,23 +447,6 @@ public class MTimekeeperConsole extends VerticalLayout implements
         if (updateEventListener != null)
             groupData.removeListener(updateEventListener);
     }
-
-    // /*
-    // * Will be called when page is loaded.
-    // *
-    // * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
-    // */
-    // /*
-    // * (non-Javadoc)
-    // *
-    // * @see org.concordiainternational.competition.ui.IRefereeConsole#handleURI(java.net.URL, java.lang.String)
-    // */
-    // @Override
-    // public DownloadStream handleURI(URL context, String relativeUri) {
-    // registerAsListener();
-    // app.getMainWindow().executeJavaScript("scrollTo(0,1)");
-    // return null;
-    // }
 
     /*
      * Will be called when page is unloaded (including on refresh).

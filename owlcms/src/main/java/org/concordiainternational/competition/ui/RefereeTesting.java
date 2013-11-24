@@ -72,8 +72,7 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
         setSplitPosition(75);
 
         resetBottom();
-        // URI handler must remain, so is not part of the register/unRegister paire
-        // app.getMainWindow().addURIHandler(this);
+
         registerAsListener();
     }
 

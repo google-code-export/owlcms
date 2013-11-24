@@ -250,25 +250,13 @@ public class SessionList extends GenericHbnList<CompetitionSession> implements A
 
     @Override
     public void unregisterAsListener() {
-        app.getMainWindow().addListener((CloseListener) this);
+        app.getMainWindow().removeListener((CloseListener) this);
     }
 
     @Override
     public void windowClose(CloseEvent e) {
         unregisterAsListener();
     }
-
-    //
-    // /*
-    // * Called on refresh.
-    // *
-    // * @see com.vaadin.terminal.URIHandler#handleURI(java.net.URL, java.lang.String)
-    // */
-    // @Override
-    // public DownloadStream handleURI(URL context, String relativeUri) {
-    // registerAsListener();
-    // return null;
-    // }
 
     private static int classCounter = 0; // per class
     private final int instanceId = classCounter++; // per instance
