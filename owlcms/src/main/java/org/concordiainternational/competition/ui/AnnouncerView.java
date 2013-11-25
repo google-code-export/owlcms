@@ -539,9 +539,11 @@ public class AnnouncerView extends VerticalSplitPanel implements
         switch (reason) {
         case CURRENT_LIFTER_CHANGE_STARTED:
         case CURRENT_LIFTER_CHANGE_DONE:
-            // the announcer must acknowledge explicitly
             if (this.mode != Mode.ANNOUNCER) {
                 scheduleMessageRemoval(addedMessage, messageRemovalMs);
+            } else {
+                // much longer delay for announcer
+                scheduleMessageRemoval(addedMessage, 2*messageRemovalMs);
             }
             break;
         default:

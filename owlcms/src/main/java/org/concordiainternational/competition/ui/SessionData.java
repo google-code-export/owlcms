@@ -133,7 +133,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         notificationManager = new NotificationManager<SessionData, Lifter, Component>(this);
         refereeDecisionController = new RefereeDecisionController(this);
         juryDecisionController = new JuryDecisionController(this);
-        updateListsForLiftingOrderChange();
+        updateListsForLiftingOrderChange(null);
         init();
     }
 
@@ -237,8 +237,20 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     /**
      * Sort the various lists to reflect new lifting order.
      */
-    public void updateListsForLiftingOrderChange() {
+    public void updateListsForLiftingOrderChange(Lifter updatedLifter) {
         logger.debug("updateListsForLiftingOrderChange"); //$NON-NLS-1$
+        
+        
+        logger.debug("updateListsForLiftingOrderChange next = {} change for = {}", currentLifter, updatedLifter); //$NON-NLS-1$
+        
+        final CountdownTimer timer2 = getTimer();
+        if (timer2 != null) {
+            // athlete currently set to lift made a change
+            if (updatedLifter == currentLifter) {
+                // stop the timer if it was running, and make sure event is broadcast
+                timer2.pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE_DONE);
+            }
+        }
 
         sortLists();
         publishLists();
@@ -263,29 +275,23 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         Integer currentRequest = (currentLifter != null ? currentLifter.getNextAttemptRequestedWeight() : null);
         Integer currentRequestNum = (currentLifter != null ? currentLifter.getAttemptsDone() : null);
 
-        //        logger.debug("new/old {}/{}  {}/{}  {}/{}", //$NON-NLS-1$
-        // new Object[] { currentLifter, priorLifter, currentRequest, priorRequest, currentRequestNum,
-        // priorRequestNum });
-
         boolean needToAnnounce = currentLifter != priorLifter || priorRequest != currentRequest
                 || priorRequestNum != currentRequestNum;
-        // setAnnounced(!needToAnnounce);
-        if (!needToAnnounce) {
-            // stop the timer if it was running, as if the "Change Weight"
-            // button had been used
+
+        logger.debug("needToAnnounce={} : new/old {}/{}  {}/{}  {}/{}", //$NON-NLS-1$
+                new Object[] { needToAnnounce, currentLifter, priorLifter, currentRequest, priorRequest, currentRequestNum,
+                priorRequestNum });
+        
+        if (needToAnnounce) {
+            // stop the timer if it was running, and make sure event is broadcast
             final CountdownTimer timer2 = getTimer();
-            if (timer2 != null
-            // && timer2.isRunning()
-            ) {
-                if (currentLifter == priorLifter && priorRequestNum == currentRequestNum && priorRequest != currentRequest) {
-                    timer2.pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE_DONE);
-                } else {
-                    timer2.pause();
-                }
-            } // stop time something is happening.
+            if (timer2 != null) {
+                // This also broadcasts an event to all listeners
+                timer2.pause();
+            } 
             setTimeAllowed(timeAllowed(currentLifter));
 
-            logger.debug("paused time, timeAllowed={}, timeRemaining={}", timeAllowed, timer2.getTimeRemaining()); //$NON-NLS-1$
+            logger.trace("timeAllowed={}, timeRemaining={}", timeAllowed, timer2.getTimeRemaining()); //$NON-NLS-1$
         }
 
         if (currentLifter != null) {
@@ -873,7 +879,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     @Override
     public void updateEvent(Lifter.UpdateEvent updateEvent) {
         logger.debug("lifter {}, changed {}", updateEvent.getSource(), updateEvent.getPropertyIds()); //$NON-NLS-1$
-        updateListsForLiftingOrderChange();
+        updateListsForLiftingOrderChange((Lifter) updateEvent.getSource());
         persistPojo(updateEvent.getSource());
     }
 
@@ -912,7 +918,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      * @param comp
      */
     public void trackEditors(Lifter newLifter, Lifter previousLifter, Component comp) {
-        logger.debug("previousLifter = {}, lifter = {}", previousLifter, newLifter);; //$NON-NLS-1$
+        logger.trace("previousLifter = {}, lifter = {}", previousLifter, newLifter);; //$NON-NLS-1$
         if (previousLifter != newLifter) {
             // stopListeningTo actually waits until no editor is left to stop
             // listening

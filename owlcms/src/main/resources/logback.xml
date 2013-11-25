@@ -26,14 +26,16 @@
 	<logger name="org.apache.commons.jexl2.Interpreter" level="ERROR" />
 
 	<logger name="org.concordiainternational" level="INFO" />
-	<logger name="listeners.ResultFrame" level="DEBUG" />
-	<logger name="org.concordiainternational.competition.ui.CompetitionApplication" level="DEBUG" />
-	<logger name="org.concordiainternational.competition.ui.CompetitionApplicationCompontents" level="DEBUG" />
-	<logger name="org.concordiainternational.competition.mobile.RefereeDecisions" level="DEBUG" />
+
+
 
     <!--   
-		<logger name="
-	listeners " level="DEBUG" />
+    
+    	<logger name="org.concordiainternational.competition.ui.SessionData" level="DEBUG" />
+	
+		<logger name="org.concordiainternational.competition.ui.CompetitionApplication" level="DEBUG" />
+		<logger name="org.concordiainternational.competition.ui.CompetitionApplicationCompontents" level="DEBUG" />
+		<logger name="org.concordiainternational.competition.mobile.RefereeDecisions" level="DEBUG" />
 		<logger name="listeners.ResultFrame" level="DEBUG" />
 		
 		<logger name="org.concordiainternational.competition.ui.components.ResultFrame" level="DEBUG" /> 
