@@ -135,7 +135,12 @@ public class CountdownTimer implements Serializable {
             countdownTask = null;
         }
         setStarted(false);
-        logger.info("pause: {}", timeRemaining); //$NON-NLS-1$
+        if (timeRemaining > 0) {
+            logger.info("pause: {}", timeRemaining); //$NON-NLS-1$            
+        } else {
+            logger.trace("pause: {}", timeRemaining); //$NON-NLS-1$
+        }
+
         if (countdownDisplay != null) {
             countdownDisplay.pause(timeRemaining, CompetitionApplication.getCurrent(), reason);
         }

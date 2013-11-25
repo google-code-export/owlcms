@@ -7,8 +7,6 @@
  */
 package org.concordiainternational.competition.mobile;
 
-import java.net.URL;
-
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.i18n.Messages;
@@ -24,7 +22,6 @@ import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
