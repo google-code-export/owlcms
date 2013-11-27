@@ -69,7 +69,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
     public static final boolean PUSHING = true;
 
     /** remove message after this delay (ms) */
-    private static final int messageRemovalMs = 5000;
+    private static final int messageRemovalMs = 3000;
 
     private HorizontalLayout topPart;
     private LifterInfo announcerInfo;
@@ -516,9 +516,9 @@ public class AnnouncerView extends VerticalSplitPanel implements
         String message;
         String reasonDetails = Messages.getString("TimeStoppedNotificationReason." + reason.name(), locale);
         Lifter curLifter = masterData.getCurrentLifter();
-        Integer curWeight = curLifter.getNextAttemptRequestedWeight();
+        Integer curWeight = (curLifter != null ? curLifter.getNextAttemptRequestedWeight() : null);
 
-        Object curWght = reason == InteractionNotificationReason.CURRENT_LIFTER_CHANGE_STARTED ? "" : curWeight;
+        Object curWght = (reason == InteractionNotificationReason.CURRENT_LIFTER_CHANGE_STARTED ? "" : (curWeight != null ? Integer.toString(curWeight) : "?"));
         if (mode2 == null) {
             message = MessageFormat.format(
                     Messages.getString("TimeStoppedNotificationReason.NotificationFormatShort", locale),

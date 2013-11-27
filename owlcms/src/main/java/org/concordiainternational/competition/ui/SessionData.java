@@ -245,10 +245,17 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         
         final CountdownTimer timer2 = getTimer();
         if (timer2 != null) {
-            // athlete currently set to lift made a change
+            // athlete currently set to lift made a change 
             if (updatedLifter == currentLifter) {
-                // stop the timer if it was running, and make sure event is broadcast
-                timer2.pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE_DONE);
+                if (!currentLifter.isCurrentDeclarationDone()) {
+                    // automatic progression, don't notify announcer
+                    // stop the timer if it was running, and make sure event is broadcast
+                    timer2.pause();
+                } else {
+                    // stop the timer if it was running, and make sure event is broadcast
+                    timer2.pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE_DONE);
+                }
+
             }
         }
 
