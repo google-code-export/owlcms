@@ -70,12 +70,14 @@ Because we use the Free edition, these steps are manual.
 
 3) Finalize and publish
   - commit all modified directories with "Release x.y.z" as comment
-  - Exit Eclipse
-  
-  Use SourceTree to finalize the release
-  	- tag both repositories with "x.y.z"
-  	- push (make sure checkbox is checked in Hg flow)
-  Restart Eclipse
+  - publish Wiki
+    	- tag wiki with "x.y.z"
+  		- push
+  - Exit Eclipse  
+  - Use SourceTree to finalize the code release
+  	- Use Hg Flow to finish release
+  	- push the tag (make sure checkbox is checked)
+  - Restart Eclipse
   - in project "distribution" run the maven goals:   antrun:run     (under eclipse "upload to code.google.com.launch")
     (this will send the files to the code.google.com/p/owlcms site)
     
