@@ -933,6 +933,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     }
 
     public ApplicationView getCurrentView() {
+        if (components == null) return null;
         return components.getCurrentView();
     }
 
