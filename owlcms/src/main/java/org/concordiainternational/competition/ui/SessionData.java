@@ -246,7 +246,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         final CountdownTimer timer2 = getTimer();
         if (timer2 != null) {
             // athlete currently set to lift made a change 
-            if (updatedLifter == currentLifter) {
+            if (currentLifter != null && updatedLifter == currentLifter) {
                 if (!currentLifter.isCurrentDeclarationDone()) {
                     // automatic progression, don't notify announcer
                     // stop the timer if it was running, and make sure event is broadcast
