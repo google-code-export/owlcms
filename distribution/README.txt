@@ -1,6 +1,7 @@
 Steps to create a release.
 
-0) In SourceTree, close all features, start a new release. (exit eclipse and restart after making changes)
+0) In SourceTree, use Hg Flow to close all features, start a new release, push changes. 
+	- Exit Eclipse and restart.
 
 1) Prepare the distribution.
 
@@ -65,8 +66,9 @@ Because we use the Free edition, these steps are manual.
 
 3) Finalize and publish
   - commit all modified directories with "Release x.y.z" as comment
-  - tag both repositories with "x.y.z"
-  - push
+  Use SourceTree to finalize the release
+  	- tag both repositories with "x.y.z"
+  	- push (make sure checkbox is checked in Hg flow)
   - in project "distribution" run the maven goals:   antrun:run     (under eclipse "upload to code.google.com.launch")
     (this will send the files to the code.google.com/p/owlcms site)
     
