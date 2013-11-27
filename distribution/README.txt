@@ -53,10 +53,14 @@ Because we use the Free edition, these steps are manual.
       lib
       owlcms 
       
-      directories. If prompted with a warning, select the "Don't Search" button
-  - go to the distribution/target/owlcms-x.y.z-windows in Eclipse
-  - drag the content to "Application Data/owlcms" (owlcms.exe and doc,lib,owlcms), accept the warnings about overwrite ("Yes to All")
-  - update the product version number on the product details page
+      directories. If prompted with a warning, select the "Don't Search" button.  You will end up with 2 directories.
+      
+      db
+      doc
+      
+  - go to the distribution/target/owlcms-x.y.z-windows in Eclipse and expand the folder
+  - select all items (owlcms.exe and doc,lib,owlcms) and drag to "Application Data/owlcms" in AdvancedInstaller , accept the warnings about overwrite ("Yes to All")
+  - update the product version number on the product details page in AdvancedInstaller
   - save owlcms.aip, , select "major upgrade"
   - build the installer once.  In spite of completing with "total build time", it will not show "build finished successfully".
     wait a few seconds after the end and close the window.
@@ -66,9 +70,12 @@ Because we use the Free edition, these steps are manual.
 
 3) Finalize and publish
   - commit all modified directories with "Release x.y.z" as comment
+  - Exit Eclipse
+  
   Use SourceTree to finalize the release
   	- tag both repositories with "x.y.z"
   	- push (make sure checkbox is checked in Hg flow)
+  Restart Eclipse
   - in project "distribution" run the maven goals:   antrun:run     (under eclipse "upload to code.google.com.launch")
     (this will send the files to the code.google.com/p/owlcms site)
     
