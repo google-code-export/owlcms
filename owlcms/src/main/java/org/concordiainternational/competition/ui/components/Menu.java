@@ -53,7 +53,7 @@ public class Menu extends MenuBar implements Serializable {
         MenuItem projectors = createProjectorsMenuItem(menu, competitionApplication, locale);
         createDisplayMenuItem(projectors, competitionApplication, locale, "dlp");
         createDisplayMenuItem(projectors, competitionApplication, locale, "lcd");
-        createDisplayMenuItem(projectors, competitionApplication, locale, "pale");
+        createDisplayMenuItem(projectors, competitionApplication, locale, "tv");
         // createSimpleDisplayMenuItem(projectors, competitionApplication, locale);
         projectors.addSeparator();
         createPublicAttemptBoardMenuItem(projectors, competitionApplication, locale, "s4_3");

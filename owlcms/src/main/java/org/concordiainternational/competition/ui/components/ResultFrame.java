@@ -654,7 +654,7 @@ public class ResultFrame extends VerticalLayout implements
 
     @Override
     public void registerAsListener() {
-        LoggerUtils.traceBack(listenerLogger);
+//        LoggerUtils.traceBack(listenerLogger);
         // listen to changes in the competition data
         if (updateListener == null) {
             updateListener = createUpdateSessionUpdateListener(platformName, masterData);
@@ -689,6 +689,7 @@ public class ResultFrame extends VerticalLayout implements
 
     @Override
     public void unregisterAsListener() {
+      LoggerUtils.traceBack(listenerLogger);
         LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
 
         // stop listening to changes in the competition data
