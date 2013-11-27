@@ -32,11 +32,9 @@ import org.slf4j.LoggerFactory;
  * Groups are associated with a lifting platformName.
  * </p>
  * <p>
- * Projectors and officials are associated with a lifting platformName so there
- * is no need to refresh their setup during a competition. The name of the
- * platformName is used as a key in the ServletContext so other sessions and
- * other kinds of pages (such as JSP) can locate the information about that
- * platformName. See in particular the {@link LiftList#updateTable()} method
+ * Projectors and officials are associated with a lifting platformName so there is no need to refresh their setup during a competition. The
+ * name of the platformName is used as a key in the ServletContext so other sessions and other kinds of pages (such as JSP) can locate the
+ * information about that platformName. See in particular the {@link LiftList#updateTable()} method
  * </p>
  * 
  * @author jflamy
@@ -45,7 +43,7 @@ import org.slf4j.LoggerFactory;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Platform implements Serializable {
-	private static final Logger logger = LoggerFactory.getLogger(Platform.class);
+    private static final Logger logger = LoggerFactory.getLogger(Platform.class);
 
     private static final long serialVersionUID = -6871042180395572184L;
 
@@ -53,10 +51,9 @@ public class Platform implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     String name;
-    
+
     /**
-     * true if the referee use this application to give decisions, and
-     * decision lights need to be shown on the attempt and result boards.
+     * true if the referee use this application to give decisions, and decision lights need to be shown on the attempt and result boards.
      */
     Boolean showDecisionLights = false;
 
@@ -64,7 +61,7 @@ public class Platform implements Serializable {
      * true if the time should be displayed
      */
     Boolean showTimer = false;
-    
+
     // collar
     Integer nbC_2_5 = 0;
 
@@ -88,7 +85,7 @@ public class Platform implements Serializable {
     Integer officialBar = 0;
     Integer lightBar = 0;
 
-	String mixerName = "";
+    String mixerName = "";
     transient private Mixer mixer;
 
     public Platform() {
@@ -123,7 +120,7 @@ public class Platform implements Serializable {
     @SuppressWarnings("unchecked")
     static public List<Platform> getAll() {
         final List<Platform> list = CompetitionApplication.getCurrent().getHbnSession().createCriteria(Platform.class).addOrder(
-            Order.asc("name")) //$NON-NLS-1$
+                Order.asc("name")) //$NON-NLS-1$
                 .list();
         return list;
     }
@@ -131,12 +128,12 @@ public class Platform implements Serializable {
     @SuppressWarnings("unchecked")
     static public Platform getByName(String name) {
         final List<Platform> list = CompetitionApplication.getCurrent().getHbnSession().createCriteria(Platform.class).add(
-            Restrictions.eq("name", name)) //$NON-NLS-1$
+                Restrictions.eq("name", name)) //$NON-NLS-1$
                 .list();
         if (list.size() == 1) {
             final Platform platform = (Platform) list.get(0);
             platform.setMixerName(platform.mixerName);
-			return platform;
+            return platform;
         } else {
             return null;
         }
@@ -152,7 +149,8 @@ public class Platform implements Serializable {
     }
 
     public Integer getNbC_2_5() {
-        if (nbC_2_5 == null) return 0;
+        if (nbC_2_5 == null)
+            return 0;
         return nbC_2_5;
     }
 
@@ -161,7 +159,8 @@ public class Platform implements Serializable {
     }
 
     public Integer getNbS_0_5() {
-        if (nbS_0_5 == null) return 0;
+        if (nbS_0_5 == null)
+            return 0;
         return nbS_0_5;
     }
 
@@ -170,7 +169,8 @@ public class Platform implements Serializable {
     }
 
     public Integer getNbS_1() {
-        if (nbS_1 == null) return 0;
+        if (nbS_1 == null)
+            return 0;
         return nbS_1;
     }
 
@@ -179,7 +179,8 @@ public class Platform implements Serializable {
     }
 
     public Integer getNbS_1_5() {
-        if (nbS_1_5 == null) return 0;
+        if (nbS_1_5 == null)
+            return 0;
         return nbS_1_5;
     }
 
@@ -188,7 +189,8 @@ public class Platform implements Serializable {
     }
 
     public Integer getNbS_2() {
-        if (nbS_2 == null) return 0;
+        if (nbS_2 == null)
+            return 0;
         return nbS_2;
     }
 
@@ -197,7 +199,8 @@ public class Platform implements Serializable {
     }
 
     public Integer getNbS_2_5() {
-        if (nbS_2_5 == null) return 0;
+        if (nbS_2_5 == null)
+            return 0;
         return nbS_2_5;
     }
 
@@ -206,7 +209,8 @@ public class Platform implements Serializable {
     }
 
     public Integer getNbS_5() {
-        if (nbS_5 == null) return 0;
+        if (nbS_5 == null)
+            return 0;
         return nbS_5;
     }
 
@@ -215,7 +219,8 @@ public class Platform implements Serializable {
     }
 
     public Integer getNbL_2_5() {
-        if (nbL_2_5 == null) return 0;
+        if (nbL_2_5 == null)
+            return 0;
         return nbL_2_5;
     }
 
@@ -224,7 +229,8 @@ public class Platform implements Serializable {
     }
 
     public Integer getNbL_5() {
-        if (nbL_5 == null) return 0;
+        if (nbL_5 == null)
+            return 0;
         return nbL_5;
     }
 
@@ -233,7 +239,8 @@ public class Platform implements Serializable {
     }
 
     public Integer getNbL_10() {
-        if (nbL_10 == null) return 0;
+        if (nbL_10 == null)
+            return 0;
         return nbL_10;
     }
 
@@ -242,7 +249,8 @@ public class Platform implements Serializable {
     }
 
     public Integer getNbL_15() {
-        if (nbL_15 == null) return 0;
+        if (nbL_15 == null)
+            return 0;
         return nbL_15;
     }
 
@@ -251,7 +259,8 @@ public class Platform implements Serializable {
     }
 
     public Integer getNbL_20() {
-        if (nbL_20 == null) return 0;
+        if (nbL_20 == null)
+            return 0;
         return nbL_20;
     }
 
@@ -260,7 +269,8 @@ public class Platform implements Serializable {
     }
 
     public Integer getNbL_25() {
-        if (nbL_25 == null) return 0;
+        if (nbL_25 == null)
+            return 0;
         return nbL_25;
     }
 
@@ -269,7 +279,8 @@ public class Platform implements Serializable {
     }
 
     public Integer getOfficialBar() {
-        if (lightBar == null) return 0;
+        if (lightBar == null)
+            return 0;
         return officialBar;
     }
 
@@ -278,7 +289,8 @@ public class Platform implements Serializable {
     }
 
     public Integer getLightBar() {
-        if (lightBar == null) return 0;
+        if (lightBar == null)
+            return 0;
         return lightBar;
     }
 
@@ -286,75 +298,80 @@ public class Platform implements Serializable {
         this.lightBar = lightBar;
     }
 
-	public Boolean getShowDecisionLights() {
-		return showDecisionLights == null ? false : showDecisionLights;
-	}
+    public Boolean getShowDecisionLights() {
+        return showDecisionLights == null ? false : showDecisionLights;
+    }
 
-	public void setShowDecisionLights(Boolean showDecisionLights) {
-		this.showDecisionLights = showDecisionLights;
-	}
+    public void setShowDecisionLights(Boolean showDecisionLights) {
+        this.showDecisionLights = showDecisionLights;
+    }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Platform other = (Platform) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Platform other = (Platform) obj;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        return true;
+    }
 
-	public Mixer getMixer() {
-		return mixer;
-	}
+    public Mixer getMixer() {
+        return mixer;
+    }
 
-	public void setMixer(Mixer mixer) {
-		this.mixer = mixer;
-	}
+    public void setMixer(Mixer mixer) {
+        this.mixer = mixer;
+    }
 
-	/**
-	 * @return the mixerName
-	 */
-	public String getMixerName() {
-		return mixerName;
-	}
+    /**
+     * @return the mixerName
+     */
+    public String getMixerName() {
+        return mixerName;
+    }
 
-	/**
-	 * @param mixerName the mixerName to set
-	 */
-	public void setMixerName(String mixerName) {
-		this.mixerName = mixerName;
-		setMixer(null);
-		List<Mixer> mixers = Speakers.getOutputs();
-		for (Mixer curMixer: mixers) {
-			if (curMixer.getMixerInfo().getName().equals(mixerName)) {
-				setMixer(curMixer);
-				logger.debug("Platform: {}: changing mixer to {}",this.name,mixerName);
-				break;
-			}
-		}
-	}
+    /**
+     * @param mixerName
+     *            the mixerName to set
+     */
+    public void setMixerName(String mixerName) {
+        this.mixerName = mixerName;
+        setMixer(null);
+        List<Mixer> mixers = Speakers.getOutputs();
+        for (Mixer curMixer : mixers) {
+            if (curMixer.getMixerInfo().getName().equals(mixerName)) {
+                setMixer(curMixer);
+                logger.debug("Platform: {}: changing mixer to {}", this.name, mixerName);
+                break;
+            }
+        }
+    }
 
     public Boolean getShowTimer() {
         return showTimer == null ? false : showTimer;
@@ -363,5 +380,5 @@ public class Platform implements Serializable {
     public void setShowTimer(Boolean showTime) {
         this.showTimer = showTime;
     }
-    
+
 }

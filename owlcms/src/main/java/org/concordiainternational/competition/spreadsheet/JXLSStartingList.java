@@ -21,44 +21,44 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author jflamy
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class JXLSStartingList extends JXLSWorkbookStreamSource {
-	
-	public JXLSStartingList(){
-		super(false);
-	}
-	
-	public JXLSStartingList(boolean excludeNotWeighed) {
-		super(excludeNotWeighed);
-	}
 
-	Logger logger = LoggerFactory.getLogger(JXLSStartingList.class);
+    public JXLSStartingList() {
+        super(false);
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void init() {
-		super.init();
-		
-		final Session hbnSession = CompetitionApplication.getCurrent().getHbnSession();
-		List<Competition> competitionList = hbnSession.createCriteria(Competition.class).list();
-		Competition competition = competitionList.get(0);
-		getReportingBeans().put("competition",competition);
-	}
-	
-	@Override
-	public InputStream getTemplate() throws IOException {
-    	String templateName = "/StartSheetTemplate_"+CompetitionApplication.getCurrentSupportedLocale().getLanguage()+".xls";
+    public JXLSStartingList(boolean excludeNotWeighed) {
+        super(excludeNotWeighed);
+    }
+
+    Logger logger = LoggerFactory.getLogger(JXLSStartingList.class);
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void init() {
+        super.init();
+
+        final Session hbnSession = CompetitionApplication.getCurrent().getHbnSession();
+        List<Competition> competitionList = hbnSession.createCriteria(Competition.class).list();
+        Competition competition = competitionList.get(0);
+        getReportingBeans().put("competition", competition);
+    }
+
+    @Override
+    public InputStream getTemplate() throws IOException {
+        String templateName = "/StartSheetTemplate_" + CompetitionApplication.getCurrentSupportedLocale().getLanguage() + ".xls";
         final InputStream resourceAsStream = app.getResourceAsStream(templateName);
         if (resourceAsStream == null) {
             throw new IOException("resource not found: " + templateName);} //$NON-NLS-1$
         return resourceAsStream;
     }
 
-	@Override
-	protected void getSortedLifters()  {
-		this.lifters = LifterSorter.registrationOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAllPojos());
-	}
+    @Override
+    protected void getSortedLifters() {
+        this.lifters = LifterSorter.registrationOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAllPojos());
+    }
 
 }

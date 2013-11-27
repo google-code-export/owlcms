@@ -23,15 +23,15 @@ public class ItemAdapter {
      * @return
      */
     @SuppressWarnings("rawtypes")
-	public static Object getObject(final Item item) {
+    public static Object getObject(final Item item) {
         Object obj = null;
         if (item instanceof EntityItem) {
             obj = ((EntityItem) item).getPojo();
         } else if (item instanceof BeanItem) {
             obj = ((BeanItem<?>) item).getBean();
         } else {
-            throw new ClassCastException(Messages.getString(
-                "ItemAdapter.NeitherBeanItemNorEntityItem", Locale.getDefault()) + item.getClass() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new ClassCastException(
+                    Messages.getString("ItemAdapter.NeitherBeanItemNorEntityItem", Locale.getDefault()) + item.getClass() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (obj == null)
             throw new AssertionError(Messages.getString("ItemAdapter.ItemHasNoAttachedObject", Locale.getDefault())); //$NON-NLS-1$

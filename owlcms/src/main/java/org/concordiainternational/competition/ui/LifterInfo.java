@@ -7,7 +7,6 @@
  */
 package org.concordiainternational.competition.ui;
 
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Locale;
 
@@ -35,7 +34,6 @@ import org.vaadin.notifique.Notifique.Message;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.MethodProperty;
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
@@ -50,24 +48,22 @@ import com.vaadin.ui.Window.Notification;
 /**
  * Display information regarding the current lifter
  * 
- * REFACTOR This class badly needs refactoring, as it is used in 6 different settings (3
- * announcer views, the result editing page, the lifter display, the lifter card
- * editor).
+ * REFACTOR This class badly needs refactoring, as it is used in 6 different settings (3 announcer views, the result editing page, the
+ * lifter display, the lifter card editor).
  * 
  * @author jflamy
  * 
  */
-public class LifterInfo extends VerticalLayout implements 
-	CountdownTimerListener,
-	DecisionEventListener,
-	ApplicationView,
-	Notifyable, UpdateEventListener
-	{
-    static final Logger logger = LoggerFactory.getLogger(LifterInfo.class);
-    static final Logger timingLogger = LoggerFactory
-            .getLogger("org.concordiainternational.competition.timer.TimingLogger"); //$NON-NLS-1$
-    static final Logger buttonLogger = LoggerFactory
-            .getLogger("org.concordiainternational.competition.ButtonsLogger"); //$NON-NLS-1$
+public class LifterInfo extends VerticalLayout implements
+        CountdownTimerListener,
+        DecisionEventListener,
+        ApplicationView,
+        Notifyable, UpdateEventListener
+{
+    private static final Logger logger = LoggerFactory.getLogger(LifterInfo.class);
+    //    private static final Logger timingLogger = LoggerFactory.getLogger("timing."+SessionData.class.getSimpleName()); //$NON-NLS-1$
+    private static final Logger buttonLogger = LoggerFactory.getLogger("buttons." + SessionData.class.getSimpleName()); //$NON-NLS-1$
+    private static Logger listenerLogger = LoggerFactory.getLogger("listeners." + SessionData.class.getSimpleName()); //$NON-NLS-1$
 
     private static final long serialVersionUID = -3687013148334708795L;
     public Locale locale;
@@ -90,14 +86,15 @@ public class LifterInfo extends VerticalLayout implements
 
     private long lastOkButtonClick = 0L;
     private long lastFailedButtonClick = 0L;
-	private SessionData sessionData;
-	
-	private String notAnnounced;
-	private String announced;
+    private SessionData sessionData;
 
-	protected DecisionEvent prevEvent;
-	
-    public LifterInfo(String identifier, final SessionData groupData, AnnouncerView.Mode mode, Component parentView) {
+    private String notAnnounced;
+    private String announced;
+
+    protected DecisionEvent prevEvent;
+
+    public LifterInfo(String identifier, final SessionData groupData, AnnouncerView.Mode mode, EditingView parentView) {
+        // LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view,parentView.getClass().getSimpleName()+parentView.getInstanceId()+".lifterInfo"+getInstanceId());
         final CompetitionApplication currentApp = CompetitionApplication.getCurrent();
         this.app = currentApp;
         this.locale = currentApp.getLocale();
@@ -106,12 +103,10 @@ public class LifterInfo extends VerticalLayout implements
         this.parentView = parentView;
         this.mode = mode;
         this.sessionData = groupData;
-        
+
         notAnnounced = Messages.getString("LifterInfo.NotAnnounced", locale);
         announced = Messages.getString("LifterInfo.Announced", locale);
-        
-		// URI handler must remain, so is not part of the register/unRegister pair
-		app.getMainWindow().addURIHandler(this);
+
         registerAsListener();
     }
 
@@ -121,8 +116,7 @@ public class LifterInfo extends VerticalLayout implements
     }
 
     /**
-     * Display the information about the lifter Also displays the buttons to
-     * manage timer.
+     * Display the information about the lifter Also displays the buttons to manage timer.
      * 
      * @param lifter1
      * @param groupData1
@@ -131,60 +125,59 @@ public class LifterInfo extends VerticalLayout implements
         logger.debug("LifterInfo.loadLifter() begin: newLifter = {} previousLifter = {}", lifter1, prevLifter); //$NON-NLS-1$
 
         synchronized (app) {
-			// make sure that groupData listens to changes relating to the lifter
-			// since the buttons trigger changes within the data (e.g.
-			// successfulLift)
-			if (parentView instanceof AnnouncerView) {
-				if ((((AnnouncerView) parentView).mode == Mode.ANNOUNCER && isTop())) { //$NON-NLS-1$
-					groupData1.trackEditors(lifter1, this.lifter, this);
-				}
-			}
-			// don't work for nothing, avoid stutter on the screen.
-			// we have to compare the attributes as last displayed.
-			if (lifter1 != null) {
-				if (lifter1 == prevLifter
-						&& lifter1.getAttemptsDone() == prevAttempt
-						&& lifter1.getNextAttemptRequestedWeight() == prevWeight) {
-					return; // we are already showing correct information.
-				}
-				if (isTop()) {
-				    lifter1.check15_20kiloRule(false,(Notifyable)parentView);
-				}
-				prevLifter = lifter1;
-				prevAttempt = lifter1.getAttemptsDone();
-				prevWeight = lifter1.getNextAttemptRequestedWeight();
-			}
-			// prepare new display.
-			this.removeAllComponents();
-			if (lifter1 == null) {
-	             return;
-			}
+            // make sure that groupData listens to changes relating to the lifter
+            // since the buttons trigger changes within the data (e.g.
+            // successfulLift)
+            if (parentView instanceof AnnouncerView) {
+                if ((((AnnouncerView) parentView).mode == Mode.ANNOUNCER && isTop())) { //$NON-NLS-1$
+                    groupData1.trackEditors(lifter1, this.lifter, this);
+                }
+            }
+            // don't work for nothing, avoid stutter on the screen.
+            // we have to compare the attributes as last displayed.
+            if (lifter1 != null) {
+                if (lifter1 == prevLifter
+                        && lifter1.getAttemptsDone() == prevAttempt
+                        && lifter1.getNextAttemptRequestedWeight() == prevWeight) {
+                    return; // we are already showing correct information.
+                }
+                if (isTop()) {
+                    lifter1.check15_20kiloRule(false, (Notifyable) parentView);
+                }
+                prevLifter = lifter1;
+                prevAttempt = lifter1.getAttemptsDone();
+                prevWeight = lifter1.getNextAttemptRequestedWeight();
+            }
+            // prepare new display.
+            this.removeAllComponents();
+            if (lifter1 == null) {
+                return;
+            }
 
-			StringBuilder sb = new StringBuilder();
-			boolean done = getHTMLLifterInfo(lifter1,
-					isBottom(), sb); //$NON-NLS-1$
-			final Label label = new Label(sb.toString(), Label.CONTENT_XHTML);
-			label.addStyleName("zoomable");
-			label.setData("lifter");
-			this.addComponent(label);
-			this.setSpacing(true);
-			if (isBottom()) { 
-				bottomDisplayOptions(lifter1, groupData1);
-			}
-			if (done)
-				return; // lifter has already performed all lifts.
-			if (lifter1.isCurrentLifter() && isTop()) { //$NON-NLS-1$
-				topDisplayOptions(lifter1, groupData1);
-			} else if (isDisplay()) { //$NON-NLS-1$
-				currentLifterDisplayOptions(lifter1, groupData1);
-			}
-		}
+            StringBuilder sb = new StringBuilder();
+            boolean done = getHTMLLifterInfo(lifter1,
+                    isBottom(), sb); //$NON-NLS-1$
+            final Label label = new Label(sb.toString(), Label.CONTENT_XHTML);
+            label.addStyleName("zoomable");
+            label.setData("lifter");
+            this.addComponent(label);
+            this.setSpacing(true);
+            if (isBottom()) {
+                bottomDisplayOptions(lifter1, groupData1);
+            }
+            if (done)
+                return; // lifter has already performed all lifts.
+            if (lifter1.isCurrentLifter() && isTop()) { //$NON-NLS-1$
+                topDisplayOptions(lifter1, groupData1);
+            } else if (isDisplay()) { //$NON-NLS-1$
+                currentLifterDisplayOptions(lifter1, groupData1);
+            }
+        }
         app.push();
 
         this.lifter = lifter1;
         logger.debug("LifterInfo.loadLifter() end: " + lifter1.getLastName()); //$NON-NLS-1$
     }
-
 
     /**
      * @param sb
@@ -214,12 +207,12 @@ public class LifterInfo extends VerticalLayout implements
         // display current attempt number
         if (done) {
             CompetitionSession currentSession = sessionData.getCurrentSession();
-			if (currentSession != null) {
-				// we're done, write a "finished" message and return.
-				appendDiv(sb, MessageFormat.format(Messages.getString("LifterInfo.Done", locale),currentSession.getName() )); //$NON-NLS-1$
-			} else {
-				// do nothing.
-			}
+            if (currentSession != null) {
+                // we're done, write a "finished" message and return.
+                appendDiv(sb, MessageFormat.format(Messages.getString("LifterInfo.Done", locale), currentSession.getName())); //$NON-NLS-1$
+            } else {
+                // do nothing.
+            }
         } else {
             //appendDiv(sb, lifter.getNextAttemptRequestedWeight()+Messages.getString("Common.kg",locale)); //$NON-NLS-1$
             String tryInfo = TryFormatter.formatTry(lifter1, locale, currentTry);
@@ -227,7 +220,6 @@ public class LifterInfo extends VerticalLayout implements
         }
         return done;
     }
-    
 
     private FormLayout timekeeperOptions() {
         actAsTimekeeper.setCaption(Messages.getString("LifterInfo.actAsTimeKeeper", locale)); //$NON-NLS-1$
@@ -238,7 +230,7 @@ public class LifterInfo extends VerticalLayout implements
         actAsTimekeeper.setImmediate(true);
         automaticStartTime.setImmediate(true);
         automaticStartTime.setVisible(showTimerControls);
-		actAsTimekeeper.addListener(new ValueChangeListener() {
+        actAsTimekeeper.addListener(new ValueChangeListener() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -247,7 +239,7 @@ public class LifterInfo extends VerticalLayout implements
                 if (showTimerControls) {
                     automaticStartTime.setValue(false);
                     automaticStartTime.setVisible(showTimerControls);
-                    timerControls.showTimerControls(groupData.getTimer().isRunning());
+                    timerControls.showTimerControls(groupData);
                 } else {
                     automaticStartTime.setVisible(false);
                     timerControls.hideTimerControls();
@@ -276,7 +268,6 @@ public class LifterInfo extends VerticalLayout implements
         return options;
     }
 
-
     TimerControls timerControls;
     private boolean blocked = true;
 
@@ -289,7 +280,8 @@ public class LifterInfo extends VerticalLayout implements
     private void topDisplayOptions(final Lifter lifter1, final SessionData groupData1) {
 
         createTimerDisplay(groupData1);
-        if (timerControls != null) timerControls.unregisterListeners();
+        if (timerControls != null)
+            timerControls.unregisterListeners();
         timerControls = new TimerControls(lifter1, groupData1, true, mode, this, showTimerControls, app);
         this.addComponent(new Label());
         this.addComponent(timerControls);
@@ -305,23 +297,23 @@ public class LifterInfo extends VerticalLayout implements
      * @param groupData1
      */
     @SuppressWarnings("serial")
-	private void bottomDisplayOptions(final Lifter lifter1, final SessionData groupData1) {
-    	if (parentView instanceof ResultView) {
-	    		FormLayout customScoreFL = new FormLayout();
-	    		TextField field = new TextField(Messages.getString("LifterInfo.customScore",CompetitionApplication.getCurrentLocale()));
-	    		field.setWidth("5em");
-	    		customScoreFL.addComponent(field);
-	    		field.setPropertyDataSource(new MethodProperty<Lifter>(lifter1, "customScore"));
-	    		field.setImmediate(true);
-	    		field.addListener(new ValueChangeListener() {
-					
-					@Override
-					public void valueChange(ValueChangeEvent event) {
-			    		((ResultView)parentView).getResultList().getGroupData().persistPojo(lifter1);
-					}
-				});
-	    		this.addComponent(customScoreFL);
-    	}
+    private void bottomDisplayOptions(final Lifter lifter1, final SessionData groupData1) {
+        if (parentView instanceof ResultView) {
+            FormLayout customScoreFL = new FormLayout();
+            TextField field = new TextField(Messages.getString("LifterInfo.customScore", CompetitionApplication.getCurrentLocale()));
+            field.setWidth("5em");
+            customScoreFL.addComponent(field);
+            field.setPropertyDataSource(new MethodProperty<Lifter>(lifter1, "customScore"));
+            field.setImmediate(true);
+            field.addListener(new ValueChangeListener() {
+
+                @Override
+                public void valueChange(ValueChangeEvent event) {
+                    ((ResultView) parentView).getResultList().getGroupData().persistPojo(lifter1);
+                }
+            });
+            this.addComponent(customScoreFL);
+        }
     }
 
     /**
@@ -341,13 +333,13 @@ public class LifterInfo extends VerticalLayout implements
         timerDisplay = new Label();
         timerDisplay.addStyleName("zoomable");
         timerDisplay.addStyleName("timerDisplay");
-        
-        buttonLogger.debug("setting data to {}",groupData1.getCurrentSession().getName());
+
+        buttonLogger.debug("setting data to {}", groupData1.getCurrentSession().getName());
         timerDisplay.setData(groupData1);
 
         // we set the value to the time allowed for the current lifter as
         // computed by groupData
-        int timeAllowed = groupData1.getDisplayTime();  // was getTimeAllowed();
+        int timeAllowed = groupData1.getDisplayTime(); // was getTimeAllowed();
         final CountdownTimer timer = groupData1.getTimer();
         final boolean running = timer.isRunning();
         logger.debug("timeAllowed={} timer.isRunning()={}", timeAllowed, running); //$NON-NLS-1$
@@ -357,9 +349,8 @@ public class LifterInfo extends VerticalLayout implements
         this.addComponent(timerDisplay);
     }
 
-
     int prevTimeRemaining = 0;
-	protected boolean shown;
+    protected boolean shown;
 
     @Override
     public void normalTick(int timeRemaining) {
@@ -384,10 +375,12 @@ public class LifterInfo extends VerticalLayout implements
     }
 
     public void setTimerDisplay(int timeRemaining) {
-        if (timerDisplay == null) return;
+        if (timerDisplay == null)
+            return;
         SessionData groupData1 = (SessionData) timerDisplay.getData();
-        if (groupData1 == null) return;
-        timerDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining)+
+        if (groupData1 == null)
+            return;
+        timerDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining) +
                 getAnnouncedIndicator(groupData1));
         if (groupData1 != null) {
             timerDisplay.setEnabled(groupData1.getTimer().isRunning());
@@ -397,25 +390,27 @@ public class LifterInfo extends VerticalLayout implements
     public String getAnnouncedIndicator(SessionData groupData1) {
 
         return groupData1 != null &&
-        groupData1.getNeedToAnnounce()  
-               ? " "+notAnnounced
-                       : " "+announced;
+                groupData1.isAnnounced()
+                ? " " + announced
+                : " " + notAnnounced;
     }
 
     @Override
     public void finalWarning(int remaining) {
 
-        if (timerDisplay == null) return;
+        if (timerDisplay == null)
+            return;
         prevTimeRemaining = remaining;
- 
+
         SessionData masterData = app.getMasterData(app.getPlatformName());
-        if (!isMasterConsole(masterData)) return;
+        if (!isMasterConsole(masterData))
+            return;
 
         synchronized (app) {
             if (!isBlocked()) {
                 setTimerDisplay(remaining);
-//                final ClassResource resource = new ClassResource("/sounds/finalWarning.mp3", app); //$NON-NLS-1$
-//                playSound(resource);
+                //                final ClassResource resource = new ClassResource("/sounds/finalWarning.mp3", app); //$NON-NLS-1$
+                // playSound(resource);
                 playSound("/sounds/finalWarning2.wav", masterData);
             }
             setBlocked(false);
@@ -426,27 +421,29 @@ public class LifterInfo extends VerticalLayout implements
     @Override
     public void initialWarning(int remaining) {
 
-        if (timerDisplay == null) return;
+        if (timerDisplay == null)
+            return;
         prevTimeRemaining = remaining;
-        
+
         SessionData masterData = app.getMasterData(app.getPlatformName());
-        if (!isMasterConsole(masterData)) return;
-        
+        if (!isMasterConsole(masterData))
+            return;
+
         // no need to beep if current lifter has declared
         // FALSE: the TCRR explicitly states that there is a buzzer at 90 secs.
-        //        Integer currentAttemptDeclaration = lifter.getCurrentAttemptDeclaration();
-        //        if (currentAttemptDeclaration != null && currentAttemptDeclaration > 0) {
-        //            logger.info("lifter {} has declared {}, no initial warning needed.", lifter, currentAttemptDeclaration);
-        //            return;
-        //        } else {
-        //            logger.info("lifter {} has NOT declared, initial warning.", lifter, currentAttemptDeclaration);
-        //        }
+        // Integer currentAttemptDeclaration = lifter.getCurrentAttemptDeclaration();
+        // if (currentAttemptDeclaration != null && currentAttemptDeclaration > 0) {
+        // logger.info("lifter {} has declared {}, no initial warning needed.", lifter, currentAttemptDeclaration);
+        // return;
+        // } else {
+        // logger.info("lifter {} has NOT declared, initial warning.", lifter, currentAttemptDeclaration);
+        // }
 
         synchronized (app) {
             if (!isBlocked()) {
                 setTimerDisplay(remaining);
-//                final ClassResource resource = new ClassResource("/sounds/initialWarning.mp3", app); //$NON-NLS-1$
-//                playSound(resource);
+                //                final ClassResource resource = new ClassResource("/sounds/initialWarning.mp3", app); //$NON-NLS-1$
+                // playSound(resource);
                 playSound("/sounds/initialWarning2.wav", masterData);
             }
             setBlocked(false);
@@ -454,31 +451,30 @@ public class LifterInfo extends VerticalLayout implements
         app.push();
     }
 
-//    /**
-//     * @param resource
-//     */
-//    @SuppressWarnings("unused")
-//	private void playSound(final ClassResource resource) {
-//        SessionData masterData = app.getMasterData(app.getPlatformName());
-//        if (isMasterConsole(masterData)) {
-//            // we are not the master application; do not play
-//            app.getBuzzer().play(resource);
-//            logger.debug("! {} is master, playing sound", app); //$NON-NLS-1$
-//        } else {
-//            logger.debug("- {} not master, not playing sound", app); //$NON-NLS-1$
-//        }
-//
-//    }
-    
+    // /**
+    // * @param resource
+    // */
+    // @SuppressWarnings("unused")
+    // private void playSound(final ClassResource resource) {
+    // SessionData masterData = app.getMasterData(app.getPlatformName());
+    // if (isMasterConsole(masterData)) {
+    // // we are not the master application; do not play
+    // app.getBuzzer().play(resource);
+    //            logger.debug("! {} is master, playing sound", app); //$NON-NLS-1$
+    // } else {
+    //            logger.debug("- {} not master, not playing sound", app); //$NON-NLS-1$
+    // }
+    //
+    // }
 
     private void playSound(String soundName, SessionData sessionData2) {
         if (isMasterConsole(sessionData2)) {
-            new Sound(sessionData2.getPlatform().getMixer(),soundName).emit();
+            new Sound(sessionData2.getPlatform().getMixer(), soundName).emit();
             logger.debug("! {} is master, playing sound", app); //$NON-NLS-1$
         } else {
             // we are not the master application; do not play
             logger.debug("- {} not master, not playing sound", app); //$NON-NLS-1$
-        }    	
+        }
     }
 
     /**
@@ -491,17 +487,19 @@ public class LifterInfo extends VerticalLayout implements
 
     @Override
     public void noTimeLeft(int remaining) {
-        if (timerDisplay == null) return;
+        if (timerDisplay == null)
+            return;
         prevTimeRemaining = remaining;
-        
+
         SessionData masterData = app.getMasterData(app.getPlatformName());
-        if (!isMasterConsole(masterData)) return;
+        if (!isMasterConsole(masterData))
+            return;
 
         synchronized (app) {
             if (!isBlocked()) {
                 setTimerDisplay(remaining);
-//                final ClassResource resource = new ClassResource("/sounds/timeOver.mp3", app); //$NON-NLS-1$
-//                playSound(resource);
+                //                final ClassResource resource = new ClassResource("/sounds/timeOver.mp3", app); //$NON-NLS-1$
+                // playSound(resource);
                 playSound("/sounds/timeOver2.wav", masterData);
                 if (timerDisplay != null) {
                     timerDisplay.setEnabled(false);
@@ -514,13 +512,14 @@ public class LifterInfo extends VerticalLayout implements
 
     @Override
     public void forceTimeRemaining(int remaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
-        if (timerDisplay == null) return;
+        if (timerDisplay == null)
+            return;
         prevTimeRemaining = remaining;
 
         synchronized (app) {
-        	timerDisplay.setEnabled(false); // show that timer has stopped.
-        	setTimerDisplay(remaining);
-            timerControls.enableStopStart(false);
+            timerDisplay.setEnabled(false); // show that timer has stopped.
+            setTimerDisplay(remaining);
+            timerControls.enableButtons(groupData, "LifterInfo forceTimeRemaining");
             setBlocked(false);
         }
         showInteractionNotification(originatingApp, reason);
@@ -530,110 +529,111 @@ public class LifterInfo extends VerticalLayout implements
 
     @Override
     public void pause(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
-    	
-        setBlocked(true); // don't process the next update from the timer.
-        synchronized (app) {
-	        if (timerControls != null) {
-	        	timerControls.enableStopStart(false);
-	        }
-	        if (timerDisplay != null) {
-	            timerDisplay.setEnabled(false);
-	        }
-        }
-        showInteractionNotification(originatingApp, reason);
-        app.push();
-    }
-
-	/**
-	 * Show a notification on other consoles.
-	 * Notification is shown for actors other than the time keeper (when the announcer or marshall stops the time
-	 * through a weight change).
-	 * 
-	 * @param originatingApp
-	 * @param reason
-	 */
-	@Override
-    public void showInteractionNotification(CompetitionApplication originatingApp, InteractionNotificationReason reason) {
-
-	    // display notifications from other apps, except for no_timer and not_announced, which
-	    // are mistakes that should always be shown.
-		if (isTop() && 
-		        (app != originatingApp
-		        || reason == InteractionNotificationReason.NO_TIMER|| reason == InteractionNotificationReason.NOT_ANNOUNCED )) {
-			CompetitionApplication receivingApp = app;
-			
-			// defensive
-			String originatingPlatformName = originatingApp.components.getPlatformName();
-			String receivingPlatformName = receivingApp.components.getPlatformName();
-			if ( originatingPlatformName == null || ! originatingPlatformName.equals(receivingPlatformName)) {
-				logger.error("event from platform {} sent to {}",originatingPlatformName, receivingPlatformName);
-				traceBack(originatingApp);
-			}
-        	
-			if (receivingApp.components.currentView instanceof AnnouncerView && reason != InteractionNotificationReason.UNKNOWN) {
-				AnnouncerView receivingView = (AnnouncerView) receivingApp.components.currentView;
-				ApplicationView originatingAppView = originatingApp.components.currentView;
-				if (originatingAppView instanceof AnnouncerView) {
-					AnnouncerView originatingView = (AnnouncerView)originatingAppView;
-					if (originatingView.mode != receivingView.mode 
-							&& originatingView.mode != Mode.TIMEKEEPER) {
-						traceBack(originatingApp);
-						receivingView.displayNotification(originatingView.mode,reason);
-					} else if (reason == InteractionNotificationReason.NO_TIMER || reason == InteractionNotificationReason.NOT_ANNOUNCED) {
-					    receivingView.displayNotification(originatingView.mode,reason);
-					}
-				} else {
-					traceBack(originatingApp);
-					receivingView.displayNotification(null,reason);
-				}
-        	}
-        }
-	}
-
-	/**
-	 * @param originatingApp
-	 */
-	private void traceBack(CompetitionApplication originatingApp) {
-	    if (logger.isTraceEnabled()) {
-	        logger.trace("showNotification in {} from {}",app,originatingApp);
-	        LoggerUtils.logException(logger, new Exception("Stack Trace"));
-	    }
-	}
-
-    @Override
-    public void start(int timeRemaining) {
-        setBlocked(false);
-        synchronized (app) {
-	        if (timerControls != null) timerControls.enableStopStart(true);
-	        if (timerDisplay != null) {
-	            timerDisplay.setEnabled(true);
-	        }
-        }
-        app.push();
-    }
-
-
-    @Override
-    public void stop(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
 
         setBlocked(true); // don't process the next update from the timer.
         synchronized (app) {
-	        if (timerControls != null) timerControls.enableStopStart(false);
-	        if (timerDisplay != null) {
-	            timerDisplay.setEnabled(false);
-	        }
+            if (timerControls != null) {
+                timerControls.enableButtons(groupData, "LifterInfo pause");
+            }
+            if (timerDisplay != null) {
+                timerDisplay.setEnabled(false);
+            }
         }
         showInteractionNotification(originatingApp, reason);
         app.push();
     }
 
     /**
-     * Prevent the timer listeners from updating the timer and emitting sounds;
-     * Called by the timer controls as soon as the user clicks. This is because
-     * of race conditions: - there is a delay in propagating the events - the
-     * timer update can occur after the updateList() routine has updated the
-     * remaining time - the bell could ring just after the timekeeper has
-     * clicked to stop.
+     * Show a notification on other consoles. Notification is shown for actors other than the time keeper (when the announcer or marshall
+     * stops the time through a weight change).
+     * 
+     * @param originatingApp
+     * @param reason
+     */
+    @Override
+    public void showInteractionNotification(CompetitionApplication originatingApp, InteractionNotificationReason reason) {
+
+        // display notifications from other apps, except for no_timer and not_announced, which
+        // are mistakes that should always be shown.
+        boolean announcerShouldSee = (reason == InteractionNotificationReason.NO_TIMER
+                || reason == InteractionNotificationReason.NOT_ANNOUNCED
+                || reason == InteractionNotificationReason.CLOCK_EXPIRED);
+        if (isTop() && (app != originatingApp || announcerShouldSee)) {
+            CompetitionApplication receivingApp = app;
+
+            // defensive
+            String originatingPlatformName = originatingApp.components.getPlatformName();
+            String receivingPlatformName = receivingApp.components.getPlatformName();
+            if (originatingPlatformName == null || !originatingPlatformName.equals(receivingPlatformName)) {
+                logger.error("event from platform {} sent to {}", originatingPlatformName, receivingPlatformName);
+                traceBack(originatingApp);
+            }
+
+            if (receivingApp.components.currentView instanceof AnnouncerView && reason != InteractionNotificationReason.UNKNOWN) {
+                AnnouncerView receivingView = (AnnouncerView) receivingApp.components.currentView;
+                ApplicationView originatingAppView = originatingApp.components.currentView;
+                if (originatingAppView instanceof AnnouncerView) {
+                    AnnouncerView originatingView = (AnnouncerView) originatingAppView;
+                    if (originatingView.mode != receivingView.mode
+                            && originatingView.mode != Mode.TIMEKEEPER) {
+                        traceBack(originatingApp);
+                        receivingView.displayNotification(originatingView.mode, reason);
+                    } else if (announcerShouldSee) {
+                        receivingView.displayNotification(originatingView.mode, reason);
+                    }
+                } else {
+                    traceBack(originatingApp);
+                    receivingView.displayNotification(null, reason);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param originatingApp
+     */
+    private void traceBack(CompetitionApplication originatingApp) {
+        if (logger.isTraceEnabled()) {
+            logger.trace("showNotification in {} from {}", app, originatingApp);
+            LoggerUtils.logException(logger, new Exception("Stack Trace"));
+        }
+    }
+
+    @Override
+    public void start(int timeRemaining) {
+        setBlocked(false);
+        synchronized (app) {
+            if (timerControls != null) {
+                timerControls.enableButtons(groupData, "LifterInfo start");
+                LoggerUtils.traceBack(buttonLogger);
+            }
+            if (timerDisplay != null) {
+                timerDisplay.setEnabled(true);
+            }
+        }
+        app.push();
+    }
+
+    @Override
+    public void stop(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason) {
+
+        setBlocked(true); // don't process the next update from the timer.
+        synchronized (app) {
+            if (timerControls != null) {
+                timerControls.enableButtons(groupData, "LifterInfo stop");
+            }
+            if (timerDisplay != null) {
+                timerDisplay.setEnabled(false);
+            }
+        }
+        showInteractionNotification(originatingApp, reason);
+        app.push();
+    }
+
+    /**
+     * Prevent the timer listeners from updating the timer and emitting sounds; Called by the timer controls as soon as the user clicks.
+     * This is because of race conditions: - there is a delay in propagating the events - the timer update can occur after the updateList()
+     * routine has updated the remaining time - the bell could ring just after the timekeeper has clicked to stop.
      * 
      * @param blocked
      *            if true, stop paying attention to timer
@@ -692,246 +692,250 @@ public class LifterInfo extends VerticalLayout implements
                 .append(string).append("</div>"); //$NON-NLS-1$
     }
 
-	/**
-	 * Display referee decisions
-	 * @see org.concordiainternational.competition.decision.DecisionEventListener#updateEvent(org.concordiainternational.competition.decision.DecisionEvent)
-	 */
-	@Override
-	public void updateEvent(final DecisionEvent updateEvent) {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				// show a notification
-				// only the master console is registered for these events.
-				logger.debug("received event {}",updateEvent);
-				switch (updateEvent.getType()) {
-				case SHOW:
-					 shown = true;
-					 displayDecisionNotification(updateEvent);
-					 if (timerControls != null) { timerControls.hideLiftControls(); }
-					 break;
-					 // go on to UPDATE;
-				case UPDATE:
-					if (shown) {
-						displayDecisionNotification(updateEvent);
-					}
-					break;
-				case RESET:
-					shown = false;
-					prevEvent = null;
-					if (timerControls != null) { timerControls.showLiftControls(); }
-					break;
-				}				
-			}
+    /**
+     * Display referee decisions
+     * 
+     * @see org.concordiainternational.competition.decision.DecisionEventListener#updateEvent(org.concordiainternational.competition.decision.DecisionEvent)
+     */
+    @Override
+    public void updateEvent(final DecisionEvent updateEvent) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // show a notification
+                // only the master console is registered for these events.
+                logger.debug("received event {}", updateEvent);
+                switch (updateEvent.getType()) {
+                case SHOW:
+                    shown = true;
+                    displayDecisionNotification(updateEvent);
+                    break;
+                // go on to UPDATE;
+                case UPDATE:
+                    if (shown) {
+                        displayDecisionNotification(updateEvent);
+                    }
+                    break;
+                case RESET:
+                    shown = false;
+                    prevEvent = null;
+                    break;
+                }
+                synchronized (app) {
+                    if (timerControls != null) {
+                        timerControls.enableButtons(groupData, "LifterInfo.updateEvent");
+                    }
+                }
+                app.push();
+            }
 
-			/**
-			 * @param newEvent
-			 */
-			protected void displayDecisionNotification(final DecisionEvent newEvent) {
-				synchronized (app) {
-					final ApplicationView currentView = app.components.currentView;
-					if (currentView instanceof AnnouncerView) {
-//						if (stutteringEvent(newEvent,prevEvent)) {
-//							prevEvent = newEvent;
-//							logger.trace("A prevented notification for {}",newEvent);
-//							logger.trace("A prevEvent={}",prevEvent);
-//							return;
-//						}
-//						prevEvent = newEvent;
-//						logger.trace("B prevEvent={}",prevEvent);
-						
-						final AnnouncerView announcerView = (AnnouncerView)currentView;
-						Notifique notifications = announcerView.getNotifications();
-						String style;
-						String message;
-						final Boolean accepted = newEvent.isAccepted();
-						logger.trace("B YES notification for {} accepted={}",newEvent,accepted);
-						if (accepted != null) {
-							final Lifter lifter2 = newEvent.getLifter();
-							final String name = (lifter2 != null ?lifter2.getLastName().toUpperCase()+" "+lifter2.getFirstName() : " «?» ");
-							Integer attemptedWeight = newEvent.getAttemptedWeight();
-							attemptedWeight = (attemptedWeight != null ? attemptedWeight : 0 );
-                            if (accepted) {
-								style = "owlcms-white";
-								message = MessageFormat.format(Messages.getString("Decision.lift", locale),name,attemptedWeight);
-							} else {
-								style = "owlcms-red";
-								message = MessageFormat.format(Messages.getString("Decision.noLift", locale),name,attemptedWeight);
-							}
-							final Message addedMessage = notifications.add((Resource)null,message,true,style,true);
-							announcerView.scheduleMessageRemoval(addedMessage, 10000);
-						}
-					}
-				}
-				app.push();
-			}
+            /**
+             * @param newEvent
+             */
+            protected void displayDecisionNotification(final DecisionEvent newEvent) {
+                final Boolean accepted = newEvent.isAccepted();
+                Integer attemptedWeight = newEvent.getAttemptedWeight();
+                attemptedWeight = (attemptedWeight != null ? attemptedWeight : 0);
+                final Lifter lifter2 = newEvent.getLifter();
+                logger.trace("B YES notification for {} accepted={}", newEvent, accepted);
+                doDisplayDecision(accepted, attemptedWeight, lifter2);
+            }
 
-			/**
-			 * @param curEvent
-			 * @param prevEvent1
-			 * @return true if the two events concern the same lifter and the same attempt and give the same decision
-			 */
-			@SuppressWarnings("unused")
+            /**
+             * @param curEvent
+             * @param prevEvent1
+             * @return true if the two events concern the same lifter and the same attempt and give the same decision
+             */
+            @SuppressWarnings("unused")
             private boolean stutteringEvent(DecisionEvent curEvent,
-					DecisionEvent prevEvent1) {
-				logger.debug("curEvent={} prevEvent={}",curEvent,prevEvent1);
-				if (curEvent != null && prevEvent1 != null) {
-					Lifter cur = updateEvent.getLifter();
-					Lifter prev = prevEvent1.getLifter();
-					if (cur != null && prev != null) {
-						if (cur != prev) {
-							return false;	
-						}
-						logger.debug("same lifter");
-						Integer curAtt = cur.getAttemptsDone();
-						Integer prevAtt = cur.getAttemptsDone();
-						if (curAtt != null && prevAtt != null) {
-							if (!curAtt.equals(prevAtt)){
-								return false;
-							}
-							logger.debug("same attempt");
-							Boolean prevDecision = prevEvent1.isAccepted();
-							Boolean curDecision = curEvent.isAccepted();
-							if (prevDecision != null && curDecision != null) {
-								logger.debug("prevDecision={} curDecision={}",prevDecision,curDecision);
-								return prevDecision.equals(curDecision);
-							} else {
-								final boolean b = prevDecision == null && curDecision == null;
-								logger.debug("either decision is null prevDecision={} curDecision={}",prevDecision,curDecision);
-								return b;
-							}
-						} else {
-							final boolean b = curAtt == null && prevAtt == null;
-							logger.debug("either attempt is null prevAtt={} curAtt={}",prevAtt,curAtt);
-							return b;
-						}
-					} else {
-						final boolean b = cur == null && prev == null;
-						logger.debug("either lifter is null prev={} cur={}",prev,cur);
-						return b;
-					}
-				}  else {
-					final boolean b = curEvent == null && prevEvent1 == null;
-					logger.debug("either event is null prevEvent1={} curEvent={}",prevEvent1,curEvent);
-					return b;
-				}
-			}
-				
-			
-		}).start();
-	}
+                    DecisionEvent prevEvent1) {
+                logger.debug("curEvent={} prevEvent={}", curEvent, prevEvent1);
+                if (curEvent != null && prevEvent1 != null) {
+                    Lifter cur = updateEvent.getLifter();
+                    Lifter prev = prevEvent1.getLifter();
+                    if (cur != null && prev != null) {
+                        if (cur != prev) {
+                            return false;
+                        }
+                        logger.debug("same lifter");
+                        Integer curAtt = cur.getAttemptsDone();
+                        Integer prevAtt = cur.getAttemptsDone();
+                        if (curAtt != null && prevAtt != null) {
+                            if (!curAtt.equals(prevAtt)) {
+                                return false;
+                            }
+                            logger.debug("same attempt");
+                            Boolean prevDecision = prevEvent1.isAccepted();
+                            Boolean curDecision = curEvent.isAccepted();
+                            if (prevDecision != null && curDecision != null) {
+                                logger.debug("prevDecision={} curDecision={}", prevDecision, curDecision);
+                                return prevDecision.equals(curDecision);
+                            } else {
+                                final boolean b = prevDecision == null && curDecision == null;
+                                logger.debug("either decision is null prevDecision={} curDecision={}", prevDecision, curDecision);
+                                return b;
+                            }
+                        } else {
+                            final boolean b = curAtt == null && prevAtt == null;
+                            logger.debug("either attempt is null prevAtt={} curAtt={}", prevAtt, curAtt);
+                            return b;
+                        }
+                    } else {
+                        final boolean b = cur == null && prev == null;
+                        logger.debug("either lifter is null prev={} cur={}", prev, cur);
+                        return b;
+                    }
+                } else {
+                    final boolean b = curEvent == null && prevEvent1 == null;
+                    logger.debug("either event is null prevEvent1={} curEvent={}", prevEvent1, curEvent);
+                    return b;
+                }
+            }
 
-	/**
-	 * @return
-	 */
-	private boolean isTop() {
-		return identifier.startsWith("top");
-	}
-	
-	/**
-	 * @return
-	 */
-	private boolean isBottom() {
-		return identifier.startsWith("bottom");
-	}
+        }).start();
+    }
 
-	/**
-	 * @return
-	 */
-	private boolean isDisplay() {
-		return identifier.startsWith("display");
-	}
+    public void doDisplayDecision(final Boolean accepted, Integer attemptedWeight, final Lifter lifter2) {
+        synchronized (app) {
+            final ApplicationView currentView = app.components.currentView;
+            if (currentView instanceof AnnouncerView) {
 
-	
-	/**
-	 * Register as listener to various events.
-	 */
-	@Override
-	public void registerAsListener() {
-		// window close
+                final AnnouncerView announcerView = (AnnouncerView) currentView;
+                Notifique notifications = announcerView.getNotifications();
+                String style;
+                String message;
+
+                if (accepted != null) {
+
+                    final String name = (lifter2 != null ? lifter2.getLastName().toUpperCase() + " " + lifter2.getFirstName()
+                            : " «?» ");
+                    if (accepted) {
+                        style = "owlcms-white";
+                        message = MessageFormat.format(Messages.getString("Decision.lift", locale), name, attemptedWeight);
+                    } else {
+                        style = "owlcms-red";
+                        message = MessageFormat.format(Messages.getString("Decision.noLift", locale), name, attemptedWeight);
+                    }
+                    final Message addedMessage = notifications.add((Resource) null, message, true, style, true);
+                    announcerView.scheduleMessageRemoval(addedMessage, 10000);
+                }
+            }
+        }
+        app.push();
+    }
+
+    /**
+     * @return
+     */
+    private boolean isTop() {
+        return identifier.startsWith("top");
+    }
+
+    /**
+     * @return
+     */
+    private boolean isBottom() {
+        return identifier.startsWith("bottom");
+    }
+
+    /**
+     * @return
+     */
+    private boolean isDisplay() {
+        return identifier.startsWith("display");
+    }
+
+    /**
+     * Register as listener to various events.
+     */
+    @Override
+    public void registerAsListener() {
+        // window close
         final Window mainWindow = app.getMainWindow();
-		logger.debug("window: {} register for {} {}",
-				new Object[]{mainWindow,identifier,this});
-		mainWindow.addListener(this);
-        
-		final CompetitionApplication masterApplication = groupData.getMasterApplication();
-		CountdownTimer timer = groupData.getTimer();
-		
-		// if several instances of lifter information are shown on page, only top one buzzes.
-		if (masterApplication == app && isTop()) {
-			// down signal (for buzzer)
-			groupData.getRefereeDecisionController().addListener(this);
-			if (timer != null) timer.setMasterBuzzer(this);
+        listenerLogger.debug("window: {} register for {} {}",
+                new Object[] { mainWindow, identifier, this });
+        mainWindow.addListener(this);
+
+        final CompetitionApplication masterApplication = groupData.getMasterApplication();
+        CountdownTimer timer = groupData.getTimer();
+
+        // if several instances of lifter information are shown on page, only top one buzzes.
+        if (masterApplication == app && isTop()) {
+            // down signal (for buzzer)
+            groupData.getRefereeDecisionController().addListener(this);
+            if (timer != null)
+                timer.setMasterBuzzer(this);
         }
-		
-		// timer countdown events; bottom information does not show timer.
-		// if already master buzzer, do not register twice.
-        if (timer != null && ! isBottom() && !(timer.getMasterBuzzer() == this)) {
-        	timer.addListener(this);
+
+        // timer countdown events; bottom information does not show timer.
+        // if already master buzzer, do not register twice.
+        if (timer != null && !isBottom() && !(timer.getMasterBuzzer() == this)) {
+            timer.addListener(this);
         }
-        
+
         // session updates and announces
         groupData.addListener(this);
 
-	}
+    }
 
-	@Override
-	public void unregisterAsListener() {
-		// window close
-		final Window mainWindow = app.getMainWindow();
-		logger.debug("window: {} UNregister for {} {}",
-				new Object[]{mainWindow,identifier,this});
-		mainWindow.removeListener(this);
-		
-		// cleanup referee decision listening.
-		CountdownTimer timer = groupData.getTimer();	
-		groupData.getRefereeDecisionController().removeListener(this);
-		
-		// buzzer
-		if (timer != null && timer.getMasterBuzzer() == this) timer.setMasterBuzzer(null);
-		
-		// timer countdown events
-		if (timer != null) timer.removeListener(this);
-		        
+    @Override
+    public void unregisterAsListener() {
+        // window close
+        final Window mainWindow = app.getMainWindow();
+        listenerLogger.debug("window: {} UNregister for {} {}",
+                new Object[] { mainWindow, identifier, this });
+        mainWindow.removeListener(this);
+
+        // cleanup referee decision listening.
+        CountdownTimer timer = groupData.getTimer();
+        groupData.getRefereeDecisionController().removeListener(this);
+
+        // buzzer
+        if (timer != null && timer.getMasterBuzzer() == this)
+            timer.setMasterBuzzer(null);
+
+        // timer countdown events
+        if (timer != null)
+            timer.removeListener(this);
+
         // session updates and announces
         groupData.removeListener(this);
-	}
+    }
 
+    @Override
+    public void windowClose(CloseEvent e) {
+        unregisterAsListener();
+    }
 
-	@Override
-	public void windowClose(CloseEvent e) {
-		unregisterAsListener();
-	}
+    // @Override
+    // public DownloadStream handleURI(URL context, String relativeUri) {
+    // logger.debug("registering listeners");
+    // // called on refresh
+    // registerAsListener();
+    // return null;
+    // }
 
-	@Override
-	public DownloadStream handleURI(URL context, String relativeUri) {
-		logger.debug("registering listeners");
-		// called on refresh
-		registerAsListener();
-		return null;
-	}
+    @Override
+    public void refresh() {
+    }
 
-	@Override
-	public void refresh() {
-	}
+    @Override
+    public boolean needsMenu() {
+        return false;
+    }
 
-	@Override
-	public boolean needsMenu() {
-		return false;
-	}
+    @Override
+    public void setParametersFromFragment() {
+    }
 
-	@Override
-	public void setParametersFromFragment() {
-	}
-
-	@Override
-	public String getFragment() {
-		return null;
-	}
+    @Override
+    public String getFragment() {
+        return null;
+    }
 
     @Override
     public void showNotificationForLifter(Lifter lifter1, Notification notification, boolean unlessCurrent) {
-        logger.debug("lifter {} unlessCurrent{}",lifter1,unlessCurrent);
+        logger.debug("lifter {} unlessCurrent{}", lifter1, unlessCurrent);
         if (!unlessCurrent) {
             // always show notification
             app.getMainWindow().showNotification(notification);
@@ -940,7 +944,7 @@ public class LifterInfo extends VerticalLayout implements
             app.getMainWindow().showNotification(notification);
         }
     }
-    
+
     @Override
     public boolean needsBlack() {
         return false;
@@ -958,4 +962,18 @@ public class LifterInfo extends VerticalLayout implements
             setTimerDisplay(groupData.getTimeAllowed());
         }
     }
+
+    private static int classCounter = 0; // per class
+    private final int instanceId = classCounter++; // per instance
+
+    @Override
+    public String getInstanceId() {
+        return Long.toString(instanceId);
+    }
+
+    @Override
+    public String getLoggingId() {
+        return ((EditingView) parentView).getViewName() + getInstanceId();
+    }
+
 }

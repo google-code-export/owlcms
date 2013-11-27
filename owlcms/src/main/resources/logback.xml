@@ -6,12 +6,12 @@
   v. 2.0. If a copy of the MPL was not distributed with this file, 
   You can obtain one at http://mozilla.org/MPL/2.0/.
 -->
-<configuration scan="true" debug="true">
+<configuration scan="true" debug="false">
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
 			<pattern>
-				%d{HH:mm:ss.SSS} %X{currentGroup} %-5level %class{45}:%L %M - %msg%n
+				%d{HH:mm:ss.SSS} %X{currentGroup}.%X{view} - %-5level %class{45}:%L %M - %msg%n
 			</pattern>
 		</encoder>
 	</appender>
@@ -26,10 +26,26 @@
 	<logger name="org.apache.commons.jexl2.Interpreter" level="ERROR" />
 
 	<logger name="org.concordiainternational" level="INFO" />
+	<logger name="listeners.ResultFrame" level="DEBUG" />
+	<logger name="listeners.AttemptBoard" level="DEBUG" />
+	<logger
+		name="org.concordiainternational.competition.ui.components.ResultFrame"
+		level="DEBUG" /> 
+		<logger name="org.concordiainternational.competition.ui.AttemptBoardView" level="TRACE" /> 
 
     <!--   
+		<logger name="org.concordiainternational.competition.ui.AttemptBoardView" level="TRACE" />    
+    	<logger name="org.concordiainternational.competition.ui.SessionData" level="DEBUG" />
+	
+		<logger name="org.concordiainternational.competition.ui.CompetitionApplication" level="DEBUG" />
+		<logger name="org.concordiainternational.competition.ui.CompetitionApplicationCompontents" level="DEBUG" />
+		<logger name="org.concordiainternational.competition.mobile.RefereeDecisions" level="DEBUG" />
+		<logger name="listeners.ResultFrame" level="DEBUG" />
+		
+		<logger name="org.concordiainternational.competition.ui.components.ResultFrame" level="DEBUG" /> 
+		<logger name="org.concordiainternational.competition.ui.CompetitionApplication" level="DEBUG" />
 		<logger name="org.concordiainternational.competition.ui.LifterInfo" level="TRACE" />
-    	<logger name="org.concordiainternational.competition.ButtonsLogger" level="DEBUG" />
+    	
 		<logger name="org.concordiainternational.competition.ui.AttemptBoardView" level="TRACE" />
         <logger name="org.concordiainternational.competition.publicAddress" level="WARN" />
         <logger name="org.concordiainternational.competition.ui.AnnouncerView" level="TRACE" />
@@ -43,7 +59,6 @@
         <logger name="tracing" level="INFO" /> 
         <logger name="org.concordiainternational.competition.ui.LifterInfo" level="TRACE" />
         <logger name="org.concordiainternational.competition.spreadsheet" level="TRACE" />
-        <logger name="org.concordiainternational.competition.ui.CompetitionApplication" level="DEBUG" />
         <logger name="org.concordiainternational.competition.data.Lifter" level="TRACE" />
         <logger name="org.concordiainternational.competition.ui.components.BrowserPanel" level="DEBUG" />  
     -->

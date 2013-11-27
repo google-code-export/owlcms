@@ -414,7 +414,7 @@ textarea.v-textarea-readonly,
 	line-height: 1.1em;
 }
 .newAttemptBoard.s4_3 .v-label-name {font-size: 6.5em; line-height: 1.2em;}
-.newAttemptBoard.s720p .v-label-name {font-size: 6.5em;}
+.newAttemptBoard.s720p .v-label-name {font-size: 7em;}
 .newAttemptBoard.s1080p .v-label-name {font-size: 9.5em;}
 
 
@@ -423,7 +423,7 @@ textarea.v-textarea-readonly,
 	line-height: 1.0em;
 }
 .newAttemptBoard.s4_3 .v-label-text {font-size: 7em; line-height: 1.2em;}
-.newAttemptBoard.s720p .v-label-text {font-size: 6.5em;}
+.newAttemptBoard.s720p .v-label-text {font-size: 9em;}
 .newAttemptBoard.s1080p .v-label-text {font-size: 8em;}
 
 
@@ -450,10 +450,10 @@ textarea.v-textarea-readonly,
 	padding: 3em;
 }
 .newAttemptBoard.s720p .loadChart .v-label {
-	font-size: 144%;
+	font-size: 175%;
 }
 .newAttemptBoard.s1080p .loadChart {
-	padding: 2em;
+	padding: 1.5em;
 }
 .newAttemptBoard.s1080p .loadChart .v-label {
 	font-size: x-large;

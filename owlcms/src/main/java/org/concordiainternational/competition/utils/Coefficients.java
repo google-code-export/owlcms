@@ -38,7 +38,8 @@ public class Coefficients {
      */
     private static HashMap<Integer, Float> loadSMM() {
 
-        if (props == null) loadProps();
+        if (props == null)
+            loadProps();
 
         smm = new HashMap<Integer, Float>((int) (props.size() * 1.4));
         for (Entry<Object, Object> entry : props.entrySet()) {
@@ -69,7 +70,8 @@ public class Coefficients {
      * 
      */
     private static void loadCoefficients() {
-        if (props == null) loadProps();
+        if (props == null)
+            loadProps();
         menCoefficient = Double.valueOf((String) props.get("sinclair.menCoefficient"));
         menMaxWeight = Double.valueOf((String) props.get("sinclair.menMaxWeight"));
         womenCoefficient = Double.valueOf((String) props.get("sinclair.womenCoefficient"));
@@ -80,7 +82,8 @@ public class Coefficients {
      * @return
      */
     public static Double menCoefficient() {
-        if (menCoefficient == null) loadCoefficients();
+        if (menCoefficient == null)
+            loadCoefficients();
         return menCoefficient;
     }
 
@@ -88,7 +91,8 @@ public class Coefficients {
      * @return
      */
     public static Double womenCoefficient() {
-        if (womenCoefficient == null) loadCoefficients();
+        if (womenCoefficient == null)
+            loadCoefficients();
         return womenCoefficient;
     }
 
@@ -96,7 +100,8 @@ public class Coefficients {
      * @return
      */
     public static Double menMaxWeight() {
-        if (menMaxWeight == null) loadCoefficients();
+        if (menMaxWeight == null)
+            loadCoefficients();
         return menMaxWeight;
     }
 
@@ -104,7 +109,8 @@ public class Coefficients {
      * @return
      */
     public static Double womenMaxWeight() {
-        if (womenMaxWeight == null) loadCoefficients();
+        if (womenMaxWeight == null)
+            loadCoefficients();
         return womenMaxWeight;
     }
 
@@ -114,9 +120,12 @@ public class Coefficients {
      * @throws IOException
      */
     public static Float getSMMCoefficient(Integer age) throws IOException {
-        if (smm == null) loadSMM();
-        if (age <= 30) return 1.0F;
-        if (age >= 90) return smm.get(90);
+        if (smm == null)
+            loadSMM();
+        if (age <= 30)
+            return 1.0F;
+        if (age >= 90)
+            return smm.get(90);
         return smm.get(age);
     }
 

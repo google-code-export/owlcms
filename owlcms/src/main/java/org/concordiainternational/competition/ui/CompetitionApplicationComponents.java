@@ -22,6 +22,7 @@ import org.concordiainternational.competition.mobile.MJuryConsole;
 import org.concordiainternational.competition.mobile.MPlatesInfoView;
 import org.concordiainternational.competition.mobile.MRefereeConsole;
 import org.concordiainternational.competition.mobile.MTimekeeperConsole;
+import org.concordiainternational.competition.mobile.MobileHome;
 import org.concordiainternational.competition.mobile.RefereeDecisions;
 import org.concordiainternational.competition.spreadsheet.SpreadsheetUploader;
 import org.concordiainternational.competition.ui.AnnouncerView.Mode;
@@ -62,10 +63,10 @@ public class CompetitionApplicationComponents {
     public static final String COUNTDOWN_DISPLAY = "countdownDisplay"; //$NON-NLS-1$
     public static final String SPREADSHEET_UPLOADER = "spreadsheetUpload";
     public static final String HOME = ""; // empty fragment //$NON-NLS-1$
-    public static final String MTIMEKEEPER_CONSOLE = "timekeeperConsole"; 
+    public static final String MOBILE_HOME = "mobileHome"; // empty fragment //$NON-NLS-1$
+    public static final String MTIMEKEEPER_CONSOLE = "timekeeperConsole";
 
-
-    public Panel mainPanel;
+    private Panel mainPanel;
     public Menu menu;
     public Window mainWindow;
     public ApplicationView currentView;
@@ -74,8 +75,8 @@ public class CompetitionApplicationComponents {
     private Platform platform;
     private Logger logger = LoggerFactory.getLogger(CompetitionApplicationComponents.class);
 
-    public CompetitionApplicationComponents(Panel mainPanel, Menu menu, String platformName) {
-        this.mainPanel = mainPanel;
+    public CompetitionApplicationComponents(Menu menu, String platformName) {
+        this.mainPanel = null;
         this.menu = menu;
         this.setPlatformByName(platformName);
 
@@ -102,9 +103,10 @@ public class CompetitionApplicationComponents {
         urlFragmentToView.put(OJURY_CONSOLE, new JuryConsoleComponent(false));
         urlFragmentToView.put(MJURY_CONSOLE, new JuryConsoleComponent(true));
         urlFragmentToView.put(MPLATES_INFO, new PlatesInfoComponent());
-        urlFragmentToView.put(TIMEKEEPER_VIEW, new TimekeeperConsoleComponent() /*new TimekeeperViewComponent()*/);
+        urlFragmentToView.put(TIMEKEEPER_VIEW, new TimekeeperConsoleComponent() /* new TimekeeperViewComponent() */);
         urlFragmentToView.put(UPLOAD_VIEW, new SpreadsheetUploaderComponent());
         urlFragmentToView.put(WEIGH_IN_LIST, new WeighInListComponent());
+        urlFragmentToView.put(MOBILE_HOME, new MobileHomeComponent());
     }
 
     /**
@@ -112,7 +114,7 @@ public class CompetitionApplicationComponents {
      * 
      */
     private interface CompetitionApplicationComponent {
-        ApplicationView get(boolean initFromFragment, String viewName, String stylesheet) ;
+        ApplicationView getView(boolean initFromFragment, String viewName, String stylesheet);
     }
 
     /**
@@ -122,7 +124,7 @@ public class CompetitionApplicationComponents {
         private CompetitionEditor competitionEditor = null;
 
         @Override
-		public CompetitionEditor get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public CompetitionEditor getView(boolean initFromFragment, String viewName, String stylesheetName) {
             competitionEditor = (new CompetitionEditor(initFromFragment, viewName));
             return competitionEditor;
         }
@@ -135,7 +137,7 @@ public class CompetitionApplicationComponents {
         private PlatformList platformList = null;
 
         @Override
-		public PlatformList get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public PlatformList getView(boolean initFromFragment, String viewName, String stylesheetName) {
             this.platformList = (new PlatformList(initFromFragment, viewName));
             return platformList;
         }
@@ -148,7 +150,7 @@ public class CompetitionApplicationComponents {
         private CategoryList categoryList = null;
 
         @Override
-		public CategoryList get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public CategoryList getView(boolean initFromFragment, String viewName, String stylesheetName) {
             this.categoryList = (new CategoryList(initFromFragment, viewName));
             return categoryList;
         }
@@ -161,7 +163,7 @@ public class CompetitionApplicationComponents {
         private SessionList groupList = null;
 
         @Override
-		public SessionList get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public SessionList getView(boolean initFromFragment, String viewName, String stylesheetName) {
             this.groupList = (new SessionList(initFromFragment, viewName));
             return groupList;
         }
@@ -174,7 +176,7 @@ public class CompetitionApplicationComponents {
         private WeighInList weighInList = null;
 
         @Override
-		public WeighInList get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public WeighInList getView(boolean initFromFragment, String viewName, String stylesheetName) {
             this.weighInList = (new WeighInList(initFromFragment, viewName, false));
             return weighInList;
         }
@@ -187,7 +189,7 @@ public class CompetitionApplicationComponents {
         private CountdownDisplay countdownDisplay = null;
 
         @Override
-		public ApplicationView get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public ApplicationView getView(boolean initFromFragment, String viewName, String stylesheetName) {
             this.countdownDisplay = (new CountdownDisplay(initFromFragment, viewName));
             return countdownDisplay;
         }
@@ -200,12 +202,12 @@ public class CompetitionApplicationComponents {
         private RefereeTesting decisionLights = null;
 
         @Override
-		public ApplicationView get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public ApplicationView getView(boolean initFromFragment, String viewName, String stylesheetName) {
             this.decisionLights = (new RefereeTesting(initFromFragment, viewName, false, false));
             return decisionLights;
         }
     }
-    
+
     /**
      * Lazy builder for Jury Lights
      */
@@ -213,7 +215,7 @@ public class CompetitionApplicationComponents {
         private RefereeDecisions juryLights = null;
 
         @Override
-		public ApplicationView get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public ApplicationView getView(boolean initFromFragment, String viewName, String stylesheetName) {
             this.juryLights = (new RefereeDecisions(initFromFragment, viewName, false, true));
             return juryLights;
         }
@@ -224,24 +226,23 @@ public class CompetitionApplicationComponents {
      */
     private class RefereeConsoleComponent implements CompetitionApplicationComponent {
         private IRefereeConsole refereeConsole = null;
-		private boolean mobile;
+        private boolean mobile;
 
         public RefereeConsoleComponent(boolean mobile) {
-			this.mobile = mobile;
-		}
+            this.mobile = mobile;
+        }
 
-		@Override
-		public ApplicationView get(boolean initFromFragment, String viewName, String stylesheetName) {
-			if (mobile) {
-				this.refereeConsole = (new MRefereeConsole(initFromFragment, viewName));
-			} else {
-				this.refereeConsole = (new ORefereeConsole(initFromFragment, viewName));
-			}
-            return (ApplicationView)refereeConsole;
+        @Override
+        public ApplicationView getView(boolean initFromFragment, String viewName, String stylesheetName) {
+            if (mobile) {
+                this.refereeConsole = (new MRefereeConsole(initFromFragment, viewName));
+            } else {
+                this.refereeConsole = (new ORefereeConsole(initFromFragment, viewName));
+            }
+            return (ApplicationView) refereeConsole;
         }
     }
-    
-    
+
     /**
      * Lazy builder for Timekeeper buttons
      */
@@ -249,9 +250,9 @@ public class CompetitionApplicationComponents {
         private MTimekeeperConsole timekeeperConsole = null;
 
         @Override
-        public ApplicationView get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public ApplicationView getView(boolean initFromFragment, String viewName, String stylesheetName) {
             this.timekeeperConsole = (new MTimekeeperConsole(initFromFragment, viewName));
-            return (ApplicationView)timekeeperConsole;
+            return (ApplicationView) timekeeperConsole;
         }
     }
 
@@ -260,33 +261,46 @@ public class CompetitionApplicationComponents {
      */
     private class JuryConsoleComponent implements CompetitionApplicationComponent {
         private IRefereeConsole juryConsole = null;
-		private boolean mobile;
+        private boolean mobile;
 
         public JuryConsoleComponent(boolean mobile) {
-			this.mobile = mobile;
-		}
+            this.mobile = mobile;
+        }
 
-		@Override
-		public ApplicationView get(boolean initFromFragment, String viewName, String stylesheetName) {
-			if (mobile) {
-				this.juryConsole = (new MJuryConsole(initFromFragment, viewName));
-			} else {
-				this.juryConsole = (new OJuryConsole(initFromFragment, viewName));
-			}
-            return (ApplicationView)juryConsole;
+        @Override
+        public ApplicationView getView(boolean initFromFragment, String viewName, String stylesheetName) {
+            if (mobile) {
+                this.juryConsole = (new MJuryConsole(initFromFragment, viewName));
+            } else {
+                this.juryConsole = (new OJuryConsole(initFromFragment, viewName));
+            }
+            return (ApplicationView) juryConsole;
         }
     }
-    
+
+    /**
+     * Lazy builder for Mobile Home Page
+     */
+    private class MobileHomeComponent implements CompetitionApplicationComponent {
+        private MobileHome mobileHome = null;
+
+        @Override
+        public ApplicationView getView(boolean initFromFragment, String viewName, String stylesheetName) {
+            this.mobileHome = (new MobileHome(initFromFragment, viewName));
+            return (ApplicationView) mobileHome;
+        }
+    }
+
     /**
      * Lazy builder for Referee buttons
      */
     private class PlatesInfoComponent implements CompetitionApplicationComponent {
         private MPlatesInfoView platesInfoConsole = null;
-        
+
         @Override
-		public ApplicationView get(boolean initFromFragment, String viewName, String stylesheetName) {
-			this.platesInfoConsole = (new MPlatesInfoView(initFromFragment, viewName));
-            return (ApplicationView)platesInfoConsole;
+        public ApplicationView getView(boolean initFromFragment, String viewName, String stylesheetName) {
+            this.platesInfoConsole = (new MPlatesInfoView(initFromFragment, viewName));
+            return (ApplicationView) platesInfoConsole;
         }
     }
 
@@ -297,8 +311,8 @@ public class CompetitionApplicationComponents {
         private WeighInList weighInList = null;
 
         @Override
-		public WeighInList get(boolean initFromFragment, String viewName, String stylesheetName) {
-            this.weighInList = (new WeighInList(initFromFragment, viewName,true));
+        public WeighInList getView(boolean initFromFragment, String viewName, String stylesheetName) {
+            this.weighInList = (new WeighInList(initFromFragment, viewName, true));
             return weighInList;
         }
     }
@@ -310,7 +324,7 @@ public class CompetitionApplicationComponents {
         private SpreadsheetUploader spreadsheetUploader = null;
 
         @Override
-		public SpreadsheetUploader get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public SpreadsheetUploader getView(boolean initFromFragment, String viewName, String stylesheetName) {
             this.spreadsheetUploader = (new SpreadsheetUploader(initFromFragment, viewName));
             return spreadsheetUploader;
         }
@@ -323,7 +337,7 @@ public class CompetitionApplicationComponents {
         private AnnouncerView announcerView = null;
 
         @Override
-		public AnnouncerView get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public AnnouncerView getView(boolean initFromFragment, String viewName, String stylesheetName) {
             announcerView = (new AnnouncerView(initFromFragment, viewName, Mode.ANNOUNCER));
             announcerView.adjustSplitBarLocation();
             return announcerView;
@@ -337,8 +351,8 @@ public class CompetitionApplicationComponents {
         private AnnouncerView changesView = null;
 
         @Override
-		public AnnouncerView get(boolean initFromFragment, String viewName, String stylesheetName) {
-            changesView = (new AnnouncerView(initFromFragment, viewName,Mode.MARSHALL));
+        public AnnouncerView getView(boolean initFromFragment, String viewName, String stylesheetName) {
+            changesView = (new AnnouncerView(initFromFragment, viewName, Mode.MARSHALL));
             changesView.adjustSplitBarLocation();
             return changesView;
         }
@@ -352,7 +366,7 @@ public class CompetitionApplicationComponents {
         private AnnouncerView timekeeperView = null;
 
         @Override
-		public AnnouncerView get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public AnnouncerView getView(boolean initFromFragment, String viewName, String stylesheetName) {
             timekeeperView = (new AnnouncerView(initFromFragment, viewName, Mode.TIMEKEEPER));
             timekeeperView.adjustSplitBarLocation();
             return timekeeperView;
@@ -366,7 +380,7 @@ public class CompetitionApplicationComponents {
         private ResultView resultView = null;
 
         @Override
-		public ResultView get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public ResultView getView(boolean initFromFragment, String viewName, String stylesheetName) {
             this.resultView = (new ResultView(initFromFragment, viewName));
             return resultView;
         }
@@ -377,24 +391,26 @@ public class CompetitionApplicationComponents {
      */
     private class ResultBoardComponent implements CompetitionApplicationComponent {
         private ResultFrame resultBoard = null;
-        
+
         @Override
-		public ResultFrame get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public ResultFrame getView(boolean initFromFragment, String viewName, String newStyleSheetName) {
             try {
-            	Locale locale = CompetitionApplication.getCurrentLocale();
-            	String localeSuffix = "";
-            	if ("en".equals(locale.getLanguage())) {
-            		localeSuffix = "-en";
-            	}
-                resultBoard = (new ResultFrame(initFromFragment, viewName,"jsp/resultBoard"+localeSuffix+".jsp?platformName=", stylesheetName)); //$NON-NLS-1$
-                resultBoard.setStylesheetName(stylesheetName);
+                Locale locale = CompetitionApplication.getCurrentLocale();
+                String localeSuffix = "";
+                if ("en".equals(locale.getLanguage())) {
+                    localeSuffix = "-en";
+                }
+                resultBoard = (new ResultFrame(initFromFragment, viewName,
+                        "jsp/resultBoard" + localeSuffix + ".jsp?platformName=", newStyleSheetName)); //$NON-NLS-1$
+                if (newStyleSheetName != null && !initFromFragment) {
+                    resultBoard.setStylesheetName(newStyleSheetName);
+                }
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
             return resultBoard;
         }
     }
-
 
     /**
      * Lazy builder for lift order board.
@@ -403,14 +419,18 @@ public class CompetitionApplicationComponents {
         private ResultFrame liftOrderBoard = null;
 
         @Override
-		public ResultFrame get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public ResultFrame getView(boolean initFromFragment, String viewName, String newStylesheetName) {
             try {
-            	Locale locale = CompetitionApplication.getCurrentLocale();
-            	String localeSuffix = "";
-            	if ("en".equals(locale.getLanguage())) {
-            		localeSuffix = "-en";
-            	}
-                liftOrderBoard = (new ResultFrame(initFromFragment, viewName,"jsp/warmupRoom"+localeSuffix+".jsp?platformName=", stylesheetName)); //$NON-NLS-1$
+                Locale locale = CompetitionApplication.getCurrentLocale();
+                String localeSuffix = "";
+                if ("en".equals(locale.getLanguage())) {
+                    localeSuffix = "-en";
+                }
+                liftOrderBoard = (new ResultFrame(initFromFragment, viewName,
+                        "jsp/warmupRoom" + localeSuffix + ".jsp?platformName=", newStylesheetName)); //$NON-NLS-1$
+                if (newStylesheetName != null && !initFromFragment) {
+                    liftOrderBoard.setStylesheetName(newStylesheetName);
+                }
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
@@ -425,14 +445,18 @@ public class CompetitionApplicationComponents {
         private ResultFrame summaryLifterView = null;
 
         @Override
-		public ResultFrame get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public ResultFrame getView(boolean initFromFragment, String viewName, String newStylesheetName) {
             try {
-            	Locale locale = CompetitionApplication.getCurrentLocale();
-            	String localeSuffix = "";
-            	if ("en".equals(locale.getLanguage())) {
-            		localeSuffix = "-en";
-            	}
-                summaryLifterView = (new ResultFrame(initFromFragment, viewName, "jsp/liftingOrder"+localeSuffix+".jsp?platformName=", stylesheetName)); //$NON-NLS-1$
+                Locale locale = CompetitionApplication.getCurrentLocale();
+                String localeSuffix = "";
+                if ("en".equals(locale.getLanguage())) {
+                    localeSuffix = "-en";
+                }
+                summaryLifterView = (new ResultFrame(initFromFragment, viewName,
+                        "jsp/liftingOrder" + localeSuffix + ".jsp?platformName=", newStylesheetName)); //$NON-NLS-1$
+                if (newStylesheetName != null && !initFromFragment) {
+                    summaryLifterView.setStylesheetName(newStylesheetName);
+                }
             } catch (MalformedURLException e) {
                 throw new SystemError(e);
             }
@@ -447,11 +471,11 @@ public class CompetitionApplicationComponents {
         // private ResultFrame currentLifterPanel = null;
 
         @Override
-		public AttemptBoardView get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public AttemptBoardView getView(boolean initFromFragment, String viewName, String stylesheetName) {
             return new AttemptBoardView(initFromFragment, viewName, true, stylesheetName);
         }
     }
-    
+
     /**
      * Lazy builder for current lifter information
      */
@@ -459,11 +483,11 @@ public class CompetitionApplicationComponents {
         // private ResultFrame currentLifterPanel = null;
 
         @Override
-		public AttemptBoardView get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public AttemptBoardView getView(boolean initFromFragment, String viewName, String stylesheetName) {
             return new AttemptBoardView(initFromFragment, viewName, false, stylesheetName);
         }
     }
-    
+
     /**
      * Lazy builder for competition editor.
      */
@@ -471,35 +495,37 @@ public class CompetitionApplicationComponents {
         private EmptyView emptyView = null;
 
         @Override
-		public EmptyView get(boolean initFromFragment, String viewName, String stylesheetName) {
+        public EmptyView getView(boolean initFromFragment, String viewName, String stylesheetName) {
             emptyView = (new EmptyView());
+            emptyView.setSizeFull();
             return emptyView;
         }
     }
 
-    public ApplicationView getViewByName(String fragment, boolean initFromFragment)  {
+    public ApplicationView getViewByName(String fragment, boolean initFromFragment) {
         return getViewByName(fragment, initFromFragment, null);
     }
 
     public ApplicationView getViewByName(String fragment, boolean initFromFragment, String stylesheet) {
+        if (fragment == null || fragment.trim().isEmpty()) {
+            return new EmptyView();
+        }
+
         int where = fragment.indexOf("/");
         String viewName = fragment;
         if (where != -1) {
-            viewName = fragment.substring(0,where);
+            viewName = fragment.substring(0, where);
         }
         final CompetitionApplicationComponent component = urlFragmentToView.get(viewName);
         if (component != null) {
-            final ApplicationView applicationView = component.get(initFromFragment,viewName, stylesheet);
-//            LoggerUtils.logException(logger, new Exception("fragment "+fragment));
-//            logger.debug("getViewByName returning {}",applicationView);
+            final ApplicationView applicationView = component.getView(initFromFragment, viewName, stylesheet);
             return applicationView;
         } else {
             throw new RuntimeException(Messages.getString(
-                "CompetitionApplicationComponents.ViewNotFound", CompetitionApplication.getCurrentLocale()) + viewName); //$NON-NLS-1$
+                    "CompetitionApplicationComponents.ViewNotFound", CompetitionApplication.getCurrentLocale()) + viewName); //$NON-NLS-1$
         }
     }
-    
-    
+
     public void setPlatform(Platform platform) {
         this.platform = platform;
     }
@@ -530,8 +556,8 @@ public class CompetitionApplicationComponents {
             }
             app.setCurrentCompetitionSession(currentGroup);
         } else {
-            logger.error(Messages.getString(
-                "CompetitionApplicationComponents.PlatformNotFound", CompetitionApplication.getCurrentLocale()),platformName); //$NON-NLS-1$
+            logger.error(
+                    Messages.getString("CompetitionApplicationComponents.PlatformNotFound", CompetitionApplication.getCurrentLocale()), platformName); //$NON-NLS-1$
         }
         logger.debug("finish +++++"); //$NON-NLS-1$
     }
@@ -562,7 +588,7 @@ public class CompetitionApplicationComponents {
                 app.components.setPlatform(platforms.get(0));
                 platformName = app.getPlatformName();
             } else {
-                throw new RuleViolationException(CompetitionApplication.getCurrent().getLocale(),"AnnouncerView.selectPlatformFirst"); //$NON-NLS-1$
+                throw new RuleViolationException(CompetitionApplication.getCurrent().getLocale(), "AnnouncerView.selectPlatformFirst"); //$NON-NLS-1$
             }
         }
         return platformName;
@@ -582,14 +608,28 @@ public class CompetitionApplicationComponents {
                 platformName = app.getPlatformName();
             } else {
                 throw new RuleViolationException(
-                        Messages
-                                .getString(
-                                    "CompetitionApplicationComponents.MustDefineAtLeastOnePlatform", CompetitionApplication.getCurrentLocale())); //$NON-NLS-1$
+                        Messages.getString(
+                                "CompetitionApplicationComponents.MustDefineAtLeastOnePlatform",
+                                CompetitionApplication.getCurrentLocale())); //$NON-NLS-1$
             }
         }
         return platformName;
     }
 
+    public Panel getMainPanel() {
+        return mainPanel;
+    }
 
+    public void setMainPanel(Panel mainPanel) {
+        this.mainPanel = mainPanel;
+    }
+
+    public void setCurrentView(ApplicationView c) {
+        this.currentView = c;
+    }
+
+    public ApplicationView getCurrentView() {
+        return this.currentView;
+    }
 
 }

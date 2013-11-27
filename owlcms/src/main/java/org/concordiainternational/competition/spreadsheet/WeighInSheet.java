@@ -23,8 +23,7 @@ import com.extentech.formats.XLS.CellNotFoundException;
 import com.extentech.formats.XLS.WorkSheetNotFoundException;
 
 /**
- * The start sheet format is able to produce a round-trip. It implements both
- * the input sheet and output sheet interfaces.
+ * The start sheet format is able to produce a round-trip. It implements both the input sheet and output sheet interfaces.
  * 
  * @author jflamy
  * 
@@ -36,58 +35,53 @@ public class WeighInSheet implements InputSheet, LifterReader {
     private static final Logger logger = LoggerFactory.getLogger(WeighInSheet.class);
     private ExtenXLSReader inputSheetHelper;
 
-    
     /**
-     * Create a sheet.
-     * If this constructor is used, or newInstance is called, then 
-     * {@link #init(CompetitionApplication)} must also be called.
+     * Create a sheet. If this constructor is used, or newInstance is called, then {@link #init(CompetitionApplication)} must also be
+     * called.
      */
     public WeighInSheet() {
     }
 
-
     @Override
-	public void init(ExtenXLSReader inputSheetHelper1) {
-		this.inputSheetHelper = inputSheetHelper1;
-	}
-
+    public void init(ExtenXLSReader inputSheetHelper1) {
+        this.inputSheetHelper = inputSheetHelper1;
+    }
 
     /**
      * Fill in a lifter record from a row in the spreadsheet.
+     * 
      * @param lifterNumber
      *            index of the lifter, starting at 0
      * 
      * @throws CellNotFoundException
      */
     @Override
-	public Lifter readLifter(int lifterNumber) {
+    public Lifter readLifter(int lifterNumber) {
         return inputSheetHelper.readLifter(lifterNumber);
     }
 
     @Override
     public List<Lifter> getLifters(boolean excludeNotWeighed) {
-        return LifterSorter.displayOrderCopy(new LifterContainer(CompetitionApplication.getCurrent(), excludeNotWeighed).getAllPojos());            
+        return LifterSorter.displayOrderCopy(new LifterContainer(CompetitionApplication.getCurrent(), excludeNotWeighed).getAllPojos());
     }
 
+    @Override
+    public void readHeader(InputStream is, Session session)
+            throws CellNotFoundException, WorkSheetNotFoundException, IOException {
+        inputSheetHelper.readHeader(is, session);
+        return;
+    }
 
     @Override
-    public void readHeader(InputStream is, Session session) 
-	throws CellNotFoundException, WorkSheetNotFoundException, IOException {
-		inputSheetHelper.readHeader(is, session);
-		return;
-	}
-	
-	@Override
-	public List<Lifter> getAllLifters(InputStream is, Session session)
-			throws Throwable {
-		return inputSheetHelper.getAllLifters(is, session);
-	}
+    public List<Lifter> getAllLifters(InputStream is, Session session)
+            throws Throwable {
+        return inputSheetHelper.getAllLifters(is, session);
+    }
 
-	@Override
-	public List<Lifter> getGroupLifters(InputStream is, String aGroup,
-			Session session) throws Throwable {
-		return inputSheetHelper.getGroupLifters(is, aGroup, session);
-	}
-
+    @Override
+    public List<Lifter> getGroupLifters(InputStream is, String aGroup,
+            Session session) throws Throwable {
+        return inputSheetHelper.getGroupLifters(is, aGroup, session);
+    }
 
 }

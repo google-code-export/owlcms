@@ -61,7 +61,7 @@ public class TryFormatter {
         final String formatString = Messages.getString("ResultList.attemptsDone", locale);
         logger.debug("lifts done = {}  format={}", number, formatString);
         return MessageFormat.format(formatString, //$NON-NLS-1$
-            number);
+                number);
     }
 
     /**
@@ -71,8 +71,8 @@ public class TryFormatter {
      */
     public static String formatTry(Lifter lifter, final Locale locale, final int currentTry) {
         String tryInfo = MessageFormat.format(Messages.getString("LifterInfo.tryNumber", locale), //$NON-NLS-1$
-            currentTry, (lifter.getAttemptsDone() >= 3 ? Messages.getString("Common.shortCleanJerk", locale) //$NON-NLS-1$
-                    : Messages.getString("Common.shortSnatch", locale))); //$NON-NLS-1$
+                currentTry, (lifter.getAttemptsDone() >= 3 ? Messages.getString("Common.shortCleanJerk", locale) //$NON-NLS-1$
+                        : Messages.getString("Common.shortSnatch", locale))); //$NON-NLS-1$
         return tryInfo;
     }
 

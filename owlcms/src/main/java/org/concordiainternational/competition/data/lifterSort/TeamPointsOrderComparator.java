@@ -31,13 +31,16 @@ public class TeamPointsOrderComparator extends AbstractLifterComparator implemen
         int compare = 0;
 
         compare = compareClub(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareGender(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareRanking(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         return compare;
     }

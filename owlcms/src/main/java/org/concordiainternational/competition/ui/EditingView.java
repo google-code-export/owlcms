@@ -51,4 +51,10 @@ public interface EditingView extends Component, Bookmarkable {
 
     public void setSessionData(SessionData newSessionData);
 
+    public String getInstanceId();
+
+    public String getViewName();
+
+    public String getLoggingId();
+
 }

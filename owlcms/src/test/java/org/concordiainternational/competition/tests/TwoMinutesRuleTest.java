@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.hbnutil.HbnContainer;
 import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
-import com.vaadin.ui.Panel;
 
 public class TwoMinutesRuleTest {
     final static Logger logger = LoggerFactory.getLogger(TwoMinutesRuleTest.class);
@@ -48,7 +47,7 @@ public class TwoMinutesRuleTest {
         // mock the application
         final CompetitionApplication application = new CompetitionApplication();
         CompetitionApplication.setCurrent(application);
-        application.components = new CompetitionApplicationComponents(new Panel(), null, null);
+        application.components = new CompetitionApplicationComponents(null, null);
         String platformName = CompetitionApplicationComponents.firstPlatformName();
         application.setPlatformByName(platformName);
 
@@ -491,7 +490,7 @@ public class TwoMinutesRuleTest {
             lifter.setCleanJerk3Declaration(weight);
             break;
         }
-        groupData.updateListsForLiftingOrderChange();
+        groupData.updateListsForLiftingOrderChange(lifter);
     }
 
     /**
@@ -530,7 +529,7 @@ public class TwoMinutesRuleTest {
             lifter.setCleanJerk3Change1(weight);
             break;
         }
-        groupData.updateListsForLiftingOrderChange();
+        groupData.updateListsForLiftingOrderChange(lifter);
     }
 
     /**
@@ -569,7 +568,7 @@ public class TwoMinutesRuleTest {
             lifter.setCleanJerk3Change2(weight);
             break;
         }
-        groupData.updateListsForLiftingOrderChange();
+        groupData.updateListsForLiftingOrderChange(lifter);
     }
 
     /**
@@ -607,7 +606,7 @@ public class TwoMinutesRuleTest {
         }
         LifterSorter.liftingOrder(lifters1);
         groupData.liftDone(lifter, !weight.startsWith("-")); //$NON-NLS-1$
-        groupData.updateListsForLiftingOrderChange();
+        groupData.updateListsForLiftingOrderChange(lifter);
     }
 
 }

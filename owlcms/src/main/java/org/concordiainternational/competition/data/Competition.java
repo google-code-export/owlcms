@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 public class Competition implements Serializable {
     private static final long serialVersionUID = -2817516132425565754L;
     @SuppressWarnings("unused")
-	private static final Logger logger = LoggerFactory.getLogger(Competition.class);
+    private static final Logger logger = LoggerFactory.getLogger(Competition.class);
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -127,7 +127,8 @@ public class Competition implements Serializable {
     }
 
     public Integer getInvitedIfBornBefore() {
-        if (invitedIfBornBefore == null) return 0;
+        if (invitedIfBornBefore == null)
+            return 0;
         return invitedIfBornBefore;
     }
 
@@ -144,12 +145,13 @@ public class Competition implements Serializable {
     }
 
     public String getResultTemplateFileName() {
-    	//logger.debug("getResultTemplateFileName {}",resultTemplateFileName);
+        // logger.debug("getResultTemplateFileName {}",resultTemplateFileName);
         if (resultTemplateFileName != null && new File(resultTemplateFileName).exists()) {
             return resultTemplateFileName;
         } else {
             return CompetitionApplication.getCurrent().getContext().getBaseDirectory()
-                    + "/WEB-INF/classes/templates/competitionBook/CompetitionBook_Total_"+CompetitionApplication.getCurrentSupportedLocale().getLanguage()+".xls";
+                    + "/WEB-INF/classes/templates/competitionBook/CompetitionBook_Total_"
+                    + CompetitionApplication.getCurrentSupportedLocale().getLanguage() + ".xls";
         }
     }
 
@@ -161,7 +163,8 @@ public class Competition implements Serializable {
 
     @SuppressWarnings("unchecked")
     public static int invitedIfBornBefore() {
-        if (invitedThreshold != null) return invitedThreshold;
+        if (invitedThreshold != null)
+            return invitedThreshold;
         final CompetitionApplication currentApp = CompetitionApplication.getCurrent();
         final Session hbnSession = currentApp.getHbnSession();
         List<Competition> competitions = hbnSession.createCriteria(Competition.class).list();
@@ -169,7 +172,8 @@ public class Competition implements Serializable {
             final Competition competition = competitions.get(0);
             invitedThreshold = competition.getInvitedIfBornBefore();
         }
-        if (invitedThreshold == null) return 0;
+        if (invitedThreshold == null)
+            return 0;
         return invitedThreshold;
     }
 
@@ -183,7 +187,8 @@ public class Competition implements Serializable {
     private static Boolean isEnforce15_20rule = null;
 
     public static boolean isMasters() {
-        if (isMasters != null) return isMasters;
+        if (isMasters != null)
+            return isMasters;
         Competition competition = getCompetition();
         isMasters = competition.getMasters();
         if (isMasters == null) {
@@ -194,7 +199,8 @@ public class Competition implements Serializable {
     }
 
     public static boolean isEnforce15_20rule() {
-        if (isEnforce15_20rule != null) return isEnforce15_20rule;
+        if (isEnforce15_20rule != null)
+            return isEnforce15_20rule;
         Competition competition = getCompetition();
         isEnforce15_20rule = competition.getEnforce15_20KgRule();
         if (isEnforce15_20rule == null) {
@@ -202,8 +208,7 @@ public class Competition implements Serializable {
         } else {
             return isEnforce15_20rule;
         }
-    }   
-    
+    }
 
     public static Competition getCompetition() {
         final CompetitionApplication currentApp = CompetitionApplication.getCurrent();
@@ -216,40 +221,42 @@ public class Competition implements Serializable {
         }
         return competition;
     }
-    
-    
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((competitionName == null) ? 0 : competitionName.hashCode());
-		return result;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((competitionName == null) ? 0 : competitionName.hashCode());
+        return result;
+    }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Competition other = (Competition) obj;
-		if (competitionName == null) {
-			if (other.competitionName != null)
-				return false;
-		} else if (!competitionName.equals(other.competitionName))
-			return false;
-		return true;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Competition other = (Competition) obj;
+        if (competitionName == null) {
+            if (other.competitionName != null)
+                return false;
+        } else if (!competitionName.equals(other.competitionName))
+            return false;
+        return true;
+    }
 
     public String getProtocolFileName() {
         return protocolFileName;
@@ -274,6 +281,5 @@ public class Competition implements Serializable {
     public void setEnforce15_20KgRule(Boolean enforce15_20KgRule) {
         this.enforce15_20KgRule = enforce15_20KgRule;
     }
-    
-    
+
 }

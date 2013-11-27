@@ -24,16 +24,20 @@ public class WeighInOrderComparator extends AbstractLifterComparator implements 
         int compare = 0;
 
         compare = compareGroupWeighInTime(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareLotNumber(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareLastName(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareFirstName(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         return compare;
     }
