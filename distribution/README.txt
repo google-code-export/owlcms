@@ -1,5 +1,7 @@
 Steps to create a release.
 
+0) In SourceTree, close all features, start a new release. (exit eclipse and restart after making changes)
+
 1) Prepare the distribution.
 
 a. Make sure that 
