@@ -14,8 +14,9 @@ import java.util.Timer;
 
 import org.concordiainternational.competition.data.Lifter;
 import org.concordiainternational.competition.ui.CompetitionApplication;
-import org.concordiainternational.competition.ui.LifterInfo;
 import org.concordiainternational.competition.ui.InteractionNotificationReason;
+import org.concordiainternational.competition.ui.LifterInfo;
+import org.concordiainternational.competition.ui.SessionData;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,8 @@ public class CountdownTimer implements Serializable {
 
     private static final long serialVersionUID = 8921641103581546472L;
 
-    final static Logger logger = LoggerFactory.getLogger(CountdownTimer.class);
+    private final static Logger logger = LoggerFactory.getLogger(CountdownTimer.class);
+    private final static Logger listenerLogger = LoggerFactory.getLogger("listeners." + SessionData.class.getSimpleName()); //$NON-NLS-1$
 
     private boolean platformFree;
     private Lifter owner = null;
@@ -44,23 +46,21 @@ public class CountdownTimer implements Serializable {
     private CountdownTask countdownTask;
 
     /*
-     * listeners : the display for the lifter and the buzzer controller are
-     * treated specially as they require immediate attention.
-     * then all other listeners are treated in whatever order.
+     * listeners : the display for the lifter and the buzzer controller are treated specially as they require immediate attention. then all
+     * other listeners are treated in whatever order.
      */
     private Set<CountdownTimerListener> listeners = new HashSet<CountdownTimerListener>();
     private CountdownTimerListener countdownDisplay = null;
-    
+
     /**
-     * Buzzer is controlled by LifterInfo on announcer console
-     * (legacy design -- buzzer used to be on client side)
+     * Buzzer is controlled by LifterInfo on announcer console (legacy design -- buzzer used to be on client side)
      */
     private LifterInfo masterBuzzer = null;
 
     private boolean started = false;
 
     public CountdownTimer() {
-        logger.debug("new {}",this); //$NON-NLS-1$
+        logger.debug("new {}", this); //$NON-NLS-1$
     }
 
     /**
@@ -74,7 +74,8 @@ public class CountdownTimer implements Serializable {
         if (countdownTask != null) {
             countdownTask.cancel();
         }
-        if (owner == null) return;
+        if (owner == null)
+            return;
         if (timeRemaining <= 0) {
             setTimeRemaining(0);
             return;
@@ -84,9 +85,9 @@ public class CountdownTimer implements Serializable {
 
         countdownTask = new CountdownTask(this, timeRemaining, DECREMENT);
         timer.scheduleAtFixedRate(countdownTask,
-        		0, // start right away
-        		DECREMENT); // 100ms precision is good enough
-        
+                0, // start right away
+                DECREMENT); // 100ms precision is good enough
+
         final Set<CountdownTimerListener> listeners2 = getListeners();
         logger.trace("start: {}  - {} listeners", timeRemaining, listeners2.size()); //$NON-NLS-1$
         setStarted(true);
@@ -97,10 +98,10 @@ public class CountdownTimer implements Serializable {
             masterBuzzer.start(timeRemaining);
         }
         for (CountdownTimerListener curListener : listeners2) {
-        	// avoid duplicate notifications
-        	if (curListener != masterBuzzer && curListener != countdownDisplay) {
-        		curListener.start(timeRemaining);
-        	}
+            // avoid duplicate notifications
+            if (curListener != masterBuzzer && curListener != countdownDisplay) {
+                curListener.start(timeRemaining);
+            }
         }
     }
 
@@ -116,11 +117,11 @@ public class CountdownTimer implements Serializable {
      * Stop the timer, without clearing the associated lifter.
      */
     public void pause() {
-    	pause(InteractionNotificationReason.UNKNOWN);
+        pause(InteractionNotificationReason.UNKNOWN);
     }
-    
-	@SuppressWarnings("unchecked")
-	public void pause(InteractionNotificationReason reason) {
+
+    @SuppressWarnings("unchecked")
+    public void pause(InteractionNotificationReason reason) {
         logger.debug("enter pause {} {}", getTimeRemaining()); //$NON-NLS-1$
         if (countdownTask != null) {
             setTimeRemaining((int) countdownTask.getBestTimeRemaining());
@@ -134,46 +135,52 @@ public class CountdownTimer implements Serializable {
             countdownTask = null;
         }
         setStarted(false);
-        logger.info("pause: {}", timeRemaining); //$NON-NLS-1$
+        if (timeRemaining > 0) {
+            logger.info("pause: {}", timeRemaining); //$NON-NLS-1$            
+        } else {
+            logger.trace("pause: {}", timeRemaining); //$NON-NLS-1$
+        }
+
         if (countdownDisplay != null) {
             countdownDisplay.pause(timeRemaining, CompetitionApplication.getCurrent(), reason);
         }
         if (masterBuzzer != null) {
             masterBuzzer.pause(timeRemaining, CompetitionApplication.getCurrent(), reason);
         }
-        
+
         final HashSet<CountdownTimerListener> listenerSet = (HashSet<CountdownTimerListener>) getListeners();
-		for (CountdownTimerListener curListener : (HashSet<CountdownTimerListener>)listenerSet.clone()) {
-        	// avoid duplicate notifications
-        	if (curListener != masterBuzzer && curListener != countdownDisplay) {
-        		
-        		// avoid notifying orphaned listeners
-        		if (curListener instanceof AbstractComponent) {
-        			AbstractComponent curComponent = (AbstractComponent)curListener;
-        			Application curApp = curComponent.getApplication();
-        			if (curApp == null) {
-        				// application is null, the listener is an orphan
-        				listenerSet.remove(curListener);
-        			} else {
-        				curListener.pause(timeRemaining, CompetitionApplication.getCurrent(), reason);
-        			}
-        		} else {
-        			curListener.pause(timeRemaining, CompetitionApplication.getCurrent(), reason);
-        		}
-        	}
+        for (CountdownTimerListener curListener : (HashSet<CountdownTimerListener>) listenerSet.clone()) {
+            // avoid duplicate notifications
+            if (curListener != masterBuzzer && curListener != countdownDisplay) {
+
+                // avoid notifying orphaned listeners
+                if (curListener instanceof AbstractComponent) {
+                    AbstractComponent curComponent = (AbstractComponent) curListener;
+                    Application curApp = curComponent.getApplication();
+                    if (curApp == null) {
+                        // application is null, the listener is an orphan
+                        listenerSet.remove(curListener);
+                    } else {
+                        curListener.pause(timeRemaining, CompetitionApplication.getCurrent(), reason);
+                    }
+                } else {
+                    curListener.pause(timeRemaining, CompetitionApplication.getCurrent(), reason);
+                }
+            }
         }
-	}
+    }
 
     /**
      * Stop the timer, clear the associated lifter.
      */
     public void stop() {
-    	stop(InteractionNotificationReason.UNKNOWN);
+        stop(InteractionNotificationReason.UNKNOWN);
     }
-    
+
     public void stop(InteractionNotificationReason reason) {
         logger.debug("enter stop {} {}", getTimeRemaining()); //$NON-NLS-1$
-        if (timer != null) timer.cancel();
+        if (timer != null)
+            timer.cancel();
         timer = null;
         if (countdownTask != null) {
             countdownTask.cancel();
@@ -189,56 +196,56 @@ public class CountdownTimer implements Serializable {
             masterBuzzer.stop(timeRemaining, CompetitionApplication.getCurrent(), reason);
         }
         for (CountdownTimerListener curListener : getListeners()) {
-        	// avoid duplicate notifications
-        	if (curListener != masterBuzzer && curListener != countdownDisplay) {
-        		if (curListener instanceof AbstractComponent) {
-        			final Application application = ((AbstractComponent) curListener).getApplication();
-					if (application != null) {
-						curListener.stop(timeRemaining, CompetitionApplication.getCurrent(), reason);
-					}
-        		} else {
-        			curListener.stop(timeRemaining, CompetitionApplication.getCurrent(), reason);
-        		}
-        	}
+            // avoid duplicate notifications
+            if (curListener != masterBuzzer && curListener != countdownDisplay) {
+                if (curListener instanceof AbstractComponent) {
+                    final Application application = ((AbstractComponent) curListener).getApplication();
+                    if (application != null) {
+                        curListener.stop(timeRemaining, CompetitionApplication.getCurrent(), reason);
+                    }
+                } else {
+                    curListener.stop(timeRemaining, CompetitionApplication.getCurrent(), reason);
+                }
+            }
         }
     }
 
     /**
-     * Set the remaining time explicitly. Meant to be called only by SessionData()
-     * so that the time is reset correctly.
+     * Set the remaining time explicitly. Meant to be called only by SessionData() so that the time is reset correctly.
      */
     public void forceTimeRemaining(int remainingTime) {
-    	forceTimeRemaining(remainingTime, InteractionNotificationReason.UNKNOWN);
+        forceTimeRemaining(remainingTime, InteractionNotificationReason.UNKNOWN);
     }
-    
-    public void forceTimeRemaining(int remainingTime,InteractionNotificationReason reason) {
-        if (timer != null) timer.cancel();
+
+    public void forceTimeRemaining(int remainingTime, InteractionNotificationReason reason) {
+        if (timer != null)
+            timer.cancel();
         timer = null;
         if (countdownTask != null) {
             countdownTask.cancel();
             countdownTask = null;
         }
         setTimeRemaining(remainingTime);
-        logger.info("forceTimeRemaining: {}", getTimeRemaining()); //$NON-NLS-1$
+        logger.info("forceTimeRemaining: {} {}", getTimeRemaining(), reason); //$NON-NLS-1$
         if (countdownDisplay != null) {
             countdownDisplay.forceTimeRemaining(timeRemaining, CompetitionApplication.getCurrent(), reason);
         }
         if (masterBuzzer != null) {
             masterBuzzer.forceTimeRemaining(timeRemaining, CompetitionApplication.getCurrent(), reason);
         }
-        
+
         for (CountdownTimerListener curListener : getListeners()) {
-        	// avoid duplicate notifications
-        	if (curListener != masterBuzzer && curListener != countdownDisplay) {
-        		if (curListener instanceof AbstractComponent) {
-        			final Application application = ((AbstractComponent) curListener).getApplication();
-					if (application != null) {
-						curListener.forceTimeRemaining(getTimeRemaining(), CompetitionApplication.getCurrent(), reason);
-					}
-        		} else {
-        			curListener.forceTimeRemaining(getTimeRemaining(), CompetitionApplication.getCurrent(), reason);
-        		}
-        	}
+            // avoid duplicate notifications
+            if (curListener != masterBuzzer && curListener != countdownDisplay) {
+                if (curListener instanceof AbstractComponent) {
+                    final Application application = ((AbstractComponent) curListener).getApplication();
+                    if (application != null) {
+                        curListener.forceTimeRemaining(getTimeRemaining(), CompetitionApplication.getCurrent(), reason);
+                    }
+                } else {
+                    curListener.forceTimeRemaining(getTimeRemaining(), CompetitionApplication.getCurrent(), reason);
+                }
+            }
         }
     }
 
@@ -268,18 +275,17 @@ public class CountdownTimer implements Serializable {
     public int getTimeRemaining() {
         return timeRemaining;
     }
-    
+
     public Long getRunningTimeRemaining() {
         if (countdownTask != null) {
             return countdownTask.getBestTimeRemaining();
         } else {
             return null;
-        }  
+        }
     }
 
     /**
-     * Associate the timer with a lifter Set to null to indicate that the time
-     * on the timer belongs to no-one in particular.
+     * Associate the timer with a lifter Set to null to indicate that the time on the timer belongs to no-one in particular.
      * 
      * @param lifter
      */
@@ -302,15 +308,17 @@ public class CountdownTimer implements Serializable {
     }
 
     public void addListener(CountdownTimerListener timerListener) {
-        logger.debug("{} listened by {}", this, timerListener); //$NON-NLS-1$
+        listenerLogger.debug("addListener: {} listened by {}", this, timerListener); //$NON-NLS-1$
         listeners.add(timerListener);
     }
 
     public void removeAllListeners() {
+        listenerLogger.debug("removeAllListeners: no one listens to {}", this); //$NON-NLS-1$
         listeners.clear();
     }
 
     public void removeListener(CountdownTimerListener timerListener) {
+        listenerLogger.debug("removeListener: {} no longer listened by {}", this, timerListener); //$NON-NLS-1$
         listeners.remove(timerListener);
     }
 
@@ -373,10 +381,10 @@ public class CountdownTimer implements Serializable {
         }
     }
 
-	public void cancel() {
-		logger.debug("cancelling timer");
-		this.timer.cancel();
-	}
+    public void cancel() {
+        logger.debug("cancelling timer");
+        this.timer.cancel();
+    }
 
     public boolean isStarted() {
         return started;
@@ -385,8 +393,5 @@ public class CountdownTimer implements Serializable {
     public void setStarted(boolean started) {
         this.started = started;
     }
-
-
-
 
 }

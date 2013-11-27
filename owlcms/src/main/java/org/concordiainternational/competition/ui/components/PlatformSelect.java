@@ -42,11 +42,12 @@ public class PlatformSelect extends ListSelect implements Serializable {
         platformSelect.setRows(1);
     }
 
-	@Override
-	public String toString() {
-		
-		Set<Long> PlatformIds = (Set<Long>) getValue();
-        if (PlatformIds == null) return Messages.getString("Common.emptyList", app.getLocale()); //$NON-NLS-1$
+    @Override
+    public String toString() {
+
+        Set<Long> PlatformIds = (Set<Long>) getValue();
+        if (PlatformIds == null)
+            return Messages.getString("Common.emptyList", app.getLocale()); //$NON-NLS-1$
         StringBuilder sb = new StringBuilder();
         final String separator = Messages.getString("CommonFieldFactory.listSeparator", app.getLocale()); //$NON-NLS-1$
         for (Long curPlatformId : PlatformIds) {
@@ -60,7 +61,6 @@ public class PlatformSelect extends ListSelect implements Serializable {
         } else {
             return sb.substring(0, sb.length() - separator.length()); // hide last comma
         }
-	}
-    
-    
+    }
+
 }

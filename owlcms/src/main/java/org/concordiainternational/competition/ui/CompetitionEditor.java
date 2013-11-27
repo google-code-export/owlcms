@@ -9,7 +9,6 @@ package org.concordiainternational.competition.ui;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URL;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
@@ -19,6 +18,7 @@ import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.publicAddress.LogoUploader;
 import org.concordiainternational.competition.ui.components.ApplicationView;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,6 @@ import com.vaadin.data.hbnutil.HbnContainer;
 import com.vaadin.data.util.FilesystemContainer;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.service.ApplicationContext;
-import com.vaadin.terminal.DownloadStream;
 import com.vaadin.terminal.gwt.server.WebApplicationContext;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -75,7 +74,8 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         } else {
             this.viewName = viewName;
         }
-        
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
+
         app = CompetitionApplication.getCurrent();
         final Locale locale = app.getLocale();
         this.setReadOnly(true);
@@ -93,14 +93,15 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         this.addComponent(createFormLayout(formLayout, locale, cmp, competitionItem));
         this.setSpacing(true);
         this.setMargin(true);
+
+        registerAsListener();
     }
 
     /**
      * Display the competition information.
      * 
-     * REFACTOR: redo this using a form; this would enable us to use a
-     * FormFieldFactory and deal more elegantly with the dual nature of the file
-     * name field.
+     * REFACTOR: redo this using a form; this would enable us to use a FormFieldFactory and deal more elegantly with the dual nature of the
+     * file name field.
      * 
      * @param formLayout
      * @param locale
@@ -110,7 +111,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
      * @throws ConversionException
      * @throws SourceException
      * @throws InvalidValueException
-     * @throws FileNotFoundException 
+     * @throws FileNotFoundException
      */
     private FormLayout createFormLayout(final FormLayout formLayout, final Locale locale,
             HbnContainer<Competition> cmp, final HbnContainer<Competition>.EntityItem<Competition> competitionItem)
@@ -129,10 +130,12 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         addTextField(formLayout, locale, competitionItem, "federationWebSite", ""); //$NON-NLS-1$ //$NON-NLS-2$
         addTextField(formLayout, locale, competitionItem, "federationEMail", ""); //$NON-NLS-1$ //$NON-NLS-2$
         displayPS = addFileDisplay(formLayout, locale, competitionItem, "protocolFileName", ""); //$NON-NLS-1$ //$NON-NLS-2$
-        editPS = addFileSelector(formLayout, locale, competitionItem, "protocolFileName", "", "/WEB-INF/classes/templates/protocolSheet", displayPS); //$NON-NLS-1$ //$NON-NLS-2$)
+        editPS = addFileSelector(formLayout, locale, competitionItem,
+                "protocolFileName", "", "/WEB-INF/classes/templates/protocolSheet", displayPS); //$NON-NLS-1$ //$NON-NLS-2$)
         displayFN = addFileDisplay(formLayout, locale, competitionItem, "resultTemplateFileName", ""); //$NON-NLS-1$ //$NON-NLS-2$
-        editFN = addFileSelector(formLayout, locale, competitionItem, "resultTemplateFileName", "", "/WEB-INF/classes/templates/competitionBook", displayFN); //$NON-NLS-1$ //$NON-NLS-2$)
-        addLogoUploader(formLayout,locale);
+        editFN = addFileSelector(formLayout, locale, competitionItem,
+                "resultTemplateFileName", "", "/WEB-INF/classes/templates/competitionBook", displayFN); //$NON-NLS-1$ //$NON-NLS-2$)
+        addLogoUploader(formLayout, locale);
 
         editable = false;
         setReadOnly(formLayout, true);
@@ -146,35 +149,36 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         return formLayout;
     }
 
-
     /**
      * @param formLayout
      * @param locale
      * @param competitionItem
      * @param fieldName
      * @param initialValue
-     * @param displayField 
+     * @param displayField
      * @return
-     * @throws FileNotFoundException 
+     * @throws FileNotFoundException
      */
     private Select addFileSelector(FormLayout formLayout, Locale locale,
-            HbnContainer<Competition>.EntityItem<Competition> competitionItem, String fieldName, String initialValue, String relativeLocation, final TextField displayField)  {
+            HbnContainer<Competition>.EntityItem<Competition> competitionItem, String fieldName, String initialValue,
+            String relativeLocation, final TextField displayField) {
 
         final ApplicationContext context = app.getContext();
         WebApplicationContext wContext = (WebApplicationContext) context;
 
-        final Property itemProperty = competitionItem.getItemProperty(fieldName);;
+        final Property itemProperty = competitionItem.getItemProperty(fieldName);
+        ;
         FilesystemContainer fsContainer;
 
-		String realPath = wContext.getHttpSession().getServletContext().getRealPath(relativeLocation);
+        String realPath = wContext.getHttpSession().getServletContext().getRealPath(relativeLocation);
 
-		File file = new File(realPath);
-		if (realPath != null && file.isDirectory()) {
-			fsContainer = new FilesystemContainer(file, "xls", false);
-		} else {
-			fsContainer = findTemplatesWhenRunningInPlace(wContext);
-		}
-        
+        File file = new File(realPath);
+        if (realPath != null && file.isDirectory()) {
+            fsContainer = new FilesystemContainer(file, "xls", false);
+        } else {
+            fsContainer = findTemplatesWhenRunningInPlace(wContext);
+        }
+
         Select fileSelector = new Select(Messages.getString("Competition." + fieldName, locale), fsContainer);
         fileSelector.setItemCaptionPropertyId("Name");
         fileSelector.addListener(new Property.ValueChangeListener() {
@@ -184,7 +188,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
             public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
                 Property property = event.getProperty();
                 itemProperty.setValue(property);
-                File aFile = (File)(property.getValue());
+                File aFile = (File) (property.getValue());
                 displayField.setValue(aFile.getName());
             }
         });
@@ -192,42 +196,41 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         formLayout.addComponent(fileSelector);
         return fileSelector;
     }
-    
-
 
     private void addLogoUploader(FormLayout formLayout, Locale locale) {
-            formLayout.addComponent(new LogoUploader(formLayout));
+        formLayout.addComponent(new LogoUploader(formLayout));
     }
 
-	/**
-	 * kludge when running in-place under jetty (development mode) with Maven
-	 * @param wContext
-	 * @param fsContainer
-	 * @return
-	 */
-	private FilesystemContainer findTemplatesWhenRunningInPlace(WebApplicationContext wContext) {
-		String realPath;
-		FilesystemContainer fsContainer;
+    /**
+     * kludge when running in-place under jetty (development mode) with Maven
+     * 
+     * @param wContext
+     * @param fsContainer
+     * @return
+     */
+    private FilesystemContainer findTemplatesWhenRunningInPlace(WebApplicationContext wContext) {
+        String realPath;
+        FilesystemContainer fsContainer;
 
-		String relativeLocationKludge = "/classes";
-		realPath = wContext.getHttpSession().getServletContext().getRealPath(relativeLocationKludge);
-		try {
-			logger.debug("findTemplatesWhenRunningInPlace 1 {}",realPath);
-			// really ugly, no benefit whatsoever in cleaning this up.
-			File file1 = new File(realPath).getParentFile().getParentFile();
-			logger.debug("findTemplatesWhenRunningInPlace 2 {}",file1.getAbsolutePath());
-			if (realPath != null && file1.isDirectory()) {
-				file1 = new File(file1,"resources/templates/competitionBook");
-				logger.debug("findTemplatesWhenRunningInPlace 3 {}",file1.getAbsolutePath());
-				fsContainer = new FilesystemContainer(file1, "xls", false);
-			} else {
-				throw new RuntimeException("templates not found in WEB-INF or application root");
-			}
-		} catch (Throwable t) {
-			throw new RuntimeException("templates not found in WEB-INF or application root");
-		}
-		return fsContainer;
-	}
+        String relativeLocationKludge = "/classes";
+        realPath = wContext.getHttpSession().getServletContext().getRealPath(relativeLocationKludge);
+        try {
+            logger.debug("findTemplatesWhenRunningInPlace 1 {}", realPath);
+            // really ugly, no benefit whatsoever in cleaning this up.
+            File file1 = new File(realPath).getParentFile().getParentFile();
+            logger.debug("findTemplatesWhenRunningInPlace 2 {}", file1.getAbsolutePath());
+            if (realPath != null && file1.isDirectory()) {
+                file1 = new File(file1, "resources/templates/competitionBook");
+                logger.debug("findTemplatesWhenRunningInPlace 3 {}", file1.getAbsolutePath());
+                fsContainer = new FilesystemContainer(file1, "xls", false);
+            } else {
+                throw new RuntimeException("templates not found in WEB-INF or application root");
+            }
+        } catch (Throwable t) {
+            throw new RuntimeException("templates not found in WEB-INF or application root");
+        }
+        return fsContainer;
+    }
 
     /**
      * @param formLayout
@@ -245,10 +248,11 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         TextField field = new TextField(Messages.getString("Competition." + fieldName, locale), itemProperty); //$NON-NLS-1$
         field.setWidth("60ex"); //$NON-NLS-1$
         formLayout.addComponent(field);
-        if (itemProperty.getValue() == null) itemProperty.setValue(initialValue); //$NON-NLS-1$
+        if (itemProperty.getValue() == null)
+            itemProperty.setValue(initialValue); //$NON-NLS-1$
         return field;
     }
-    
+
     /**
      * @param formLayout
      * @param locale
@@ -263,10 +267,12 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
             final String initialValue) throws ReadOnlyException, ConversionException {
         final Property itemProperty = competitionItem.getItemProperty(fieldName);
         Object stringValue = itemProperty.getValue();
-        if (stringValue == null) stringValue = initialValue; //$NON-NLS-1$
+        if (stringValue == null)
+            stringValue = initialValue; //$NON-NLS-1$
         File value = (File) new File((String) stringValue);
 
-        TextField field = new TextField(Messages.getString("Competition." + fieldName, locale), new ObjectProperty<String>(value.getName(),String.class)); //$NON-NLS-1$
+        TextField field = new TextField(
+                Messages.getString("Competition." + fieldName, locale), new ObjectProperty<String>(value.getName(), String.class)); //$NON-NLS-1$
         field.setWidth("60ex"); //$NON-NLS-1$
         formLayout.addComponent(field);
 
@@ -288,7 +294,8 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         final Property itemProperty = competitionItem.getItemProperty(fieldName);
         DateField field = new DateField(Messages.getString("Competition." + fieldName, locale), itemProperty); //$NON-NLS-1$
         formLayout.addComponent(field);
-        if (itemProperty.getValue() == null) itemProperty.setValue(initialValue);
+        if (itemProperty.getValue() == null)
+            itemProperty.setValue(initialValue);
         field.setResolution(DateField.RESOLUTION_DAY);
         field.setDateFormat("yyyy-MM-dd");
         return field;
@@ -315,6 +322,7 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
 
             @Override
             public void buttonClick(ClickEvent event) {
+                LoggerUtils.buttonSetup();
                 if (editable) {
                     // layout currently says "OK"
                     event.getButton().setCaption(Messages.getString("Common.edit", locale)); //$NON-NLS-1$
@@ -366,7 +374,9 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         // nothing to do.
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()
      */
     @Override
@@ -378,12 +388,13 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
      * @return
      */
     @Override
-	public String getFragment() {
+    public String getFragment() {
         return viewName;
     }
-    
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#setParametersFromFragment(java.lang.String)
      */
     @Override
@@ -393,33 +404,41 @@ public class CompetitionEditor extends VerticalLayout implements ApplicationView
         if (params.length >= 1) {
             viewName = params[0];
         } else {
-            throw new RuleViolationException("Error.ViewNameIsMissing"); 
+            throw new RuleViolationException("Error.ViewNameIsMissing");
         }
     }
-    
-	@Override
-	public void registerAsListener() {
-		CompetitionApplication.getCurrent().getMainWindow().addListener((CloseListener) this);
-	}
 
-	@Override
-	public void unregisterAsListener() {
-		CompetitionApplication.getCurrent().getMainWindow().addListener((CloseListener) this);
-	}
-	
-	@Override
-	public void windowClose(CloseEvent e) {
-		unregisterAsListener();	
-	}
+    @Override
+    public void registerAsListener() {
+        CompetitionApplication.getCurrent().getMainWindow().addListener((CloseListener) this);
+    }
 
-	@Override
-	public DownloadStream handleURI(URL context, String relativeUri) {
-		registerAsListener();
-		return null;
-	}
+    @Override
+    public void unregisterAsListener() {
+        CompetitionApplication.getCurrent().getMainWindow().removeListener((CloseListener) this);
+    }
+
+    @Override
+    public void windowClose(CloseEvent e) {
+        unregisterAsListener();
+    }
 
     @Override
     public boolean needsBlack() {
         return false;
     }
+
+    private static int classCounter = 0; // per class
+    private final int instanceId = classCounter++; // per instance
+
+    @Override
+    public String getInstanceId() {
+        return Long.toString(instanceId);
+    }
+
+    @Override
+    public String getLoggingId() {
+        return viewName + getInstanceId();
+    }
+
 }

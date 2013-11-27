@@ -24,8 +24,8 @@ public interface CountdownTimerListener {
      * timer has been stopped, lifter is still associated with timer.
      * 
      * @param timeRemaining
-     * @param reason 
-     * @param competitionApplication 
+     * @param reason
+     * @param competitionApplication
      */
     void pause(int timeRemaining, CompetitionApplication originatingApp, InteractionNotificationReason reason);
 
@@ -44,9 +44,10 @@ public interface CountdownTimerListener {
      * @param startTime
      */
     void forceTimeRemaining(int startTime, CompetitionApplication originatingApp, InteractionNotificationReason reason);
-    
+
     /**
      * Show a notification without stopping the timer
+     * 
      * @param reason
      */
     void showInteractionNotification(CompetitionApplication originatingApp, InteractionNotificationReason reason);

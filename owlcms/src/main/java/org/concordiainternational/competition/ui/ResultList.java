@@ -24,6 +24,7 @@ import org.concordiainternational.competition.ui.components.SessionSelect;
 import org.concordiainternational.competition.ui.generators.CommonColumnGenerator;
 import org.concordiainternational.competition.ui.generators.LiftCellStyleGenerator;
 import org.concordiainternational.competition.ui.list.GenericBeanList;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,8 +47,8 @@ import com.vaadin.ui.Table;
  * 
  */
 
-public class ResultList extends GenericBeanList<Lifter> implements Property.ValueChangeListener, 
-EditableList {
+public class ResultList extends GenericBeanList<Lifter> implements Property.ValueChangeListener,
+        EditableList {
     private static final Logger logger = LoggerFactory.getLogger(ResultList.class);
     private static final long serialVersionUID = -6455130090728823622L;
     private Application app = CompetitionApplication.getCurrent();
@@ -68,8 +69,7 @@ EditableList {
     }
 
     /**
-     * Clear the current selection from the table. This is done by the lift card
-     * editor once it has loaded the right lifter.
+     * Clear the current selection from the table. This is done by the lift card editor once it has loaded the right lifter.
      */
     @Override
     public void clearSelection() {
@@ -80,7 +80,8 @@ EditableList {
     @SuppressWarnings("unchecked")
     public Lifter getFirstLifter() {
         BeanItem<Lifter> item = (BeanItem<Lifter>) table.getItem(table.firstItemId());
-        if (item != null) return (Lifter) item.getBean();
+        if (item != null)
+            return (Lifter) item.getBean();
         return null;
     }
 
@@ -120,13 +121,10 @@ EditableList {
     }
 
     /*
-     * Value change, for a table, indicates that the currently selected row has
-     * changed. This method is only called when the user explicitly clicks on a
-     * lifter.
+     * Value change, for a table, indicates that the currently selected row has changed. This method is only called when the user explicitly
+     * clicks on a lifter.
      * 
-     * @see
-     * com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data
-     * .Property.ValueChangeEvent)
+     * @see com.vaadin.data.Property.ValueChangeListener#valueChange(com.vaadin.data .Property.ValueChangeEvent)
      */
     @SuppressWarnings("unchecked")
     @Override
@@ -134,7 +132,8 @@ EditableList {
         Property property = event.getProperty();
         if (property == table) {
             Item item = table.getItem(table.getValue());
-            if (item == null) return;
+            if (item == null)
+                return;
             if (parentView != null) {
                 Lifter lifter = (Lifter) ((BeanItem<Lifter>) item).getBean();
 
@@ -153,9 +152,9 @@ EditableList {
         // the following columns will be read-only.
         final CommonColumnGenerator columnGenerator = new CommonColumnGenerator(app);
         table.addGeneratedColumn("totalRank", columnGenerator); //$NON-NLS-1$
-        table.setColumnAlignment("totalRank",Table.ALIGN_RIGHT);
-        table.setColumnAlignment("lastName",Table.ALIGN_LEFT);
-        table.setColumnAlignment("firstName",Table.ALIGN_LEFT);
+        table.setColumnAlignment("totalRank", Table.ALIGN_RIGHT);
+        table.setColumnAlignment("lastName", Table.ALIGN_LEFT);
+        table.setColumnAlignment("firstName", Table.ALIGN_LEFT);
 
         if (WinningOrderComparator.useRegistrationCategory) {
             table.addGeneratedColumn("registrationCategory", columnGenerator); //$NON-NLS-1$
@@ -165,7 +164,7 @@ EditableList {
         table.addGeneratedColumn("total", columnGenerator); //$NON-NLS-1$
 
         table.setColumnCollapsingAllowed(true);
-        table.setColumnCollapsed("birthDate",true);
+        table.setColumnCollapsed("birthDate", true);
         setExpandRatios();
     }
 
@@ -198,15 +197,15 @@ EditableList {
                  */
                 private void regularCompetition(final Locale locale1) throws RuntimeException {
                     final JXLSWorkbookStreamSource streamSource = new JXLSResultSheet();
-                    //                    final OutputSheetStreamSource<ResultSheet> streamSource = new OutputSheetStreamSource<ResultSheet>(
-                    //                            ResultSheet.class, (CompetitionApplication) app, true);
+                    // final OutputSheetStreamSource<ResultSheet> streamSource = new OutputSheetStreamSource<ResultSheet>(
+                    // ResultSheet.class, (CompetitionApplication) app, true);
                     if (streamSource.size() == 0) {
                         setComponentError(new SystemError(Messages.getString("ResultList.NoResults", locale1))); //$NON-NLS-1$
                         throw new RuntimeException(Messages.getString("ResultList.NoResults", locale1)); //$NON-NLS-1$
                     }
 
                     String now = new SimpleDateFormat("yyyy-MM-dd_HHmmss") //$NON-NLS-1$
-                    .format(new Date());
+                            .format(new Date());
                     ((UserActions) app).openSpreadsheet(streamSource, Messages.getString("ResultList.ResultsPrefix", locale) + now); //$NON-NLS-1$
                 }
 
@@ -219,12 +218,11 @@ EditableList {
                 }
             };
             resultSpreadsheetButton.addListener(listener);
-            tableToolbar1.addComponent(resultSpreadsheetButton);       
+            tableToolbar1.addComponent(resultSpreadsheetButton);
         }
 
         {
-            final Button teamResultSpreadsheetButton = new Button(Messages.getString(
-                    "ResultList.TeamResultSheet", locale)); //$NON-NLS-1$
+            final Button teamResultSpreadsheetButton = new Button(Messages.getString("ResultList.TeamResultSheet", locale)); //$NON-NLS-1$
             final Button.ClickListener teamResultClickListener = new Button.ClickListener() { //$NON-NLS-1$
                 private static final long serialVersionUID = -8473648982746209221L;
 
@@ -253,6 +251,9 @@ EditableList {
 
             @Override
             public void buttonClick(ClickEvent event) {
+                CompetitionApplication current = CompetitionApplication.getCurrent();
+                SessionData masterData = current.getMasterData(current.getPlatformName());
+                LoggerUtils.buttonSetup(masterData);
                 logger.debug("reloading"); //$NON-NLS-1$
                 data.refresh(false);
             }
@@ -266,7 +267,7 @@ EditableList {
 
             @Override
             public void buttonClick(ClickEvent event) {
-                editCompetitionSession(sessionSelect.getSelectedId(),sessionSelect.getSelectedItem());
+                editCompetitionSession(sessionSelect.getSelectedId(), sessionSelect.getSelectedItem());
             }
         };
         editButton.addListener(editClickListener);
@@ -280,6 +281,7 @@ EditableList {
             public void buttonClick(ClickEvent event) {
                 CompetitionApplication current = CompetitionApplication.getCurrent();
                 SessionData masterData = current.getMasterData(current.getPlatformName());
+                LoggerUtils.buttonSetup(masterData);
                 PublicAddressForm.editPublicAddress(ResultList.this, masterData);
             }
         };
@@ -288,13 +290,13 @@ EditableList {
     }
 
     /**
-     * @return Localized captions for properties in same order as in
-     *         {@link #getColOrder()}
+     * @return Localized captions for properties in same order as in {@link #getColOrder()}
      */
     @Override
     protected String[] getColHeaders() {
         Locale locale = app.getLocale();
-        if (COL_HEADERS != null) return COL_HEADERS;
+        if (COL_HEADERS != null)
+            return COL_HEADERS;
         COL_HEADERS = new String[] { Messages.getString("Lifter.lotNumber", locale), //$NON-NLS-1$
                 Messages.getString("Lifter.lastName", locale), //$NON-NLS-1$
                 Messages.getString("Lifter.firstName", locale), //$NON-NLS-1$
@@ -324,7 +326,8 @@ EditableList {
      */
     @Override
     protected String[] getColOrder() {
-        if (NATURAL_COL_ORDER != null) return NATURAL_COL_ORDER;
+        if (NATURAL_COL_ORDER != null)
+            return NATURAL_COL_ORDER;
         NATURAL_COL_ORDER = new String[] { "lotNumber", //$NON-NLS-1$
                 "lastName", //$NON-NLS-1$
                 "firstName", //$NON-NLS-1$
@@ -359,16 +362,15 @@ EditableList {
     }
 
     /**
-     * Load container content to Table. We create a wrapper around the
-     * HbnContainer so we can sort on transient properties and suchlike.
+     * Load container content to Table. We create a wrapper around the HbnContainer so we can sort on transient properties and suchlike.
      */
     @Override
     protected void loadData() {
 
         List<Lifter> lifters = data.getResultOrder();
-        //        logger.debug("loading data lifters={}",lifters);
+        // logger.debug("loading data lifters={}",lifters);
         if (lifters != null && !lifters.isEmpty()) {
-            final BeanItemContainer<Lifter> cont = new BeanItemContainer<Lifter>(Lifter.class,lifters);
+            final BeanItemContainer<Lifter> cont = new BeanItemContainer<Lifter>(Lifter.class, lifters);
             table.setContainerDataSource(cont);
         }
     }
@@ -381,8 +383,8 @@ EditableList {
         super.populateAndConfigureTable(); // this creates a new table and calls
         // loadData (below)
 
-        table.setColumnExpandRatio("lastName",100F);
-        table.setColumnExpandRatio("firstName",100F);
+        table.setColumnExpandRatio("lastName", 100F);
+        table.setColumnExpandRatio("firstName", 100F);
 
         if (table.size() > 0) {
             table.setEditable(false);
@@ -406,8 +408,7 @@ EditableList {
     }
 
     /**
-     * Sorts the lifters in the correct order in response to a change in the
-     * data. Informs listeners that the order has been updated.
+     * Sorts the lifters in the correct order in response to a change in the data. Informs listeners that the order has been updated.
      */
     void updateTable() {
         // update our own user interface

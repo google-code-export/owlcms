@@ -8,7 +8,6 @@
 package org.concordiainternational.competition.ui;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Locale;
 
@@ -29,12 +28,11 @@ import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.DecisionLightsWindow;
 import org.concordiainternational.competition.ui.components.Stylable;
 import org.concordiainternational.competition.ui.generators.TimeFormatter;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.weelayout.WeeLayout;
 
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Label;
@@ -54,12 +52,12 @@ public class AttemptBoardView extends WeeLayout implements
         CountdownTimerListener,
         IntermissionTimerListener,
         Window.CloseListener,
-        URIHandler,
         DecisionEventListener,
         Stylable
 {
 
     public final static Logger logger = LoggerFactory.getLogger(AttemptBoardView.class);
+    private static Logger listenerLogger = LoggerFactory.getLogger("listeners." + AttemptBoardView.class.getSimpleName()); //$NON-NLS-1$
     private static final long serialVersionUID = 1437157542240297372L;
 
     public String urlString;
@@ -67,28 +65,28 @@ public class AttemptBoardView extends WeeLayout implements
     private SessionData masterData;
     final private transient CompetitionApplication app;
 
-    private WeeLayout attemptBoardBox = new WeeLayout(Direction.VERTICAL);
-    private WeeLayout topRowBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout bottomRowBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout topRightBox = new WeeLayout(Direction.VERTICAL);
-    private WeeLayout bottomLeftBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout bottomRightBox = new WeeLayout(Direction.VERTICAL);
+    private WeeLayout attemptBoardBox;
+    private WeeLayout topRowBox;
+    private WeeLayout bottomRowBox;
+    private WeeLayout topRightBox;
+    private WeeLayout bottomLeftBox;
+    private WeeLayout bottomRightBox;
 
-    private WeeLayout nameVBox = new WeeLayout(Direction.VERTICAL);
-    private WeeLayout startVBox = new WeeLayout(Direction.VERTICAL);
-    private WeeLayout teamVBox = new WeeLayout(Direction.VERTICAL);
-    private WeeLayout timeVBox = new WeeLayout(Direction.VERTICAL);
-    private WeeLayout weightVBox = new WeeLayout(Direction.VERTICAL);
-    private WeeLayout attemptVBox = new WeeLayout(Direction.VERTICAL);
-    private WeeLayout platesVBox = new WeeLayout(Direction.VERTICAL);
+    private WeeLayout nameVBox;
+    private WeeLayout startVBox;
+    private WeeLayout teamVBox;
+    private WeeLayout timeVBox;
+    private WeeLayout weightVBox;
+    private WeeLayout attemptVBox;
+    private WeeLayout platesVBox;
 
-    private WeeLayout nameHBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout startHBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout teamHBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout timeHBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout weightHBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout attemptHBox = new WeeLayout(Direction.HORIZONTAL);
-    private WeeLayout platesHBox = new WeeLayout(Direction.HORIZONTAL);
+    private WeeLayout nameHBox;
+    private WeeLayout startHBox;
+    private WeeLayout teamHBox;
+    private WeeLayout timeHBox;
+    private WeeLayout weightHBox;
+    private WeeLayout attemptHBox;
+    private WeeLayout platesHBox;
 
     private Label nameLabel = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
     private Label clubLabel = new Label("", Label.CONTENT_XHTML); //$NON-NLS-1$
@@ -115,6 +113,7 @@ public class AttemptBoardView extends WeeLayout implements
             this.publicFacing = publicFacing;
             this.stylesheetName = stylesheetName;
         }
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
         this.app = CompetitionApplication.getCurrent();
 
         boolean prevDisabledPush = app.getPusherDisabled();
@@ -128,9 +127,6 @@ public class AttemptBoardView extends WeeLayout implements
             }
 
             doCreate(false);
-
-            // URI handler must remain, so is not part of the register/unRegister pair
-            app.getMainWindow().addURIHandler(this);
             registerAsListener();
         } finally {
             app.setPusherDisabled(prevDisabledPush);
@@ -141,7 +137,6 @@ public class AttemptBoardView extends WeeLayout implements
     public void doCreate(boolean disablePush) {
         logger.trace("entry {}", disablePush);
 
-        // disable push if requested by caller
         synchronized (app) {
             boolean prevDisabled = app.getPusherDisabled();
             try {
@@ -149,7 +144,7 @@ public class AttemptBoardView extends WeeLayout implements
                 masterData = app.getMasterData(platformName);
                 refreshShowTimer();
                 createDecisionLights();
-                plates = new LoadImage(null);
+                plates = new LoadImage();
 
                 create();
 
@@ -228,6 +223,30 @@ public class AttemptBoardView extends WeeLayout implements
         logger.trace("entry");
         this.setSizeFull();
         this.setMargin(true);
+        this.removeAllComponents();
+
+        attemptBoardBox = new WeeLayout(Direction.VERTICAL);
+        topRowBox = new WeeLayout(Direction.HORIZONTAL);
+        bottomRowBox = new WeeLayout(Direction.HORIZONTAL);
+        topRightBox = new WeeLayout(Direction.VERTICAL);
+        bottomLeftBox = new WeeLayout(Direction.HORIZONTAL);
+        bottomRightBox = new WeeLayout(Direction.VERTICAL);
+
+        nameVBox = new WeeLayout(Direction.VERTICAL);
+        startVBox = new WeeLayout(Direction.VERTICAL);
+        teamVBox = new WeeLayout(Direction.VERTICAL);
+        timeVBox = new WeeLayout(Direction.VERTICAL);
+        weightVBox = new WeeLayout(Direction.VERTICAL);
+        attemptVBox = new WeeLayout(Direction.VERTICAL);
+        platesVBox = new WeeLayout(Direction.VERTICAL);
+
+        nameHBox = new WeeLayout(Direction.HORIZONTAL);
+        startHBox = new WeeLayout(Direction.HORIZONTAL);
+        teamHBox = new WeeLayout(Direction.HORIZONTAL);
+        timeHBox = new WeeLayout(Direction.HORIZONTAL);
+        weightHBox = new WeeLayout(Direction.HORIZONTAL);
+        attemptHBox = new WeeLayout(Direction.HORIZONTAL);
+        platesHBox = new WeeLayout(Direction.HORIZONTAL);
 
         createAlignedLabel(nameLabel, nameHBox, nameVBox, Alignment.MIDDLE_LEFT, Alignment.MIDDLE_CENTER, "100%", "80%", "name");
         nameLabel.addStyleName("bolded");
@@ -436,10 +455,13 @@ public class AttemptBoardView extends WeeLayout implements
             bottomLeftBox.addComponent(decisionLights);
             decisionLights.refresh();
         } else {
+            plates.setVisible(true); // hide attempt board hides them, restore if needed.
+            plates.computeImageArea(masterData, masterData.getPlatform(), false);
             bottomLeftBox.removeComponent(decisionLights);
             bottomLeftBox.addComponent(timeVBox);
             bottomLeftBox.addComponent(platesVBox);
-            plates.computeImageArea(masterData, masterData.getPlatform(), false);
+            platesHBox.removeAllComponents();
+            platesHBox.addComponent(plates);
         }
         logger.trace("exit");
     }
@@ -673,12 +695,12 @@ public class AttemptBoardView extends WeeLayout implements
         unregisterAsListener();
     }
 
-    @Override
-    public DownloadStream handleURI(URL context, String relativeUri) {
-        logger.debug("registering handlers for {} {}", this, relativeUri);
-        registerAsListener();
-        return null;
-    }
+    // @Override
+    // public DownloadStream handleURI(URL context, String relativeUri) {
+    // logger.debug("re-registering handlers for {} {}", this, relativeUri);
+    // registerAsListener();
+    // return null;
+    // }
 
     /**
      * Process a decision regarding the current lifter. Make sure that the nameLabel of the lifter does not change until after the decision
@@ -748,26 +770,30 @@ public class AttemptBoardView extends WeeLayout implements
         }
 
         // listen to changes in the competition data
-        logger.debug("listening to session data updates.");
         updateListener = registerAsListener(platformName, masterData);
+        listenerLogger.debug("{} listening to session data updates.", updateListener);
 
         // listen to intermission timer events
         masterData.addBlackBoardListener(this);
-        logger.debug("listening to intermission timer events.");
+        listenerLogger.debug("{} listening to intermission timer events.", this);
 
         // listen to decisions
         IDecisionController decisionController = masterData.getRefereeDecisionController();
         if (decisionController != null) {
-            if (decisionLights != null)
+            if (decisionLights != null) {
                 decisionController.addListener(decisionLights);
+                listenerLogger.debug("{} listening to decision events.", decisionLights);
+            }
             decisionController.addListener(this);
+            listenerLogger.debug("{} listening to decision events.", this);
         }
-
-        // listen to close events
-        app.getMainWindow().addListener((CloseListener) this);
 
         // update whether timer is shown
         refreshShowTimer();
+
+        // listen to close events
+        app.getMainWindow().addListener((CloseListener) this);
+        listenerLogger.debug("{} listening to window close events.", this);
 
         registered = true;
         logger.trace("exit");
@@ -781,26 +807,32 @@ public class AttemptBoardView extends WeeLayout implements
         logger.trace("entry");
         if (!registered)
             return;
+
         // stop listening to changes in the competition data
         if (updateListener != null) {
             masterData.removeListener(updateListener);
-            logger.debug("stopped listening to UpdateEvents");
+            listenerLogger.debug("{} stopped listening to session data updates.", updateListener);
         }
 
         // stop listening to intermission timer events
         intermissionTimerShown = false;
         masterData.removeBlackBoardListener(this);
-        logger.debug("stopped listening to intermission timer events");
+        listenerLogger.debug("{} listening to intermission timer events.", this);
 
         // stop listening to decisions
         IDecisionController decisionController = masterData.getRefereeDecisionController();
         if (decisionController != null) {
-            decisionController.removeListener(decisionLights);
+            if (decisionLights != null) {
+                decisionController.removeListener(decisionLights);
+                listenerLogger.debug("{} stopped listening to decision events.", decisionLights);
+            }
             decisionController.removeListener(this);
+            listenerLogger.debug("{} listening to decision events.", this);
         }
 
         // stop listening to close events
         app.getMainWindow().removeListener((CloseListener) this);
+        listenerLogger.debug("{} stopped listening to window close events..", this);
 
         registered = false;
         logger.trace("exit");
@@ -826,5 +858,18 @@ public class AttemptBoardView extends WeeLayout implements
     @Override
     public boolean needsBlack() {
         return true;
+    }
+
+    private static int classCounter = 0; // per class
+    private final int instanceId = classCounter++; // per instance
+
+    @Override
+    public String getInstanceId() {
+        return Long.toString(instanceId);
+    }
+
+    @Override
+    public String getLoggingId() {
+        return viewName + getInstanceId();
     }
 }

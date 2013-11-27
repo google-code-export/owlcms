@@ -45,7 +45,6 @@ import org.hibernate.Session;
 import org.hibernate.StaleObjectStateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 
@@ -60,8 +59,8 @@ import com.vaadin.ui.Component;
 /**
  * Data about a competition group.
  * <p>
- * Manages the lifting order, keeps tabs of which lifters have been called, who
- * is entitled to two minutes, etc. Also holds the master timer for the group.
+ * Manages the lifting order, keeps tabs of which lifters have been called, who is entitled to two minutes, etc. Also holds the master timer
+ * for the group.
  * </p>
  * 
  * @author jflamy
@@ -69,15 +68,16 @@ import com.vaadin.ui.Component;
 public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
     private static final long serialVersionUID = -7621561459948739065L;
-    private static XLogger logger = XLoggerFactory.getXLogger(SessionData.class);
-    static final Logger timingLogger = LoggerFactory.getLogger("org.concordiainternational.competition.timer.TimingLogger"); //$NON-NLS-1$
     public static final String MASTER_KEY = "GroupData_"; //$NON-NLS-1$
+
+    private static XLogger logger = XLoggerFactory.getXLogger(SessionData.class);
+    private static final Logger timingLogger = LoggerFactory.getLogger("timing." + SessionData.class.getSimpleName()); //$NON-NLS-1$
+    private static Logger listenerLogger = LoggerFactory.getLogger("listeners." + SessionData.class.getSimpleName()); //$NON-NLS-1$
 
     public List<Lifter> lifters;
     /**
-     * list of currently displayed lifters that, if updated, will notify us. We
-     * use an IdentitySet because the same lifter can appear in two windows, as
-     * two occurrences that are != but equals.
+     * list of currently displayed lifters that, if updated, will notify us. We use an IdentitySet because the same lifter can appear in two
+     * windows, as two occurrences that are != but equals.
      */
     public Set<Object> notifiers = (new IdentitySet(5));
     private List<Lifter> liftTimeOrder;
@@ -101,12 +101,11 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     boolean allowAll = false; // allow null group to mean all lifters.
     // will be set to true if the Timekeeping button is pressed.
     private boolean timeKeepingInUse = Competition.isMasters();
-    
+
     private Lifter priorLifter;
     private Integer priorRequest;
     private Integer priorRequestNum;
-    private boolean needToAnnounce = true;
-	Blackboard blackBoardEventRouter = new Blackboard();
+    Blackboard blackBoardEventRouter = new Blackboard();
 
     public int getLiftsDone() {
         return liftsDone;
@@ -134,7 +133,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         notificationManager = new NotificationManager<SessionData, Lifter, Component>(this);
         refereeDecisionController = new RefereeDecisionController(this);
         juryDecisionController = new JuryDecisionController(this);
-        updateListsForLiftingOrderChange();
+        updateListsForLiftingOrderChange(null);
         init();
     }
 
@@ -151,7 +150,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         logger.debug("groupData = {}", groupDataSingleton); //$NON-NLS-1$
         return groupDataSingleton;
     }
-    
+
     /**
      * @return information about a session, not connected to a platform.
      */
@@ -165,15 +164,14 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      * @return
      */
     private void init() {
-    	blackBoardEventRouter.register(MessageDisplayListener.class, PublicAddressMessageEvent.class);
-    	blackBoardEventRouter.register(IntermissionTimerListener.class, IntermissionTimerEvent.class);
-    	blackBoardEventRouter.register(PlatesInfoListener.class, PlatesInfoEvent.class);
+        blackBoardEventRouter.register(MessageDisplayListener.class, PublicAddressMessageEvent.class);
+        blackBoardEventRouter.register(IntermissionTimerListener.class, IntermissionTimerEvent.class);
+        blackBoardEventRouter.register(PlatesInfoListener.class, PlatesInfoEvent.class);
     }
 
     /**
-     * This method reloads the underlying data. Beware that only "master" views
-     * are meant to do this, such as AnnouncerView when mode = ANNOUNCER, or the
-     * results view to edit results after a group is over.
+     * This method reloads the underlying data. Beware that only "master" views are meant to do this, such as AnnouncerView when mode =
+     * ANNOUNCER, or the results view to edit results after a group is over.
      * 
      * "slave" views such as the MARSHAL, TIMEKEEPER views should never call this method.
      */
@@ -198,12 +196,14 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         if (getLiftTimeOrder() == null) {
             setLiftTimeOrder(LifterSorter.LiftTimeOrderCopy(lifters));
         }
-        if (getLiftTimeOrder().size() == 0) return null;
+        if (getLiftTimeOrder().size() == 0)
+            return null;
         // if (logger.isDebugEnabled())
         // System.err.println(AllTests.longDump(liftTimeOrder));
 
         Lifter lifter = getLiftTimeOrder().get(0);
-        if (lifter.getLastLiftTime() == null) return null;
+        if (lifter.getLastLiftTime() == null)
+            return null;
         return lifter;
 
         // // we want the most recent, who will be at the end.
@@ -217,13 +217,11 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     }
 
     /**
-     * Saves changes made to object to Hibernate Session. Note that run is most
-     * likely detached due session-per-request patterns so we'll use merge.
-     * Actual database update will happen by Vaadin's transaction listener in
-     * the end of request.
+     * Saves changes made to object to Hibernate Session. Note that run is most likely detached due session-per-request patterns so we'll
+     * use merge. Actual database update will happen by Vaadin's transaction listener in the end of request.
      * 
-     * If one wanted to make sure that this operation will be successful a
-     * (Hibernate) transaction commit and error checking ought to be done.
+     * If one wanted to make sure that this operation will be successful a (Hibernate) transaction commit and error checking ought to be
+     * done.
      * 
      * @param object
      */
@@ -239,8 +237,27 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     /**
      * Sort the various lists to reflect new lifting order.
      */
-    public void updateListsForLiftingOrderChange() {
+    public void updateListsForLiftingOrderChange(Lifter updatedLifter) {
         logger.debug("updateListsForLiftingOrderChange"); //$NON-NLS-1$
+        
+        
+        logger.debug("updateListsForLiftingOrderChange next = {} change for = {}", currentLifter, updatedLifter); //$NON-NLS-1$
+        
+        final CountdownTimer timer2 = getTimer();
+        if (timer2 != null) {
+            // athlete currently set to lift made a change 
+            if (currentLifter != null && updatedLifter == currentLifter) {
+                if (!currentLifter.isCurrentDeclarationDone()) {
+                    // automatic progression, don't notify announcer
+                    // stop the timer if it was running, and make sure event is broadcast
+                    timer2.pause();
+                } else {
+                    // stop the timer if it was running, and make sure event is broadcast
+                    timer2.pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE_DONE);
+                }
+
+            }
+        }
 
         sortLists();
         publishLists();
@@ -265,29 +282,23 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         Integer currentRequest = (currentLifter != null ? currentLifter.getNextAttemptRequestedWeight() : null);
         Integer currentRequestNum = (currentLifter != null ? currentLifter.getAttemptsDone() : null);
 
-//        logger.debug("new/old {}/{}  {}/{}  {}/{}", //$NON-NLS-1$
-//                    new Object[] { currentLifter, priorLifter, currentRequest, priorRequest, currentRequestNum,
-//                            priorRequestNum });
+        boolean needToAnnounce = currentLifter != priorLifter || priorRequest != currentRequest
+                || priorRequestNum != currentRequestNum;
 
-        setNeedToAnnounce(currentLifter != priorLifter || priorRequest != currentRequest
-            || priorRequestNum != currentRequestNum);
-        if (getNeedToAnnounce()) {
-            // stop the timer if it was running, as if the "Change Weight"
-            // button had been used
+        logger.debug("needToAnnounce={} : new/old {}/{}  {}/{}  {}/{}", //$NON-NLS-1$
+                new Object[] { needToAnnounce, currentLifter, priorLifter, currentRequest, priorRequest, currentRequestNum,
+                priorRequestNum });
+        
+        if (needToAnnounce) {
+            // stop the timer if it was running, and make sure event is broadcast
             final CountdownTimer timer2 = getTimer();
-            if (timer2 != null 
-                    //&& timer2.isRunning()
-                    ) {
-            	if (currentLifter == priorLifter && priorRequestNum == currentRequestNum && priorRequest != currentRequest) {
-            		timer2.pause(InteractionNotificationReason.CURRENT_LIFTER_CHANGE_DONE);
-            	} else {
-            		timer2.pause();
-            	}
-            } // stop time something is happening.
+            if (timer2 != null) {
+                // This also broadcasts an event to all listeners
+                timer2.pause();
+            } 
             setTimeAllowed(timeAllowed(currentLifter));
 
-            logger.debug(
-                        "paused time, timeAllowed={}, timeRemaining={}", timeAllowed, timer2.getTimeRemaining()); //$NON-NLS-1$
+            logger.trace("timeAllowed={}, timeRemaining={}", timeAllowed, timer2.getTimeRemaining()); //$NON-NLS-1$
         }
 
         if (currentLifter != null) {
@@ -349,9 +360,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     }
 
     /**
-     * Check if lifter is following himself, and that no other lifter has been
-     * announced since (if time starts running for another lifter, then the two
-     * minute privilege is lost).
+     * Check if lifter is following himself, and that no other lifter has been announced since (if time starts running for another lifter,
+     * then the two minute privilege is lost).
      * 
      * @param lifter
      * 
@@ -363,7 +373,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         if (getTimer().getOwner() == lifter) {
             logger.trace("timeAllowed current lifter {} was running.", lifter); //$NON-NLS-1$
             int timeRemaining = getTimer().getTimeRemaining();
-            if (timeRemaining < 0) timeRemaining = 0;
+            if (timeRemaining < 0)
+                timeRemaining = 0;
             // if the decision was not entered, and timer has run to 0, we still
             // want to see 0
             // if (timeRemaining > 0
@@ -377,7 +388,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         final Lifter previousLifter = getPreviousLifter();
         if (previousLifter == null) {
             logger.trace("A one minute (first lifter): previousLifter null: startedLifters={} lifter={}", //$NON-NLS-1$
-                new Object[] { getTimer().getOwner(), lifter });
+                    new Object[] { getTimer().getOwner(), lifter });
             return 60000;
         } else if (lifter.getAttemptsDone() % 3 == 0) {
             // no 2 minutes if starting snatch or starting c-jerk
@@ -386,16 +397,16 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         } else if (getTimer().getOwner() == null) {
             if (lifter.equals(previousLifter)) {
                 logger.trace("C two minutes (same, timer did not start): startedLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
-                    new Object[] { getTimer().getOwner(), lifter, previousLifter });
+                        new Object[] { getTimer().getOwner(), lifter, previousLifter });
                 return 120000;
             } else {
                 logger.trace("D one minute (not same): startedLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
-                    new Object[] { getTimer().getOwner(), lifter, previousLifter });
+                        new Object[] { getTimer().getOwner(), lifter, previousLifter });
                 return 60000;
             }
         } else {
             logger.trace("E one minute (same, timer started for someone else) : startedLifters={} lifter={} previousLifter={}", //$NON-NLS-1$
-                new Object[] { getTimer().getOwner(), lifter, previousLifter });
+                    new Object[] { getTimer().getOwner(), lifter, previousLifter });
             return 60000;
         }
     }
@@ -412,64 +423,78 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         getTimer().setTimeRemaining(120000);
     }
 
-    
     private boolean forcedByTimekeeper = false;
 
-//    public class LifterCall {
-//        public Date callTime;
-//        public Lifter lifter;
-//
-//        LifterCall(Date callTime, Lifter lifter) {
-//            this.callTime = callTime;
-//            this.lifter = lifter;
-//        }
-//
-//        @Override
-//        public String toString() {
-//            return lifter.toString() + "_" + callTime.toString(); //$NON-NLS-1$
-//        }
-//    }
+    // public class LifterCall {
+    // public Date callTime;
+    // public Lifter lifter;
+    //
+    // LifterCall(Date callTime, Lifter lifter) {
+    // this.callTime = callTime;
+    // this.lifter = lifter;
+    // }
+    //
+    // @Override
+    // public String toString() {
+    //            return lifter.toString() + "_" + callTime.toString(); //$NON-NLS-1$
+    // }
+    // }
 
     public void callLifter(Lifter lifter) {
         // beware: must call timeAllowed *before* setLifterAnnounced.
 
-        // check if the timekeeper has forced the timer setting for the next
-        // announce
-        // if so leave it alone.
-        final int timeRemaining = getTimer().getTimeRemaining();
-        if (getTimer().isRunning()) {
-            logger.info("TIMER RUNNING! call of lifter {} :  - {}ms remaining", lifter, getTimer().getRunningTimeRemaining()); //$NON-NLS-1$
+        CountdownTimer timer2 = getTimer();
+        final int timeRemaining = timer2.getTimeRemaining();
+        Long runningTimeRemaining = timer2.getRunningTimeRemaining();
+
+        if (timeExpiredForCurrentLifter(lifter, timer2, timeRemaining, runningTimeRemaining))
+            return;
+
+        if (timer2.isRunning()) {
+            logger.info("TIMER RUNNING! call of lifter {} :  - {}ms remaining", lifter, runningTimeRemaining); //$NON-NLS-1$
         } else if (isForcedByTimekeeper() && (timeRemaining == 120000 || timeRemaining == 60000)) {
             setForcedByTimekeeper(true, timeRemaining);
             logger.info("call of lifter {} : {}ms FORCED BY TIMEKEEPER", lifter, timeRemaining); //$NON-NLS-1$
         } else {
             if (!getTimeKeepingInUse()) {
-            	int allowed = getTimeAllowed();
-                getTimer().setTimeRemaining(allowed);
+                int allowed = getTimeAllowed();
+                timer2.setTimeRemaining(allowed);
                 logger.info("call of lifter {} : {}ms allowed", lifter, allowed); //$NON-NLS-1$
             } else {
                 logger.info("call of lifter {} : {}ms remaining", lifter, timeRemaining); //$NON-NLS-1$
             }
-
             setForcedByTimeKeeper(false);
         }
 
-        refereeDecisionController.reset(); 
+        refereeDecisionController.reset();
         juryDecisionController.reset();
-        announcerEnabled = false;
+        announced = false;
 
         if (startTimeAutomatically) {
-            startTimer(lifter,this,getTimer());
+            startUpdateModel();
         } else if (!getTimeKeepingInUse()) {
-            logger.info("timekeeping NOT in use, setting lifter {} as owner", lifter);
-            getTimer().setOwner(lifter);
-        } 
-        
+            logger.info("setting lifter {} as owner", lifter);
+            timer2.setOwner(lifter);
+        }
+
         // we just did the announce.
-        setNeedToAnnounce(false);
+        setAnnounced(true);
         notifyListeners();
+        return;
     }
 
+    public boolean timeExpiredForCurrentLifter(Lifter lifter, CountdownTimer timer2, final int timeRemaining, Long runningTimeRemaining) {
+        // time expired for lifter
+        boolean timeExpiredForCurrentLifter = false;
+        if (lifter == timer2.getOwner()) {
+            if (timeRemaining <= 0 || (runningTimeRemaining != null && runningTimeRemaining <= 0)) {
+                timer2.forceTimeRemaining(0, InteractionNotificationReason.CLOCK_EXPIRED);
+                announced = true;
+                timeExpiredForCurrentLifter = true;
+            }
+        }
+        return timeExpiredForCurrentLifter;
+    }
 
     /**
      * @param b
@@ -490,16 +515,15 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         timer2.setTimeRemaining(0);
     }
 
-
     CountdownTimer timer;
 
     public CountdownTimer getTimer() {
         if (timer == null) {
             timer = new CountdownTimer();
-        };
+        }
+        ;
         return timer;
     }
-
 
     /**
      * @param forcedByTimekeeper
@@ -550,26 +574,24 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     public List<Lifter> getCurrentLiftingOrder() {
         return currentLiftingOrder;
     }
-    
-    
+
     /* *********************************************************************************
      * Interactions with the context.
      */
-    
-    
+
     /**
-	 * Change the underlying session.
-	 * Change the underlying session. When sessionData object has many browsers listening
-	 * to it, it is simpler to change the session than to recreate a new SessionData object.
-	 * This method should only be used by AnnouncerView, when the announcer.
-	 * 
-     * @param newCurrentSession  the currentSession to set
+     * Change the underlying session. Change the underlying session. When sessionData object has many browsers listening to it, it is
+     * simpler to change the session than to recreate a new SessionData object. This method should only be used by AnnouncerView, when the
+     * announcer.
+     * 
+     * @param newCurrentSession
+     *            the currentSession to set
      */
     void setCurrentSession(CompetitionSession newCurrentSession) {
         logger.info("{} setting group to {}", this, newCurrentSession); //$NON-NLS-1$
-        // do this first, in case we get called us recursively  
+        // do this first, in case we get called us recursively
         this.currentSession = newCurrentSession;
-        
+
         if (app.getCurrentCompetitionSession() != newCurrentSession) {
             // synchronize with the application (if we were not called from there)
             app.setCurrentCompetitionSession(newCurrentSession);
@@ -588,13 +610,13 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      * @return the currentSession
      */
     public CompetitionSession getCurrentSession() {
-    	if (currentSession != null) {
-			final String name = currentSession.getName();
-			MDC.put("currentGroup", ">"+name);
-    	}
+        // if (currentSession != null) {
+        // final String name = currentSession.getName();
+        // LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.currentGroup, ">"+name);
+        // }
         return currentSession;
     }
-    
+
     public void setMasterApplication(CompetitionApplication app2) {
         logger.debug("setting as master application {}", app2);
         this.masterApplication = app2;
@@ -603,16 +625,14 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     public CompetitionApplication getMasterApplication() {
         return masterApplication;
     }
-    
-	public Platform getPlatform() {
-		return platform;
-	}
 
-	public void setPlatform(Platform platform) {
-		this.platform = platform;
-	}
-	
-    
+    public Platform getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(Platform platform) {
+        this.platform = platform;
+    }
 
     /* *********************************************************************************
      * UpdateEvent framework.
@@ -622,14 +642,14 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     private boolean startTimeAutomatically = false;
     private AnnouncerView announcerView;
     private CompetitionApplication masterApplication;
-    private boolean announcerEnabled = true;
-	public Item publicAddressItem;
-	private IntermissionTimer publicAddressTimer = new IntermissionTimer(this);
-	private Platform platform;
+    private boolean announced = true;
+    public Item publicAddressItem;
+    private IntermissionTimer publicAddressTimer = new IntermissionTimer(this);
+    private Platform platform;
+    private boolean timerStarted;
 
-
-	public boolean getAnnouncerEnabled() {
-        return announcerEnabled;
+    public boolean getAnnouncerEnabled() {
+        return announced;
     }
 
     /**
@@ -683,8 +703,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     }
 
     /**
-     * This method is the Java object for the method in the Listener interface.
-     * It allows the framework to know how to pass the event information.
+     * This method is the Java object for the method in the Listener interface. It allows the framework to know how to pass the event
+     * information.
      */
     private static final Method LIFTER_EVENT_METHOD = EventHelper.findMethod(UpdateEvent.class, // when
                                                                                                 // receiving
@@ -692,15 +712,14 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
                                                                                                 // type
                                                                                                 // of
                                                                                                 // event
-        UpdateEventListener.class, // an object implementing this interface...
-        "updateEvent"); // ... will be called with this method. //$NON-NLS-1$;
+            UpdateEventListener.class, // an object implementing this interface...
+            "updateEvent"); // ... will be called with this method. //$NON-NLS-1$;
 
     /**
      * Broadcast a SessionData.event to all registered listeners
      * 
      * @param updateEvent
-     *            contains the source (ourself) and the list of properties to be
-     *            refreshed.
+     *            contains the source (ourself) and the list of properties to be refreshed.
      */
     protected void fireEvent(UpdateEvent updateEvent) {
         // logger.trace("SessionData: firing event from groupData"+System.identityHashCode(this)+" first="+updateEvent.getCurrentLifter()+" eventRouter="+System.identityHashCode(eventRouter));
@@ -712,13 +731,15 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     }
 
     /**
-     * Register a new SessionData.Listener object with a SessionData in order to be
-     * informed of updates.
+     * Register a new SessionData.Listener object with a SessionData in order to be informed of updates.
      * 
      * @param listener
      */
     public void addListener(UpdateEventListener listener) {
-        logger.debug("group data : add listener {}", listener); //$NON-NLS-1$
+        String id = "";
+        if (listener instanceof EditingView)
+            id = ((EditingView) listener).getLoggingId();
+        listenerLogger.debug("add listener {} {}", listener, id); //$NON-NLS-1$
         getEventRouter().addListener(UpdateEvent.class, listener, LIFTER_EVENT_METHOD);
     }
 
@@ -728,38 +749,38 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      * @param listener
      */
     public void removeListener(UpdateEventListener listener) {
+
+        String id = "";
+        if (listener instanceof EditingView)
+            id = ((EditingView) listener).getLoggingId();
         if (eventRouter != null) {
-            logger.debug("group data : hide listener {}", listener); //$NON-NLS-1$
+            listenerLogger.debug("remove listener {} {}", listener, id); //$NON-NLS-1$
             eventRouter.removeListener(UpdateEvent.class, listener, LIFTER_EVENT_METHOD);
         }
     }
 
     /*
-     * General event framework: we implement the
-     * com.vaadin.event.MethodEventSource interface which defines how a notifier
-     * can call a method on a listener to signal an event an event occurs, and
-     * how the listener can register/unregister itself.
+     * General event framework: we implement the com.vaadin.event.MethodEventSource interface which defines how a notifier can call a method
+     * on a listener to signal an event an event occurs, and how the listener can register/unregister itself.
      */
 
     /*
      * (non-Javadoc)
      * 
-     * @see com.vaadin.event.MethodEventSource#addListener(java.lang.Class,
-     * java.lang.Object, java.lang.reflect.Method)
+     * @see com.vaadin.event.MethodEventSource#addListener(java.lang.Class, java.lang.Object, java.lang.reflect.Method)
      */
     @SuppressWarnings("rawtypes")
-	public void addListener(Class eventType, Object object, Method method) {
+    public void addListener(Class eventType, Object object, Method method) {
         getEventRouter().addListener(eventType, object, method);
     }
 
     /*
      * (non-Javadoc)
      * 
-     * @see com.vaadin.event.MethodEventSource#addListener(java.lang.Class,
-     * java.lang.Object, java.lang.String)
+     * @see com.vaadin.event.MethodEventSource#addListener(java.lang.Class, java.lang.Object, java.lang.String)
      */
     @SuppressWarnings("rawtypes")
-	public void addListener(Class eventType, Object object, String methodName) {
+    public void addListener(Class eventType, Object object, String methodName) {
         getEventRouter().addListener(eventType, object, methodName);
     }
 
@@ -778,11 +799,10 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     /*
      * (non-Javadoc)
      * 
-     * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class,
-     * java.lang.Object)
+     * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class, java.lang.Object)
      */
     @SuppressWarnings("rawtypes")
-	public void removeListener(Class eventType, Object target) {
+    public void removeListener(Class eventType, Object target) {
         if (eventRouter != null) {
             eventRouter.removeListener(eventType, target);
         }
@@ -791,11 +811,10 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     /*
      * (non-Javadoc)
      * 
-     * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class,
-     * java.lang.Object, java.lang.reflect.Method)
+     * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class, java.lang.Object, java.lang.reflect.Method)
      */
     @SuppressWarnings("rawtypes")
-	public void removeListener(Class eventType, Object target, Method method) {
+    public void removeListener(Class eventType, Object target, Method method) {
         if (eventRouter != null) {
             eventRouter.removeListener(eventType, target, method);
         }
@@ -804,11 +823,10 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     /*
      * (non-Javadoc)
      * 
-     * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class,
-     * java.lang.Object, java.lang.String)
+     * @see com.vaadin.event.MethodEventSource#removeListener(java.lang.Class, java.lang.Object, java.lang.String)
      */
     @SuppressWarnings("rawtypes")
-	public void removeListener(Class eventType, Object target, String methodName) {
+    public void removeListener(Class eventType, Object target, String methodName) {
         if (eventRouter != null) {
             eventRouter.removeListener(eventType, target, methodName);
         }
@@ -821,15 +839,15 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     }
 
     /**
-     * Change who the lift list is listening to, unless the notifier being
-     * removed is the top in the list.
+     * Change who the lift list is listening to, unless the notifier being removed is the top in the list.
      * 
      * @param lifter
      * @param editor
      * @param firstLifter
      */
     public void stopListeningTo(final Lifter lifter, Component editor) {
-        if (lifter == null) return;
+        if (lifter == null)
+            return;
         notificationManager.removeEditor(lifter, editor);
     }
 
@@ -840,7 +858,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      * @param editor
      */
     public void listenToLifter(final Lifter lifter, Component editor) {
-        if (lifter == null) return;
+        if (lifter == null)
+            return;
         notificationManager.addEditor(lifter, editor);
     }
 
@@ -856,7 +875,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         if (servletContext != null) {
             servletContext.setAttribute(SessionData.MASTER_KEY + platformName, this);
             logger.info("Master data registered for platform {}={}", platformName, this); //$NON-NLS-1$ //$NON-NLS-2$
-        }        
+        }
     }
 
     /**
@@ -867,7 +886,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     @Override
     public void updateEvent(Lifter.UpdateEvent updateEvent) {
         logger.debug("lifter {}, changed {}", updateEvent.getSource(), updateEvent.getPropertyIds()); //$NON-NLS-1$
-        updateListsForLiftingOrderChange();
+        updateListsForLiftingOrderChange((Lifter) updateEvent.getSource());
         persistPojo(updateEvent.getSource());
     }
 
@@ -899,15 +918,14 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     }
 
     /**
-     * Register the fact that component comp is now editing newLifter instead of
-     * previousLifter
+     * Register the fact that component comp is now editing newLifter instead of previousLifter
      * 
      * @param newLifter
      * @param previousLifter
      * @param comp
      */
     public void trackEditors(Lifter newLifter, Lifter previousLifter, Component comp) {
-        logger.debug("previousLifter = {}, lifter = {}", previousLifter, newLifter);; //$NON-NLS-1$
+        logger.trace("previousLifter = {}, lifter = {}", previousLifter, newLifter);; //$NON-NLS-1$
         if (previousLifter != newLifter) {
             // stopListeningTo actually waits until no editor is left to stop
             // listening
@@ -932,7 +950,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     public int getTimeAllowed() {
         return timeAllowed;
     }
-    
+
     public int getTimeRemaining() {
         if (timer != null) {
             return timer.getTimeRemaining();
@@ -953,85 +971,86 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     public IDecisionController getRefereeDecisionController() {
         return refereeDecisionController;
     }
-    
-	public IDecisionController getJuryDecisionController() {
-		return juryDecisionController;
-	}
 
+    public IDecisionController getJuryDecisionController() {
+        return juryDecisionController;
+    }
 
     public void majorityDecision(Decision[] refereeDecisions) {
         final Lifter currentLifter2 = getCurrentLifter();
         int pros = 0;
         for (int i = 0; i < refereeDecisions.length; i++) {
-            if (refereeDecisions[i].accepted) pros++;
+            if (refereeDecisions[i].accepted)
+                pros++;
         }
         final boolean success = pros >= 2;
         liftDone(currentLifter2, success);
         if (success) {
             logger.info("Referee decision: GOOD lift");
-            if (currentLifter2 != null) currentLifter2.successfulLift();
+            if (currentLifter2 != null)
+                currentLifter2.successfulLift();
         } else {
             logger.info("Referee decision: NO lift");
-            if (currentLifter2 != null) currentLifter2.failedLift();
+            if (currentLifter2 != null)
+                currentLifter2.failedLift();
         }
 
         // record the decision.
         if (currentLifter2 != null) {
             saveLifter(currentLifter2);
         } else {
-        	logger.warn("No current lifter.");
+            logger.warn("No current lifter.");
         }
     }
 
-	/**
-	 * @param currentLifter2
-	 */
-	private void saveLifter(final Lifter currentLifter2) {
-		Session session = app.getHbnSession();
-		session.merge(currentLifter2);
-		session.flush();
-		try {
-			session.getTransaction().commit();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-    
-	public void downSignal() {
-		final CountdownDisplay countDownDisplay = (CountdownDisplay)getTimer().getCountdownDisplay();
-		if (countDownDisplay != null) {
-			DecisionLightsWindow dl = countDownDisplay.getDecisionLights();
-			if (dl != null) {
-				dl.doDown();
-			} else {
-				logger.error("decision lights is null");
-			}
-		}
-		notifyPrematureDecision();
-	}
+    /**
+     * @param currentLifter2
+     */
+    private void saveLifter(final Lifter currentLifter2) {
+        Session session = app.getHbnSession();
+        session.merge(currentLifter2);
+        session.flush();
+        try {
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	/**
+    public void downSignal() {
+        final CountdownDisplay countDownDisplay = (CountdownDisplay) getTimer().getCountdownDisplay();
+        if (countDownDisplay != null) {
+            DecisionLightsWindow dl = countDownDisplay.getDecisionLights();
+            if (dl != null) {
+                dl.doDown();
+            } else {
+                logger.error("decision lights is null");
+            }
+        }
+        notifyPrematureDecision();
+    }
+
+    /**
 	 * 
 	 */
-	synchronized public void notifyPrematureDecision() {
-		CountdownTimer timer2 = getTimer();
-		if (!isAnnounced()) {
-		    timer2.stop(InteractionNotificationReason.NOT_ANNOUNCED);
-		} else if (timeKeepingInUse && timer2.isRunning()) {
-			timer2.stop(InteractionNotificationReason.REFEREE_DECISION);
-		} else if (timeKeepingInUse) {
+    synchronized public void notifyPrematureDecision() {
+        CountdownTimer timer2 = getTimer();
+        if (!isAnnounced()) {
+            timer2.stop(InteractionNotificationReason.NOT_ANNOUNCED);
+        } else if (timeKeepingInUse && timer2.isRunning()) {
+            timer2.stop(InteractionNotificationReason.REFEREE_DECISION);
+        } else if (timeKeepingInUse && !timerStarted) {
             timer2.stop(InteractionNotificationReason.NO_TIMER);
         }
-	}
-	
-	
-
-    public void setAnnouncerEnabled(boolean b) {
-        announcerEnabled = b;
     }
-    
+
+    public void setAnnounced(boolean b) {
+        announced = b;
+        timerStarted = startTimeAutomatically;
+    }
+
     public boolean isAnnounced() {
-        return !announcerEnabled;
+        return announced;
     }
 
     /**
@@ -1049,20 +1068,20 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         return timeKeepingInUse;
     }
 
-    /**
-     * @param needToAnnounce
-     *            the needToAnnounce to set
-     */
-    public void setNeedToAnnounce(boolean needToAnnounce) {
-        this.needToAnnounce = needToAnnounce;
-    }
-
-    /**
-     * @return the needToAnnounce
-     */
-    public boolean getNeedToAnnounce() {
-        return needToAnnounce;
-    }
+    // /**
+    // * @param needToAnnounce
+    // * the needToAnnounce to set
+    // */
+    // public void setNeedToAnnounce(boolean needToAnnounce) {
+    // this.needToAnnounce = needToAnnounce;
+    // }
+    //
+    // /**
+    // * @return the needToAnnounce
+    // */
+    // public boolean getNeedToAnnounce() {
+    // return needToAnnounce;
+    // }
 
     /**
      * @return
@@ -1080,105 +1099,102 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         // with the automatic start determines that
         // there is a timekeeper and that timekeeper runs clock.
         groupData.setTimeKeepingInUse(true);
-            
+
         if (lifter != timing.getOwner()) {
             if (!isForcedByTimekeeper()) {
                 final int remaining = groupData.getTimeAllowed();
                 timing.setTimeRemaining(remaining);
             } else {
-                logger.info("forced by timekeeper: {} remaining",getTimeRemaining());
+                logger.info("forced by timekeeper: {} remaining", getTimeRemaining());
             }
             timing.setOwner(lifter); // enforce rule 6.6.8
             logger.debug("timekeeping in use, setting lifter {} as owner", lifter);
         }
     }
 
-    /**
-     * @param lifter
-     * @param groupData
-     */
-    public void startTimer(Lifter lifter, SessionData groupData,CountdownTimer timing) {
-        manageTimerOwner(lifter,groupData, timing);
-        timing.restart();
-    }
-    
+    // /**
+    // * @param lifter
+    // * @param groupData
+    // */
+    // private void startTimer(Lifter lifter, SessionData groupData,CountdownTimer timing) {
+    // manageTimerOwner(lifter,groupData, timing);
+    // timing.restart();
+    // }
+
     public Item getPublicAddressItem() {
-		return publicAddressItem;
-	}
+        return publicAddressItem;
+    }
 
-	public void setPublicAddressItem(Item publicAddressItem) {
-		this.publicAddressItem = publicAddressItem;
-	}
-	
+    public void setPublicAddressItem(Item publicAddressItem) {
+        this.publicAddressItem = publicAddressItem;
+    }
 
-	public void clearPublicAddressDisplay() {
-		PublicAddressMessageEvent event = new PublicAddressMessageEvent();
-		// more intuitive if hiding the display does not stop the timer.
-		// publicAddressTimer.stop();
-		event.setHide(true);
-		fireBlackBoardEvent(event);
-	}
+    public void clearPublicAddressDisplay() {
+        PublicAddressMessageEvent event = new PublicAddressMessageEvent();
+        // more intuitive if hiding the display does not stop the timer.
+        // publicAddressTimer.stop();
+        event.setHide(true);
+        fireBlackBoardEvent(event);
+    }
 
+    public void displayPublicAddress() {
+        IntermissionTimer timer1 = (IntermissionTimer) publicAddressItem.getItemProperty("remainingSeconds").getValue();
+        int remainingMilliseconds = timer1.getRemainingMilliseconds();
 
-	public void displayPublicAddress() {
-		IntermissionTimer timer1 = (IntermissionTimer) publicAddressItem.getItemProperty("remainingSeconds").getValue();
-		int remainingMilliseconds = timer1.getRemainingMilliseconds();
-		
-		// tell the registered browsers to pop-up the message area
-		PublicAddressMessageEvent messageEvent = new PublicAddressMessageEvent();
-		messageEvent.setHide(false);
-		messageEvent.setTitle((String) publicAddressItem.getItemProperty("title").getValue());
-		messageEvent.setMessage((String) publicAddressItem.getItemProperty("message").getValue());
-		messageEvent.setRemainingMilliseconds(remainingMilliseconds);
-		fireBlackBoardEvent(messageEvent);
-		
-		// tell the message areas to display the initial time
-		IntermissionTimerEvent timerEvent = new IntermissionTimerEvent();
-		timerEvent.setRemainingMilliseconds(remainingMilliseconds);
-		fireBlackBoardEvent(timerEvent);
+        // tell the registered browsers to pop-up the message area
+        PublicAddressMessageEvent messageEvent = new PublicAddressMessageEvent();
+        messageEvent.setHide(false);
+        messageEvent.setTitle((String) publicAddressItem.getItemProperty("title").getValue());
+        messageEvent.setMessage((String) publicAddressItem.getItemProperty("message").getValue());
+        messageEvent.setRemainingMilliseconds(remainingMilliseconds);
+        fireBlackBoardEvent(messageEvent);
 
-	}
+        // tell the message areas to display the initial time
+        IntermissionTimerEvent timerEvent = new IntermissionTimerEvent();
+        timerEvent.setRemainingMilliseconds(remainingMilliseconds);
+        fireBlackBoardEvent(timerEvent);
 
-	/**
-	 * @param event
-	 */
-	public void fireBlackBoardEvent(Event event) {
-		blackBoardEventRouter.fire(event);
-	}
-	
-	public void addBlackBoardListener(Listener listener) {
-		blackBoardEventRouter.addListener(listener);
-	}
+    }
 
-	public void removeBlackBoardListener(Listener listener) {
-		blackBoardEventRouter.removeListener(listener);
-	}
+    /**
+     * @param event
+     */
+    public void fireBlackBoardEvent(Event event) {
+        blackBoardEventRouter.fire(event);
+    }
 
+    public void addBlackBoardListener(Listener listener) {
+        blackBoardEventRouter.addListener(listener);
+    }
 
-	public IntermissionTimer getIntermissionTimer() {
-		return publicAddressTimer;
-	}
+    public void removeBlackBoardListener(Listener listener) {
+        blackBoardEventRouter.removeListener(listener);
+    }
 
-	void noCurrentLifter() {
-		// most likely completely obsolete.
-		//getTimer().removeAllListeners();
-	}
+    public IntermissionTimer getIntermissionTimer() {
+        return publicAddressTimer;
+    }
 
-	public void refresh(boolean isMaster) {
-		setCurrentSession(this.getCurrentSession());
-		if (isMaster) {
-			// get current platform back from database
-			// Note: should use entity refresh
-			Platform curPlatform = this.getPlatform();
-			if (curPlatform != null) {
-				String platformName = curPlatform.getName();
-				Platform refreshedPlatform = Platform.getByName(platformName);
-				// setPlatform forces the audio to switch
-				this.setPlatform(refreshedPlatform);
-			}
+    void noCurrentLifter() {
+        // most likely completely obsolete.
+        // getTimer().removeAllListeners();
+    }
 
-		}
-	}
+    public void refresh(boolean isMaster) {
+        setCurrentSession(this.getCurrentSession());
+        if (isMaster) {
+            // get current platform back from database
+            // Note: should use entity refresh
+            Platform curPlatform = this.getPlatform();
+            if (curPlatform != null) {
+                String platformName = curPlatform.getName();
+                Platform refreshedPlatform = Platform.getByName(platformName);
+                // setPlatform forces the audio to switch
+                this.setPlatform(refreshedPlatform);
+            }
+
+        }
+    }
 
     public int getDisplayTime() {
         if (currentLifter != timer.getOwner()) {
@@ -1191,10 +1207,19 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
     public void startUpdateModel() {
         final CountdownTimer timer1 = this.getTimer();
         final Lifter lifter = getCurrentLifter();
+
+        CountdownTimer timer2 = getTimer();
+        final int timeRemaining = timer2.getTimeRemaining();
+        Long runningTimeRemaining = timer2.getRunningTimeRemaining();
+
+        if (timeExpiredForCurrentLifter(lifter, timer2, timeRemaining, runningTimeRemaining))
+            return;
+
         manageTimerOwner(lifter, this, timer1);
         final boolean running = timer1.isRunning();
         timingLogger.debug("start timer.isRunning()={}", running); //$NON-NLS-1$
         timer1.restart();
+        timerStarted = true;
         getRefereeDecisionController().setBlocked(false);
     }
 
@@ -1222,11 +1247,10 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         currentLifter2.successfulLift();
     }
 
-    public void failedListUpdateModel() {
+    public void noLiftUpdateModel() {
         Lifter currentLifter2 = getCurrentLifter();
         liftDone(currentLifter2, false);
         currentLifter2.failedLift();
     }
-
 
 }

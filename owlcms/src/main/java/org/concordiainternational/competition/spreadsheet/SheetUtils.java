@@ -25,14 +25,15 @@ public class SheetUtils {
 
     private static Competition competition;
     private static SimpleDateFormat dateFormat = new SimpleDateFormat(Messages.getString(
-        "OutputSheet.DateFormat", CompetitionApplication.getCurrentLocale())); //$NON-NLS-1$
+            "OutputSheet.DateFormat", CompetitionApplication.getCurrentLocale())); //$NON-NLS-1$
 
     static public String fixRank(Integer rank) {
         if (rank == null || rank == 0) {
             return ""; //$NON-NLS-1$
         } else if (rank > 0) {
             return Integer.toString(rank);
-        } else return Messages.getString("ResultSheet.InvitedAbbreviation", CompetitionApplication.getCurrentLocale()); //$NON-NLS-1$
+        } else
+            return Messages.getString("ResultSheet.InvitedAbbreviation", CompetitionApplication.getCurrentLocale()); //$NON-NLS-1$
     }
 
     static public Object fixValue(String value) {
@@ -63,8 +64,9 @@ public class SheetUtils {
     static Competition getCompetition() throws HibernateException {
         if (competition == null) {
             List<Competition> competitions = CompetitionApplication.getCurrent().getHbnSession().createCriteria(
-                Competition.class).list();
-            if (competitions.size() > 0) competition = competitions.get(0);
+                    Competition.class).list();
+            if (competitions.size() > 0)
+                competition = competitions.get(0);
         }
         return competition;
     }

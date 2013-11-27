@@ -7,17 +7,14 @@
  */
 package org.concordiainternational.competition.ui;
 
-import java.net.URL;
-
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.components.ApplicationView;
 import org.concordiainternational.competition.ui.components.DecisionLightsWindow;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.URIHandler;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.GridLayout;
@@ -28,7 +25,7 @@ import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
-public class RefereeTesting extends VerticalSplitPanel implements ApplicationView, CloseListener, URIHandler {
+public class RefereeTesting extends VerticalSplitPanel implements ApplicationView, CloseListener {
 
     private static final String CELL_WIDTH = "8em";
 
@@ -39,13 +36,12 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
     CompetitionApplication app = CompetitionApplication.getCurrent();
 
     @SuppressWarnings("unused")
-	private Logger logger = LoggerFactory.getLogger(RefereeTesting.class);
+    private Logger logger = LoggerFactory.getLogger(RefereeTesting.class);
 
     private String platformName;
     private String viewName;
 
-
-	private DecisionLightsWindow decisionArea;
+    private DecisionLightsWindow decisionArea;
 
     RefereeTesting(boolean initFromFragment, String viewName, boolean juryMode, boolean publicFacing) {
         if (initFromFragment) {
@@ -53,16 +49,17 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
         } else {
             this.viewName = viewName;
         }
-        
+        LoggerUtils.mdcPut(LoggerUtils.LoggingKeys.view, getLoggingId());
+
         this.app = CompetitionApplication.getCurrent();
-        
+
         if (platformName == null) {
-        	// get the default platform name
+            // get the default platform name
             platformName = CompetitionApplicationComponents.initPlatformName();
         } else if (app.getPlatform() == null) {
-        	app.setPlatformByName(platformName);
+            app.setPlatformByName(platformName);
         }
-        
+
         createLights();
 
         HorizontalLayout top = new HorizontalLayout();
@@ -73,25 +70,24 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
         bottom = createDecisionButtons();
         this.setSecondComponent(bottom);
         setSplitPosition(75);
-        
+
         resetBottom();
-		// URI handler must remain, so is not part of the register/unRegister paire
-		app.getMainWindow().addURIHandler(this);
+
         registerAsListener();
     }
 
-	/**
+    /**
 	 * 
 	 */
-	private void createLights() {
-		masterData = app.getMasterData(platformName);
-		decisionArea = new DecisionLightsWindow(false, true);
+    private void createLights() {
+        masterData = app.getMasterData(platformName);
+        decisionArea = new DecisionLightsWindow(false, true);
         masterData.getRefereeDecisionController().addListener(decisionArea);
 
-		decisionArea.setSizeFull(); //$NON-NLS-1$
-		//decisionArea.setHeight("35em");
+        decisionArea.setSizeFull(); //$NON-NLS-1$
+        // decisionArea.setHeight("35em");
 
-	}
+    }
 
     private GridLayout createDecisionButtons() {
         GridLayout bottom1 = new GridLayout(3, 3);
@@ -109,6 +105,7 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
 
                 @Override
                 public void buttonClick(ClickEvent event) {
+                    LoggerUtils.buttonSetup(masterData);
                     masterData.getRefereeDecisionController().decisionMade(j, true);
                 }
 
@@ -125,6 +122,7 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
 
                 @Override
                 public void buttonClick(ClickEvent event) {
+                    LoggerUtils.buttonSetup(masterData);
                     masterData.getRefereeDecisionController().decisionMade(j, false);
                 }
 
@@ -149,18 +147,17 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
         bottom1.addComponent(ref1Label);
     }
 
-
     private void resetBottom() {
         synchronized (app) {
-			for (int i = 0; i < 3; i++) {
-				((Label) bottom.getComponent(i, 0)).setValue(" ");
-			}
-		}
-		app.push();
+            for (int i = 0; i < 3; i++) {
+                ((Label) bottom.getComponent(i, 0)).setValue(" ");
+            }
+        }
+        app.push();
     }
 
     @Override
-	public void refresh() {
+    public void refresh() {
     }
 
     /**
@@ -169,10 +166,12 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
      */
     private String refereeLabel(int refereeIndex2) {
         return Messages.getString("RefereeConsole.Referee", CompetitionApplication.getCurrentLocale()) + " "
-            + (refereeIndex2 + 1);
+                + (refereeIndex2 + 1);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#needsMenu()
      */
     @Override
@@ -180,17 +179,17 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
         return false;
     }
 
-
     /**
      * @return
      */
     @Override
-	public String getFragment() {
-        return viewName+"/"+(platformName == null ? "" : platformName);
+    public String getFragment() {
+        return viewName + "/" + (platformName == null ? "" : platformName);
     }
-    
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.concordiainternational.competition.ui.components.ApplicationView#setParametersFromFragment(java.lang.String)
      */
     @Override
@@ -200,46 +199,58 @@ public class RefereeTesting extends VerticalSplitPanel implements ApplicationVie
         if (params.length >= 1) {
             viewName = params[0];
         } else {
-            throw new RuleViolationException("Error.ViewNameIsMissing"); 
+            throw new RuleViolationException("Error.ViewNameIsMissing");
         }
         if (params.length >= 2) {
             platformName = params[1];
         } else {
-        	platformName = CompetitionApplicationComponents.initPlatformName();
+            platformName = CompetitionApplicationComponents.initPlatformName();
         }
     }
-    
-    
+
     @Override
     public void registerAsListener() {
         masterData.getRefereeDecisionController().addListener(decisionArea);
-	}
-	
-	
+    }
+
     @Override
     public void unregisterAsListener() {
-		masterData.getRefereeDecisionController().removeListener(decisionArea);
-	}
-	
-	/* Unregister listeners when window is closed.
-	 * @see com.vaadin.ui.Window.CloseListener#windowClose(com.vaadin.ui.Window.CloseEvent)
-	 */
-	@Override
-	public void windowClose(CloseEvent e) {
-		unregisterAsListener();
-	}
-	
-	@Override
-	public DownloadStream handleURI(URL context, String relativeUri) {
-		//logger.debug("re-registering handlers for {} {}",this,relativeUri);
-		registerAsListener();
-		return null;
-	}
-	
+        masterData.getRefereeDecisionController().removeListener(decisionArea);
+    }
+
+    /*
+     * Unregister listeners when window is closed.
+     * 
+     * @see com.vaadin.ui.Window.CloseListener#windowClose(com.vaadin.ui.Window.CloseEvent)
+     */
+    @Override
+    public void windowClose(CloseEvent e) {
+        unregisterAsListener();
+    }
+
+    // @Override
+    // public DownloadStream handleURI(URL context, String relativeUri) {
+    // // logger.debug("re-registering handlers for {} {}",this,relativeUri);
+    // registerAsListener();
+    // return null;
+    // }
+
     @Override
     public boolean needsBlack() {
         return false;
     }
 
-    
+    private static int classCounter = 0; // per class
+    private final int instanceId = classCounter++; // per instance
+
+    @Override
+    public String getInstanceId() {
+        return Long.toString(instanceId);
+    }
+
+    @Override
+    public String getLoggingId() {
+        return viewName + getInstanceId();
+    }
+
 }

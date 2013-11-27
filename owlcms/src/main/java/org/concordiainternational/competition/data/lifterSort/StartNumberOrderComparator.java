@@ -12,8 +12,7 @@ import java.util.Comparator;
 import org.concordiainternational.competition.data.Lifter;
 
 /**
- * This comparator is used for the technical meeting sheet. It is based on the
- * registration category
+ * This comparator is used for the technical meeting sheet. It is based on the registration category
  * 
  * @author jflamy
  * 
@@ -25,10 +24,12 @@ public class StartNumberOrderComparator extends AbstractLifterComparator impleme
         int compare = 0;
 
         compare = compareCategory(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         compare = compareLotNumber(lifter1, lifter2);
-        if (compare != 0) return compare;
+        if (compare != 0)
+            return compare;
 
         return compare;
     }

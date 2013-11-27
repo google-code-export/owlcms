@@ -28,7 +28,8 @@ public class LiftCellStyleGenerator implements CellStyleGenerator {
         // final Property uiProp = item.getItemProperty(propertyIdString);
         // System.err.println("table.getValue "+table.getValue()+" itemId"+itemId);
 
-        if (itemId.equals(table.getValue())) return null;
+        if (itemId.equals(table.getValue()))
+            return null;
         if (propertyId == null) {
             // no propertyId, styling row
             return null;
@@ -63,7 +64,8 @@ public class LiftCellStyleGenerator implements CellStyleGenerator {
                     }
                 }
             } else if (propertyIdString.contains("Name") || propertyIdString.contains("Requested")) { //$NON-NLS-1$ //$NON-NLS-2$
-                if (lifter.isCurrentLifter()) return "current"; //$NON-NLS-1$
+                if (lifter.isCurrentLifter())
+                    return "current"; //$NON-NLS-1$
             }
         }
         return null;

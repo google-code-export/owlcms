@@ -20,18 +20,15 @@ import org.slf4j.LoggerFactory;
 /**
  * Helper class to manage notifications from domain objects.
  * 
- * This class allows a domain object to have multiple active editors; as long as
- * there is an editor, the listener should be informed. When a domain object no
- * longer has an active editor, it should stop broadcasting events to the
- * listener.
+ * This class allows a domain object to have multiple active editors; as long as there is an editor, the listener should be informed. When a
+ * domain object no longer has an active editor, it should stop broadcasting events to the listener.
  * 
  * @author jflamy
  * 
  * @param <Listener>
  *            the listening class, notified by E instances when they change
  * @param <Editable>
- *            editable class, notifies the Listening class, edited by the Editor
- *            class
+ *            editable class, notifies the Listening class, edited by the Editor class
  * @param <Editor>
  *            Edits the Editable, which notifies the Listener
  */

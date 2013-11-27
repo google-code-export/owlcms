@@ -16,10 +16,9 @@ import com.vaadin.data.hbnutil.HbnContainer.HbnSessionManager;
 import com.vaadin.data.util.BeanItemContainer;
 
 /**
- * Normally we would use an HbnContainer directly, but we need to sort on the
- * lifting order, which we do not want written to the database. HbnContainer
- * uses the database to sort, so we have to create our own container as a
- * wrapper. The resulting BeanItemContainer is used to feed the table.
+ * Normally we would use an HbnContainer directly, but we need to sort on the lifting order, which we do not want written to the database.
+ * HbnContainer uses the database to sort, so we have to create our own container as a wrapper. The resulting BeanItemContainer is used to
+ * feed the table.
  * 
  * 
  * @author jflamy
@@ -35,8 +34,7 @@ public abstract class GenericBeanList<T extends Serializable> extends GenericLis
     }
 
     /**
-     * Additional initializations, once super.populateAndConfigureTable() (and
-     * hence loadData()) has been done.
+     * Additional initializations, once super.populateAndConfigureTable() (and hence loadData()) has been done.
      */
     @Override
     protected void init() {
@@ -44,15 +42,14 @@ public abstract class GenericBeanList<T extends Serializable> extends GenericLis
     }
 
     /**
-     * Load container content to Table. We create a BeanItemContainer to gain
-     * sorting flexibility. Note: this routine is invoked as part of the super()
-     * chain in the constructor, and before our own init is called.
+     * Load container content to Table. We create a BeanItemContainer to gain sorting flexibility. Note: this routine is invoked as part of
+     * the super() chain in the constructor, and before our own init is called.
      */
     @Override
     protected void loadData() {
         final HbnContainer<T> hbnCont = new HbnContainer<T>(parameterizedClass, (HbnSessionManager) app);
         allPojos = hbnCont.getAllPojos();
-        final BeanItemContainer<T> cont = new BeanItemContainer<T>(parameterizedClass,allPojos);
+        final BeanItemContainer<T> cont = new BeanItemContainer<T>(parameterizedClass, allPojos);
         table.setContainerDataSource(cont);
     }
 

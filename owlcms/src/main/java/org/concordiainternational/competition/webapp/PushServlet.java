@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.icepush.servlet.MainServlet;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import com.vaadin.terminal.gwt.server.ApplicationServlet;
 
@@ -27,6 +28,14 @@ public class PushServlet extends ApplicationServlet {
     @Override
     public void init(ServletConfig servletConfig) throws ServletException {
         super.init(servletConfig);
+
+        // Optionally remove existing handlers attached to j.u.l root logger
+        SLF4JBridgeHandler.removeHandlersForRootLogger(); // (since SLF4J 1.6.5)
+
+        // add SLF4JBridgeHandler to j.u.l's root logger, should be done once during
+        // the initialization phase of your application
+        SLF4JBridgeHandler.install();
+
         pushServlet = new MainServlet(servletConfig.getServletContext());
     }
 
@@ -49,7 +58,8 @@ public class PushServlet extends ApplicationServlet {
             try {
                 super.service(request, response);
             } catch (Throwable t) {
-                if (! (t.getCause() instanceof IOException)) throw t;
+                if (!(t.getCause() instanceof IOException))
+                    throw t;
                 // ignore - occurs on downloads, for some reason.
             }
         }
@@ -64,14 +74,18 @@ public class PushServlet extends ApplicationServlet {
     @Override
     protected void writeAjaxPageHtmlHeader(BufferedWriter page, String title, String themeUri, HttpServletRequest req) throws IOException {
         super.writeAjaxPageHtmlHeader(page, title, themeUri, req);
-        
+
         // REFACTOR: detect browser
-        // the following is mobile safari specific (iPod).  does not harm other browsers.
-        // there is no easy way to make this conditional without overriding the whole 
+        // the following is mobile safari specific (iPod). does not harm other browsers.
+        // there is no easy way to make this conditional without overriding the whole
         // writeAjaxPage method, which is not worth it at this stage.
-//        page.write("<meta name='viewport' content='width=device-width' />");
-//        page.write("<meta name='apple-mobile-web-app-capable' content='yes' />");
-        
+        // page.write("<meta name='viewport' content='width=device-width' />");
+        // page.write("<meta name='apple-mobile-web-app-capable' content='yes' />");
+
+        // android chrome 31 and later
+        page.append("<meta name=\"mobile-web-app-capable\" content=\"yes\">");
+
+        // mobile safari
         page.append("<meta name=\"viewport\" content="
                 + "\"user-scalable=no, width=device-width, "
                 + "initial-scale=1.0, maximum-scale=1.0;\" />");

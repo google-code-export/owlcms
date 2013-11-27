@@ -13,9 +13,8 @@ import com.vaadin.Application;
 import com.vaadin.Application.CustomizedSystemMessages;
 
 /**
- * CustomizedSystemMessages extension that relies on a properties file. This
- * class also maintains the language for each user, so that different users can
- * get the message in their own language (once the session is under way).
+ * CustomizedSystemMessages extension that relies on a properties file. This class also maintains the language for each user, so that
+ * different users can get the message in their own language (once the session is under way).
  * 
  * @author jflamy
  */
@@ -23,32 +22,26 @@ public class LocalizedSystemMessages extends CustomizedSystemMessages {
     private static final long serialVersionUID = 295825699005962978L;
 
     /**
-     * Locale associated with the current thread (ThreadLocal maintains a map
-     * from the thread an associated value so there is in effect one thread
-     * Locale per thread.)
+     * Locale associated with the current thread (ThreadLocal maintains a map from the thread an associated value so there is in effect one
+     * thread Locale per thread.)
      */
     static ThreadLocal<Locale> threadLocale = new ThreadLocal<Locale>();
 
     /**
-     * Sets the default language used for system messages emitted before the
-     * application has fully initialized, for example on a server restart. This
-     * will happen if the system message is issued before
-     * {@link #setThreadLocale(Locale)} has been called by the application
+     * Sets the default language used for system messages emitted before the application has fully initialized, for example on a server
+     * restart. This will happen if the system message is issued before {@link #setThreadLocale(Locale)} has been called by the application
      * (normally in an override of {@link Application#init()}.
      * 
-     * Override this method if the JVM default locale (often en_US if running on
-     * a server) is inappropriate.
+     * Override this method if the JVM default locale (often en_US if running on a server) is inappropriate.
      * 
-     * @return locale for messages issued before the Application has set its own
-     *         locale.
+     * @return locale for messages issued before the Application has set its own locale.
      */
     protected Locale getDefaultSystemMessageLocale() {
         return Locale.getDefault();
     }
 
     /**
-     * Called by the application if it wishes to have its
-     * LocalizedSystemMessages shown in the user's language.
+     * Called by the application if it wishes to have its LocalizedSystemMessages shown in the user's language.
      * 
      * @param application
      * @param locale
@@ -80,7 +73,7 @@ public class LocalizedSystemMessages extends CustomizedSystemMessages {
     @Override
     public String getCommunicationErrorCaption() {
         return (communicationErrorNotificationEnabled ? Messages.getString(
-            "LocalizedSystemMessages.communicationErrorCaption", getThreadLocale()) //$NON-NLS-1$
+                "LocalizedSystemMessages.communicationErrorCaption", getThreadLocale()) //$NON-NLS-1$
                 : null);
     }
 
@@ -92,7 +85,7 @@ public class LocalizedSystemMessages extends CustomizedSystemMessages {
     @Override
     public String getCommunicationErrorMessage() {
         return (communicationErrorNotificationEnabled ? Messages.getString(
-            "LocalizedSystemMessages.communicationErrorMessage", getThreadLocale()) //$NON-NLS-1$
+                "LocalizedSystemMessages.communicationErrorMessage", getThreadLocale()) //$NON-NLS-1$
                 : null);
     }
 
@@ -103,8 +96,7 @@ public class LocalizedSystemMessages extends CustomizedSystemMessages {
      */
     @Override
     public String getInternalErrorCaption() {
-        return (internalErrorNotificationEnabled ? Messages.getString(
-            "LocalizedSystemMessages.internalErrorCaption", getThreadLocale()) //$NON-NLS-1$
+        return (internalErrorNotificationEnabled ? Messages.getString("LocalizedSystemMessages.internalErrorCaption", getThreadLocale()) //$NON-NLS-1$
                 : null);
     }
 
@@ -115,8 +107,7 @@ public class LocalizedSystemMessages extends CustomizedSystemMessages {
      */
     @Override
     public String getInternalErrorMessage() {
-        return (internalErrorNotificationEnabled ? Messages.getString(
-            "LocalizedSystemMessages.internalErrorMessage", getThreadLocale()) //$NON-NLS-1$
+        return (internalErrorNotificationEnabled ? Messages.getString("LocalizedSystemMessages.internalErrorMessage", getThreadLocale()) //$NON-NLS-1$
                 : null);
     }
 
@@ -127,8 +118,7 @@ public class LocalizedSystemMessages extends CustomizedSystemMessages {
      */
     @Override
     public String getOutOfSyncCaption() {
-        return (outOfSyncNotificationEnabled ? Messages.getString(
-            "LocalizedSystemMessages.outOfSyncCaption", getThreadLocale()) //$NON-NLS-1$
+        return (outOfSyncNotificationEnabled ? Messages.getString("LocalizedSystemMessages.outOfSyncCaption", getThreadLocale()) //$NON-NLS-1$
                 : null);
     }
 
@@ -137,8 +127,7 @@ public class LocalizedSystemMessages extends CustomizedSystemMessages {
      */
     @Override
     public String getOutOfSyncMessage() {
-        return (outOfSyncNotificationEnabled ? Messages.getString(
-            "LocalizedSystemMessages.outOfSyncMessage", getThreadLocale()) //$NON-NLS-1$
+        return (outOfSyncNotificationEnabled ? Messages.getString("LocalizedSystemMessages.outOfSyncMessage", getThreadLocale()) //$NON-NLS-1$
                 : null);
     }
 
@@ -149,8 +138,7 @@ public class LocalizedSystemMessages extends CustomizedSystemMessages {
      */
     @Override
     public String getSessionExpiredCaption() {
-        return (sessionExpiredNotificationEnabled ? Messages.getString(
-            "LocalizedSystemMessages.sessionExpiredCaption", getThreadLocale()) //$NON-NLS-1$
+        return (sessionExpiredNotificationEnabled ? Messages.getString("LocalizedSystemMessages.sessionExpiredCaption", getThreadLocale()) //$NON-NLS-1$
                 : null);
     }
 
@@ -161,8 +149,7 @@ public class LocalizedSystemMessages extends CustomizedSystemMessages {
      */
     @Override
     public String getSessionExpiredMessage() {
-        return (sessionExpiredNotificationEnabled ? Messages.getString(
-            "LocalizedSystemMessages.sessionExpiredMessage", getThreadLocale()) //$NON-NLS-1$
+        return (sessionExpiredNotificationEnabled ? Messages.getString("LocalizedSystemMessages.sessionExpiredMessage", getThreadLocale()) //$NON-NLS-1$
                 : null);
     }
 

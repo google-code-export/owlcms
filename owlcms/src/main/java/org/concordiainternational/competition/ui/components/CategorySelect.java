@@ -42,11 +42,12 @@ public class CategorySelect extends ListSelect implements Serializable {
         categorySelect.setRows(6);
     }
 
-	@Override
-	public String toString() {
-		
-		Set<Long> categoryIds = (Set<Long>) getValue();
-        if (categoryIds == null) return Messages.getString("Common.emptyList", app.getLocale()); //$NON-NLS-1$
+    @Override
+    public String toString() {
+
+        Set<Long> categoryIds = (Set<Long>) getValue();
+        if (categoryIds == null)
+            return Messages.getString("Common.emptyList", app.getLocale()); //$NON-NLS-1$
         StringBuilder sb = new StringBuilder();
         final String separator = Messages.getString("CommonFieldFactory.listSeparator", app.getLocale()); //$NON-NLS-1$
         for (Long curCategoryId : categoryIds) {
@@ -60,7 +61,6 @@ public class CategorySelect extends ListSelect implements Serializable {
         } else {
             return sb.substring(0, sb.length() - separator.length()); // hide last comma
         }
-	}
-    
-    
+    }
+
 }

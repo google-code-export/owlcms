@@ -21,60 +21,60 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author jflamy
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class JXLSWeighInSheet extends JXLSWorkbookStreamSource {
-	
-	public JXLSWeighInSheet(){
-		super(true);
-	}
-	
-	public JXLSWeighInSheet(boolean excludeNotWeighed) {
-		super(excludeNotWeighed);
-	}
 
-	Logger logger = LoggerFactory.getLogger(JXLSWeighInSheet.class);
-	
+    public JXLSWeighInSheet() {
+        super(true);
+    }
 
-	private Competition competition;
+    public JXLSWeighInSheet(boolean excludeNotWeighed) {
+        super(excludeNotWeighed);
+    }
 
-	@Override
-	protected void init() {
-		super.init();
-		competition = Competition.getAll().get(0);
-		getReportingBeans().put("competition",competition);
-		getReportingBeans().put("session",app.getCurrentCompetitionSession());
-	}
+    Logger logger = LoggerFactory.getLogger(JXLSWeighInSheet.class);
 
-	@Override
-	public InputStream getTemplate() throws IOException {
-    	String templateName = "/WeighInSheetTemplate_"+CompetitionApplication.getCurrentSupportedLocale().getLanguage()+".xls";
+    private Competition competition;
+
+    @Override
+    protected void init() {
+        super.init();
+        competition = Competition.getAll().get(0);
+        getReportingBeans().put("competition", competition);
+        getReportingBeans().put("session", app.getCurrentCompetitionSession());
+    }
+
+    @Override
+    public InputStream getTemplate() throws IOException {
+        String templateName = "/WeighInSheetTemplate_" + CompetitionApplication.getCurrentSupportedLocale().getLanguage() + ".xls";
         final InputStream resourceAsStream = app.getResourceAsStream(templateName);
         if (resourceAsStream == null) {
             throw new IOException("resource not found: " + templateName);} //$NON-NLS-1$
         return resourceAsStream;
     }
 
-	@Override
-	protected void getSortedLifters()  {
-		this.lifters = LifterSorter.displayOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAllPojos());
-//	    LifterSorter.assignStartNumbers(lifters);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource#postProcess(org.apache.poi.ss.usermodel.Workbook)
-	 */
-	@Override
-	protected void postProcess(Workbook workbook) {
-		if (Competition.invitedIfBornBefore() <= 0) {
-			zapCellPair(workbook,3,18);
-		}
-		final CompetitionSession currentCompetitionSession = app.getCurrentCompetitionSession();
-		if (currentCompetitionSession == null) {
-			zapCellPair(workbook,3,10);
-		}
-	}
+    @Override
+    protected void getSortedLifters() {
+        this.lifters = LifterSorter.displayOrderCopy(new LifterContainer(app, isExcludeNotWeighed()).getAllPojos());
+        // LifterSorter.assignStartNumbers(lifters);
+    }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.concordiainternational.competition.spreadsheet.JXLSWorkbookStreamSource#postProcess(org.apache.poi.ss.usermodel.Workbook)
+     */
+    @Override
+    protected void postProcess(Workbook workbook) {
+        if (Competition.invitedIfBornBefore() <= 0) {
+            zapCellPair(workbook, 3, 18);
+        }
+        final CompetitionSession currentCompetitionSession = app.getCurrentCompetitionSession();
+        if (currentCompetitionSession == null) {
+            zapCellPair(workbook, 3, 10);
+        }
+    }
 
 }

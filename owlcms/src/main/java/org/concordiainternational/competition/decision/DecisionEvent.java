@@ -27,9 +27,9 @@ public class DecisionEvent extends EventObject {
     private Type type;
     private long when;
     private Decision[] decisions;
-	private Lifter lifter;
-	private Integer attempt;
-	private Boolean accepted;
+    private Lifter lifter;
+    private Integer attempt;
+    private Boolean accepted;
     private Integer attemptedWeight;
 
     public DecisionEvent(IDecisionController source, Type down, long currentTimeMillis, Decision[] refereeDecisions) {
@@ -54,7 +54,8 @@ public class DecisionEvent extends EventObject {
         case RESET:
             return "reset";
         default:
-            return lifter+" "+ attemptedWeight +" " + type + " " + decisions[0].accepted + " " + decisions[1].accepted + " " + decisions[2].accepted;
+            return lifter + " " + attemptedWeight + " " + type + " " + decisions[0].accepted + " " + decisions[1].accepted + " "
+                    + decisions[2].accepted;
         }
     }
 
@@ -67,53 +68,56 @@ public class DecisionEvent extends EventObject {
     }
 
     public boolean isDisplayable() {
-    	int count = 0;
-    	for (Decision decision : decisions){
-    		if (decision.accepted != null) count++;
-    	}
-    	return count == 3;
+        int count = 0;
+        for (Decision decision : decisions) {
+            if (decision.accepted != null)
+                count++;
+        }
+        return count == 3;
     }
-    
+
     /**
      * Return true for a good lift, false for a rejected lift, null if decisions are pending.
+     * 
      * @return null if no decision yet, true if 3 decisions and at least 2 good, false otherwise
      */
     public Boolean computeAccepted() {
-    	int count = 0;
-    	int countAccepted = 0;
-    	for (Decision decision : decisions){
-    		final Boolean accepted1 = decision.accepted;
-			if (accepted1 != null) {
-    			count++;
-    			if (accepted1) countAccepted++;
-    		}
-    	}
-    	if (count < 3) {
-    		return null;
-    	} else {
-    		return countAccepted >= 2;
-    	}
+        int count = 0;
+        int countAccepted = 0;
+        for (Decision decision : decisions) {
+            final Boolean accepted1 = decision.accepted;
+            if (accepted1 != null) {
+                count++;
+                if (accepted1)
+                    countAccepted++;
+            }
+        }
+        if (count < 3) {
+            return null;
+        } else {
+            return countAccepted >= 2;
+        }
     }
 
-	public Lifter getLifter() {
-		return lifter;
-	}
+    public Lifter getLifter() {
+        return lifter;
+    }
 
-	public void setAttempt(Integer attempt) {
-		this.attempt = attempt;
-	}
+    public void setAttempt(Integer attempt) {
+        this.attempt = attempt;
+    }
 
-	public Integer getAttempt() {
-		return attempt;
-	}
+    public Integer getAttempt() {
+        return attempt;
+    }
 
-	public void setAccepted(Boolean accepted) {
-		this.accepted = accepted;
-	}
+    public void setAccepted(Boolean accepted) {
+        this.accepted = accepted;
+    }
 
-	public Boolean isAccepted() {
-		return accepted;
-	}
+    public Boolean isAccepted() {
+        return accepted;
+    }
 
     public Integer getAttemptedWeight() {
         return attemptedWeight;
@@ -122,6 +126,5 @@ public class DecisionEvent extends EventObject {
     public void setAttemptedWeight(Integer attemptedWeight) {
         this.attemptedWeight = attemptedWeight;
     }
-    
-    
+
 }
