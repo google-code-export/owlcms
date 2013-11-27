@@ -126,7 +126,7 @@ public class AttemptBoardView extends WeeLayout implements
                 app.setPlatformByName(platformName);
             }
 
-            doCreate(true);
+            doCreate(false);
             registerAsListener();
         } finally {
             app.setPusherDisabled(prevDisabledPush);
@@ -137,7 +137,6 @@ public class AttemptBoardView extends WeeLayout implements
     public void doCreate(boolean disablePush) {
         logger.trace("entry {}", disablePush);
 
-        // disable push if requested by caller
         synchronized (app) {
             boolean prevDisabled = app.getPusherDisabled();
             try {
@@ -145,7 +144,7 @@ public class AttemptBoardView extends WeeLayout implements
                 masterData = app.getMasterData(platformName);
                 refreshShowTimer();
                 createDecisionLights();
-                plates = new LoadImage(null);
+                plates = new LoadImage();
 
                 create();
 
@@ -456,10 +455,13 @@ public class AttemptBoardView extends WeeLayout implements
             bottomLeftBox.addComponent(decisionLights);
             decisionLights.refresh();
         } else {
+            plates.setVisible(true); // hide attempt board hides them, restore if needed.
+            plates.computeImageArea(masterData, masterData.getPlatform(), false);
             bottomLeftBox.removeComponent(decisionLights);
             bottomLeftBox.addComponent(timeVBox);
             bottomLeftBox.addComponent(platesVBox);
-            plates.computeImageArea(masterData, masterData.getPlatform(), false);
+            platesHBox.removeAllComponents();
+            platesHBox.addComponent(plates);
         }
         logger.trace("exit");
     }
