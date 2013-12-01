@@ -103,7 +103,8 @@ td.success {
 	color: navy;
 	font-weight: bold;
 	font-style: normal;
-	text-align: center; 
+	text-align: center;
+	width: 7%; 
 }
 
 .requestedWeight {
@@ -112,6 +113,7 @@ td.success {
 	font-style: italic;
 	font-weight: 300;
 	text-align: center;
+	width: 7%;
 }
 .liftsDone {
 	margin-left: 5em;
