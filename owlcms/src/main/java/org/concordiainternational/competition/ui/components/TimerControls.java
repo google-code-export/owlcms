@@ -34,9 +34,9 @@ public class TimerControls extends GridLayout {
     private static final long serialVersionUID = 4075226732120553473L;
 
     private static final Logger logger = LoggerFactory.getLogger(TimerControls.class);
-    private static final Logger timingLogger = LoggerFactory.getLogger("timing." + SessionData.class.getSimpleName()); //$NON-NLS-1$
-    private static final Logger buttonLogger = LoggerFactory.getLogger("buttons." + SessionData.class.getSimpleName()); //$NON-NLS-1$
-    //    private static Logger listenerLogger = LoggerFactory.getLogger("listeners."+SessionData.class.getSimpleName()); //$NON-NLS-1$
+    private static final Logger timingLogger = LoggerFactory.getLogger("timing." + TimerControls.class.getSimpleName()); //$NON-NLS-1$
+    private static final Logger buttonLogger = LoggerFactory.getLogger("buttons." + TimerControls.class.getSimpleName()); //$NON-NLS-1$
+    //    private static Logger listenerLogger = LoggerFactory.getLogger("listeners."+TimerControls.class.getSimpleName()); //$NON-NLS-1$
 
     /**
      * a click that take place less than MIN_CLICK_DELAY milliseconds after an initial click on the Ok or Failed button is ignored. This
@@ -82,6 +82,8 @@ public class TimerControls extends GridLayout {
             bottom(lifter, groupData, locale);
         }
 
+        logger.warn(buttonLogger.getName());
+        enableButtons(groupData, "init");
         this.setSpacing(true);
     }
 
@@ -146,45 +148,51 @@ public class TimerControls extends GridLayout {
         boolean announced = groupData.isAnnounced();
         boolean running = groupData.getTimer().isRunning();
 
-        if (!running) {
-            if (announced) {
-                buttonLogger.debug(System.identityHashCode(this) + " {}: not running, announced", whereFrom);
-                start.setEnabled(true);
-                start.addStyleName("primary");
-                stop.setEnabled(false);
-                stop.removeStyleName("primary");
+        CompetitionApplication app = CompetitionApplication.getCurrent();
+        synchronized (app) {
+
+            if (!running) {
+                if (announced) {
+                    buttonLogger.debug(System.identityHashCode(this) + " {}: announced", whereFrom);
+                    start.setEnabled(true);
+                    start.addStyleName("primary");
+                    stop.setEnabled(false);
+                    stop.removeStyleName("primary");
+                    // must be able to decide.
+                    okLift.setEnabled(true);
+                    okLift.addStyleName("primary");
+                    noLift.setEnabled(true);
+                    noLift.addStyleName("primary");
+                } else {
+                    buttonLogger.debug(System.identityHashCode(this) + " {}: not announced", whereFrom);
+                    start.setEnabled(false);
+                    start.removeStyleName("primary");
+                    stop.setEnabled(false);
+                    stop.removeStyleName("primary");
+                    // since someone was announced, must be able to decide...
+                    okLift.setEnabled(false);
+                    okLift.removeStyleName("primary");
+                    noLift.setEnabled(false);
+                    noLift.removeStyleName("primary");
+                }
+
+            } else {
+                buttonLogger.debug(System.identityHashCode(this) + " {}: timer running, {}", whereFrom, (announced ? "announced"
+                        : "not announced"));
+                start.setEnabled(false);
+                start.removeStyleName("primary");
+                // timer is running, must be able to stop
+                stop.setEnabled(true);
+                stop.addStyleName("primary");
                 // must be able to decide.
                 okLift.setEnabled(true);
                 okLift.addStyleName("primary");
                 noLift.setEnabled(true);
                 noLift.addStyleName("primary");
-            } else {
-                buttonLogger.debug(System.identityHashCode(this) + " {}: not running, not announced", whereFrom);
-                start.setEnabled(false);
-                start.removeStyleName("primary");
-                stop.setEnabled(false);
-                stop.removeStyleName("primary");
-                // since someone was announced, must be able to decide...
-                okLift.setEnabled(false);
-                okLift.removeStyleName("primary");
-                noLift.setEnabled(false);
-                noLift.removeStyleName("primary");
             }
-
-        } else {
-            buttonLogger.debug(System.identityHashCode(this) + " {}: running, {}", whereFrom, (announced ? "announced" : "not announced"));
-            start.setEnabled(false);
-            start.removeStyleName("primary");
-            // timer is running, must be able to stop
-            stop.setEnabled(true);
-            stop.addStyleName("primary");
-            // must be able to decide.
-            okLift.setEnabled(true);
-            okLift.addStyleName("primary");
-            noLift.setEnabled(true);
-            noLift.addStyleName("primary");
+            changeWeight.setEnabled(true); // always allow changes
         }
-        changeWeight.setEnabled(true); // always allow changes
+        app.push();
     }
 
     /**
@@ -373,9 +381,6 @@ public class TimerControls extends GridLayout {
                 timingLogger.debug("announce"); //$NON-NLS-1$
                 checkDecisionHasBeenDisplayed(groupData, locale);
                 groupData.callLifter(lifter); // will call start which will cause the timer buttons to do their thing.
-
-                // LifterInfo does the enableButtons because it also receives external events.
-                // enableButtons(groupData, "announce buttonClick");
 
                 groupData.getRefereeDecisionController().setBlocked(false);
             }

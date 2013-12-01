@@ -380,15 +380,15 @@ public class LifterInfo extends VerticalLayout implements
         SessionData groupData1 = (SessionData) timerDisplay.getData();
         if (groupData1 == null)
             return;
+        String announcedIndicator = getAnnouncedIndicator(groupData1);
         timerDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining) +
-                getAnnouncedIndicator(groupData1));
+                announcedIndicator);
         if (groupData1 != null) {
             timerDisplay.setEnabled(groupData1.getTimer().isRunning());
         }
     }
 
     public String getAnnouncedIndicator(SessionData groupData1) {
-
         return groupData1 != null &&
                 groupData1.isAnnounced()
                 ? " " + announced
@@ -553,11 +553,15 @@ public class LifterInfo extends VerticalLayout implements
     @Override
     public void showInteractionNotification(CompetitionApplication originatingApp, InteractionNotificationReason reason) {
 
-        // display notifications from other apps, except for no_timer and not_announced, which
-        // are mistakes that should always be shown.
-        boolean announcerShouldSee = (reason == InteractionNotificationReason.NO_TIMER
-                || reason == InteractionNotificationReason.NOT_ANNOUNCED
-                || reason == InteractionNotificationReason.CLOCK_EXPIRED);
+        // do not display notifications that arise from routine announcer actions (e.g. changing weight of current lifter)
+        // on the announcer display itself.
+        // Some notifications can arise from announcer errors (especially when keeping time) and should be shoen.
+        boolean announcerShouldSee = (
+                reason == InteractionNotificationReason.NO_TIMER // timer was not started
+                || reason == InteractionNotificationReason.REFEREE_DECISION // timer was not stopped
+                || reason == InteractionNotificationReason.NOT_ANNOUNCED // decision given when lifter not announced (defensive - can't happen)
+                || reason == InteractionNotificationReason.CLOCK_EXPIRED // clock went to zero, decision must be entered
+                );
         if (isTop() && (app != originatingApp || announcerShouldSee)) {
             CompetitionApplication receivingApp = app;
 
