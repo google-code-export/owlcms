@@ -290,6 +290,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
                 priorRequestNum });
         
         if (needToAnnounce) {
+            setAnnounced(false);
             // stop the timer if it was running, and make sure event is broadcast
             final CountdownTimer timer2 = getTimer();
             if (timer2 != null) {
@@ -513,6 +514,8 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         timer2.setOwner(null);
         timer2.stop(); // in case timekeeper has failed to stop it.
         timer2.setTimeRemaining(0);
+        setAnnounced(false);
+        setTimerStarted(false);
     }
 
     CountdownTimer timer;
@@ -1039,14 +1042,13 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
             timer2.stop(InteractionNotificationReason.NOT_ANNOUNCED);
         } else if (timeKeepingInUse && timer2.isRunning()) {
             timer2.stop(InteractionNotificationReason.REFEREE_DECISION);
-        } else if (timeKeepingInUse && !timerStarted) {
+        } else if (timeKeepingInUse && !isTimerStarted()) {
             timer2.stop(InteractionNotificationReason.NO_TIMER);
         }
     }
 
     public void setAnnounced(boolean b) {
         announced = b;
-        timerStarted = startTimeAutomatically;
     }
 
     public boolean isAnnounced() {
@@ -1219,7 +1221,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         final boolean running = timer1.isRunning();
         timingLogger.debug("start timer.isRunning()={}", running); //$NON-NLS-1$
         timer1.restart();
-        timerStarted = true;
+        setTimerStarted(true);
         getRefereeDecisionController().setBlocked(false);
     }
 
@@ -1251,6 +1253,14 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         Lifter currentLifter2 = getCurrentLifter();
         liftDone(currentLifter2, false);
         currentLifter2.failedLift();
+    }
+
+    private boolean isTimerStarted() {
+        return timerStarted;
+    }
+
+    private void setTimerStarted(boolean timerStarted) {
+        this.timerStarted = timerStarted;
     }
 
 }
