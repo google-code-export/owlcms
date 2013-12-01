@@ -1906,7 +1906,7 @@ public class Lifter implements MethodEventSource, Notifier {
 
     public Integer getMedalRank() {
         int i = getRank();
-        return (i < 3 ? i : 0);
+        return (i <= 3 ? i : 0);
     }
 
     public void successfulLift() {
