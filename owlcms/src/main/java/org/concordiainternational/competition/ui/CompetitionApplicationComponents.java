@@ -92,7 +92,7 @@ public class CompetitionApplicationComponents {
         urlFragmentToView.put(GROUP_LIST, new GroupListComponent());
         urlFragmentToView.put(PUBLIC_ATTEMPT_BOARD_VIEW, new PublicAttemptBoardComponent());
         urlFragmentToView.put(LIFTER_ATTEMPT_BOARD_VIEW, new LifterAttemptBoardComponent());
-        urlFragmentToView.put(LIFT_ORDER_VIEW, new LifterBoardComponent());
+        urlFragmentToView.put(LIFT_ORDER_VIEW, new LiftOrderComponent());
         urlFragmentToView.put(PLATFORM_LIST, new PlatformListComponent());
         urlFragmentToView.put(REGISTRATION_LIST, new RegistrationListComponent());
         urlFragmentToView.put(RESULT_BOARD, new ResultBoardComponent());
@@ -415,7 +415,7 @@ public class CompetitionApplicationComponents {
     /**
      * Lazy builder for lift order board.
      */
-    private class LifterBoardComponent implements CompetitionApplicationComponent {
+    private class LiftOrderComponent implements CompetitionApplicationComponent {
         private ResultFrame liftOrderBoard = null;
 
         @Override
