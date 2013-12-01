@@ -285,10 +285,17 @@ body.v-generated-body.v-sa.v-ch.v-webkit {
 	border-color: black;
 	border: 0px solid black;
 }
+body.v-generated-body.v-ff {
+	background: black;
+	border-style: none;
+	border-color: black;
+	border: 0px solid black;
+}
+
 .black .v-app {
 	background: black;
 }
-.black .v-sa .v-panel-content, .v-ff3 .v-panel-content {
+.black .v-sa .v-panel-content, .black .v-ff3 .v-panel-content, .black .v-ff .v-panel-content {
 	border-style: none;
 	border-color: black;
 	border: 0px solid black;
@@ -924,4 +931,26 @@ textarea.v-textarea-fixedFont {
     display: table-cell;
     vertical-align: middle;
     text-align:center;
+}
+
+/* .v-verticallayout > div:nth-child(1) > div:nth-child(4) {
+	background-color: pink; display: none;
+}
+.v-verticallayout > div:nth-child(1) > div:nth-child(5) {
+	background-color: pink; display:none;
+}
+.v-panel-deco {
+	background-color: yellow;
+} */
+
+iframe#org.concordiainternational.competition.ui.CompetitionApplicationWidgetSet {
+	display:none;
+}
+
+.v-verticallayout > div:nth-child(1) > div:nth-child(4) {
+	display: none;
+}
+
+.v-verticallayout > div:nth-child(1) > div:nth-child(5) {
+	display: none;
 }
