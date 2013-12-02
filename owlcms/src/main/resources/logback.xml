@@ -30,6 +30,9 @@
     <!--
     	<logger name="buttons.TimerControls" level="DEBUG" />
 		<logger name="org.concordiainternational.competition.ui.components.TimerControls" level="DEBUG" />
+
+    	<logger name="buttons.TimerControls" level="DEBUG" />
+		<logger name="org.concordiainternational.competition.ui.components.TimerControls" level="DEBUG" />
     
 		<logger name="org.concordiainternational.competition.ui.AttemptBoardView" level="TRACE" />    
     	<logger name="org.concordiainternational.competition.ui.SessionData" level="DEBUG" />

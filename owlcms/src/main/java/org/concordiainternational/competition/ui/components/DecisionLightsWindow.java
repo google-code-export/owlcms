@@ -43,7 +43,8 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
         createLights();
 
         this.setMargin(true);
-        this.setSpacing(true);
+        this.setSpacing(false);
+        this.setSizeFull();
 
         resetLights();
     }
@@ -60,8 +61,16 @@ public class DecisionLightsWindow extends HorizontalLayout implements DecisionEv
             decisionLights[i].setSizeFull();
             decisionLights[i].setStyleName("decisionLight");
             this.addComponent(decisionLights[i]);
+            if (i < decisionLights.length) {
+                Label spacer = new Label("&nbsp;",Label.CONTENT_XHTML);
+                spacer.addStyleName("spacer");
+                spacer.setWidth("1em");
+                this.addComponent(spacer);
+            }
             this.setComponentAlignment(decisionLights[i], Alignment.MIDDLE_CENTER);
-            this.setExpandRatio(decisionLights[i], 100.0F / decisionLights.length);
+            this.setExpandRatio(decisionLights[i], 50.0F / decisionLights.length);
+            this.setSpacing(true);
+            this.setMargin(true);
         }
     }
 
