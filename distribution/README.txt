@@ -1,7 +1,11 @@
 Steps to create a release.
 
-0) In SourceTree, use Hg Flow to close all features, start a new release, push changes. 
-	- Exit Eclipse and restart.
+0) Exit Eclipse.
+   In SourceTree, 
+	- use Hg Flow to close all features,
+	  start a new release with the expected number (e.g. 2.14.1)
+	  MAKE SURE YOU push changes. 
+
 
 1) Prepare the distribution.
 
@@ -61,7 +65,7 @@ Because we use the Free edition, these steps are manual.
   - go to the distribution/target/owlcms-x.y.z-windows in Eclipse and expand the folder
   - select all items (owlcms.exe and doc,lib,owlcms) and drag to "Application Data/owlcms" in AdvancedInstaller , accept the warnings about overwrite ("Yes to All")
   - update the product version number on the product details page in AdvancedInstaller
-  - save owlcms.aip, , select "major upgrade"
+  - save owlcms.aip (diskette icon at top of window) , , select "major upgrade"
   - build the installer once.  In spite of completing with "total build time", it will not show "build finished successfully".
     wait a few seconds after the end and close the window.
   - go to the distribution project and refresh (F5)
@@ -71,13 +75,17 @@ Because we use the Free edition, these steps are manual.
 3) Finalize and publish
   - commit all modified directories with "Release x.y.z" as comment
   - publish Wiki
-    	- tag wiki with "x.y.z"
+    	- tag wiki repository with "x.y.z"
   		- push
   - Exit Eclipse  
   - Use SourceTree to finalize the code release
   	- Use Hg Flow to finish release
   	- push the tag (make sure checkbox is checked)
   - Restart Eclipse
+  
+  Use SourceTree to finalize the release (this will create the tag)
+  	- push (make sure checkbox is checked in Hg flow)
+  Restart Eclipse
   - in project "distribution" run the maven goals:   antrun:run     (under eclipse "upload to code.google.com.launch")
     (this will send the files to the code.google.com/p/owlcms site)
     

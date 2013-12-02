@@ -434,7 +434,7 @@ public class TwoMinutesRuleTest {
     private void successfulLift(List<Lifter> lifters1) {
         final Lifter lifter = lifters1.get(0);
         final String weight = Integer.toString(lifter.getNextAttemptRequestedWeight());
-        doLift(lifter, lifters1, weight);
+        doTestLift(lifter, lifters1, weight);
     }
 
     /**
@@ -447,7 +447,7 @@ public class TwoMinutesRuleTest {
         final Lifter lifter = lifters1.get(0);
         final Integer nextAttemptRequestedWeight = lifter.getNextAttemptRequestedWeight();
         final String weight = Integer.toString(-nextAttemptRequestedWeight);
-        doLift(lifter, lifters1, weight);
+        doTestLift(lifter, lifters1, weight);
         if (lifter.getAttemptsDone() < 5)
             assertEquals(
                 "next requested weight should be equal after failed lift", nextAttemptRequestedWeight, lifter.getNextAttemptRequestedWeight()); //$NON-NLS-1$
@@ -576,7 +576,7 @@ public class TwoMinutesRuleTest {
      * @param lifters1
      * @param weight
      */
-    private void doLift(final Lifter lifter, List<Lifter> lifters1, final String weight) {
+    private void doTestLift(final Lifter lifter, List<Lifter> lifters1, final String weight) {
         // sleep for a while to ensure that we get different time stamps on the
         // lifts.
         try {
