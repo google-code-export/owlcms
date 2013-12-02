@@ -82,7 +82,7 @@ public class TimerControls extends GridLayout {
             bottom(lifter, groupData, locale);
         }
 
-        logger.warn(buttonLogger.getName());
+//        logger.warn(buttonLogger.getName());
         enableButtons(groupData, "init");
         this.setSpacing(true);
     }
