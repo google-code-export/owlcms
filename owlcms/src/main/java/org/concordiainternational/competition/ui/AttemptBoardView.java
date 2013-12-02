@@ -175,7 +175,8 @@ public class AttemptBoardView extends WeeLayout implements
         logger.trace("entry");
         decisionLights = new DecisionLightsWindow(false, publicFacing);
         decisionLights.setSizeFull();
-        decisionLights.setMargin(false);
+        decisionLights.setMargin(true);
+        decisionLights.setSpacing(true);
         logger.trace("exit");
     }
 
