@@ -1,7 +1,11 @@
 Steps to create a release.
 
-0) In SourceTree, use Hg Flow to close all features, start a new release, push changes. 
-	- Exit Eclipse and restart.
+0) Exit Eclipse.
+   In SourceTree, 
+	- use Hg Flow to close all features,
+	  start a new release with the expected number (e.g. 2.14.1)
+	  MAKE SURE YOU push changes. 
+
 
 1) Prepare the distribution.
 
