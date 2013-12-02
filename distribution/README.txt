@@ -65,7 +65,7 @@ Because we use the Free edition, these steps are manual.
   - go to the distribution/target/owlcms-x.y.z-windows in Eclipse and expand the folder
   - select all items (owlcms.exe and doc,lib,owlcms) and drag to "Application Data/owlcms" in AdvancedInstaller , accept the warnings about overwrite ("Yes to All")
   - update the product version number on the product details page in AdvancedInstaller
-  - save owlcms.aip, , select "major upgrade"
+  - save owlcms.aip (diskette icon at top of window) , , select "major upgrade"
   - build the installer once.  In spite of completing with "total build time", it will not show "build finished successfully".
     wait a few seconds after the end and close the window.
   - go to the distribution project and refresh (F5)
@@ -74,6 +74,7 @@ Because we use the Free edition, these steps are manual.
 
 3) Finalize and publish
   - commit all modified directories with "Release x.y.z" as comment
+  - tag and push the Wiki directory
   - Exit Eclipse
   
   Use SourceTree to finalize the release
