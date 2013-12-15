@@ -74,11 +74,16 @@ Because we use the Free edition, these steps are manual.
 
 3) Finalize and publish
   - commit all modified directories with "Release x.y.z" as comment
-  - tag and push the Wiki directory
-  - Exit Eclipse
+  - publish Wiki
+    	- tag wiki repository with "x.y.z"
+  		- push
+  - Exit Eclipse  
+  - Use SourceTree to finalize the code release
+  	- Use Hg Flow to finish release
+  	- push the tag (make sure checkbox is checked)
+  - Restart Eclipse
   
-  Use SourceTree to finalize the release
-  	- tag both repositories with "x.y.z"
+  Use SourceTree to finalize the release (this will create the tag)
   	- push (make sure checkbox is checked in Hg flow)
   Restart Eclipse
   - in project "distribution" run the maven goals:   antrun:run     (under eclipse "upload to code.google.com.launch")

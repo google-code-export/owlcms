@@ -69,7 +69,7 @@ public class AnnouncerView extends VerticalSplitPanel implements
     public static final boolean PUSHING = true;
 
     /** remove message after this delay (ms) */
-    private static final int messageRemovalMs = 3000;
+    private static final int messageRemovalMs = 5000;
 
     private HorizontalLayout topPart;
     private LifterInfo announcerInfo;
