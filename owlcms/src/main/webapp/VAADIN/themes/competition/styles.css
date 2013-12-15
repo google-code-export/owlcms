@@ -279,7 +279,7 @@ button.v-button-failedLift span {
 }
 
 
-body.v-generated-body.v-sa.v-ch.v-webkit {
+body.v-generated-body.v-sa {
 	background: black;
 	border-style: none;
 	border-color: black;
@@ -291,7 +291,18 @@ body.v-generated-body.v-ff {
 	border-color: black;
 	border: 0px solid black;
 }
-
+body.v-generated-body.v-webkit {
+	background: black;
+	border-style: none;
+	border-color: black;
+	border: 0px solid black;
+}
+body.v-generated-body.v-ch {
+	background: black;
+	border-style: none;
+	border-color: black;
+	border: 0px solid black;
+}
 .black .v-app {
 	background: black;
 }
