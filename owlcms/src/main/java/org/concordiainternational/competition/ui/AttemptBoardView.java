@@ -102,6 +102,7 @@ public class AttemptBoardView extends WeeLayout implements
     protected boolean waitingForDecisionLightsReset;
 
     private boolean showTimer = true;
+    private int lastDisplayedTimeRemaining;
 
     public AttemptBoardView(boolean initFromFragment, String viewName, boolean publicFacing, String stylesheetName) {
         super(Direction.VERTICAL);
@@ -536,6 +537,13 @@ public class AttemptBoardView extends WeeLayout implements
         logger.trace("entry");
         synchronized (app) {
             if (showTimer) {
+                // do not update if no visible change
+                if (TimeFormatter.getSeconds(timeRemaining) == TimeFormatter.getSeconds(lastDisplayedTimeRemaining)) {
+                    lastDisplayedTimeRemaining = timeRemaining;
+                    return;
+                } else {
+                    lastDisplayedTimeRemaining = timeRemaining;
+                }
                 timeLabel.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
             } else {
                 timeLabel.setValue("");
@@ -544,6 +552,7 @@ public class AttemptBoardView extends WeeLayout implements
         app.push();
         logger.trace("exit");
     }
+    
 
     @Override
     public void initialWarning(int timeRemaining) {
