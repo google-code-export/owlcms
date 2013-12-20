@@ -532,11 +532,7 @@ public class CountdownDisplay extends VerticalLayout implements
                 refereeDecisionController.decisionMade(2, false);
             }
         };
-
-        actionNotifier.addAction(startAction);
-        actionNotifier.addAction(stopAction);
-        actionNotifier.addAction(oneMinuteAction);
-        actionNotifier.addAction(twoMinutesAction);
+        
         actionNotifier.addAction(action1ok);
         actionNotifier.addAction(action1fail);
         actionNotifier.addAction(action2ok);
