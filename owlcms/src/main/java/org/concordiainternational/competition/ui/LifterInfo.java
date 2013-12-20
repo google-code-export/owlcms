@@ -351,22 +351,25 @@ public class LifterInfo extends VerticalLayout implements
 
     int prevTimeRemaining = 0;
     protected boolean shown;
+    private boolean needToUpdateTime = true;
 
     @Override
     public void normalTick(int timeRemaining) {
+        needToUpdateTime = true;
         if (timerDisplay == null) {
             setBlocked(false);
             return;
         } else if (TimeFormatter.getSeconds(prevTimeRemaining) == TimeFormatter.getSeconds(timeRemaining)) {
             prevTimeRemaining = timeRemaining;
             setBlocked(false);
+            needToUpdateTime = false;
             return;
         } else {
             prevTimeRemaining = timeRemaining;
         }
 
         synchronized (app) {
-            if (!isBlocked()) {
+            if (!isBlocked() && needToUpdateTime) {
                 setTimerDisplay(timeRemaining);
             }
             setBlocked(false);

@@ -496,31 +496,6 @@ public class CountdownDisplay extends VerticalLayout implements
     @SuppressWarnings("serial")
     private void addActions(Action.Notifier actionNotifier) {
         final IDecisionController refereeDecisionController = masterData.getRefereeDecisionController();
-        startAction = new ShortcutActionListener("start", ShortcutAction.KeyCode.G) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                masterData.startUpdateModel();
-            }
-        };
-        stopAction = new ShortcutActionListener("stop", ShortcutAction.KeyCode.P) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                masterData.stopUpdateModel();
-            }
-        };
-        oneMinuteAction = new ShortcutActionListener("1 minute", ShortcutAction.KeyCode.O) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                masterData.oneMinuteUpdateModel();
-            }
-        };
-        twoMinutesAction = new ShortcutActionListener("2 minutes", ShortcutAction.KeyCode.T) {
-            @Override
-            public void handleAction(Object sender, Object target) {
-                masterData.twoMinuteUpdateModel();
-            }
-        };
-
         action1ok = new ShortcutActionListener("1+", ShortcutAction.KeyCode.NUM1) {
             @Override
             public void handleAction(Object sender, Object target) {
@@ -557,11 +532,7 @@ public class CountdownDisplay extends VerticalLayout implements
                 refereeDecisionController.decisionMade(2, false);
             }
         };
-
-        actionNotifier.addAction(startAction);
-        actionNotifier.addAction(stopAction);
-        actionNotifier.addAction(oneMinuteAction);
-        actionNotifier.addAction(twoMinutesAction);
+        
         actionNotifier.addAction(action1ok);
         actionNotifier.addAction(action1fail);
         actionNotifier.addAction(action2ok);
