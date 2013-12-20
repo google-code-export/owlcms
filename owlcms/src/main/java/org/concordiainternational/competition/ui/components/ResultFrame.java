@@ -419,22 +419,27 @@ public class ResultFrame extends VerticalLayout implements
     protected boolean shown;
     private String stylesheetName;
     private CountdownTimer timer;
+    private boolean needToUpdateTime;
 
     @Override
     public void normalTick(int timeRemaining) {
+        needToUpdateTime = true;
         if (name == null)
             return;
         if (TimeFormatter.getSeconds(previousTimeRemaining) == TimeFormatter.getSeconds(timeRemaining)) {
             previousTimeRemaining = timeRemaining;
+            needToUpdateTime = false;
             return;
         } else {
             previousTimeRemaining = timeRemaining;
         }
 
-        synchronized (app) {
-            timeDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
+        if (needToUpdateTime) {
+            synchronized (app) {
+                timeDisplay.setValue(TimeFormatter.formatAsSeconds(timeRemaining));
+            }
+            app.push();
         }
-        app.push();
     }
 
     @Override

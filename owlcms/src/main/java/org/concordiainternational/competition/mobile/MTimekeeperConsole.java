@@ -72,6 +72,7 @@ public class MTimekeeperConsole extends VerticalLayout implements
 
     private int prevTimeRemaining;
     private UpdateEventListener updateEventListener;
+    private boolean needToUpdateTime;
 
     public MTimekeeperConsole(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
@@ -475,18 +476,22 @@ public class MTimekeeperConsole extends VerticalLayout implements
 
     @Override
     public void normalTick(int timeRemaining) {
+        needToUpdateTime = true;
         if (timerDisplay == null) {
             setBlocked(false);
             return;
         } else if (TimeFormatter.getSeconds(prevTimeRemaining) == TimeFormatter.getSeconds(timeRemaining)) {
             prevTimeRemaining = timeRemaining;
             setBlocked(false);
+            needToUpdateTime = false;
             return;
         } else {
             prevTimeRemaining = timeRemaining;
         }
 
-        pushTime(timeRemaining);
+        if (needToUpdateTime) {
+            pushTime(timeRemaining);
+        }
     }
 
     public void pushTime(int timeRemaining) {
