@@ -61,7 +61,7 @@ public class Coefficients {
             props.load(stream);
             // props.list(System.err);
         } catch (IOException e) {
-            LoggerUtils.logException(logger, e);
+            LoggerUtils.infoException(logger, e);
         }
     }
 

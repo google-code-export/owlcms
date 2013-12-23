@@ -83,7 +83,7 @@ public abstract class JXLSWorkbookStreamSource implements StreamResource.StreamS
                         try {
                             workbook = transformer.transformXLS(getTemplate(), reportingBeans2);
                         } catch (Exception e) {
-                            LoggerUtils.logException(logger, e);
+                            LoggerUtils.infoException(logger, e);
                         }
                         if (workbook != null) {
                             postProcess(workbook);
@@ -92,7 +92,7 @@ public abstract class JXLSWorkbookStreamSource implements StreamResource.StreamS
                     } catch (IOException e) {
                         // ignore
                     } catch (Throwable e) {
-                        LoggerUtils.logException(logger, e);
+                        LoggerUtils.infoException(logger, e);
                         throw new RuntimeException(e);
                     }
                 }

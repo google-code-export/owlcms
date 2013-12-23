@@ -426,15 +426,15 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
                 stmt.close();
             }
         } catch (HibernateException e) {
-            LoggerUtils.logException(logger, e);
+            LoggerUtils.infoException(logger, e);
         } catch (SQLException e) {
-            LoggerUtils.logException(logger, e);
+            LoggerUtils.infoException(logger, e);
         } finally {
             if (connection != null) {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    LoggerUtils.logException(logger, e);
+                    LoggerUtils.infoException(logger, e);
                 }
             }
         }
