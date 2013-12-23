@@ -232,7 +232,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
     private Thread waitingForFragment;
 
-    private boolean refreshing;
+    private boolean layoutAlreadyExists;
 
     private String frag;
 
@@ -540,12 +540,17 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         setCurrentGroup(newSession);
         final ApplicationView currentView = components.currentView;
         if (currentView != null) {
+//            if (currentView instanceof EditingView && oldSession != newSession) {
+//                ((EditingView) currentView).setCurrentSession(newSession);
+//            } else {
+//                currentView.refresh();
+//            }
+//            setMainPanelContent(currentView);
+            
             if (currentView instanceof EditingView && oldSession != newSession) {
                 ((EditingView) currentView).setCurrentSession(newSession);
-            } else {
-                currentView.refresh();
+                setMainPanelContent(currentView);
             }
-            setMainPanelContent(currentView);
         }
 
     }
@@ -690,6 +695,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         return listener;
     }
 
+    String previousFragment = null;
+    
     /**
      * Create the main layout.
      */
@@ -708,10 +715,12 @@ public class CompetitionApplication extends Application implements HbnSessionMan
 
             @Override
             public void fragmentChanged(FragmentChangedEvent source) {
-                String fragment = source.getUriFragmentUtility().getFragment();
-                logger.debug("fragmentChanged {}", fragment);
                 interruptWaitForFragment();
-                displayView(fragment);
+                String newFragment = source.getUriFragmentUtility().getFragment();
+                if (newFragment != null && ! newFragment.equals(previousFragment)) {
+                    logger.debug("fragmentChanged from {} to {}", previousFragment, newFragment);
+                    displayView(newFragment);
+                }
             }
         });
 
@@ -721,6 +730,11 @@ public class CompetitionApplication extends Application implements HbnSessionMan
                 final String externalForm = url.toExternalForm();
                 contextURI = externalForm;
                 logger.debug("url/frag {} {}", externalForm, relativeUri);
+                
+                if (relativeUri != null && !relativeUri.isEmpty()) {
+                    // ignore !
+                    return null;
+                }
 
                 // if there is no fragment on the URL, or if we are refreshing, we won't get a fragment changed.
                 waitForFragment(externalForm);
@@ -743,20 +757,20 @@ public class CompetitionApplication extends Application implements HbnSessionMan
                 // LoggerUtils.logException(logger, new Exception("creating app layout !"+externalForm+" "+relativeUri));
                 if (isLayoutCreated()) {
                     logger.debug("app layout exists, skipping layout creation");
-                    refreshing = true;
+                    layoutAlreadyExists = true;
                 } else {
                     logger.debug("creating app layout");
-                    refreshing = false;
+                    layoutAlreadyExists = false;
                     createAppLayout(mainLayout);
                 }
             } else if (contextURI.endsWith("/m/")) {
                 // LoggerUtils.logException(logger, new Exception("creating mobile layout !"+externalForm+" "+contextURI));
                 if (isLayoutCreated()) {
                     logger.debug("mobile layout exists, skipping layout creation");
-                    refreshing = true;
+                    layoutAlreadyExists = true;
                 } else {
                     logger.debug("creating mobile layout");
-                    refreshing = false;
+                    layoutAlreadyExists = false;
                     createMobileLayout(mainLayout);
                 }
             } else {
@@ -810,7 +824,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     public void setMainPanelContent(ApplicationView view) {
         logger.debug(">>>>> setting content for {} -- view {}", this, view);
         // logger.debug("setMainLayoutContent {} {}", c.getClass().getSimpleName(), c.needsBlack());
-        // LoggerUtils.logException(logger, new Exception("traceback"));
+
 
         if (view.needsBlack()) {
             this.getMainWindow().setStyleName(Reindeer.LAYOUT_BLACK);
@@ -827,8 +841,20 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         }
         this.components.getMainPanel().setContent(view);
 
-        logger.debug("setting fragment={}", view.getFragment());
-        uriFragmentUtility.setFragment(view.getFragment(), false);
+        String newFragment = view.getFragment();
+        changeFragment(frag, newFragment);
+    }
+
+    private void changeFragment(String oldFragment, String newFragment) {
+        if (oldFragment != null && oldFragment.equals(newFragment)) {
+            logger.debug("fragment unchanged: {}", oldFragment);
+        } else if (newFragment != null) {
+            logger.debug("changing fragment from {} to {}", oldFragment,  newFragment);
+            uriFragmentUtility.setFragment(newFragment, false);
+            if (logger.isTraceEnabled()) {
+                LoggerUtils.traceException(logger, new Exception("fragment change traceback"));
+            }
+        }
     }
 
     public ComponentContainer getMainPanelContent() {
@@ -950,7 +976,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
             @Override
             public void run() {
                 try {
-                    if (!refreshing) {
+                    if (!layoutAlreadyExists) {
                         logger.debug("wait for fragment - start");
                         Thread.sleep(2000);
                         String defaultView = DEFAULT_APP_VIEW;
@@ -964,7 +990,7 @@ public class CompetitionApplication extends Application implements HbnSessionMan
                         }
                         CompetitionApplication.this.push();
                     } else {
-                        logger.debug("refreshing, fragment={}", frag);
+                        logger.debug("layoutAlreadyExists, fragment={}", frag);
                         displayView(frag);
                     }
                 } catch (InterruptedException e) {
