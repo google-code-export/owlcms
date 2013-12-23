@@ -81,10 +81,6 @@ Because we use the Free edition, these steps are manual.
   - Use SourceTree to finalize the code release
   	- Use Hg Flow to finish release
   	- push the tag (make sure checkbox is checked)
-  - Restart Eclipse
-  
-  Use SourceTree to finalize the release (this will create the tag)
-  	- push (make sure checkbox is checked in Hg flow)
   Restart Eclipse
   - in project "distribution" run the maven goals:   antrun:run     (under eclipse "upload to code.google.com.launch")
     (this will send the files to the code.google.com/p/owlcms site)
