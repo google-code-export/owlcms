@@ -25,13 +25,31 @@ public class LoggerUtils {
         currentGroup
     }
 
-    public static void logException(Logger logger, Throwable t) {
+    public static void traceException(Logger logger, Throwable t) {
+        StringWriter sw = new StringWriter();
+        t.printStackTrace(new PrintWriter(sw));
+        logger.trace(sw.toString());
+    }
+    
+    public static void debugException(Logger logger, Throwable t) {
+        StringWriter sw = new StringWriter();
+        t.printStackTrace(new PrintWriter(sw));
+        logger.debug(sw.toString());
+    }
+    
+    public static void warnException(Logger logger, Throwable t) {
+        StringWriter sw = new StringWriter();
+        t.printStackTrace(new PrintWriter(sw));
+        logger.warn(sw.toString());
+    }
+    
+    public static void infoException(Logger logger, Throwable t) {
         StringWriter sw = new StringWriter();
         t.printStackTrace(new PrintWriter(sw));
         logger.info(sw.toString());
     }
 
-    public static void logErrorException(Logger logger, Throwable t) {
+    public static void errorException(Logger logger, Throwable t) {
         StringWriter sw = new StringWriter();
         t.printStackTrace(new PrintWriter(sw));
         logger.error(sw.toString());
@@ -68,11 +86,11 @@ public class LoggerUtils {
     }
 
     public static void traceBack(Logger logger) {
-        logException(logger, new Exception("traceBack"));
+        infoException(logger, new Exception("traceBack"));
     }
 
     public static void traceBack(Logger logger, String whereFrom) {
-        logException(logger, new Exception(whereFrom));
+        infoException(logger, new Exception(whereFrom));
     }
 
 }
