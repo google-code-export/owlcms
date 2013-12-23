@@ -74,7 +74,7 @@ public class Speakers {
             new Sound(mixer, "/sounds/initialWarning2.wav").emit();
             new Tone(mixer, 1100, 1200, 1.0).emit();
         } catch (Exception e) {
-            LoggerUtils.logException(logger, e);
+            LoggerUtils.infoException(logger, e);
             throw new RuntimeException(e);
         }
     }
