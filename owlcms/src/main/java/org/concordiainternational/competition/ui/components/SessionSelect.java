@@ -81,11 +81,22 @@ public class SessionSelect extends HorizontalLayout implements Serializable {
                     selectedItem = null;
                     value = null;
                 }
-                if (value != null)
+                if (value != null) {
                     logger.trace("listener selected group : {}", value.getName());
-                CompetitionApplication.getCurrent().setCurrentCompetitionSession(value);
-                CompetitionApplication.getCurrent().getUriFragmentUtility().setFragment(view.getFragment(), false);
-
+                }
+                
+                CompetitionApplication app = CompetitionApplication.getCurrent();
+                CompetitionSession oSession = app.getCurrentCompetitionSession();
+                if (oSession != value) {
+                    app.setCurrentCompetitionSession(value);  
+                }
+              
+                String newFragment = view.getFragment();
+                String oldFragment = app.getUriFragmentUtility().getFragment();
+                if (newFragment != null && !newFragment.equals(oldFragment)) {
+                    logger.debug("changing fragment from {} to {}",oldFragment,newFragment);
+                    app.getUriFragmentUtility().setFragment(newFragment, false);
+                }
             }
 
         };

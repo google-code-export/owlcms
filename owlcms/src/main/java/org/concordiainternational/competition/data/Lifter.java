@@ -1028,7 +1028,7 @@ public class Lifter implements MethodEventSource, Notifier {
                 return 0.0;
             return getSinclair() * Coefficients.getSMMCoefficient(year - birthDate1);
         } catch (IOException e) {
-            LoggerUtils.logException(logger, e);
+            LoggerUtils.infoException(logger, e);
             return getSinclair();
         }
     }
