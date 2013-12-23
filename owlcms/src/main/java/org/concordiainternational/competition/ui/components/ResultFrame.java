@@ -324,15 +324,18 @@ public class ResultFrame extends VerticalLayout implements
             final String lastName = lifter.getLastName();
             final String firstName = lifter.getFirstName();
             final String club = lifter.getClub();
-            name.setValue(lastName.toUpperCase() + " " + firstName + " &nbsp;&nbsp; " + club); //$NON-NLS-1$ //$NON-NLS-2$
+            name.setValue(noBr(lastName.toUpperCase()) + " " + noBr(firstName) + " &nbsp;&nbsp; " + noBr(club)); //$NON-NLS-1$ //$NON-NLS-2$
             top.addComponent(name, "name"); //$NON-NLS-1$
         } else {
-
             name.setValue(MessageFormat.format(
                     Messages.getString("ResultFrame.Done", locale), masterData.getCurrentSession().getName())); //$NON-NLS-1$
             top.addComponent(name, "name"); //$NON-NLS-1$
         }
 
+    }
+    
+    private String noBr(String str) {
+        return "<nobr>"+str+"</nobr>";
     }
 
     private void displayDecision(boolean done) {
