@@ -69,6 +69,8 @@ public class LocalizedApplication extends Application {
 
             @Override
             public void transactionEnd(Application application, Object transactionData) {
+                // hygiene - prevent memory leak.
+                ((LocalizedSystemMessages) getSystemMessages()).removeThreadLocale();
             }
 
             @Override

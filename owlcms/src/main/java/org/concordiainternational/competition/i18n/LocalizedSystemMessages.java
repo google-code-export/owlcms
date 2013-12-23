@@ -49,6 +49,10 @@ public class LocalizedSystemMessages extends CustomizedSystemMessages {
     public void setThreadLocale(Locale locale) {
         threadLocale.set(locale);
     }
+    
+    public void removeThreadLocale() {
+        threadLocale.remove();
+    }
 
     /**
      * Get the application's current locale.
