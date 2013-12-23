@@ -164,7 +164,7 @@ public class CompetitionSession implements Serializable, Comparable<Object> {
         try {
             formatted = sFormat.format(competitionTime);
         } catch (Exception e) {
-            LoggerUtils.logErrorException(logger, e);
+            LoggerUtils.errorException(logger, e);
         }
         return formatted;
     }
@@ -237,7 +237,7 @@ public class CompetitionSession implements Serializable, Comparable<Object> {
         try {
             formatted = sFormat.format(weighInTime);
         } catch (Exception e) {
-            LoggerUtils.logErrorException(logger, e);
+            LoggerUtils.errorException(logger, e);
         }
         return formatted;
     }

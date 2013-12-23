@@ -602,7 +602,7 @@ public class LifterInfo extends VerticalLayout implements
     private void traceBack(CompetitionApplication originatingApp) {
         if (logger.isTraceEnabled()) {
             logger.trace("showNotification in {} from {}", app, originatingApp);
-            LoggerUtils.logException(logger, new Exception("Stack Trace"));
+            LoggerUtils.infoException(logger, new Exception("Stack Trace"));
         }
     }
 
