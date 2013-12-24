@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.data.RuleViolationException;
+import org.concordiainternational.competition.i18n.LocalizedApplication;
 import org.concordiainternational.competition.i18n.LocalizedSystemMessages;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.mobile.MJuryConsole;
@@ -79,7 +80,8 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     /**
      * if true, use the language set in the browser
      */
-    final private static boolean USE_BROWSER_LANGUAGE = true;
+    final public static String LOCALE = System.getProperty("owlcms.locale");
+    final private static boolean USE_BROWSER_LANGUAGE = (LOCALE == null);
 
     private static Logger logger = LoggerFactory.getLogger(CompetitionApplication.class);
     public static XLogger traceLogger = XLoggerFactory.getXLogger("Tracing"); //$NON-NLS-1$
@@ -143,14 +145,28 @@ public class CompetitionApplication extends Application implements HbnSessionMan
      * return the default locale to whoever needs it.
      */
     public static Locale getDefaultLocale() {
-        final String defaultLanguage = Messages.getString("Locale.defaultLanguage", Locale.getDefault()); //$NON-NLS-1$
-        final String defaultCountry = Messages.getString("Locale.defaultCountry", Locale.getDefault()); //$NON-NLS-1$
-        Locale locale = Locale.getDefault();
-        if (defaultCountry == null) {
-            locale = new Locale(defaultLanguage);
+        String defaultLanguage = Messages.getString("Locale.defaultLanguage", Locale.getDefault()); //$NON-NLS-1$
+        String defaultCountry = Messages.getString("Locale.defaultCountry", Locale.getDefault()); //$NON-NLS-1$
+        String language = null;
+        String country = null;
+        
+        Locale locale = null;
+        if (LOCALE != null) {
+            locale = LocalizedApplication.getLocaleFromString(LOCALE);
+            language = locale.getLanguage();
+            country = locale.getCountry();
+            if (country == null && defaultCountry != null) {
+                locale = new Locale(language, defaultCountry);
+            }
         } else {
-            locale = new Locale(defaultLanguage, defaultCountry);
+            locale = Locale.getDefault();
+            if (defaultCountry == null) {
+                locale = new Locale(defaultLanguage);
+            } else {
+                locale = new Locale(defaultLanguage, defaultCountry);
+            }
         }
+
         return locale;
     }
 
