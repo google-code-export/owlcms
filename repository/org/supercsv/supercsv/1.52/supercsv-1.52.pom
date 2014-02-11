@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.supercsv</groupId>
+	<artifactId>supercsv</artifactId>
+	<version>1.52</version>
+	<dependencies>
+		<dependency>
+			<groupId>spiffy</groupId>
+			<artifactId>spiffy</artifactId>
+			<version>0.05</version>			
+		</dependency>
+	</dependencies>
+</project>
