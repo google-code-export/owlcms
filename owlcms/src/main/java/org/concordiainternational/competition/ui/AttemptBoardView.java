@@ -335,6 +335,7 @@ public class AttemptBoardView extends WeeLayout implements
                 showDecisionLights(false);
                 timeLabel.removeStyleName("intermission");
                 timeLabel.addStyleName("largeCountdown");
+                timeLabel.setValue(TimeFormatter.formatAsSeconds(masterData1.getDisplayTime()));
                 timeLabel.setVisible(!done);
                 startLabel.setVisible(!done);
             } else {
@@ -724,6 +725,8 @@ public class AttemptBoardView extends WeeLayout implements
             @Override
             public void run() {
                 synchronized (app) {
+                    // relay event to decision lights.
+                    decisionLights.updateEvent(updateEvent);
                     switch (updateEvent.getType()) {
                     case DOWN:
                         waitingForDecisionLightsReset = true;
@@ -733,6 +736,7 @@ public class AttemptBoardView extends WeeLayout implements
                         // if window is not up, show it.
                         waitingForDecisionLightsReset = true;
                         shown = true;
+                        
                         showDecisionLights(true);
                         decisionLights.setVisible(true);
                         break;
@@ -790,10 +794,11 @@ public class AttemptBoardView extends WeeLayout implements
         // listen to decisions
         IDecisionController decisionController = masterData.getRefereeDecisionController();
         if (decisionController != null) {
-            if (decisionLights != null) {
-                decisionController.addListener(decisionLights);
-                listenerLogger.debug("{} listening to decision events.", decisionLights);
-            }
+            // we don't register the decisionLights, the listener in this class will relay events.
+//            if (decisionLights != null) {
+//                decisionController.addListener(decisionLights);
+//                listenerLogger.debug("{} listening to decision events.", decisionLights);
+//            }
             decisionController.addListener(this);
             listenerLogger.debug("{} listening to decision events.", this);
         }
