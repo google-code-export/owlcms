@@ -556,17 +556,15 @@ public class CompetitionApplication extends Application implements HbnSessionMan
         setCurrentGroup(newSession);
         final ApplicationView currentView = components.currentView;
         if (currentView != null) {
-//            if (currentView instanceof EditingView && oldSession != newSession) {
-//                ((EditingView) currentView).setCurrentSession(newSession);
-//            } else {
-//                currentView.refresh();
-//            }
-//            setMainPanelContent(currentView);
-            
             if (currentView instanceof EditingView && oldSession != newSession) {
+                // AnnouncerView, ResultView both listen to change events and refresh on their own.
                 ((EditingView) currentView).setCurrentSession(newSession);
-                setMainPanelContent(currentView);
+            } else {
+                // Weigh-in list, Registration List.
+                currentView.refresh();
             }
+            setMainPanelContent(currentView);
+            
         }
 
     }
