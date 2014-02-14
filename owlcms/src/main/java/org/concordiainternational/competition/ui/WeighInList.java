@@ -84,7 +84,16 @@ public class WeighInList extends LifterHbnList implements ApplicationView, Bookm
         table.addGeneratedColumn("teamMember", new CommonColumnGenerator(app)); //$NON-NLS-1$
         table.addGeneratedColumn("qualifyingTotal", new CommonColumnGenerator(app)); //$NON-NLS-1$
         table.setColumnCollapsingAllowed(true);
-        table.setColumnCollapsed("birthDate", true);
+        String localeString = System.getProperty("owlcms.locale");
+        
+        // use full date except in Quebec
+        if ("fr_CA".equals(localeString)) {
+            table.setColumnCollapsed("birthDate", false);
+            table.setColumnCollapsed("fullBirthDate", true);
+        } else {
+            table.setColumnCollapsed("birthDate", true);
+            table.setColumnCollapsed("fullBirthDate", false);
+        }
 
         setExpandRatios();
     }
