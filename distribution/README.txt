@@ -27,7 +27,7 @@ b. Clean everything:
 
 c. IF FIRST BUILD on a new checkout perform step "FIRST BUILD" at bottom of this file
 		
-d. Recompile:
+d. Recompile, run tests, create artifacts:
 		if under Eclipse,
 			1- menu Project/Clean/Clean all projects + rebuild automatically
 			2- right-click on owlcmsParent project and select "run as/maven install"
@@ -64,8 +64,8 @@ Because we use the Free edition, these steps are manual.
       
   - go to the distribution/target/owlcms-x.y.z-windows in Eclipse and expand the folder
   - select all items (owlcms.exe and doc,lib,owlcms) and drag to "Application Data/owlcms" in AdvancedInstaller , accept the warnings about overwrite ("Yes to All")
-  - update the product version number on the product details page in AdvancedInstaller
-  - save owlcms.aip (diskette icon at top of window) , , select "major upgrade"
+  - update the product version number on the Product Details page in AdvancedInstaller
+  - save owlcms.aip (diskette icon at very top of window), select "Major Upgrade" when prompted
   - build the installer once.  In spite of completing with "total build time", it will not show "build finished successfully".
     wait a few seconds after the end and close the window.
   - go to the distribution project and refresh (F5)
