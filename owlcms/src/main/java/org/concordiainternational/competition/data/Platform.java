@@ -374,7 +374,8 @@ public class Platform implements Serializable {
     }
 
     public Boolean getShowTimer() {
-        return showTimer == null ? false : showTimer;
+        boolean b = showTimer == null ? false : showTimer;
+        return b;
     }
 
     public void setShowTimer(Boolean showTime) {
