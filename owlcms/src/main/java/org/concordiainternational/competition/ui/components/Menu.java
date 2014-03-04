@@ -72,13 +72,13 @@ public class Menu extends MenuBar implements Serializable {
         MenuItem decisions = createDecisionMenuItem(menu, competitionApplication, locale);
         createCountdownDisplayMenuItem(decisions, competitionApplication, locale);
         decisions.addSeparator();
-        createRefereeMenuItem(decisions, competitionApplication, locale, 0);
-        createRefereeMenuItem(decisions, competitionApplication, locale, 1);
-        createRefereeMenuItem(decisions, competitionApplication, locale, 2);
-        decisions.addSeparator();
         createJuryLightsMenuItem(decisions, competitionApplication, locale);
         decisions.addSeparator();
         createRefereeTestingMenuItem(decisions, competitionApplication, locale);
+        decisions.addSeparator();
+        createRefereeMenuItem(decisions, competitionApplication, locale, 0);
+        createRefereeMenuItem(decisions, competitionApplication, locale, 1);
+        createRefereeMenuItem(decisions, competitionApplication, locale, 2);
 
         createResultsMenuItem(menu, competitionApplication, locale);
 

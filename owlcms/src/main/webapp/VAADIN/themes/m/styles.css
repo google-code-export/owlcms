@@ -95,6 +95,7 @@
 .decisionLight.waiting {
 	background-color: yellow;
 	background-image: none;
+	border-width: 3em;
 }
 
 .decisionLight.undecided {
@@ -127,7 +128,6 @@
 	border-style: solid;
 
 	border-color: black;
-	font: "Arial Unicode MS";
 	font-size: 8em;
 	border-width: 0.2em;
 	text-align: center;
@@ -147,7 +147,10 @@
 
 .refereeHasChosen {
 	background-color: green;
+	border-color: #333333;
+	border-width: 3em;
 }
+
 
 .juryDecisionsLabel {
 	font-size: large;
