@@ -335,7 +335,11 @@ public class AttemptBoardView extends WeeLayout implements
                 showDecisionLights(false);
                 timeLabel.removeStyleName("intermission");
                 timeLabel.addStyleName("largeCountdown");
-                timeLabel.setValue(TimeFormatter.formatAsSeconds(masterData1.getDisplayTime()));
+                if (showTimer) {
+                    timeLabel.setValue(TimeFormatter.formatAsSeconds(masterData1.getDisplayTime()));
+                } else {
+                    timeLabel.setValue("");
+                }
                 timeLabel.setVisible(!done);
                 startLabel.setVisible(!done);
             } else {

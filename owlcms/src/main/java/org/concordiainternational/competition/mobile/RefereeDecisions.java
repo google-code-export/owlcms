@@ -11,6 +11,7 @@ import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.decision.Decision;
 import org.concordiainternational.competition.decision.DecisionEvent;
 import org.concordiainternational.competition.decision.DecisionEventListener;
+import org.concordiainternational.competition.decision.IDecisionController;
 import org.concordiainternational.competition.i18n.Messages;
 import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
@@ -20,11 +21,14 @@ import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.event.Action;
+import com.vaadin.event.ShortcutAction;
 import com.vaadin.incubator.dashlayout.ui.HorDashLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
@@ -49,8 +53,17 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
     private boolean juryMode;
 
     private boolean shown;
+    
+    private ShortcutActionListener action1ok;
+    private ShortcutActionListener action1fail;
+    private ShortcutActionListener action2ok;
+    private ShortcutActionListener action2fail;
+    private ShortcutActionListener action3ok;
+    private ShortcutActionListener action3fail;
 
-    public RefereeDecisions(boolean initFromFragment, String viewName, boolean publicFacing, boolean juryMode) {
+    private boolean listenToKeys;
+
+    public RefereeDecisions(boolean initFromFragment, String viewName, boolean publicFacing, boolean juryMode, boolean listenToKeys) {
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
@@ -60,6 +73,7 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 
         this.juryMode = juryMode;
         this.setStyleName("decisionPad");
+        this.listenToKeys = listenToKeys;
 
         this.app = CompetitionApplication.getCurrent();
 
@@ -79,8 +93,7 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
         this.setSizeFull();
         this.addComponent(top);
         this.addComponent(bottom);
-        this.setExpandRatio(top, 90.0F);
-        this.setExpandRatio(bottom, 10.0F);
+        this.setExpandRatio(top, 100.0F);
         this.setMargin(false);
 
         resetLights();
@@ -111,7 +124,8 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
     }
 
     private void setupBottom() {
-        bottom.setSizeFull();
+        bottom.setWidth("100%");
+        bottom.setHeight("20pt");
         Label bottomLabel = new Label(
                 juryMode
                         ? Messages.getString("MobileMenu.JuryDecisions", CompetitionApplication.getCurrentLocale())
@@ -133,29 +147,23 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
                     Decision[] decisions = updateEvent.getDecisions();
                     switch (updateEvent.getType()) {
                     case DOWN:
-                        logger.debug("received DOWN event juryMode={}", juryMode);
+                        logger.warn("received DOWN event juryMode={}", false);
                         downShown = true;
-                        showLights(decisions, true, juryMode);
-                        if (!juryMode) {
-                            decisionLights[1].addStyleName("down");
-                        }
+                        // ne pas influencer le jury.
+                        showLights(decisions, false, true);
                         break;
                     case WAITING:
-                        logger.debug("received WAITING event");
-                        showLights(decisions, true, juryMode);
+                        logger.warn("received WAITING event");
+                        showLights(decisions, false, true);
                         break;
                     case UPDATE:
-                        logger.debug("received UPDATE event {} && {}", juryMode, shown);
-                        if ((juryMode && shown) || !juryMode)
-                            showLights(decisions, false, false);
-                        if (!juryMode && downShown)
-                            decisionLights[1].addStyleName("down");
+                        logger.warn("received UPDATE event {} && {}", juryMode, !shown);
+                        showLights(decisions, false, !shown);
+                            
                         break;
                     case SHOW:
-                        logger.debug("received SHOW event");
-                        showLights(decisions, true, false);
-                        if (!juryMode && downShown)
-                            decisionLights[1].addStyleName("down");
+                        logger.warn("received SHOW event");
+                        showLights(decisions, false, false);
                         shown = true;
                         break;
                     case RESET:
@@ -163,8 +171,6 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
                         resetLights();
                         break;
                     case BLOCK:
-                        if (!juryMode && downShown)
-                            decisionLights[1].removeStyleName("down");
                         break;
                     }
                 }
@@ -179,18 +185,29 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
      *            show lights while waiting for last referee
      * @param doNotShowDecisions
      *            do not show the decisions as they are made
+     * @param juryMode 
      */
     private void showLights(Decision[] decisions, boolean showWaiting, boolean doNotShowDecisions) {
         for (int i = 0; i < decisionLights.length; i++) {
             decisionLights[i].setStyleName("decisionLight");
+            decisionLights[i].setValue("&nbsp;"); // empty cell
             Boolean accepted = decisions[i].accepted;
             if (accepted == null && showWaiting) {
                 decisionLights[i].addStyleName("waiting");
             } else if (accepted != null && (!doNotShowDecisions)) {
                 decisionLights[i].addStyleName(accepted ? "lift" : "nolift");
-            } else {
-                decisionLights[i].addStyleName("undecided");
+            } else
+//                if (juryMode)
+                {
+                if (accepted != null) {
+                    decisionLights[i].addStyleName("refereeHasChosen");
+                } else {
+                    decisionLights[i].addStyleName("undecided");
+                }
             }
+//            else {
+//                decisionLights[i].addStyleName("undecided");
+//            }
         }
     }
 
@@ -260,12 +277,16 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 
     @Override
     public void registerAsListener() {
-        app.getMainWindow().addListener((CloseListener) this);
+        Window mainWindow = app.getMainWindow();
+        mainWindow.addListener((CloseListener) this);
+        addActions(mainWindow);
     }
 
     @Override
     public void unregisterAsListener() {
-        app.getMainWindow().removeListener((CloseListener) this);
+        Window mainWindow = app.getMainWindow();
+        mainWindow.removeListener((CloseListener) this);
+        removeActions(mainWindow);
     }
 
     @Override
@@ -289,6 +310,89 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
     @Override
     public String getLoggingId() {
         return viewName + getInstanceId();
+    }
+    
+
+    @SuppressWarnings("serial")
+    private abstract class ShortcutActionListener extends ShortcutAction implements Action.Listener {
+
+        public ShortcutActionListener(String caption, int kc, int[] m) {
+            super(caption, kc, m);
+        }
+
+        public ShortcutActionListener(String caption, int kc) {
+            super(caption, kc, null);
+        }
+
+    }
+    
+    @SuppressWarnings("serial")
+    private void addActions(Action.Notifier actionNotifier) {
+        if (!listenToKeys) return;
+        
+        IDecisionController aDecisionController = null;
+        if (juryMode) {
+            aDecisionController = masterData.getJuryDecisionController();
+        } else {
+            aDecisionController = masterData.getRefereeDecisionController();  
+        }
+        
+        final IDecisionController decisionController = aDecisionController;
+        masterData.getJuryDecisionController();
+        action1ok = new ShortcutActionListener("1+", ShortcutAction.KeyCode.NUM1) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                decisionController.decisionMade(0, true);
+            }
+        };
+        action1fail = new ShortcutActionListener("1-", ShortcutAction.KeyCode.NUM2) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                decisionController.decisionMade(0, false);
+            }
+        };
+        action2ok = new ShortcutActionListener("2+", ShortcutAction.KeyCode.NUM3) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                decisionController.decisionMade(1, true);
+            }
+        };
+        action2fail = new ShortcutActionListener("2-", ShortcutAction.KeyCode.NUM4) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                decisionController.decisionMade(1, false);
+            }
+        };
+        action3ok = new ShortcutActionListener("3+", ShortcutAction.KeyCode.NUM5) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                decisionController.decisionMade(2, true);
+            }
+        };
+        action3fail = new ShortcutActionListener("3-", ShortcutAction.KeyCode.NUM6) {
+            @Override
+            public void handleAction(Object sender, Object target) {
+                decisionController.decisionMade(2, false);
+            }
+        };
+        
+        actionNotifier.addAction(action1ok);
+        actionNotifier.addAction(action1fail);
+        actionNotifier.addAction(action2ok);
+        actionNotifier.addAction(action2fail);
+        actionNotifier.addAction(action3ok);
+        actionNotifier.addAction(action3fail);
+    }
+
+    private void removeActions(Action.Notifier actionNotifier) {
+        if (!listenToKeys) return;
+        
+        actionNotifier.removeAction(action1ok);
+        actionNotifier.removeAction(action1fail);
+        actionNotifier.removeAction(action2ok);
+        actionNotifier.removeAction(action2fail);
+        actionNotifier.removeAction(action3ok);
+        actionNotifier.removeAction(action3fail);
     }
 
 }

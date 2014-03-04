@@ -523,16 +523,16 @@ public class AnnouncerView extends VerticalSplitPanel implements
             message = MessageFormat.format(
                     Messages.getString("TimeStoppedNotificationReason.NotificationFormatShort", locale),
                     reasonDetails,
-                    curLifter.getLastName(),
-                    curLifter.getFirstName(),
+                    (curLifter != null ? curLifter.getLastName() : "-"),
+                    (curLifter != null ? curLifter.getFirstName() : "-"),
                     curWght);
         } else {
             message = MessageFormat.format(
                     Messages.getString("TimeStoppedNotificationReason.NotificationFormat", locale),
                     Messages.getString("LiftList." + mode2.name(), locale),
                     reasonDetails,
-                    curLifter.getLastName(),
-                    curLifter.getFirstName(),
+                    (curLifter != null ? curLifter.getLastName() : "-"),
+                    (curLifter != null ? curLifter.getFirstName() : "-"),
                     curWght);
         }
         final Message addedMessage = notifications.add((Resource) null, message, true, Notifique.Styles.VAADIN_ORANGE, true);
