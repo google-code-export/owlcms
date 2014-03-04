@@ -105,7 +105,10 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
             }
         }
 
-        if (decisionsMade == 2) {
+        // TCRR says jury must see who has made a decision (without showing red or white)
+        if (decisionsMade < (juryDecisions.length - 1)) {
+            fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, juryDecisions));
+        } else if (decisionsMade == (juryDecisions.length - 1)) {
             fireEvent(new DecisionEvent(this, DecisionEvent.Type.WAITING, currentTimeMillis, juryDecisions));
         } else if (decisionsMade == 3) {
             // broadcast the decision
@@ -118,7 +121,7 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
                 scheduleReset();
             }
             // referees have changed their mind
-            fireEvent(new DecisionEvent(this, DecisionEvent.Type.UPDATE, currentTimeMillis, juryDecisions));
+//          fireEvent(new DecisionEvent(this, DecisionEvent.Type.SHOW, currentTimeMillis, juryDecisions));
         }
     }
 
