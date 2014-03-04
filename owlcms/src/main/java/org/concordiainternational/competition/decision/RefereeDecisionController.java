@@ -31,7 +31,7 @@ import com.vaadin.event.EventRouter;
  */
 public class RefereeDecisionController implements CountdownTimerListener, IDecisionController {
 
-    private static final int RESET_DELAY = 4000;
+    private static final int RESET_DELAY = 5000;
 
     /**
      * 3 seconds to change decision (after all refs have selected)

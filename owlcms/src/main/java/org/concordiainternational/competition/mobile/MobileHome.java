@@ -134,17 +134,30 @@ public class MobileHome extends VerticalLayout implements ApplicationView {
             final Label label = new Label(Messages.getString("MobileMenu.JuryDecisions", app.getLocale())); //$NON-NLS-1$
             this.addComponent(label);
             this.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
-            final NativeButton button = new NativeButton(
+            
+//            final NativeButton button = new NativeButton(
+//                    Messages.getString("MobileMenu.Display", app.getLocale()), new Button.ClickListener() { //$NON-NLS-1$
+//                        @Override
+//                        public void buttonClick(ClickEvent event) {
+//                            RefereeDecisions refereeDecisions = createJuryDecisions();
+//                            app.setMainPanelContent(refereeDecisions);
+//                        }
+//                    });
+//            button.setWidth(BUTTON_WIDTH);
+//            button.setHeight(BUTTON_HEIGHT);
+//            this.addComponent(button);
+            
+            final NativeButton button2 = new NativeButton(
                     Messages.getString("MobileMenu.Display", app.getLocale()), new Button.ClickListener() { //$NON-NLS-1$
                         @Override
                         public void buttonClick(ClickEvent event) {
-                            RefereeDecisions refereeDecisions = createJuryDecisions();
+                            CombinedDecisions refereeDecisions = createCombinedDecisions();
                             app.setMainPanelContent(refereeDecisions);
                         }
                     });
-            button.setWidth(BUTTON_WIDTH);
-            button.setHeight(BUTTON_HEIGHT);
-            this.addComponent(button);
+            button2.setWidth(BUTTON_WIDTH);
+            button2.setHeight(BUTTON_HEIGHT);
+            this.addComponent(button2);
         }
     }
 
@@ -288,7 +301,7 @@ public class MobileHome extends VerticalLayout implements ApplicationView {
      * @return
      */
     private RefereeDecisions createRefereeDecisions() {
-        RefereeDecisions decisionLights = new RefereeDecisions(false, "DecisionLights", false, false); //$NON-NLS-1$
+        RefereeDecisions decisionLights = new RefereeDecisions(false, CompetitionApplicationComponents.JURY_LIGHTS, false, false, false); //$NON-NLS-1$
         return decisionLights;
     }
 
@@ -297,10 +310,20 @@ public class MobileHome extends VerticalLayout implements ApplicationView {
      * @return
      */
     private RefereeDecisions createJuryDecisions() {
-        RefereeDecisions decisionLights = new RefereeDecisions(false, "DecisionLights", false, true); //$NON-NLS-1$
+        RefereeDecisions decisionLights = new RefereeDecisions(false, CompetitionApplicationComponents.JURY_LIGHTS, false, true, false); //$NON-NLS-1$
         return decisionLights;
     }
 
+    /**
+     * @param refIndex
+     * @return
+     */
+    private CombinedDecisions createCombinedDecisions() {
+        CombinedDecisions decisionLights = new CombinedDecisions(false, CompetitionApplicationComponents.JURY_LIGHTS); //$NON-NLS-1$
+        return decisionLights;
+    }
+    
+    
     @Override
     public void refresh() {
     }
