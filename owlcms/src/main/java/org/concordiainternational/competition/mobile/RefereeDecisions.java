@@ -48,8 +48,6 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
     private String platformName;
     private String viewName;
 
-    private boolean downShown;
-
     private boolean juryMode;
 
     private boolean shown;
@@ -147,22 +145,19 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
                     Decision[] decisions = updateEvent.getDecisions();
                     switch (updateEvent.getType()) {
                     case DOWN:
-                        logger.warn("received DOWN event juryMode={}", false);
-                        downShown = true;
-                        // ne pas influencer le jury.
-                        showLights(decisions, false, true);
+                        logger.warn("received DOWN event dontShow={}", juryMode);
+                        showLights(decisions, false, juryMode);
                         break;
                     case WAITING:
-                        logger.warn("received WAITING event");
-                        showLights(decisions, false, true);
+                        logger.warn("received WAITING event dontShow={}", juryMode);
+                        showLights(decisions, false, juryMode);
                         break;
                     case UPDATE:
-                        logger.warn("received UPDATE event {} && {}", juryMode, !shown);
-                        showLights(decisions, false, !shown);
-                            
+                        logger.warn("received UPDATE event dontShow=({] && {})", juryMode, !shown);
+                        showLights(decisions, false, (juryMode && !shown)); 
                         break;
                     case SHOW:
-                        logger.warn("received SHOW event");
+                        logger.warn("received SHOW event dontShow={}", false);
                         showLights(decisions, false, false);
                         shown = true;
                         break;
@@ -219,7 +214,6 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
                 decisionLights[i].setContentMode(Label.CONTENT_XHTML);
                 decisionLights[i].setValue("&nbsp;");
             }
-            downShown = false;
             shown = false;
         }
         app.push();
