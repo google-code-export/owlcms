@@ -1,0 +1,379 @@
+@import url(../reindeer/styles.css);
+/*
+ * Copyright 2009-2012, Jean-François Lamy
+ * 
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
+.mobileMenu {
+	zoom: 130%;
+}
+
+.refereePad {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+}
+
+
+.refereePad .red {
+	background-color: red;
+	border-style: solid;
+	border-width: thin;
+}
+
+.refereePad .white {
+	background-color: white;
+	border-style: solid;
+	border-width: thin;
+}
+
+.refereePad .v-horizontallayout-margin-left   {padding-left:   5px;}
+.refereePad .v-horizontallayout-margin-right  {padding-right:  5px;}
+.refereePad .v-horizontallayout-margin-top    {padding-top:    5px; }
+.refereePad .v-horizontallayout-margin-bottom {padding-bottom: 5px; }
+
+.refereePad .refereeReminder {
+	background-color: yellow;
+	border-style: solid;
+	border-width: thin;
+	border-color: black;
+	font-size: x-large;
+	font-weight: bold;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.refereePad .blocked {
+	background-color: red;
+	color: black;
+	border-style: solid;
+	border-width: thin;
+	border-color: black;
+	font-size: larger;
+	font-weight: normal;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.refereePad .refereeOk {
+	background-color: #3333CC;
+	color: white;
+	border-style: solid;
+	border-width: thin;
+	border-color: black;
+	font-size: x-large;
+	font-weight: bold;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.refereePad .juryOk {
+	background-color: #339900;
+	color: white;
+	border-style: solid;
+	border-width: thin;
+	border-color: black;
+	font-size: x-large;
+	font-weight: bold;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+
+.decisionLight {
+	border-style: solid;
+	border-width: thin;
+	height: 10ex;
+}
+
+.decisionLight.waiting {
+	background-color: yellow;
+	background-image: none;
+	border-width: 3em;
+}
+
+.decisionLight.undecided {
+	background-color: #333333;
+	background-image: none;
+}
+
+.decisionLight.lift {
+	background-color: white;
+	background-image: none;
+}
+
+.decisionLight.nolift {
+	background-color: red;
+	background-image: none;
+}
+
+.decisionLight.down {
+	background-image: url("images/down.png");
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-size: 50%;
+}
+
+.juryLight {
+	padding: 3px;
+}
+
+.refereePad .decisionSelected {
+	border-style: solid;
+
+	border-color: black;
+	font-size: 8em;
+	border-width: 0.2em;
+	text-align: center;
+	display: table-cell;
+	vertical-align: middle; 
+	
+	/* background-image: url("images/checkmarkSmall.png"); 
+	background-repeat: no-repeat;
+	background-position: 50% 50%; */
+}
+
+.refereePad .decisionUnselected {
+	border-style: solid;
+	border-width: thin;
+	background-image: none;
+}
+
+.refereeHasChosen {
+	background-color: green;
+	border-color: #333333;
+	border-width: 3em;
+}
+
+
+.juryDecisionsLabel {
+	font-size: large;
+	font-weight: bolder;
+	color: white;
+	background-color: #339900;
+}
+
+.refereeDecisionsLabel {
+	font-size: large;
+	font-weight: bolder;
+	color: white;
+	background-color: #3333CC;
+}
+
+
+.v-caption-loadChart {
+	font-size: 2em;
+	font-weight: bold;
+	margin-bottom: 0.5em;
+}
+
+.loadChart .zoomMedium {
+	zoom: 150%;
+}
+
+.loadChart div.plate {
+	border-color: black;
+	border-width: 1px;
+	border-style: solid;
+	vertical-align: middle;
+	margin: 1px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.bar {
+	height: 1.5ex;
+	width: 4em;
+	background-color: gray;
+}
+
+.barInner {
+	height: 4.5ex;
+	width: 1em;
+	background-color: gray;
+}
+
+.barOuter {
+	height: 2.5ex;
+	width: 1.5em;
+	background-color: gray;
+}
+
+.L_25 {
+	height: 12em;
+	width: 2.25ex;
+	background-color: red;
+}
+
+.L_20 {
+	height: 12em;
+	width: 2ex;
+	background-color: blue;
+}
+
+.L_15 {
+	height: 12em;
+	width: 1.75ex;
+	background-color: yellow;
+}
+
+.L_10 {
+	height: 12em;
+	width: 1.5ex;
+	background-color: green;
+}
+
+.L_5 {
+	height: 12em;
+	width: 1.5ex;
+	background-color: white;
+}
+
+.L_2_5 {
+	height: 12em;
+	width: 1.0ex;
+	background-color: red;
+}
+
+.C_2_5 {
+	height: 5ex;
+	width: 3ex;
+	background-color: black;
+}
+
+.S_5 {
+	height: 7em;
+	width: 0.75ex;
+	background-color: white;
+}
+
+.S_2_5 {
+	height: 6em;
+	width: 0.75ex;
+	background-color: red;
+}
+
+.S_2 {
+	height: 5.5em;
+	width: 0.75ex;
+	background-color: blue;
+}
+
+.S_1_5 {
+	height: 5em;
+	width: 0.75ex;
+	background-color: yellow;
+}
+
+.S_1 {
+	height: 4.5em;
+	width: 0.75ex;
+	background-color: green;
+}
+
+.S_0_5 {
+	height: 4em;
+	width: 0.75ex;
+	background-color: white;
+}
+
+
+.mtkPad {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	font-size: 4em;
+	color: black;
+}
+
+.mtkPad .blocked {
+	color: grey;
+}
+
+.mtkPad .mtkStop {
+	background-color: red;
+	border-style: solid;
+	border-width: thin;
+	display: table;
+}
+
+#mtkStopLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+
+.mtkPad .mtkStart {
+	background-color: green;
+	border-style: solid;
+	border-width: thin;
+	display: table;
+}
+
+#mtkStartLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+
+.mtkPad .mtkOne {
+	background-color: buttonface;
+	border-style: solid;
+	border-width: thin;
+	display: table;
+}
+
+#mtkOneLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+
+.mtkPad .mtkTwo {
+	background-color: buttonface;
+	border-style: solid;
+	border-width: thin;
+	display: table;
+}
+
+#mtkTwoLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+.mtkPad .mtkTimerDisplay {
+	display: table;
+	font-size: 3em;
+}
+
+.mtkPad .mtkTimerDisplaySmall {
+	display: table;
+	font-size: 2em;
+	padding-top: 0.5em;
+}
+
+#mtkTimeLabel {
+    display: table-cell;
+    vertical-align: middle;
+    text-align:center;
+}
+
+/*
+.mtkPad .v-horizontallayout-margin-left   {padding-left:   5px;}
+.mtkPad .v-horizontallayout-margin-right  {padding-right:  5px;}
+.mtkPad .v-horizontallayout-margin-top    {padding-top:    5px; }
+.mtkPad .v-horizontallayout-margin-bottom {padding-bottom: 5px; }
+*/
+
