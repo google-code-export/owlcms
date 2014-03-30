@@ -17,7 +17,7 @@ import org.concordiainternational.competition.data.CompetitionSession;
 import org.concordiainternational.competition.data.Platform;
 import org.concordiainternational.competition.data.RuleViolationException;
 import org.concordiainternational.competition.i18n.Messages;
-import org.concordiainternational.competition.mobile.CombinedDecisions;
+import org.concordiainternational.competition.mobile.JuryDecisions;
 import org.concordiainternational.competition.mobile.IRefereeConsole;
 import org.concordiainternational.competition.mobile.MJuryConsole;
 import org.concordiainternational.competition.mobile.MPlatesInfoView;
@@ -213,11 +213,11 @@ public class CompetitionApplicationComponents {
      * Lazy builder for Jury Lights
      */
     private class JuryLightsComponent implements CompetitionApplicationComponent {
-        private CombinedDecisions juryLights = null;
+        private JuryDecisions juryLights = null;
 
         @Override
         public ApplicationView getView(boolean initFromFragment, String viewName, String stylesheetName) {
-            this.juryLights = (new CombinedDecisions(initFromFragment, viewName));
+            this.juryLights = (new JuryDecisions(initFromFragment, viewName));
             return juryLights;
         }
     }
