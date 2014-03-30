@@ -24,7 +24,7 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.Window.CloseEvent;
 import com.vaadin.ui.Window.CloseListener;
 
-public class CombinedDecisions extends VerticalLayout implements ApplicationView {
+public class JuryDecisions extends VerticalLayout implements ApplicationView {
 
     private static final long serialVersionUID = 1L;
 
@@ -35,13 +35,16 @@ public class CombinedDecisions extends VerticalLayout implements ApplicationView
     SessionData masterData;
     CompetitionApplication app = CompetitionApplication.getCurrent();
 
-    private Logger logger = LoggerFactory.getLogger(CombinedDecisions.class);
+    private Logger logger = LoggerFactory.getLogger(JuryDecisions.class);
 
     private String platformName;
     private String viewName;
 
+    private RefereeDecisions juryDecisions;
+    private RefereeDecisions refDecisions;
 
-    public CombinedDecisions(boolean initFromFragment, String viewName) {
+
+    public JuryDecisions(boolean initFromFragment, String viewName) {
         if (initFromFragment) {
             setParametersFromFragment();
         } else {
@@ -61,8 +64,8 @@ public class CombinedDecisions extends VerticalLayout implements ApplicationView
         }
 
         
-        RefereeDecisions juryDecisions = new RefereeDecisions(initFromFragment, viewName, false, true, true);
-        RefereeDecisions refDecisions = new RefereeDecisions(initFromFragment, viewName, false, false, false);
+        juryDecisions = new RefereeDecisions(initFromFragment, viewName, false, true, true);
+        refDecisions = new RefereeDecisions(initFromFragment, viewName, false, false, false);
         
         this.setSizeFull();
         this.addComponent(juryDecisions);
@@ -71,6 +74,8 @@ public class CombinedDecisions extends VerticalLayout implements ApplicationView
         this.addComponent(refDecisions);
         refDecisions.setSizeFull();
         this.setExpandRatio(refDecisions, 0.333F);
+        
+        registerAsListener();
     }
 
 
@@ -123,12 +128,16 @@ public class CombinedDecisions extends VerticalLayout implements ApplicationView
     public void registerAsListener() {
         Window mainWindow = app.getMainWindow();
         mainWindow.addListener((CloseListener) this);
+        juryDecisions.registerAsListener();
+        refDecisions.registerAsListener();
     }
 
     @Override
     public void unregisterAsListener() {
         Window mainWindow = app.getMainWindow();
         mainWindow.removeListener((CloseListener) this);
+        juryDecisions.unregisterAsListener();
+        refDecisions.unregisterAsListener();
     }
 
     @Override
