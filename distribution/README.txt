@@ -42,9 +42,12 @@ e. Create distribution files:
 	else
 		cd to owlcmsParent
 		mvn clean assembly:single 
+		
+f. commit all modified directories with "Release x.y.z" as comment
 
+2) Exit Eclipse, use SourceTree HgFlow to start a release Release x.y.z branch
 
-2) Create the windows installer with Advanced Installer Freeware
+3) Create the windows installer with Advanced Installer Freeware
 Because we use the Free edition, these steps are manual.
 
 - go to the distribution project and refresh (F5)
@@ -78,7 +81,7 @@ Because we use the Free edition, these steps are manual.
     	- tag wiki repository with "x.y.z"
   		- push
   - Exit Eclipse  
-  - Use SourceTree to finalize the code release
+  - Use SourceTree HgFlow to finalize the code release
   	- Use Hg Flow to finish release
   	- push the tag (make sure checkbox is checked)
   Restart Eclipse
