@@ -82,6 +82,8 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
             app.setPlatformByName(platformName);
         }
 
+        
+        masterData = app.getMasterData(platformName);
         createLights();
 
         top.setMargin(false);
@@ -95,6 +97,10 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
         this.setMargin(false);
 
         resetLights();
+    }
+    
+    public RefereeDecisions(boolean initFromFragment, String viewName, boolean publicFacing) {
+        this(initFromFragment,viewName, publicFacing, false, false);
         registerAsListener();
     }
 
@@ -102,12 +108,6 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 	 * 
 	 */
     private void createLights() {
-        masterData = app.getMasterData(platformName);
-        if (juryMode) {
-            masterData.getJuryDecisionController().addListener(this);
-        } else {
-            masterData.getRefereeDecisionController().addListener(this);
-        }
 
         top.setSizeFull();
 
@@ -191,18 +191,11 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
                 decisionLights[i].addStyleName("waiting");
             } else if (accepted != null && (!doNotShowDecisions)) {
                 decisionLights[i].addStyleName(accepted ? "lift" : "nolift");
-            } else
-//                if (juryMode)
-                {
-                if (accepted != null) {
-                    decisionLights[i].addStyleName("refereeHasChosen");
-                } else {
-                    decisionLights[i].addStyleName("undecided");
-                }
+            } else if (accepted != null) {
+                decisionLights[i].addStyleName("refereeHasChosen");
+            } else {
+                decisionLights[i].addStyleName("undecided");
             }
-//            else {
-//                decisionLights[i].addStyleName("undecided");
-//            }
         }
     }
 
@@ -274,6 +267,12 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
         Window mainWindow = app.getMainWindow();
         mainWindow.addListener((CloseListener) this);
         addActions(mainWindow);
+
+        if (juryMode) {
+            masterData.getJuryDecisionController().addListener(this);
+        } else {
+            masterData.getRefereeDecisionController().addListener(this);
+        }
     }
 
     @Override
@@ -281,6 +280,12 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
         Window mainWindow = app.getMainWindow();
         mainWindow.removeListener((CloseListener) this);
         removeActions(mainWindow);
+        
+        if (juryMode) {
+            masterData.getJuryDecisionController().removeListener(this);
+        } else {
+            masterData.getRefereeDecisionController().removeListener(this);
+        }
     }
 
     @Override
@@ -323,6 +328,8 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
     @SuppressWarnings("serial")
     private void addActions(Action.Notifier actionNotifier) {
         if (!listenToKeys) return;
+        
+        logger.info("{} listening to keys",(juryMode ? "jury" : "referee"));
         
         IDecisionController aDecisionController = null;
         if (juryMode) {
@@ -380,6 +387,8 @@ public class RefereeDecisions extends VerticalLayout implements DecisionEventLis
 
     private void removeActions(Action.Notifier actionNotifier) {
         if (!listenToKeys) return;
+        
+        logger.info("{} stopped listening to keys",(juryMode ? "jury" : "referee"));
         
         actionNotifier.removeAction(action1ok);
         actionNotifier.removeAction(action1fail);

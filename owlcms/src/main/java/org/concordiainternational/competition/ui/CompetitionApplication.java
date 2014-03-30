@@ -80,7 +80,20 @@ public class CompetitionApplication extends Application implements HbnSessionMan
     /**
      * if true, use the language set in the browser
      */
-    final public static String LOCALE = System.getProperty("owlcms.locale");
+    final public static String LOCALE = getLocaleFromEnvironment();
+
+    private static String getLocaleFromEnvironment() {
+        String locale = null;
+        
+        locale = System.getProperty("owlcms.locale");
+        if (locale != null) return locale;
+        
+        locale = System.getenv("OWLCMS_LOCALE");
+        if (locale != null) return locale;
+        
+        return locale;
+    }
+    
     final private static boolean USE_BROWSER_LANGUAGE = (LOCALE == null);
 
     private static Logger logger = LoggerFactory.getLogger(CompetitionApplication.class);
