@@ -6,7 +6,6 @@ Steps to create a release.
 	  start a new release with the expected number (e.g. 2.14.1)
 	  MAKE SURE YOU push changes. 
 
-
 1) Prepare the distribution.
 
 a. Make sure that 
