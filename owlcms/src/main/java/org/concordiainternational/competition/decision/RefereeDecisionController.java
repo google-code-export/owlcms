@@ -118,14 +118,23 @@ public class RefereeDecisionController implements CountdownTimerListener, IDecis
             return;
         }
 
-        // prevent reversal from red to white.
-        if ((refereeDecisions[refereeNo].accepted != null) && !(refereeDecisions[refereeNo].accepted)) {
-            // cannot reverse from red to white.
-            logger.warn("decision IGNORED from referee {}: {} (prior decision was {})",
-                    new Object[] { refereeNo + 1,
-                            (accepted ? "lift" : "no lift"),
-                            refereeDecisions[refereeNo].accepted });
-            return;
+        if ((refereeDecisions[refereeNo].accepted != null)) {
+            // prevent reversal from red to white.
+            if (accepted && !(refereeDecisions[refereeNo].accepted)) {
+                // cannot reverse from red to white.
+                logger.warn("decision IGNORED from referee {}: {} (cannot reverse {})",
+                        new Object[] { refereeNo + 1,
+                                (accepted ? "lift" : "no lift"),
+                                refereeDecisions[refereeNo].accepted });
+                return;
+            } else if (accepted == (refereeDecisions[refereeNo].accepted)) {
+                // same decision as before, ignore.
+//                logger.warn("decision IGNORED from referee {}: {} (SAME AS PREVIOUS)",
+//                        new Object[] { refereeNo + 1,
+//                                (accepted ? "lift" : "no lift"),
+//                                refereeDecisions[refereeNo].accepted });
+                return;
+            }
         }
 
         final long currentTimeMillis = System.currentTimeMillis();

@@ -80,22 +80,31 @@ public class JuryDecisionController implements IDecisionController, CountdownTim
      * @see org.concordiainternational.competition.decision.IDecisionController#decisionMade(int, boolean)
      */
     @Override
-    public synchronized void decisionMade(int refereeNo, boolean accepted) {
+    public synchronized void decisionMade(int juryNo, boolean accepted) {
         if (isBlocked())
             return;
+        
+        if (juryDecisions[juryNo].accepted != null && accepted == (juryDecisions[juryNo].accepted)) {
+            // same decision as before, ignore.
+//            logger.warn("decision IGNORED from jury {}: {} (SAME AS PREVIOUS)",
+//                    new Object[] { juryNo + 1,
+//                    (accepted ? "lift" : "no lift"),
+//                    juryDecisions[juryNo].accepted });
+            return;
+        }
 
         final long currentTimeMillis = System.currentTimeMillis();
         long deltaTime = currentTimeMillis - allDecisionsMadeTime;
         if (decisionsMade == 3 && deltaTime > DECISION_REVERSAL_DELAY) {
             // too late to reverse decision
-            logger.info("decision ignored from jury {}: {} (too late by {} ms)", new Object[] { refereeNo + 1,
+            logger.info("decision ignored from jury {}: {} (too late by {} ms)", new Object[] { juryNo + 1,
                     (accepted ? "lift" : "no lift"), deltaTime - DECISION_REVERSAL_DELAY });
             return;
         }
 
-        juryDecisions[refereeNo].accepted = accepted;
-        juryDecisions[refereeNo].time = currentTimeMillis;
-        logger.info("decision by jury {}: {}", refereeNo + 1, (accepted ? "lift" : "no lift"));
+        juryDecisions[juryNo].accepted = accepted;
+        juryDecisions[juryNo].time = currentTimeMillis;
+        logger.info("decision by jury {}: {}", juryNo + 1, (accepted ? "lift" : "no lift"));
 
         decisionsMade = 0;
         for (int i = 0; i < juryDecisions.length; i++) {
