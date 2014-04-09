@@ -1337,7 +1337,7 @@ public class Lifter implements MethodEventSource, Notifier {
         else
             this.cleanJerk1LiftTime = (Calendar.getInstance().getTime());
         logger.info("{} cleanJerk1ActualLift={}", this, cleanJerk1ActualLift);
-        fireEvent(new UpdateEvent(this, "cleanJerk1ActualLift", "cleanJerk1LiftTime", "total")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        fireEvent(new UpdateEvent(this, "cleanJerk1ActualLift", "cleanJerk1LiftTime", "total", "automatic")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public void setCleanJerk1AutomaticProgression(String s) {
@@ -1405,7 +1405,7 @@ public class Lifter implements MethodEventSource, Notifier {
         else
             this.cleanJerk2LiftTime = (Calendar.getInstance().getTime());
         logger.info("{} cleanJerk2ActualLift={}", this, cleanJerk2ActualLift);
-        fireEvent(new UpdateEvent(this, "cleanJerk2ActualLift", "cleanJerk2LiftTime", "total")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        fireEvent(new UpdateEvent(this, "cleanJerk2ActualLift", "cleanJerk2LiftTime", "total", "automatic")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public void setCleanJerk2AutomaticProgression(String s) {
@@ -1465,7 +1465,7 @@ public class Lifter implements MethodEventSource, Notifier {
         else
             this.cleanJerk3LiftTime = (Calendar.getInstance().getTime());
         logger.info("{} cleanJerk3ActualLift={}", this, cleanJerk3ActualLift);
-        fireEvent(new UpdateEvent(this, "cleanJerk3ActualLift", "cleanJerk3LiftTime", "total")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        fireEvent(new UpdateEvent(this, "cleanJerk3ActualLift", "cleanJerk3LiftTime", "total", "automatic")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public void setCleanJerk3AutomaticProgression(String s) {
@@ -1649,7 +1649,7 @@ public class Lifter implements MethodEventSource, Notifier {
         else
             this.snatch1LiftTime = (Calendar.getInstance().getTime());
         logger.info("{} snatch1ActualLift={}", this, snatch1ActualLift);
-        fireEvent(new UpdateEvent(this, "snatch1ActualLift", "snatch1LiftTime", "total")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        fireEvent(new UpdateEvent(this, "snatch1ActualLift", "snatch1LiftTime", "total", "automatic")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public void setSnatch1AutomaticProgression(String s) {
@@ -1716,7 +1716,7 @@ public class Lifter implements MethodEventSource, Notifier {
         else
             this.snatch2LiftTime = (Calendar.getInstance().getTime());
         logger.info("{} snatch2ActualLift={}", this, snatch2ActualLift);
-        fireEvent(new UpdateEvent(this, "snatch2ActualLift", "snatch2LiftTime", "total")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        fireEvent(new UpdateEvent(this, "snatch2ActualLift", "snatch2LiftTime", "total", "automatic")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public void setSnatch2AutomaticProgression(String s) {
@@ -1780,7 +1780,7 @@ public class Lifter implements MethodEventSource, Notifier {
         else
             this.snatch3LiftTime = (Calendar.getInstance().getTime());
         logger.info("{} snatch3ActualLift={}", this, snatch3ActualLift);
-        fireEvent(new UpdateEvent(this, "snatch2ActualLift", "snatch2LiftTime", "total")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        fireEvent(new UpdateEvent(this, "snatch2ActualLift", "snatch2LiftTime", "automatic")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public void setSnatch3AutomaticProgression(String s) {
@@ -2374,35 +2374,40 @@ public class Lifter implements MethodEventSource, Notifier {
         return true;
     }
 
-    public boolean isCurrentDeclarationDone() {
-        Integer currentAttemptDeclaration = getCurrentAttemptDeclaration();
-        return (currentAttemptDeclaration != null && currentAttemptDeclaration > 0);
-    }
-
-    /**
-     * @return the nextAttemptRequestedWeight
-     */
-    public Integer getCurrentAttemptDeclaration() {
-        int attempt = getAttemptsDone() + 1;
-        return getCurrentAttemptDeclaration(attempt);
-    }
-
-    public Integer getCurrentAttemptDeclaration(int attempt) {
-        switch (attempt) {
-        case 1:
-            return (Integer) (zeroIfInvalid(getSnatch1Declaration()));
-        case 2:
-            return (Integer) (zeroIfInvalid(getSnatch2Declaration()));
-        case 3:
-            return (Integer) (zeroIfInvalid(getSnatch3Declaration()));
-        case 4:
-            return (Integer) (zeroIfInvalid(getCleanJerk1Declaration()));
-        case 5:
-            return (Integer) (zeroIfInvalid(getCleanJerk2Declaration()));
-        case 6:
-            return (Integer) (zeroIfInvalid(getCleanJerk3Declaration()));
-        }
-        return 0;
-    }
+//    /**
+//     * @return true if lifter's attempt is at automatic progression (including the initial declaration on first attempt).
+//     * 
+//     * In other words, return true if no-one has spoken to the marshall about the lift.
+//     */
+//    private boolean isInitialValueForLift() {
+//        Integer currentAttemptDeclaration = getCurrentAttemptNotAutomatic();
+//        return ! (currentAttemptDeclaration != null && currentAttemptDeclaration > 0);
+//    }
+//
+//    /**
+//     * @return the nextAttemptRequestedWeight
+//     */
+//    private Integer getCurrentAttemptNotAutomatic() {
+//        int attempt = getAttemptsDone() + 1;
+//        return getCurrentAttemptNotAutomatic(attempt);
+//    }
+//
+//    private Integer getCurrentAttemptNotAutomatic(int attempt) {
+//        switch (attempt) {
+//        case 1:
+//            return (Integer) (zeroIfInvalid(getSnatch1Change1()));
+//        case 2:
+//            return (Integer) (zeroIfInvalid(getSnatch2Declaration()));
+//        case 3:
+//            return (Integer) (zeroIfInvalid(getSnatch3Declaration()));
+//        case 4:
+//            return (Integer) (zeroIfInvalid(getCleanJerk1Change1()));
+//        case 5:
+//            return (Integer) (zeroIfInvalid(getCleanJerk2Declaration()));
+//        case 6:
+//            return (Integer) (zeroIfInvalid(getCleanJerk3Declaration()));
+//        }
+//        return 0;
+//    }
 
 }
