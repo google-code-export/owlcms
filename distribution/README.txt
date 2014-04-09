@@ -11,7 +11,7 @@ Steps to create a release.
 a. Make sure that 
 		owlcms/pom.xml
 		wiki/ReleaseNotes.wiki
-		distribution/pom.xml 
+		distribution/pom.xml
 		
    all have correct version numbers.
   
