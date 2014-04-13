@@ -490,7 +490,7 @@ public class TwoMinutesRuleTest {
             lifter.setCleanJerk3Declaration(weight);
             break;
         }
-        groupData.updateListsForLiftingOrderChange(lifter);
+        groupData.updateListsForLiftingOrderChange(lifter,false);
     }
 
     /**
@@ -529,7 +529,7 @@ public class TwoMinutesRuleTest {
             lifter.setCleanJerk3Change1(weight);
             break;
         }
-        groupData.updateListsForLiftingOrderChange(lifter);
+        groupData.updateListsForLiftingOrderChange(lifter,false);
     }
 
     /**
@@ -568,7 +568,7 @@ public class TwoMinutesRuleTest {
             lifter.setCleanJerk3Change2(weight);
             break;
         }
-        groupData.updateListsForLiftingOrderChange(lifter);
+        groupData.updateListsForLiftingOrderChange(lifter,false);
     }
 
     /**
@@ -606,7 +606,7 @@ public class TwoMinutesRuleTest {
         }
         LifterSorter.liftingOrder(lifters1);
         groupData.liftDone(lifter, !weight.startsWith("-")); //$NON-NLS-1$
-        groupData.updateListsForLiftingOrderChange(lifter);
+        groupData.updateListsForLiftingOrderChange(lifter,true);
     }
 
 }

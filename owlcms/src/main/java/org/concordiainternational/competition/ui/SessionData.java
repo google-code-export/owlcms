@@ -133,7 +133,7 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
         notificationManager = new NotificationManager<SessionData, Lifter, Component>(this);
         refereeDecisionController = new RefereeDecisionController(this);
         juryDecisionController = new JuryDecisionController(this);
-        updateListsForLiftingOrderChange(null);
+        updateListsForLiftingOrderChange(null,true);
         init();
     }
 
@@ -236,19 +236,23 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
 
     /**
      * Sort the various lists to reflect new lifting order.
+     * @param automaticProgression 
      */
-    public void updateListsForLiftingOrderChange(Lifter updatedLifter) {
-        logger.debug("updateListsForLiftingOrderChange"); //$NON-NLS-1$
-        
-        
+    public void updateListsForLiftingOrderChange(Lifter updatedLifter, boolean automaticProgression) {
         logger.debug("updateListsForLiftingOrderChange next = {} change for = {}", currentLifter, updatedLifter); //$NON-NLS-1$
         
         final CountdownTimer timer2 = getTimer();
         if (timer2 != null) {
-            // athlete currently set to lift made a change 
+            // athlete that was set to lift made a change 
+            Lifter timerOwner = timer2.getOwner();
+            logger.warn("updateListsForLiftingOrderChange next = {} change for = {}", currentLifter, timerOwner); //$NON-NLS-1$
+            
             if (currentLifter != null && updatedLifter == currentLifter) {
-                if (!currentLifter.isCurrentDeclarationDone()) {
-                    // automatic progression, don't notify announcer
+                if (automaticProgression 
+                        // rely on the information passed by event instead of trying to infer.
+                        // || currentLifter.isInitialValueForLift()
+                        ) {
+                    // automatic progression or initial declaration, don't notify announcer
                     // stop the timer if it was running, and make sure event is broadcast
                     timer2.pause();
                 } else {
@@ -888,8 +892,12 @@ public class SessionData implements Lifter.UpdateEventListener, Serializable {
      */
     @Override
     public void updateEvent(Lifter.UpdateEvent updateEvent) {
-        logger.debug("lifter {}, changed {}", updateEvent.getSource(), updateEvent.getPropertyIds()); //$NON-NLS-1$
-        updateListsForLiftingOrderChange((Lifter) updateEvent.getSource());
+        List<String> propertyIds = updateEvent.getPropertyIds();
+        logger.debug("lifter {}, changed {}", updateEvent.getSource(), propertyIds); //$NON-NLS-1$
+        boolean automaticProgression = false;
+        if (propertyIds != null) automaticProgression = propertyIds.contains("automatic");
+        
+        updateListsForLiftingOrderChange((Lifter) updateEvent.getSource(), automaticProgression);
         persistPojo(updateEvent.getSource());
     }
 
