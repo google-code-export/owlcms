@@ -1,0 +1,1 @@
+java -cp h2-1.3.175.jar org.h2.tools.Script -user sa -url jdbc:h2:competition -script competition.data.sql
