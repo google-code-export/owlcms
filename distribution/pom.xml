@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2009-2012, Jean-François Lamy
+  
+  This Source Code Form is subject to the terms of the Mozilla Public License,
+  v. 2.0. If a copy of the MPL was not distributed with this file, 
+  You can obtain one at http://mozilla.org/MPL/2.0/.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.concordiainternational</groupId>
+	<artifactId>distribution</artifactId>
+	<version>2.14.10</version>
+	
+	<!--  parent>
+		<artifactId>owlcmsParent</artifactId>
+		<groupId>org.concordiainternational</groupId>
+		<version>1.0.0</version>
+		<relativePath>../owlcmsParent</relativePath>
+	</parent -->
+
+	<dependencies>
+		<dependency>
+			<groupId>org.concordiainternational</groupId>
+			<artifactId>owlcms</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>useExternalRepositories</id>
+		</profile>
+	</profiles>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+					<execution>
+						<id>distro-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<finalName>owlcms-${project.version}</finalName>
+					<descriptors>
+						<descriptor>src/assemble/linux.xml</descriptor>
+						<descriptor>src/assemble/windows.xml</descriptor>
+						<descriptor>src/assemble/war.xml</descriptor>
+						<descriptor>src/assemble/doc.xml</descriptor>
+					</descriptors>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
+				<configuration>
+					<target>
+						<taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask"
+							classpath="./ant-googlecode-0.0.4.jar" name="gcupload" />
+
+						<property file="build.credentials.properties" />
+						<property name="targetVersion" value="${project.version}" />
+
+						<fail unless="gc.username"
+							message="Missing property 'gc.username' from file 'build.credentials.properties'." />
+						<fail unless="gc.password"
+							message="Missing property 'gc.password' from file 'build.credentials.properties'." />
+
+						<gcupload username="${gc.username}" password="${gc.password}"
+							projectname="owlcms"
+							filename="target/owlcms-${targetVersion}-war/owlcms-${targetVersion}.war"
+							targetfilename="owlcms-${targetVersion}.war" summary="WAR archive for Web Servers (Tomcat, Jetty)"
+							labels="Featured, Type-Archive, OpSys-All" />
+						<gcupload username="${gc.username}" password="${gc.password}"
+							projectname="owlcms" filename="target/owlcms-${targetVersion}-linux.tar.gz"
+							targetfilename="owlcms-${targetVersion}.tar.gz"
+							summary="Linux application.  Untar and execute sudo ./go"
+							labels="Type-Archive, OpSys-Linux" />							
+						<gcupload username="${gc.username}" password="${gc.password}"
+							projectname="owlcms" filename="src/installer/owlcms-SetupFiles/owlcms.msi"
+							targetfilename="owlcms-${targetVersion}.msi" summary="Windows application installer."
+							labels="Featured, Type-Installer, OpSys-Windows" />
+						<gcupload username="${gc.username}" password="${gc.password}"
+							projectname="owlcms" filename="target/owlcms-${targetVersion}-doc.zip"
+							targetfilename="owlcms-${targetVersion}-doc.zip"
+							summary="Documentation, including Installation, Setup and Competition Guides."
+							labels="Featured, Type-Documentation, OpSys-All" />
+					</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
