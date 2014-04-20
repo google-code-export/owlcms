@@ -12,7 +12,7 @@
 		<file>
 			<source>../../wiki/ReleaseNotes.wiki</source>
 			<outputDirectory>doc</outputDirectory>
-			<destName>release notes.txt</destName>
+			<destName>ReleaseNotes.txt</destName>
 		</file>
 	</files>
 	<fileSets>
