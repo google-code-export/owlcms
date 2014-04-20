@@ -25,6 +25,7 @@ syntax: regexp
 ^owlcms/db$
 syntax: glob
 doc/release notes.txt
+owlcms\src\main\scripts\UpdateDatabaseTo2.15.zip
 syntax: regexp
 ^touchdiv/bin$
 syntax: regexp
