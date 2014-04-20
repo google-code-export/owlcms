@@ -16,7 +16,7 @@ Welcome to the Olympic Weightlifting Management System.
     in the file format used. The system will not start unless the database file is converted or
     recreated.
     There are two options if you have previously installed the system: 
-	- you may to select the "Update Database" entry from the Competition Management System menu.
+	- you may to select the "Update Database" entry from the Competition Management System start menu.
 	- Alternately, IF YOU PREFER RESETTING TO A BLANK EMPTY DATABASE, you may delete your
 	previous database by selecting the "Shortcut to Data Files" entry and removing all the .db files.
 
