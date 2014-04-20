@@ -74,16 +74,23 @@ Because we use the Free edition, these steps are manual.
 
 3) Finalize and publish
   - commit all modified directories with "Release x.y.z" as comment
-  - publish Wiki
-    	- tag wiki repository with "x.y.z"
-  		- push
   - Exit Eclipse  
   - Use SourceTree HgFlow to finalize the code release
   	- Use Hg Flow to finish release
   	- push the tag (make sure checkbox is checked)
-  Restart Eclipse
-  - in project "distribution" run the maven goals:   antrun:run     (under eclipse "upload to code.google.com.launch")
-    (this will send the files to the code.google.com/p/owlcms site)
+  - use SCP to jflamy@frs.sourceforge.net:/home/pfs/project/o/ow/owlcms2 to copy the files
+    - Create a folder with the current release name
+    - Copy
+    	site/resources/ReleaseNotes.txt
+    	src/installer/owlcms-SetupFiles/owlcms.msi  (rename as owlcms-2.x.y.msi)
+    	target/owlcms-2.x.y.war/owlcms-2.x.y.war
+    	target/owlcms-2.15.0-linux.tar.gx
+    	target/owlcms-2.15.0-doc.zip
+    - Copy site/resources/ReleaseNotes.txt as README at the top level.
+    - Synchronize Wiki images using SCP
+       C:\Dev\owlcms2\owlcmsTop\distribution\src\site\resources
+       /home/project-web/owlcms2/htdocs/wiki
+    
     
 ==================================================================================    
     

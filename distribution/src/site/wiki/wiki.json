@@ -1,0 +1,164 @@
+{"pages": [{
+  "discussion_thread": {
+    "_id": "1c7a669b",
+    "posts": [],
+    "discussion_id": "531c7ede27184651f7e30993",
+    "subject": ""
+  },
+  "labels": [],
+  "related_artifacts": [],
+  "attachments": [],
+  "mod_date": "2014-04-18 17:17:19.680000",
+  "text": "## Features\r\n\r\n  * Competition Set-Up \r\n    * define platforms (supports multiple simulaneous competition platforms) \r\n    * define sessions, assign them to platforms \r\n    * import athletes from spreadsheet, assign them to sessions \r\n    * record registration category \r\n    * produce start list as Excel spreadsheet \r\n    * indicate whether competition is under Masters rules or regular rules. \r\n    * select applicable categories (e.g. for youth events) \r\n  * Weigh-in \r\n    * record body weight, initial lifts. Indicates out-of-category weights \r\n    * produce weigh-in list (starting weights) (as Excel spreadsheet) \r\n    * produce jury/examination sheet (as Excel spreadsheet) \r\n  * Sessions \r\n    * Announcer console \r\n      * Compute lifting order, automatically display next lifter \r\n      * Record that lifter has been announced \r\n      * Record successful/unsucsessful lifts (if using a seperate referee lights system) \r\n      * Compute 2 minutes according to rules (correctly manages changes to another lifter) \r\n      * Announcer may also perform all functions of Marshall and Timekeeper consoles for small meets. \r\n      * displays notification if marshall stops time by virtue of accepting weight change for current lifter. \r\n    * Marshall console \r\n      * Record all weight changes \r\n      * Interact correctly with timekeeping (stop time if weight change is for current lifter) \r\n    * Timekeeper console \r\n      * start/stop time \r\n      * reset time to one or two minutes \r\n      * displays notification if marshall stops time by virtue of accepting weight change for current lifter. \r\n    * Results console \r\n      * produce session results \r\n      * produce cumulative results \r\n      * produce competition book (with Sinclair or SMM results) \r\n    * Technical controller information \r\n      * display of plates to be loaded (available equipment is configurable). \r\n      * supports non-standard bars (e.g. 5kg, 10kg) for youth competitions \r\n  * Screen displays \r\n    * Main Competition Board \r\n      * display of lifters in official order (by category and draw number) \r\n      * also shows attempt board information and timer information. \r\n      * displays attempts done so far \r\n      * When using refereeing features, shows the refereeing lights when a decision is given. \r\n    * Attempt board \r\n      * display of current lifter information (name, affiliation, requested weight, attempt, time left) \r\n      * display of referee decisions \r\n      * in addition to screen version, a dedicated LED display can be driven through a serial connection. \r\n    * Lifting order board \r\n      * shows lifters in the order they are currently expected to be called. \r\n  * Refereeing and countdown \r\n    * Referee console \r\n      * Red/white buttons \r\n      * Reminder when referee has to give decision \r\n      * Can be run on iPod or similar small-form device. \r\n    * Lifter-facing countdown display \r\n      * Shows countdown in easily readable font \r\n      * Shows \"down\" indicator when two referees have given same decision. \r\n      * Shows decision lights in the right order (referee to the left of lifter shown at left) \r\n    * Jury display \r\n      * Same as public-facing display, but shows decisions and decision changes immediately, not after 3 second delay. \r\n  * Competition Documents as Excel Spreadsheets \r\n    * Start List (registrations) \r\n    * Weigh-in List (starting weights) \r\n    * Result List (protocol format) \r\n    * Competition Book with Sinclair and Team Rankings \r\n  * Templating System \r\n    * the jXLS package is used to produce documents. You may therefore customize the documents and books to suit your needs \r\n    * Since the documents are Excel spreadsheets, you may use custom scoring formulas for \"tradition\" meets ",
+  "title": "Features",
+  "_id": "531c7edf27184651f7e309a6",
+  "discussion_thread_url": "http://sourceforge.net/rest/p/owlcms2/wiki/_discuss/thread/1c7a669b/"
+},{
+  "discussion_thread": {
+    "_id": "03bd650b",
+    "posts": [],
+    "discussion_id": "531c7ede27184651f7e30993",
+    "subject": ""
+  },
+  "labels": [],
+  "related_artifacts": [
+    "/p/owlcms2/wiki/Installation/",
+    "/p/owlcms2/wiki/ReleaseNotes/",
+    "/p/owlcms2/wiki/Screenshots/",
+    "/p/owlcms2/wiki/SettingUpAndRunning/"
+  ],
+  "attachments": [],
+  "mod_date": "2014-04-20 13:35:52.604000",
+  "text": "# Olympic Weightlifting Competition Management System\r\n**NOTE: AS OF 2014-04-18, THE OFFICIAL SOURCE CODE AND DOCUMENTATION IS ON THIS sourceforge.net SITE.**.\r\n\r\nowlcms is an application for managing an Olympic Weightlifting competition according to the International Weightlifting Federation rules. It includes automatic calculation of lifting order, display of result and attempt information, production of competition documents, timing and refereeing. See the [Overview and Screen Shots](Screenshots) and the [Features](Overview) pages for details.\r\nDetailed instructions for [Installation](Installation), [Setting-up and Running a Competition](SettingUpAndRunning) are available. [Release Notes](ReleaseNotes) are also available for each release. \r\n\r\n![Weigh-in](http://owlcms2.sourceforge.net/wiki/img/small/Weighin.png)![Announcer](http://owlcms2.sourceforge.net/wiki/img/small/Announcer.png)\r\n![Attempt Board](http://owlcms2.sourceforge.net/wiki/img/small/AttemptBoard.png)![Decision](http://owlcms2.sourceforge.net/wiki/img/small/AttemptBoardDecision.png)\r\n![Result Board](http://owlcms2.sourceforge.net/wiki/img/small/ResultBoard.png)![Excel Results](http://owlcms2.sourceforge.net/wiki/img/small/SessionResults.png)\r\n\r\nThe application runs on a laptop or server at the competition site. It is a Web application, meaning that all the displays are shown using a standard Web browser. Wireless laptops are used to drive the various projectors or monitors. Referees can use tablets (Android or iPhone/iPad/iPod) to enter decisions. The application is built using the [Vaadin](http://vaadin.com) Rich Internet Application framework. \r\n\r\nThe application is used by the [Qu\u00e9bec Weightlifting Federation](http://www.fedhaltero.qc.ca) to manage the provincial and national championships it organizes. Thanks to the [Concordia-International Weightlifting Club](http://www.concordia-international.org/index-3.html) and the [Montreal Regional Weightlifing Association](http://www.halteromtl.ca/) for their support for early releases of the software. \r\n\r\nThe application was written and is maintained by Jean-Fran\u00e7ois Lamy, IWF International Referee Level 2. It is currently licensed under the [Mozilla Public License (MPL-2.0)](http://mozilla.org/MPL/2.0/). As a consequence, anyone who distributes or modifies the software must provide full access to the source code, including that of modifications. \r\n\r\nDisclaimer: Note that even though the application does comply with current IWF rules, at this time IWF official certification has not been sought. You are free to use the application as is; contact the author for licensing and support fees. ",
+  "title": "HomePage",
+  "_id": "531c7ee227184651f7e309d6",
+  "discussion_thread_url": "http://sourceforge.net/rest/p/owlcms2/wiki/_discuss/thread/03bd650b/"
+},{
+  "discussion_thread": {
+    "_id": "ce61ba92",
+    "posts": [],
+    "discussion_id": "531c7ede27184651f7e30993",
+    "subject": ""
+  },
+  "labels": [],
+  "related_artifacts": [
+    "/p/owlcms2/wiki/Installation/",
+    "/p/owlcms2/wiki/ReleaseNotes/",
+    "/p/owlcms2/wiki/RunningACompetition/",
+    "/p/owlcms2/wiki/Screenshots/",
+    "/p/owlcms2/wiki/TechnicalRequirements/"
+  ],
+  "attachments": [],
+  "mod_date": "2014-04-20 02:01:02.508000",
+  "text": "[Overview and Screen Shots](Screenshots)\r\n\r\n[Features](Overview)\r\n\r\n[Picture Gallery 1: Full Competition Setup](https://plus.google.com/u/0/photos/105919521795108981338/albums/5874578994820388945)\r\n\r\n[Picture Gallery 2: Use with a Legacy Decision System ](https://plus.google.com/u/0/photos/105919521795108981338/albums/5874572460887684977)\r\n\r\n[Picture Gallery 3: Testing Lab](https://plus.google.com/u/0/photos/105919521795108981338/albums/5704970293427898561)\r\n\r\n[Installation and Setup](Installation)\r\n\r\n[Running a Competition](RunningACompetition)\r\n\r\n[Technical Information](TechnicalRequirements)\r\n\r\n[Release Notes](ReleaseNotes)\r\n\r\n[Announcements and Discussion Group](http://groups.google.com/group/owlcms)\r\n\r\n",
+  "title": "Index",
+  "_id": "531c7ee227184651f7e309ce",
+  "discussion_thread_url": "http://sourceforge.net/rest/p/owlcms2/wiki/_discuss/thread/ce61ba92/"
+},{
+  "discussion_thread": {
+    "_id": "b84f87b8",
+    "posts": [],
+    "discussion_id": "531c7ede27184651f7e30993",
+    "subject": ""
+  },
+  "labels": [],
+  "related_artifacts": [
+    "/p/owlcms2/wiki/HomePage/",
+    "/p/owlcms2/wiki/Index/",
+    "/p/owlcms2/wiki/SettingUpAndRunning/"
+  ],
+  "attachments": [],
+  "mod_date": "2014-04-20 13:31:24.771000",
+  "text": "# Installation\r\n\r\nThree methods are available for installing and running the system, as explained below. \r\n\r\nOnce you have installed the software, refer to the [SettingUpAndRunning] page for information on the actual competition.\r\n\r\n## Windows Installer\r\n\r\nThe easiest way to get familiar with the system is to use a Windows machine. A full [Installation guide for Windows](https://sourceforge.net/p/owlcms2/code/ci/default/tree/owlcms/doc/Guides/Installation.pdf?format=raw) is available. \r\n\r\nYou can get the Windows installer from the [Downloads](https://sourceforge.net/projects/owlcms2/files/) area. \r\n\r\nWhen you run the system for the first time, it will check if you have Java installed. If missing, it will bring you to the download page.\r\n\r\nNOTE: if you intend to run large competitions on a regular basis, we recommend that you use a full web server with the WAR option below.\r\n\r\n## Linux Installer\r\n\r\nA \"tar\" archive is provided. Simply extract the archive to a directory and run the \"go\" script. You need to \"sudo\" to run the application so it can open the HTTP port 80. You need to have installed Java 6 beforehand (use the \"apt-get install openjdk-6-jre\" command to do so if missing). The \"Read Me\" file is located in the \"launch\" directory. \r\n\r\n## WAR Archive for Web Server\r\n\r\nIf you have a regular Tomcat or Jetty server running, you may use the standard methods for deploying a War archive. Other Web servers such as GlassFish, JBoss, etc. should also work, but have not been tested. ",
+  "title": "Installation",
+  "_id": "531c7ee027184651f7e309ae",
+  "discussion_thread_url": "http://sourceforge.net/rest/p/owlcms2/wiki/_discuss/thread/b84f87b8/"
+},{
+  "discussion_thread": {
+    "_id": "2fccbb28",
+    "posts": [],
+    "discussion_id": "531c7ede27184651f7e30993",
+    "subject": ""
+  },
+  "labels": [],
+  "related_artifacts": [
+    "/p/owlcms2/wiki/HomePage/",
+    "/p/owlcms2/wiki/Index/"
+  ],
+  "attachments": [],
+  "mod_date": "2014-04-18 22:53:44.131000",
+  "text": "Release Notes\r\n=============\r\nFull Release Notes arefound in the README file in the [Files](https://sourceforge.net/projects/owlcms2/files/) area of the site.  This page contains release notes for the past few releases.\r\n\r\nRelease 2.14.10\r\n---------------\r\n* Fix: Issue 101: When using refereeing devices, the announcer could receive a spurious notification on automatic progression or on lift changes (for example, if the athlete just finishing snatch happened to be the first athlete on C&J)\r\n  \r\nRelease 2.14.9 \r\n---------------\r\n* Fix: Issue 100: Fixed Bluetooth keyboard issues related to autorepeat.  If one or more referees kept the button pressed there would be needless recalculations of lifting order (and delays in display).  \"autorepeat\" decisions are now ignored.\r\n\r\nRelease 2.14.8 \r\n---------------\r\n* Fix: Issue 98: Fixed Bluetooth keyboard issues with the Jury decision display that were most obvious when using the Android version of Chrome in full-screen \"application\" mode (there was a to refresh the browser once to get things going, but in that mode there is no way to refresh the browser). Now fixed.\r\n* Improvement: Issue 99: it is now possible to set the environment variable OWLCMS_LOCALE to (say) da to force the program to use Danish language translatiosns if translations have been added to the WEB-INF/i18n/messages_da.properties files\r\n  \r\n  \r\nRelease 2.14.7 \r\n---------------\r\n* Fix: Issue 97: \tAs per TCRR regulation to 3.3.6.12, restored the prior correct behavior of showing referee decisions immediately on Jury screen. Only the jury decisions are kept from view (green indicators for decisions entered by jury members until which time jury has decided).  Had implemented the \"green until decided\" policy for referees as well, erroneously.\r\n\r\nRelease 2.14.6 \r\n---------------\r\n* Improvement: Issue 96:\tRevamped the jury display to accept input from keyboards, allowing wireless Bluetooth jury devices to be built.  As per TCRR, green indicator is given for which jury members have entered a decision.  Also shows which referees have entered a decision (or more to the point failed to do so)\r\n* Fix: Issue 95: \tWhen using the system with a separate timer, the option to hide the clock from the attempt board was being ignored. Now behaves as expected.\r\n  \r\nRelease 2.14.5 \r\n---------------\r\n* Fix: Issue 93:\tAfter using the \"Break\" button to display the intermission/time to start timer, decisions would no longer be shown on the attempt board (three gray rectangles instead of red/white).  Fixed - the attempt screen no longer stops listening to decision events.\r\n* Fix: Issue 94: \tResult and weigh-in list would no longer refresh after switching groups (regression in release 2.14.3). Now refreshes as expected.\r\n\r\nRelease 2.14.4 \r\n---------------\r\n* Improvement: some browsers on Android devices don't send the languages they are willing to accept.  System property owlcms.locale can be set to a locale such as fr_CA to force a locale (Canadian French as a random example) .  -Dowlcms.locale=fr_CA on the command line  or owlcms.locale=fr_CA in the catalina.properties file does the trick.\r\n* Technical improvement: logs should no longer show a warning about orphaned ThreadLocal variables.\r\n* Fix: made sure Linux build works.  Tested on XUbuntu 13.10.\r\n\r\nRelease 2.14.3 \r\n---------------\r\n* Fix: (Android devices) Found a workaround around the glitch that was causing Chrome Beta to repeatedly request the page, and other Android browsers to behave unpredictably when opening the page from a home screen shortcut\r\n* Cosmetic: made colors for the TV display less bland\r\n* Cosmetic: made sure that compound names and team names (e.g. L\u00c9VESQUE-LAMY Andr\u00e9ane-Genevi\u00e8ve W-I) don't get split on the hyphens on the display board when there isn't enough room as this looks really weird.\r\n  \r\nRelease 2.14.2 \r\n---------------\r\n* Cosmetic: (finally) Found a workaround to remove the spurious white line at bottom of black full-screen displays (decisions, attempt) which would be most visible on Android devices using the built-in browser or Chrome.\r\n* Technical improvement: remove unneeded pushes from server to browser for clock updates\r\n\r\nRelease 2.14.1 \r\n---------------\r\n* Fix: Issue 92: Checkmark for \"announced\" status was not always tracking correctly the actual status - one case had been missed in 2.14.0.\r\n* Fix: Issue 90: Medal ranks were not being shown properly on result sheets.  Fixed to show ranks <= 3 (duh).\r\n* Cosmetic: Issue 91: Cosmetic: on wide-screens, the result board would show the C&J requested weights with an abnormally wide\r\n* Cosmetic: A spurious white line would show at the bottom of the attempt board and lifter-facing screen under Android.  Brute-forced a fix for Firefox on Android, which is the currently recommended browser for Android TV boxes.\r\n* Cosmetic: Fixed attempt board decision lights for Firefox (rounded corners and spacing).\r\n* Cosmetic: Made athlete name larger still on attempt board.\r\n  \r\nRelease 2.14.0 \r\n---------------\r\n* Fix: Issue 85: Duplicate image of weights was being shown at the end of the pause, missing weight image when switching to empty session and back\r\n* Fix: Issues 87, 88 and 89.  Announcer buttons would (intermittently) show up in disabled states, and spurious notifications (lifter not announced, time not started, ...) would show up.  Old remnants of the user interface were removed and all updates now go through the master group controller and avoid such inconsistencies.\r\n* Improvement: when the Marshall changes weight for the current lifter, the notifications on the announcer consoles are no longer sticky. They will go away after a while. The delay is intentionally longer so the announcer will have a good chance of noticing. Clicking on the X will make them go away.\r\n* Improvement: cleaned up windowing and recognition of closed windows on mobile devices, so that navigation behaves better\r\n* Improvement: Support for Chrome full-screen application mode on Android. As of Nov. 2013, this is found in Chrome Beta.  Creating an application shortcut on the home screen makes the application run full screen, with no menus.  Right-click (back) exits the application. Tested on Android 4.1 upward. Note that currently Chrome Beta is not ready for production (for example, the attempt board works fine, but the result board gets constantly refreshed).  We suggest using Firefox on Android devices, as it is easy to refresh if the server is restarted (drag the top of the window down, hit the reload icon).\r\n* Improvement: Made fonts larger on the attempt board - medium setting (which is what appears to work best with Android TV boxes at both 720p and 1080p).\r\n* Improvement: Renamed the \"pale\" setting for the result board to \"TV\".  Reduced the font size so that groups with 20 lifters display correctly using an Android TV box connected to a flat screen TV.  On non-Android Boxes, you can use Ctrl-+ (control-plus) and Ctrl-- (control-minus) to tweak the font size.\r\n",
+  "title": "ReleaseNotes",
+  "_id": "531c7ee127184651f7e309c6",
+  "discussion_thread_url": "http://sourceforge.net/rest/p/owlcms2/wiki/_discuss/thread/2fccbb28/"
+},{
+  "discussion_thread": {
+    "_id": "0d111dcb",
+    "posts": [],
+    "discussion_id": "531c7ede27184651f7e30993",
+    "subject": ""
+  },
+  "labels": [],
+  "related_artifacts": [
+    "/p/owlcms2/wiki/Index/"
+  ],
+  "attachments": [],
+  "mod_date": "2014-04-20 13:42:02.654000",
+  "text": "",
+  "title": "RunningACompetition",
+  "_id": "531c7ee027184651f7e309b6",
+  "discussion_thread_url": "http://sourceforge.net/rest/p/owlcms2/wiki/_discuss/thread/0d111dcb/"
+},{
+  "discussion_thread": {
+    "_id": "f27e1599",
+    "posts": [],
+    "discussion_id": "531c7ede27184651f7e30993",
+    "subject": ""
+  },
+  "labels": [],
+  "related_artifacts": [
+    "/p/owlcms2/wiki/HomePage/",
+    "/p/owlcms2/wiki/Index/"
+  ],
+  "attachments": [],
+  "mod_date": "2014-04-18 17:15:27.394000",
+  "text": "# Overview and Screenshots\r\n\r\n## Announcer, Marshall and Timekeeper Screens\r\n\r\nThe system can handle multiple platforms (it is used routinely to handle dual simultaneous sessions) with independent displays and consoles. \r\n\r\nFor each competition platform, there is one announcer console, as many marshall screens as required, and a timekeeper console. Information entered on any screen is immediately reflected on the others. Notifications are shown on other consoles when, for instance, a weight request is entered by the marshall that changes the lifting sequence and stops the clock. \r\n\r\nFor smaller meets, the announcer can easily act as marshall and timekeeper, entering weight changes and operating the clock. \r\n\r\nLifting order is automatically computed, and the rules concerning the alloted time (whether a lifter gets two minutes or one, and whether time should be resumed) are taken into account. \r\n\r\n![](http://owlcms2.sourceforge.net/wiki/img/images/announcer.jpg)\r\n\r\n## Timekeeping and Notifications\r\n\r\nWhen the system is used to perform timekeeping, a simple user interface is used to manage the clock. For a small competition, the announcer can act as timekeeper from the announcer console (there is a checkbox to enable the clock buttons). For a larger competition, a separate laptop or tablet is used for the timekeeper. \r\n\r\n![](http://owlcms2.sourceforge.net/wiki/img/images/timekeeping.png)\r\n\r\nThe various consoles are synchronized: a weight entered by a marshall affecting the current lifter will stop the clock. The timekeeper and announcer are notified on their screen, greatly improving communications. \r\n\r\n![](http://owlcms2.sourceforge.net/wiki/img/images/notification.jpg)\r\n\r\nSince the system also computes the alloted time, and memorizes who lifted last, errors are radically reduced. Countdown time is shown on the attempt board and all result boards (see below) \r\n\r\n## Result Board and Attempt Board\r\n\r\nThe attempt board shows the time remaining, and information about the current lifter and requested weight. \r\n\r\n![](http://owlcms2.sourceforge.net/wiki/img/AttemptBoard.png)\r\n\r\nThe public gets instant notification of decisions on the attempt board. \r\n\r\n![](http://owlcms2.sourceforge.net/wiki/img/AttemptBoardDecision.png)\r\n\r\nThe information from the attempt board is also shown on top of the results to accomodate smaller meets where using separate displays is impractical. The result board is also used for the warmup area; there can be as many boards as required. \r\n\r\n![](http://owlcms2.sourceforge.net/wiki/img/ResultBoard.png)\r\n\r\n## Refereeing\r\n\r\nReferees enter their own decision. Any modern browser platform can be used, including pocket devices like an iPod, iPad or Android tablet, or a laptop. In order to access the refereeing features from a tablet, a different address is used, which gives access to a mobile device menu \r\n\r\n![](http://owlcms2.sourceforge.net/wiki/img/mobileMenu.png)\r\n\r\nEach referee uses a mobile device or a laptop to enter his or her decision. It is possible to use USB devices or Bluetooth devices (such as Wii remotes) to give referees devices with actual buttons. Any device that can be configured to send the digits 1 to 6 (acting as a keyboard) can be used. \r\n\r\n![](http://owlcms2.sourceforge.net/wiki/img/ref1.png)\r\n\r\nThe jury (or the announcer) can see the decisions as they are entered, and see that an official is slow entering decisions, or has failed to do so. In the following example, the yellow rectangle indicates that the official has yet to enter a decision, whereas the two other referees have given their decision and the down signal has been given. \r\n\r\n![](http://owlcms2.sourceforge.net/wiki/img/refDecision.png)\r\n\r\nWhen a jury is present, each member of the Jury can get a decision device. A separate device is used to display jury decisions, to determine whether unanimity has been reached. Currently, 3-person juries are supported (we have yet to organize a competition large enough to use a 5 person jury). \r\n\r\n![](http://owlcms2.sourceforge.net/wiki/img/jury1.png)\r\n\r\nWhen such equipment is not available, the system can be used with an external decision light systems, or with flags. In that case, the announcer records the decision in the system as he announces it to the public. \r\n\r\n## Lifter Display\r\n\r\nThe countdown is shown full-screen on a lifter-facing display, and is also shown on all result boards. \r\n\r\n![](http://owlcms2.sourceforge.net/wiki/img/images/countdown.jpg)\r\n\r\nThe lifter \"down\" signal and the decisions are displayed. The decisions also are shown on the attempt board and on top of the result board so the audience can see them. \r\n\r\n![](http://owlcms2.sourceforge.net/wiki/img/images/down.jpg)\r\n\r\n![](http://owlcms2.sourceforge.net/wiki/img/images/decision.jpg)\r\n\r\n## Plates display\r\n\r\nThe various consoles have access to a pop-up screen that defines which plates are available on the platform. It is also possible to override the normal weight of the bar (for example if a 15pounds/7kg bar is used for a kid competition), and to state whether collars are used or not. \r\n\r\nThe resulting combination of plates is shown on the attempt board, can be shown on the announcer/timekeeper consoles, and can also be shown on a portable device \r\n\r\n![](http://owlcms2.sourceforge.net/wiki/img/mobilePlates.png)\r\n\r\n## Result Documents\r\n\r\nThe system produces the start list, lifter cards, weigh-in list, competition results for each group, and cumulative competition results with team rankings (competition book). All these documents are produced in Excel format. \r\n\r\n![](http://owlcms2.sourceforge.net/wiki/img/images/sessionresults.jpg)\r\n\r\n![](http://wiki.owlcms.googlecode.com/hg/img/images/competitionbook.jpg)\r\n\r\n## Weigh-in Screen\r\n\r\nAthlete registration information is normally uploaded from a spreadsheet. Several administrative screens allow editing of the registration information. The following screenshot illustrates how information about body weights and declared lifts is captured. \r\n\r\n![](http://wiki.owlcms.googlecode.com/hg/img/images/weighin.jpg)\r\n\r\n## Competition Secretary\r\n\r\nThe system also produces the start list, lifter cards and weigh-in list. \r\n\r\n![](http://wiki.owlcms.googlecode.com/hg/img/images/startlist.jpg)\r\n\r\n![](http://wiki.owlcms.googlecode.com/hg/img/images/liftercards.jpg)",
+  "title": "Screenshots",
+  "_id": "531c7edf27184651f7e3099f",
+  "discussion_thread_url": "http://sourceforge.net/rest/p/owlcms2/wiki/_discuss/thread/f27e1599/"
+},{
+  "discussion_thread": {
+    "_id": "aa7f6241",
+    "posts": [],
+    "discussion_id": "531c7ede27184651f7e30993",
+    "subject": ""
+  },
+  "labels": [],
+  "related_artifacts": [
+    "/p/owlcms2/wiki/HomePage/",
+    "/p/owlcms2/wiki/Installation/"
+  ],
+  "attachments": [],
+  "mod_date": "2014-04-20 13:56:59.736000",
+  "text": "Competition Secretary Guide\r\n----------------------------\r\nOnce you have installed the system, a [Competition Setup Guide](https://sourceforge.net/p/owlcms2/code/ci/default/tree/owlcms/doc/Guides/Competition%20Setup.pdf?format=raw) explains how the competition secretary can setup the data for a competition and produce the competition documents.\r\n\r\nAnnouncer Guide\r\n---------------\r\nThe [Announcer Quick Start Guide](https://sourceforge.net/p/owlcms2/code/ci/default/tree/owlcms/doc/Guides/AnnouncerQuickStart.pdf?format=raw) provides a quick overview on how to use the system. \r\nSince the screen layouts for the time keeper and the marshals are very similar, the guide is also useful for these officials. ",
+  "title": "SettingUpAndRunning",
+  "_id": "5353cb5924b0d95bc74bb187",
+  "discussion_thread_url": "http://sourceforge.net/rest/p/owlcms2/wiki/_discuss/thread/aa7f6241/"
+},{
+  "discussion_thread": {
+    "_id": "819e71d1",
+    "posts": [],
+    "discussion_id": "531c7ede27184651f7e30993",
+    "subject": ""
+  },
+  "labels": [],
+  "related_artifacts": [
+    "/p/owlcms2/wiki/Index/"
+  ],
+  "attachments": [],
+  "mod_date": "2014-04-20 13:49:39.982000",
+  "text": "## Technical Requirements\r\n\r\n  * Java 6 or more recent. If it is not installed, you will be brought to the download page the first time you run the program. \r\n  * Tomcat 7 (version 7 is included as part of the Windows and Linux stand-alone kits) \r\n  * 2Gb, 1.7GHz or better Dual-Core laptop for central station (any laptop less than 5 years old will do, for older laptops give it a try!) \r\n  * On Windows, we suggest using Google Chrome, especially on older/smaller laptops. A version you can copy on a USB stick and run without installing can be found at [PortableApps Chrome](http://portableapps.com/apps/internet/google_chrome_portable)\r\n  * For display, any old laptop will do. Chrome is recommended for Linux and Windows. You may also use Android TV Boxes (cheap computers that connect to an HDMI-capable TV or monitor) -- you can get such boxes for 60-90$. For Android boxes, we recommend using Firefox for Android. \r\n\r\n## About the program\r\n\r\nThe program is written as a Web application using the [Vaadin](http://vaadin.com) framework.\r\nInteresting statistics about the program can be found on the Ohloh site: [owlcms stats](http://www.ohloh.net/p/owlcms)",
+  "title": "TechnicalRequirements",
+  "_id": "531c7ee027184651f7e309be",
+  "discussion_thread_url": "http://sourceforge.net/rest/p/owlcms2/wiki/_discuss/thread/819e71d1/"
+}]}
