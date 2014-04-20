@@ -9,7 +9,7 @@
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<files>
 		<file>
-			<source>../../wiki/ReleaseNotes.wiki</source>
+			<source>target/resources/ReleaseNotes.txt</source>
 			<outputDirectory>/</outputDirectory>
 			<destName>ReleaseNotes.txt</destName>
 		</file>
