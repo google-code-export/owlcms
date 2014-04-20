@@ -146,7 +146,7 @@ public class WebApplicationConfiguration implements HbnSessionManager, ServletCo
     private static void h2Setup(boolean testMode, String dbPath, AnnotationConfiguration cnf1) throws IOException {
         cnf1.setProperty(Environment.DRIVER, "org.h2.Driver"); //$NON-NLS-1$
         if (testMode) {
-            cnf1.setProperty(Environment.URL, "jdbc:h2:mem:competition"); //$NON-NLS-1$
+            cnf1.setProperty(Environment.URL, "jdbc:h2:mem:competition;MVCC=TRUE"); //$NON-NLS-1$
             cnf1.setProperty(Environment.SHOW_SQL, "false"); //$NON-NLS-1$
             cnf1.setProperty(Environment.HBM2DDL_AUTO, "create-drop"); //$NON-NLS-1$
         } else {
