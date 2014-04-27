@@ -27,8 +27,8 @@
 
 	<logger name="org.concordiainternational" level="INFO" />
 
-
     <!--
+    	<logger name="org.concordiainternational.competition.ui.components.Menu" level="DEBUG" />
     	<logger name="buttons.TimerControls" level="DEBUG" />
 		<logger name="org.concordiainternational.competition.ui.components.TimerControls" level="DEBUG" />
     
