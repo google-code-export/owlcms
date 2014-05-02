@@ -10,7 +10,7 @@
 	<includeBaseDirectory>false</includeBaseDirectory>
 	<files>
 		<file>
-			<source>target/resources/ReleaseNotes.txt</source>
+			<source>site/resources/ReleaseNotes.txt</source>
 			<outputDirectory>doc</outputDirectory>
 			<destName>ReleaseNotes.txt</destName>
 		</file>
