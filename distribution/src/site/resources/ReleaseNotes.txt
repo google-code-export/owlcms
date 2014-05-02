@@ -6,6 +6,7 @@ NOTE: If you have installed owlcms prior to release 2.15.0, a database update is
 Release 2.15.1
 --------------
 * Improvement: Issue 103: The "About" entry in the menu shows the browser URL you should use when connecting other laptops/tablets/phones in order to drive multiple screens.
+* Fix: Template for "Louis-Cyr" Youth tournament fixed to avoid issues when publishing results when only boys or only girls have lifted. This fix will need to be retrofitted to all templates.
 
 Release 2.15.0
 --------------
