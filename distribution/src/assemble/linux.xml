@@ -8,14 +8,14 @@
 		<format>dir</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
-	<files>
-		<file>
-			<source>site/resources/ReleaseNotes.txt</source>
-			<outputDirectory>doc</outputDirectory>
-			<destName>ReleaseNotes.txt</destName>
-		</file>
-	</files>
 	<fileSets>
+		<fileSet>
+			<directory>src/site/resources</directory>
+			<includes>
+				<include>ReleaseNotes.txt</include>
+			</includes>
+			<outputDirectory>doc</outputDirectory>
+		</fileSet>
 		<fileSet>
 			<directory>../owlcms/target/owlcms-${project.version}</directory>
 			<includes>
