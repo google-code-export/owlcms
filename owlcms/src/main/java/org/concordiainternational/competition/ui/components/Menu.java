@@ -9,7 +9,13 @@ package org.concordiainternational.competition.ui.components;
 
 import java.io.File;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.URL;
 import java.text.MessageFormat;
+import java.util.Enumeration;
 import java.util.Locale;
 
 import javax.servlet.ServletContext;
@@ -20,6 +26,7 @@ import org.concordiainternational.competition.ui.CompetitionApplication;
 import org.concordiainternational.competition.ui.CompetitionApplicationComponents;
 import org.concordiainternational.competition.ui.LoadWindow;
 import org.concordiainternational.competition.ui.SessionData;
+import org.concordiainternational.competition.utils.LoggerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -655,11 +662,96 @@ public class Menu extends MenuBar implements Serializable {
                         window.setCaption(" " + name);
                         String pattern = Messages.getString("About.message", CompetitionApplication.getCurrentLocale());
                         String message = MessageFormat.format(pattern, version, "Jean-François Lamy", url, url,
-                                "lamyjeanfrancois@gmail.com");
+                                "lamyjeanfrancois@gmail.com", getUrls());
                         window.addComponent(new Label(message, Label.CONTENT_XHTML));
                         getApplication().getMainWindow().addWindow(window);
                         window.center();
                     }
+                    
+                    /**
+                     * Try to guess URLs that can reach the system.
+                     * 
+                     * The browser on the master laptop most likely uses "localhost" in its URL.  We can't know which of its available
+                     * IP addresses can actually reach the application. We scan the network addresses, and try the URLs one by one,
+                     * listing wired interfaces first, and wireless interfaces second (in as much as we can guess).
+                     * 
+                     * We rely on the URL used to reach the "about" screen to know how the application is named, what port is used, and
+                     * which protocol works.
+                     * 
+                     * @return HTML ("a" tags) for the various URLs that appear to work.
+                     */
+                    private String getUrls() {
+                        URL requestUrl = CompetitionApplication.getCurrent().getURL();
+                        logger.debug("request URL = {}", requestUrl);
+                        String protocol = requestUrl.getProtocol();
+                        String siteString = requestUrl.getFile();
+                        int requestPort = requestUrl.getPort();
+
+                        String ip;
+                        StringBuilder wireless = new StringBuilder();
+                        StringBuilder wired = new StringBuilder();
+//                        Set<String> done = new HashSet<String>(10);
+                        try {
+                            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+                            while (interfaces.hasMoreElements()) {
+                                NetworkInterface iface = interfaces.nextElement();
+                                // filters out 127.0.0.1 and inactive interfaces
+                                if (iface.isLoopback() || !iface.isUp())
+                                    continue;
+
+                                Enumeration<InetAddress> addresses = iface.getInetAddresses();
+                                while(addresses.hasMoreElements()) {
+                                    InetAddress addr = addresses.nextElement();
+                                    ip = addr.getHostAddress();
+                                    
+                                    String displayName = iface.getDisplayName();
+                                    String lowerCase = displayName.toLowerCase();
+                                    boolean ipV4 = addr.getAddress().length == 4;
+                                    
+                                    // filter out IPV6 and interfaces to virtual machines
+                                    if (!ipV4 || lowerCase.contains("virtual")) continue;
+
+                                    // try reaching the current IP address with the known protocol, port and site.
+                                    try {
+                                        URL u = new URL(protocol, ip, requestPort, siteString);
+                                        String externalForm = u.toExternalForm();
+                                        HttpURLConnection huc =  (HttpURLConnection)  u.openConnection(); 
+                                        huc.setRequestMethod("GET"); 
+                                        huc.connect(); 
+                                        int response = huc.getResponseCode();
+
+                                        if (response != 200) {
+                                            logger.debug("{} not reachable: {}", externalForm, response);
+                                        } else {
+                                            logger.debug("{} OK: {}", externalForm, lowerCase);
+                                            String urlString = "<a href='"+externalForm+"'>"+externalForm+"</a>";
+                                            if (lowerCase.contains("wireless")) {
+                                                wireless.append(urlString);
+                                                wireless.append("<br/>");
+                                            } else {
+                                                wired.append(urlString);
+                                                wired.append("<br/>");
+                                            }
+                                            break;
+                                        }
+                                    } catch (Exception e) {
+                                        LoggerUtils.traceException(logger,e);  
+                                    }
+                                }
+                            }
+                        } catch (SocketException e) {
+                            LoggerUtils.debugException(logger,e);
+                        }
+                        logger.debug("wired = {} {}",wired,wired.length());
+                        logger.debug("wireless = {} {}",wireless,wireless.length());
+                        if (wired.length() == 0 && wireless.length() == 0) {
+                            return Messages.getString("About.urlUnknown", CompetitionApplication.getCurrentLocale());
+                        } else {
+                            return wired.toString()+wireless.toString();
+                        }
+                       
+                    }        
+                    
                 });
     }
 }

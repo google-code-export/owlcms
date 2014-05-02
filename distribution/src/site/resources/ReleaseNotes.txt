@@ -1,6 +1,11 @@
 Release Notes
 =============
-Current Release Notes are found in the README file in the [Files](https://sourceforge.net/projects/owlcms2/files/) area of the site.
+Current Release Notes are found in the README file in the [Files](https://sourceforge.net/projects/owlcms2/files/) area of the source repository.
+NOTE: If you have installed owlcms prior to release 2.15.0, a database update is required; please refer to the section for that version.
+
+Release 2.15.1
+--------------
+* Improvement: Issue 103: The "About" entry in the menu shows the browser URL you should use when connecting other laptops/tablets/phones in order to drive multiple screens.
 
 Release 2.15.0
 --------------

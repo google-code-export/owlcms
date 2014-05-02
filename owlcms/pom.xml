@@ -5,7 +5,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<version>2.15.0</version>
+	<version>2.15.1</version>
 	<name>Olympic Weightlifting Competition Management System</name>
 
 	<parent>
@@ -24,7 +24,7 @@
 	</properties>
 
 	<description>Web Application for managing an Olympic Weightlifting Competition.</description>
-	<url>http://code.google.com/p/owlcms</url>
+	<url>https://sourceforge.net/projects/owlcms2</url>
 	<licenses>
 		<license>
 			<name>Mozilla Public License, v. 2.0</name>
@@ -37,9 +37,8 @@
 			<resource>
 				<directory>${basedir}/src/main/resources</directory>
 			</resource>
-			<!-- create a filtered web.xml to be used by jetty; see maven-war-plugin 
-				below for similar processing used for war; Note that WTP integration for 
-				eclipse applies filters to WEB-INF by default -->
+			<!-- create a filtered web.xml for jetty. see maven-war-plugin 
+				below for similar processing used for war; -->
 			<resource>
 				<directory>${basedir}/src/main/webapp/WEB-INF</directory>
 				<includes>
@@ -47,6 +46,16 @@
 				</includes>
 				<filtering>true</filtering>
 				<targetPath>${project.build.directory}/jetty/WEB-INF</targetPath>
+			</resource>
+			<!-- create a filtered web.xml for eclipse m2e-wtp; see maven-war-plugin 
+				below for similar processing used for war; -->
+			<resource>
+				<directory>${basedir}/src/main/webapp/WEB-INF</directory>
+				<includes>
+					<include>*.xml</include>
+				</includes>
+				<filtering>true</filtering>
+				<targetPath>${project.build.directory}/m2e-wtp/web-resources/WEB-INF</targetPath>
 			</resource>
 		</resources>
 
