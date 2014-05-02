@@ -1,0 +1,132 @@
+/*
+ * Copyright 2009-2012, Jean-François Lamy
+ * 
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
+body {
+	font-family: "arial",sans-serif;
+}
+
+table {
+	border-collapse: collapse;
+	font-size: medium;
+	width: 100%;
+}
+
+th {
+	border-spacing: 0;
+	border-width: 1px;
+	border-color: black;
+	border-style: solid;
+	padding: 4px;
+	font-family: sans-serif;
+	font-weight: normal;
+}
+
+td {
+	border-spacing: 0;
+	border-width: 1px;
+	border-color: black;
+	border-style: solid;
+	padding: 4px;
+	font-family: sans-serif;
+	font-weight: 500;
+	font-size: small;
+}
+
+td.weight {
+	text-align: center;
+	width: 7%;
+	/* font-weight: bold; */
+}
+
+td.narrow {
+	text-align: right;
+	width: 2%;
+	font-weight: normal;
+}
+
+td.cat {
+	text-align: center;
+	width: 2%;
+	font-weight: normal;
+}
+
+td.club {
+	text-align: center;
+	width: 2%;
+	font-weight: normal;
+}
+
+.name {
+	width: 15%
+}
+
+td.fail {
+	color: black;
+/* 	font-size: large; */
+	font-weight: 700;
+	background-color: #FF8080; /* 50% saturated red */
+	text-align: center;
+	width: 7%;
+}
+
+td.success {
+	font-weight: 700;
+/* 	font-size: large; */
+	background-color: #80FF80; /* desaturated green */
+	color: black;
+	text-align: center;
+	width: 7%;
+}
+
+.done {
+	background-color: blue;
+	color: white;
+}
+
+.current {
+	background-color: #99FFF2; /* D8FFFB desaturated aqua */
+	/* text-decoration: blink; */
+	font-weight: bolder; 
+}
+
+
+.currentWeight {
+	background-color: #99FFF2; /* desaturated aqua */
+	/* text-decoration: blink; */
+	/* 	font-size: medium; */
+	color: navy;
+	font-style: italic;
+	text-align: center; 
+	width: 7%; 
+}
+
+.requestedWeight {
+	color: navy;
+/* 	font-size: smaller; */
+	font-style: italic;
+	font-weight: 300;
+	text-align: center;
+	width: 7%;
+}
+.liftsDone {
+	margin-left: 5em;
+}
+
+div.title {
+	margin-top: 1ex;
+	margin-bottom: 0.6ex;
+}
+span.title {
+	font-size: medium;
+	font-weight: bold;
+}
+
+.english {
+	font-weight: normal;
+	font-size: smaller;
+	display: block; /* replace with "display: none" to hide the translation */
+	}
