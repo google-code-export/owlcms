@@ -7,14 +7,14 @@
 		<format>zip</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
-	<files>
-		<file>
-			<source>target/resources/ReleaseNotes.txt</source>
-			<outputDirectory>/</outputDirectory>
-			<destName>ReleaseNotes.txt</destName>
-		</file>
-	</files>
 	<fileSets>
+		<fileSet>
+			<directory>src/site/resources</directory>
+			<includes>
+				<include>ReleaseNotes.txt</include>
+			</includes>
+			<outputDirectory>doc</outputDirectory>
+		</fileSet>
 		<fileSet>
 			<directory>../owlcms/doc</directory>
 			<includes>
