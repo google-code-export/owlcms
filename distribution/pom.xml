@@ -68,7 +68,7 @@
 					<target>
 						<property file="sourceforge.properties" />
 						<property name="targetVersion" value="${project.version}" />
-						<property name="targetDirBaseName" value="${project.version}.test" />
+						<property name="targetDirBaseName" value="${targetVersion}" /> <!-- add a .test suffix for testing -->
 						<property name="stagingParent" value="target/remote" />
 						<property name="stagingDir" value="${stagingParent}/${targetDirBaseName}" />
 						
@@ -78,7 +78,6 @@
 						<!-- release files, in a folder with the version number -->
 						<copy file="src/site/resources/ReleaseNotes.txt" 
 							tofile="${stagingDir}/README.txt" />		
-						<!-- 
 						<copy file="target/owlcms-${targetVersion}-war/owlcms-${targetVersion}.war"
 							tofile="${stagingDir}/owlcms-${targetVersion}.war" />
 						<copy file="src/installer/owlcms-SetupFiles/owlcms.msi"
@@ -87,7 +86,7 @@
 							tofile="${stagingDir}/owlcms-${targetVersion}-linux.tar.gz" />
 						<copy file="target/owlcms-${targetVersion}-doc.zip"
 							tofile="${stagingDir}/owlcms-${targetVersion}-doc.zip" />
-						 -->
+
 						 <!-- top-level files -->
 						<copy file="src/site/resources/ReleaseNotes.txt" 
 							tofile="${stagingParent}/README.txt" /> <!-- this will override top-level README -->
