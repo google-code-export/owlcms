@@ -1,0 +1,554 @@
+Release Notes
+=============
+Current Release Notes are found in the README file in the [Files](https://sourceforge.net/projects/owlcms2/files/) area of the source repository.
+NOTE: If you have installed owlcms prior to release 2.15.0, a database update is required; please refer to the section for that version.
+
+Release 2.15.1
+--------------
+* Improvement: Issue 103: The "About" entry in the menu shows the browser URL you should use when connecting other laptops/tablets/phones in order to drive multiple screens.
+* Fix: Template for "Louis-Cyr" Youth tournament fixed to avoid issues when publishing results when only boys or only girls have lifted. This fix will need to be retrofitted to all templates.
+
+Release 2.15.0
+--------------
+* Fix: Issue 102: A bug in the database engine used caused timeouts under heavy loads attempting to lock the lifter table in the database. This problem is fixed in version 1.3 of the H2 database, but unfortunately this requires updating the database file to a newer format.
+**Update Procedure**
+    * If using the Windows Installer version, use the "Update Database" link in the Competition Management System section of the Start Menu.
+    * If using a WAR file or Linux, download the "UpdateDatabase2.15.zip" from the [Files](http://sourceforge.net/p/owlcms2/Files) area and follow the instructions in the README files found within.
+* Fix: Issue 79: The file "BackupRestoreDatabase.zip" allows a full backup and restore of the database to be taken.  The scripts can be found in the [Files](http://sourceforge.net/p/owlcms2/Files) area of the site.
+ 
+Release 2.14.10
+---------------
+* Fix: Issue 101: When using refereeing devices, the announcer could receive a spurious notification on automatic progression or on lift changes (for example, if the athlete just finishing snatch happened to be the first athlete on C&J)
+  
+Release 2.14.9 
+---------------
+* Fix: Issue 100: Fixed Bluetooth keyboard issues related to autorepeat.  If one or more referees kept the button pressed there would be needless recalculations of lifting order (and delays in display).  "autorepeat" decisions are now ignored.
+
+Release 2.14.8 
+---------------
+* Fix: Issue 98: Fixed Bluetooth keyboard issues with the Jury decision display that were most obvious when using the Android version of Chrome in full-screen "application" mode (there was a to refresh the browser once to get things going, but in that mode there is no way to refresh the browser). Now fixed.
+* Improvement: Issue 99: it is now possible to set the environment variable OWLCMS_LOCALE to (say) da to force the program to use Danish language translatiosns if translations have been added to the WEB-INF/i18n/messages_da.properties files
+  
+  
+Release 2.14.7 
+---------------
+* Fix: Issue 97: 	As per TCRR regulation to 3.3.6.12, restored the prior correct behavior of showing referee decisions immediately on Jury screen. Only the jury decisions are kept from view (green indicators for decisions entered by jury members until which time jury has decided).  Had implemented the "green until decided" policy for referees as well, erroneously.
+
+Release 2.14.6 
+---------------
+* Improvement: Issue 96:	Revamped the jury display to accept input from keyboards, allowing wireless Bluetooth jury devices to be built.  As per TCRR, green indicator is given for which jury members have entered a decision.  Also shows which referees have entered a decision (or more to the point failed to do so)
+* Fix: Issue 95: 	When using the system with a separate timer, the option to hide the clock from the attempt board was being ignored. Now behaves as expected.
+  
+Release 2.14.5 
+---------------
+* Fix: Issue 93:	After using the "Break" button to display the intermission/time to start timer, decisions would no longer be shown on the attempt board (three gray rectangles instead of red/white).  Fixed - the attempt screen no longer stops listening to decision events.
+* Fix: Issue 94: 	Result and weigh-in list would no longer refresh after switching groups (regression in release 2.14.3). Now refreshes as expected.
+
+Release 2.14.4 
+---------------
+* Improvement: some browsers on Android devices don't send the languages they are willing to accept.  System property owlcms.locale can be set to a locale such as fr_CA to force a locale (Canadian French as a random example) .  -Dowlcms.locale=fr_CA on the command line  or owlcms.locale=fr_CA in the catalina.properties file does the trick.
+* Technical improvement: logs should no longer show a warning about orphaned ThreadLocal variables.
+* Fix: made sure Linux build works.  Tested on XUbuntu 13.10.
+
+Release 2.14.3 
+---------------
+* Fix: (Android devices) Found a workaround around the glitch that was causing Chrome Beta to repeatedly request the page, and other Android browsers to behave unpredictably when opening the page from a home screen shortcut
+* Cosmetic: made colors for the TV display less bland
+* Cosmetic: made sure that compound names and team names (e.g. LÉVESQUE-LAMY Andréane-Geneviève W-I) don't get split on the hyphens on the display board when there isn't enough room as this looks really weird.
+  
+Release 2.14.2 
+---------------
+* Cosmetic: (finally) Found a workaround to remove the spurious white line at bottom of black full-screen displays (decisions, attempt) which would be most visible on Android devices using the built-in browser or Chrome.
+* Technical improvement: remove unneeded pushes from server to browser for clock updates
+
+Release 2.14.1 
+---------------
+* Fix: Issue 92: Checkmark for "announced" status was not always tracking correctly the actual status - one case had been missed in 2.14.0.
+* Fix: Issue 90: Medal ranks were not being shown properly on result sheets.  Fixed to show ranks <= 3 (duh).
+* Cosmetic: Issue 91: Cosmetic: on wide-screens, the result board would show the C&J requested weights with an abnormally wide
+* Cosmetic: A spurious white line would show at the bottom of the attempt board and lifter-facing screen under Android.  Brute-forced a fix for Firefox on Android, which is the currently recommended browser for Android TV boxes.
+* Cosmetic: Fixed attempt board decision lights for Firefox (rounded corners and spacing).
+* Cosmetic: Made athlete name larger still on attempt board.
+  
+Release 2.14.0 
+---------------
+* Fix: Issue 85: Duplicate image of weights was being shown at the end of the pause, missing weight image when switching to empty session and back
+* Fix: Issues 87, 88 and 89.  Announcer buttons would (intermittently) show up in disabled states, and spurious notifications (lifter not announced, time not started, ...) would show up.  Old remnants of the user interface were removed and all updates now go through the master group controller and avoid such inconsistencies.
+* Improvement: when the Marshall changes weight for the current lifter, the notifications on the announcer consoles are no longer sticky. They will go away after a while. The delay is intentionally longer so the announcer will have a good chance of noticing. Clicking on the X will make them go away.
+* Improvement: cleaned up windowing and recognition of closed windows on mobile devices, so that navigation behaves better
+* Improvement: Support for Chrome full-screen application mode on Android. As of Nov. 2013, this is found in Chrome Beta.  Creating an application shortcut on the home screen makes the application run full screen, with no menus.  Right-click (back) exits the application. Tested on Android 4.1 upward. Note that currently Chrome Beta is not ready for production (for example, the attempt board works fine, but the result board gets constantly refreshed).  We suggest using Firefox on Android devices, as it is easy to refresh if the server is restarted (drag the top of the window down, hit the reload icon).
+* Improvement: Made fonts larger on the attempt board - medium setting (which is what appears to work best with Android TV boxes at both 720p and 1080p).
+* Improvement: Renamed the "pale" setting for the result board to "TV".  Reduced the font size so that groups with 20 lifters display correctly using an Android TV box connected to a flat screen TV.  On non-Android Boxes, you can use Ctrl-+ (control-plus) and Ctrl-- (control-minus) to tweak the font size.
+
+Release 2.13.2 
+---------------
+* Improvement: Issue 78. An indicator of whether the athlete has been announced or not is now visible next to remaining time.  The "Announce" button is no longer disabled as this proved confusing to several persons.
+* Improvement: Issue 84. If a lift is made even though announcer has not hit the announce button and/or timekeeper has not started clock, the referee decision is now registered instead of being ignored. In this way, the jury can decide what to do (grant the lift or a retry).
+* Improvement: Distinct notifications are used when coach requests a "weight change" for current lifter, and when the new weight has actually been entered.
+  
+Release 2.13.1 
+---------------
+* Fix: fixed French translation for attempt board sizes
+* Fix: removed experimental feature to avoid buzzer at 90 seconds if athlete had declared. The TCRR explicitly requires a buzzer at 90 secs.
+  
+Release 2.13.0 
+---------------
+* Improvement: Issue 83. Removed legacy code for old-style serial communication NEC board.
+
+Release 2.12.6 
+---------------
+* Improvement: the attempt board designations in the menu have been relabeled small, medium, large.  Use Medium for Android browsers (whether 720p or 1080p). Use Large for Windows or Linux browsers at 1080p, and medium for 720p.  Use Small or medium according to taste when using an old-fashioned 4:3 ratio screen.
+* Fix: Issue 82. The attempt board layout no longer moves when the lifter is announced (since 2.12.4, the plates would partially hide the clock).
+* Fix: Issue 81. CBuild 2.12.5 was missing the advertized fix for issue 80 (created from main branch of the source tree without the merged fix).
+* Fix: Issue 80. Issue 80 is fixed in the current build
+
+Release 2.12.5 
+---------------
+* Fix: Issue 80. The menus for selecting the attempt board sizes now work as expected.  In the previous release, when using the menu to select the different attempt board stylings, no style would be applied.  However, using different bookmarks for the different styles with the exact same URLs would work (or having the URL as a home page).  After using a bookmark, the menus would work. (when creating a page, the code determines whether it has been invoked from the menu or from the URL and fetches its parameters from the URL or from the menu -- the processing for the menu case was incomplete).
+
+Release 2.12.4 
+---------------
+* Improvement: Issue 68. There are now distinct layouts for the attempt board for old-style screens/projectors, and for HDTV (720p and 1080p). 
+* Fix: Issue 77: Full birth dates now formatted correctly on lifter cards.
+* Fix: Issue 76: Updated documentation for Windows 8, also added generation of Start Numbers after weigh-in.
+
+Release 2.12.3 
+---------------
+* Improvement: Issue 69. Full birth dates of athletes are now supported (prior to this change, the year of birth was used)
+        ** Registration template: 
+        ** If the formatting of the birth cell on the registration template is an Excel Date, then a full birth date is assumed.  We strongly recommend that you use the Excel "Short Date" cell format for the dates (which is the default as provided)
+        ** For backward compatibility: If the formatting of the birth cell on the registration template is an Excel Number, then the cell will be assumed to contain Year of Birth. A registration template with the YOB suffix is provided if full birth dates are not available.
+        ** Application screens:
+        ** By default, the full birth date will be shown on the application screens. The year of birth will be hidden on the registration/weigh-in and result lists. However, a drop-down at the right hand side of the screen allows expanding the column if looking at an old database or if the competition did not use full dates.
+        ** Competition documents:
+        ** The Excel templates for producing the start list, the weigh-in/starting weights sheet, the protocol sheet and the competition books have been updated to use the full birth date.  
+        ** If you have created your own Excel templates, the template variable ${fullBirthDate} is used to show the full birth date.  The variable ${yearOfBirth} is also available if required.  The old variable ${birthDate} is still present and contains the year of birth, but will no longer be used in new templates due to its ambiguous name.
+        ** In order to make room for the wider date, the first column of the Excel result sheets in the competition book (6 attempts and sinclair) has been removed. It was meant to contain a federation-specific membership number, which is not required for the competition book.  The membership number column is still present on the protocol sheet.
+
+Release 2.12.2 
+---------------
+* Improvement: Issue 70. Do not issue warning sound at 90sec if athlete has declared.
+* Improvement: Issue 67. Show current standing (rank) on scoreboard.
+* Improvement: Issue 66. Requested weights for clean&jerk are now visible on scoreboard during snatch.
+* Fix: Issue 65. Birth date now correctly shown on lifter card.
+* Fix: Issue 71. Marshall and announcer would be sometimes be notified needlessly on automatic progression, or when only one lifter was left.
+* Fix: Issue 72. Multiple notifications would show up on Announcer/Marshall screens, as a result of Issue 71.
+* Fix: Issue 73. Removed experimental keyboard shortcuts to start/stop timer while in announcer screen.
+* Improvement: Issue 75. Current lifter name and requested weight now shown in orange notifications when Marshall/Announcers interact.
+
+Release 2.12.1 
+---------------
+* Fix: Issue 54. 15/20kg rule check now done systematically, on every update, whether by Marshall or Announcer. Violation is displayed on both consoles if the current lifter is found to be below required total.
+* Fix: Issue 62. Announcer is notified of weight changes done by Marshall concerning current lifter (even if clock has not started).
+* Fix: Issue 55. Entry total now shown on starting weights sheet (officially the "weigh-in sheet"). Cells were empty due to typo.
+* Fix: Issue 57. Session number now shown on jury/examination sheet
+* Fix: Issue 58. Spurious cell containing the French word "annonceur" on the English version starting weights list.
+* Fix: Issue 60. Start list no longer shows weigh-in and competition start times with seconds and milliseconds.
+* Fix: Issue 63. Competition book reports Sinclair rankings using bodyweight calculation as per usual IWF usage. "Category Weight" Sinclair as used by some federations must now be enabled explicitly by defining a "useCategorySinclair" parameter as "true" in web.xml or context.xml. 
+* Improvement: Issue 56. Start number and Lot number appear in same order on athlete card and weigh-in sheet to make verifications easier.
+* Improvement: Issue 64. Adjusted the margins of the marshall and announcer consoles so they are more visually consistent with one another.
+* Improvement: Used "Entry Total" on templates where applicable
+
+Release 2.11.5 
+---------------
+* Fix: team rankings would fail when used in an all-male or all-female meet (or if produced prior to the other gender having lifted).
+* Improvement: cleaned up logging, removed spurious exceptions
+
+Release 2.11.4 
+---------------
+* Fix: Issues 19 and 51.  Multiple notifications would occur when re-accessing certain pages without having closed the page, causing duplication on the screen (e.g. using the menu bar twice in a row, and when using the explicit URL to a page)
+* Fix: Timekeeper console buttons erroneously disabled on weight changes for athletes other than current lifter.
+* Improvement: Announcer forgetting to hit announce button does not prevent referees from entering decision if timekeeper has started clock.
+  
+Release 2.11.3 
+---------------
+* Fix: typo in formula that computes IWF score in competition book packages.
+  
+Release 2.11.2 
+---------------
+* Improvement: Timekeeper console now uses larger buttons as had been made available on tablets
+* Improvement: Athlete-facing display is now under the "Refereeing" menu
+* Fix: Athlete-facing display font was too large on 720p monitors or regular 1366x768 laptops.
+* Improvement: Renamed "Public Message" button to "Break" on the Announcer console.
+* Improvement: Added shortcut buttons for 5 10 15 minute breaks on the Break management window (used to be "Public Message")
+ 
+Release 2.11.1  
+---------------
+* Partial Fix: Issue 51: Multiple down arrows would be shown when switching athlete-facing browser between countdown/decision display and attempt board.
+* Improvement: Issue 52 - Can now override the logo used on the "public message" page by uploading a .png file (see bottom of Competition editing page). Logo should be a 175x175 pixel png file with tranparent background.
+* Improvement: Issue 53 - There is now a "clear lifts" button on the registration page to facilitate dry runs and training.
+* Improvement: Intermission timer now shown on the athlete-facing display in addition to attempt boards
+* Improvement: Timer color scheme made more consistent: intermission timers are now green, lifter timers yellow. 
+
+Release 2.10.9  
+---------------
+* Improvement: Made behavior of timer comply with Rule 6.6.8 (prior to this, lifter would keep 2 minutes privilege if he had not himself requested a weight change)
+* Fix: Made sure start number is assigned on actual category after weigh-in, to account for competitions where category changes are allowed following weigh-in.
+* Improvement: changing the "show timer" setting on the Administration/Platforms page reflected when updating the attempt board page (F5)
+  
+  Release 2.10.8  
+---------------
+        ** Limited release.
+        ** New: initial support for running timekeeper console on a tablet (new button added on http://.../owlcms/m/ screen)
+        ** Improvement: templates correctly handle ties in score when top n athletes in a team are to be retained for team score
+        ** Improvement: Enforcement of 15/20kg rule is now optional (setting on Administration/Competition page)
+  
+Release 2.10.7  
+---------------
+* Improvement: issue 46 - Attempt board shows up better on wide-screen displays, without requiring zooming. Zooming once or twice works for old-style displays.
+* Fix: issue 47 - Do not assign start number for unweighed athlete. No longer required to move athlete out of current session.
+* Fix: issue 48 - Show start numbers on scoreboard as per IWF requirement
+* Improvement: issue 49 - Merge name cells together on scoreboard.
+* Technical: removed dependency on rxtx library which was difficult to deploy.
+
+Release 2.10.6  
+---------------
+* Fix: issue 44 - Start number calculation was inoperative. User interface changes for issue 41 had actually removed the sorting required prior to assigning numbers.
+* Improvement: issue 45 - It is now possible to clear the start number for all sessions.
+
+Release 2.10.5  
+---------------
+* Fix: issue 41 - If no session was selected, start numbers were being assigned as if all athletes were lifting in a single session.  There is now a requirement to select a session first.
+* Fix: issue 42 - Reloading the weigh-in page and selecting another session would cause the bottom table to be split.
+* Fix: issue 43 - Start numbers are now assigned through the weigh-in page buttons. Producing the spreadsheet no longer assigns start numbers. In this way, what you see on the weigh-in screen is what you get.
+
+
+Release 2.10.4  
+---------------
+* Improvement: issue 38 - Show start number on attempt board.
+* Improvement: issue 39 - If an independent timing system is used, the "Platform" screen now offers a checkbox to turn off the display of alloted time on the attempt board
+* Improvement: issue 40 - Explicit buttons to clear and set the start numbers on the weigh-in screen. Clearing the start numbers allows printing of athlete cards in advance, with a blank start number area.
+
+Release 2.10.3  
+---------------
+* Improvement: issue 36 - Clear start number when lots are drawn.
+* Fix: issue 37: When system is started for the first time on a brand new installation, an exception arises because the default location for templates has moved.
+
+Release 2.10.2  
+---------------
+* More updates to comply with 2013-2016 IWF Technical Rules
+* Improvement: room for start numbers on athlete card. Also shows entry total.
+* Improvement: all competition book templates now use the JXLS templating system. Examples provided for non-standard/historical tournament scoring systems, contact author if interested)
+* Fix: Start list correctly shows entry total again.
+* Fix: issue 35 - Lifting order page was crashing. Regression caused by attempted fix of issue 30.
+
+Release 2.10.1  
+---------------
+* Updates to comply with 2013-2016 IWF Technical Rules
+* Fix: issue 30 - (ÉJ) was showing up on English lifting order page instead of (CJ)  
+* Improvement: issue 31 - Use Start Numbers to compute lifting order (prior to this release, lot number was used as per 2009 wording of rules). In order to assign the start numbers, you need to generate the post-weigh-in spreadsheet using the "Starting Weights" button on the weigh-in page. 
+* Fix: issue 32 - Column used to input qualification total now visible on registration template and correctly processed.
+* Improvement: issue 33 - 20/15kg rule now enforced at weigh-in and on every weight change as required.
+* Fix: issue 34 - Duplicate lines in session editing table. Removed a seldom-used feature to link categories to a session.
+* Enhancement: Protocol sheet can be selected from competition page.  Add your own template under WEB-INF/classes/templates/protocolSheet (copy existing and format to your liking)
+  
+Release 2.9.2  
+---------------
+* Limited release: reworked team ranking sheet for Jeux du Québec (custom scoring scheme)
+  
+Release 2.9.1  
+---------------
+* Update: issue 26 - Updated Sinclair Coefficients for 2013-2016 olympiad
+* Fix: issue 29 - invited lifters would show up with a (1) ranking instead of none.
+
+Release 2.8.15  
+---------------
+* Fix: issue 26 - New competition book broke the other competition documents, now fixed (regression in 2.8.13 beta)
+* Fix: removed spurious dashes on starting weights sheet that is used as manual backup for protocol sheet.
+* Fix: put correct place holder for federation e-mail on results and starting weights sheets.
+* Improvement:  file names now localized using properties file.
+
+Release 2.8.14 BETA TESTING -  USE 2.8.12 unless you need the fixes outlined below 
+---------------
+* Fix: issue 25 - additional fixes (2.8.13 did not cover all cases)
+* Improvement: Both Attempt Board and the Athlete-Facing display can handle all keypad bindings (referees and timekeeper). The timekeeper console can also handle the timekeeper bindings. It is now recommended that the announcer console *not* be used for timekeeper keypads, as this might interfere with data entry.
+  
+Release 2.8.13 BETA TESTING -  USE 2.8.12 unless you need the fixes outlined below 
+---------------
+* Fix: issue 23 - Redid the competition book generation using jXLS.  Excel macros are no longer used, allowing OpenOffice and LibreOffice usage. The team ranking sheet must now be sorted manually, a tiny price to pay.
+* Fix: issue 25 - When paused, the display screens would sometimes show the initial allowed time (1 or 2 minutes) instead of the actual remaining time for the lifter. The display would then return to the proper time once the timer was started.  This is being released because the actual error problem could not be reproduced, and the fix is based on code analysis and refactoring.
+
+Release 2.8.12 
+---------------
+* Fix: issue 19 - "referees stopped time" notification was shown twice if referee decision was entered before timekeeper stopped time (e.g. inattentive timekeeper and elbow touches knee)
+* Code Review: issue 21 - defensive programming to avoid LED display board being allocated to more than one platform.
+
+Release 2.8.11 
+---------------
+* Fix: issue 17 - Tab names were not translated in Competition Book Excel spreadsheet.
+* Install: set correct permission settings inside Linux tar (tar -xvfp will now yield correct permissions)
+  
+Release 2.8.10 
+---------------
+* Experimental: issue 12 - Support for explicit scoring.  In some initiation competitions, bonus points are awarded for technique.  On the results page, an additional "score" field has been added for such custom scoring. The ranking spreadsheet can use that value to compute team points. This processing applies to the "special" tab in the template (see the rightmost tab in the "LouisCyr" template for an example).
+* Experimental: issue 15 - tested USB gamepads under Linux, using "qjoypad" package to map keys.  Odd numbers = success, Even numbers = no lift. Referee1 = {1,2}; Referee2 = {3,4}; Referee3 = {5,6}
+* Experimental: issue 18 - added USB gamepad support for timekeeper.  Connecting gamepad to announcer screen controls the timekeeper buttons on the announcer screen (requiring one less computer/tablet). Mappings are G for go, P for pause, O (letter) for One minute, T for Two minutes.
+* Internal: Eclipse set-up tested under Linux Mint(Ubuntu) and Eclipse Indigo.
+
+Release 2.8.9 
+---------------
+* Experimental: issue 15 - support use of multiple USB game pads (~10$ each) as refereeing devices.  Using "Joy2Key.exe" software, buttons are mapped to keystrokes 1 (good) and 2 (bad) for referee 1, and so on up to 4 and 6 for referee 3.  The gamepads are connected to the laptop that drives the lifter-facing clock, which is usually directly in front of the referees.  The countdown window is in focus, and receives the ref1 inputs, forwarding them to the master computer.
+* Fix: issue 14 - weigh-in list did not handle refreshing from URL correctly (did not always select the competition session).
+* Fix: issue 16 - Error (cannot format number) when using an empty database. (one more regression in v2.8.6)
+* Improvement: issue 9 - no longer necessary to restart application after changing active weight categories or category boundaries.
+* Tested under Linux Mint 12, openjdk7.  Same known issue remains regarding sound (out-of-time buzzer is cut short)
+
+Release 2.8.8 
+---------------
+* Fix: issue 8 - column width for athlete names was too narrow on the console screens (regression in v2.8.6).
+* Fix: issue 11 - cosmetic adjustment to competition session list.
+* Enhancement: issue 13 - Ability to import files in CSV format. First line must include the following header
+ {{{lastName,firstName,gender,club,birthDate,registrationCategory,competitionSession,qualifyingTotal}}}
+
+        *Note that birthDate is a 4-digit year, and that registrationCategory and qualifyingTotal are optional. The category and session must be valid.  The import is performed using the Adminstration/Upload menu. The uploaded file name must end in .csv.
+
+Release 2.8.7 
+---------------
+* Fix: issue 7 - missing reference to source code in French version of About box.
+* Build: issue 5 - Unit tests can be run on a clean checkout. rxtx native runtime is no longer required.  
+* Build: issue 6 - mvn compile now works on a clean checkout. See distribution/README.txt for additional instructions.
+* Build: There is now an extra "repository" directory in the checkout. It is now possible to build all projects by running "mvn compile" in the owlcmsParent directory, and also to build owlcms stand-alone using mvn (outside of owlcmsParent).
+
+Release 2.8.6 
+---------------
+* Improvement: issue 2 - show Sinclair (body weight and category weight) on Results page. Can be sorted, useful for "best of meet" awards -- just make sure no session is selected to get all lifters
+* Improvement: fixed layout so numbers and most fields are aligned right.
+* Fix: issue 3 - Reload of results prior to selecting any session was was signaling an error. 
+* Fix: issue 4 - unneeded compile-time reference to a test class broke mvn package from command line.
+* Improvement: nicer icon for Windows.
+
+Release 2.8.5 
+---------------
+* Changed the license to use the just-released version of the Mozilla Public Licence (MPL-2.0). The spirit of the licensing remains the same: should anyone create a version of the program, they need to make the full source code available, including that of their modifications. MPL-2.0 is is in my opinion easier to read and apply than GPLv2, and is more mainstream than my previous licensing choice.
+* Updated the "about" screens to reflect the licensing change, and to indicate where source code is available.
+
+
+Release 2.8.4 
+---------------
+* Fix: missing English translation the screen that displays referee decisions on a tablet.
+* Fix: Added "About" screen with reference to author and license.
+* Adjusted web.xml to be ok for stand-alone installation, added note for defining parameters for Tomcat WAR deployments.
+* The real purpose of this release is internal: all that could be automated in the process of assembling and uploading the installers and documentation has indeed been automated.  This release is the first one to be published with the new tools.
+
+Release 2.8.3 
+---------------
+* Super Bowl edition ;-)
+* Fix: when using multiple browsers, changing the current session for weigh-in or results could sometime affect the the announcer screen.  Restored correct behaviour: only announcer screen can affect the master session for the platform; competition secretary changes can be done at will and do not affect officiating.
+* May now select lifter-facing or public-facing variants of attempt-board (so referee decisions are shown in correct order)
+* Cosmetic: Minor adjustments to weigh-in and results templates (spurious borders)
+
+Release 2.8.2 
+---------------
+* Fix: Start List report did not show registration category correctly.
+* Fix: Use English template for documents when the template is not available in the native language
+* Fix: using a language other than English or French now sets the application locale to en_US      (fix in 2.8.1 was incomplete.)
+* Fix: Processing of date in registration template now works as documented in the setup guide.
+* Installation Guide (draft)
+* Competition Setup Guide (draft)
+  
+Release 2.8.1 
+---------------
+* Fix: Had inadvertently disabled the down signal while adding support for independent audio for multiple platforms in v2.8.0.
+* Read information about the competition from the registration spreadsheet
+* Set the default competition book template when initializing the database.
+* Associate the default sound mixer to the default platform.
+* Assume that by default the system provides timekeeping and decision lights.
+* All error messages now appear according to the language selected by the browser.
+  
+Release 2.8.0 
+---------------
+* Tested to work under embedded Tomcat (packaged as a Windows executable)
+* Tested under Ubuntu Linux 11.10 as an embedded Tomcat (packaged as a tar.gz) - known issue (minor): the final buzzer sound is emitted, but cut short.
+* Tested under Ubuntu Linux 10 as a server (packaged as a war) - under this configuration, sound is likely not available. The sounds are   generated on the server itself, in order to avoid latency. Ubuntu Server   does not install pulseaudio, and installing it is not straightforward.
+* Clean-up of sound processing
+* When editing a platform, the sound mixer to be used as output can be selected.  Refresh button on the announcer screen will read this setting again. This is useful on computers that have several mixers/sound cards, or when two platforms are in use.
+* No longer requires the presence of a serial port (used to drive old-fashioned LED display boards)
+
+Release 2.7.2 
+---------------
+* Fix: when using multiple platforms, sessions were appearing multiple times in dropdown. due to ill-defined hashcode function and use of unnecessary eager fetch.
+
+Release 2.7.1 
+---------------
+* Fix: notifications to the announcer for good/bad lifts were duplicated if the announcer used the menus to go to another page and came back.  General clean-up of registration and unregistration for all notifications. 
+Release 2.7.0 
+---------------
+* All sounds are now produced on the server.  This removes the dependency on Flash running in the browser, and increases reliability.  Reminder: there is no user interface to select which sound mixer is used for a platform, so sounds can only be used on single-platform setups. 
+  
+Release 2.6.2 
+---------------
+* Better visual separation for decision lights
+* Article 6.5.15 - exception implemented : two minutes are granted if an athlete just lifted, was not called, and changes by other athletes bring him back to lift, even if time started for the other athletes.  The athlete gets 1 minute if he was called and participated in the sequence of weight changes that brings him back as next lifter.
+* Improved feedback to referees using tablets
+* When using tablets, better usability for announcer: if a decision is given by the officials, the announcer controls for "lift/no lift" are hidden, preventing the announcer from recording a spurious decision.  If on the other hand no decision has been given by one official (due to malfunction), and flags are used, the controls are visible and the announcer can record the decision.
+* Tested with "Dolphin Mini" browser on Android tablets.  Recommended for use on low-end tablets. 
+
+Release 2.6.1 
+---------------
+* Split the clock button into a separate start and stop button, to facilitate cooperation between time keeper and announcer, especially when time is stopped for a weight change.
+* Time keeper can use "Enter" key to start and stop timer without using the mouse
+* Simplified interface for timekeeper console.
+
+Release 2.6.0 
+---------------
+* Reworked the attempt board for better readability
+* When using wireless tablets for decisions, show the decision to the announcer as a notification at the top of the screen. Also show decision reversals.
+* Corrected computation of plate loading so that collars are not used with large thin 2.5kg plates
+  
+  
+Release 2.5.2 
+---------------
+* Made sure that all decision changes are shown consistently on all displays.
+* Preparation work for supporting audible down signal on multiple platforms.
+
+Release 2.5.1 
+---------------
+* Marshall shown on weigh-in list (which is used as paper backup)
+* Increased separation between buttons on tablets for jury and referees.
+
+Release 2.5.0 
+---------------
+* Moved LifterCard generation to JXSL package (and Apache POI) to give end users more control  on look&feel
+
+Release 2.4.1 
+---------------
+* Wait until all referee keypads are blocked to register decision.
+  
+Release 2.4.0 
+---------------
+* Fixed Lifter-facing display when referees change their decision.
+
+== Releases 2.3.2 to 2.3.7 ==
+* Many team scoring subtleties for provincial "Jeux du Québec" games
+* Work-around for results not being shown immediately when selecting Results page
+* Fix for category display on result board for youth competitions (e.g. >85) -- fixes regression introduced by Masters category display.
+
+Release 2.3.1 
+---------------
+* Added template for provincial "Jeux du Québec" games scoring system
+
+Release 2.3.0 
+---------------
+* Jury and Referee decision displays now highlight which person who has not given decision
+* Jury decision display shows decision as soon as all decisions are in.
+* Checkmark on referee/jury pad is now shown using a character instead of an image; this avoids prompt to download image that happened when a ref would leave finger on device.
+* Referee names now shown on start list
+* May now edit referee names and session details from the weigh-in page.
+
+Release 2.2.3 
+---------------
+* Plate loading information can be tracked from mobile device.
+* Same message for "session done" was being reused inappropriately in the result frame title and in the lifting order board; they are now distinct.
+
+Release 2.2.2 
+---------------
+* Column alignment and cell padding was broken by a recent Vaadin change to the stylesheets. 
+
+Release 2.2.1 
+---------------
+* Can now choose between 3 styles for main display (bright colors for DLP, darker colors for LCD, and a pale setting which is less punchy but works with a wide range of displays)
+
+Release 2.2.0 
+---------------
+* Added support for 3-person Jury: a dedicated display (iPod) is used for displaying the jury decisions.  5-person Jury is doable, but not needed at this time.
+* The referee decisions are now sent as soon as the refereeing device is touched.  Touch devices wait 400ms before sending "onClick"; this has been worked around by a custom-built GWT widget that triggers on the touchStart event.
+* The *down* signal is emitted by the main computer, to further reduce latency.  This currently means that in 2-platform competitions only one can use the computerized refereeing system (though both can use the Jury).  Support for the old "in browser" approach will need to be tested again now that we have fixed the touchstart issue; otherwise we will need websockets and HTML5 sound to reduce latency.
+* Long names are handled better by the main display.
+
+Release 2.1.3 
+---------------
+* Referee decision display tested with iPod Mercury Lite browser (free) alternative to Mobile Safari; this browser allows removal of all decorations on the screen.
+* Made sure that referee decision display session never expires.
+
+Release 2.1.2 
+---------------
+* hide url bar for referee display on refresh.
+* avoid duplicate decision listeners when referee display is reset.
+  
+Release 2.1.1 
+---------------
+* improved visual feedback for referees on mobile devices (Android, iPod)
+* able to test decision lights on main display without having selected a platform
+  
+Release 2.1.0 
+---------------
+* http://host/m/ brings up a menu for mobile devices (Android, iPod)
+  
+Release 2.0.1 
+---------------
+* Stop time if time is still running when down is signaled.
+* Notification to other officials if new weight for current lifter is typed directly
+* Fix: Referee console does not leave listeners around when closed or refreshed
+  
+Release 2.0.0 
+---------------
+* Tested with Android 2.1 device as referee console (Archos 28)
+* Tested with iPod and Android as small jury console to visualize referee decisions
+* Down signal sound tested
+* Lighter colors for Result Screen, for DLP projectors
+* Multiple notifications to other consoles fixed
+* Handle missing information gracefully when producing start sheet
+* Better formatting of time countdown
+* Fixes to changes in plate information not being shown on attempt board (first change)
+* Quicker response to events by implementing threads
+* General clean-up of listeners, so that refresh does not leave any behind
+
+Release 1.9.1 
+---------------
+* Spurious need for refresh on spreadsheets worked around (new behavior with dev versions of Chrome and Vaadin)
+* CSS interference between plates popup and notification popup fixed.
+* Language of user being notified used in notification popup instead of language of notifier.
+
+Release 1.9.0 
+---------------
+* Release candidate for referee decision handling.
+* Result board shows decisions
+* Attempt board waits for decision display to reset prior to switching to next lifter.
+* Consoles are notified when someone else stops time (e.g. marshall console receiving weight change for current lifter whose time has started).
+
+Release 1.8.7 
+---------------
+* Attempt board shows referee decisions.
+* Public Message button added to all consoles, including Results.
+* Results pane now correctly shows the selected group on first invocation and through URL fragment. * same fix corrects behavior of Team Points and Rankings buttons (selector showed no group, but a group was in fact selected, resulting in a truncated report)
+  
+Release 1.8.6 
+---------------
+* Changes made to plate loading information are propagated to all plate loading subwindows and to attempt board.
+* This release was used for Québec Senior Championships 2010 (84 athletes).
+  
+Release 1.8.5 
+---------------
+* (1.8.5-a) Fixed Exception in Start Sheet when a group had no start or end time
+* (1.8.5-a) Fixed default communication port for NEC display.
+* Location of team templates moved to a team sub-directory, only name shown in dropdown
+* Restored Points and Ranking button on results page (fixed regression introduced in 1.8.2)
+* Fix for obscure bug with 2-minute rule that only showed up if announcer acts as timekeeper ("start time on announce" option).
+* Clean-up of push behavior so that the push() method is not called involuntarily in constructors.
+* Removal of all vestiges of polling.
+* Documentation reorganized.
+* merged jetty and tomcat configurations (widgetset located in Maven src instead of target)
+
+Release 1.8.4 
+---------------
+* Improved behavior when refreshing public address display (cleanup of listeners)
+* Support for Vaadin 6.5
+
+Release 1.8.3 
+---------------
+* Display public message on demand, overlaid over result boards.  Typically used between sessions or during pauses.
+* Fixed Jetty configuration issue relative to serial communication native library.
+* Cosmetic fixes to Start List
+
+Release 1.8.2 
+---------------
+* Show officials on result sheet.
+* Editing competition session information, officials in particular
+* Can again reload competition data from old spreadsheets.
+* Further Maven changes to follow testing conventions
+
+Release 1.8.1 
+---------------
+* Change in source layout to run under Maven
+* Small fixes to run under Maven jetty:run plugin (ICEpush causes exception if called in class constructor)
+* Time display now shows referee decisions after 3 seconds.

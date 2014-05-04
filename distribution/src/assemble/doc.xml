@@ -1,0 +1,37 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+	<id>doc</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<fileSets>
+		<fileSet>
+			<directory>src/site/resources</directory>
+			<includes>
+				<include>ReleaseNotes.txt</include>
+			</includes>
+			<outputDirectory>doc</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>../owlcms/doc</directory>
+			<includes>
+				<include>*.pdf</include>
+				<include>*.txt</include>
+				<include>*.xls</include>
+			</includes>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>../owlcms/doc/Guides</directory>
+			<includes>
+				<include>*.pdf</include>
+				<include>*.txt</include>
+				<include>*.xls</include>
+			</includes>
+			<outputDirectory>/</outputDirectory>
+		</fileSet>
+	</fileSets>
+</assembly>
